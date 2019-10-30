@@ -189,3 +189,6 @@ csharp_preserve_single_line_blocks = true
 
 # Code block
 csharp_prefer_braces = when_multiline:error
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none

@@ -18,7 +18,7 @@ namespace Trains.NET
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form = new Form1();
+            using var form = new MainForm();
 
             Application.Run(form);
         }

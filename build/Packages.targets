@@ -1,0 +1,17 @@
+<Project>
+
+  <!-- Included in every project -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" />
+  </ItemGroup>
+
+  <!-- Need to be opted in -->
+  <ItemGroup>
+    
+    <!-- SkiaSharp -->
+    <PackageReference Update="SkiaSharp"                    Version="1.68.1-rc.153" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.1-rc.153" />
+    
+  </ItemGroup>
+  
+</Project>

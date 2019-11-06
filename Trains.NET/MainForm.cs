@@ -2,11 +2,15 @@
 using System.Windows.Forms;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Trains.NET.Engine;
+using Trains.NET.Rendering;
 
 namespace Trains.NET
 {
     public partial class MainForm : Form
     {
+        private readonly Game _game;
+
         public MainForm()
         {
             this.Text = "Trains.NET";
@@ -44,12 +48,15 @@ namespace Trains.NET
                 TextAlign = ContentAlignment.MiddleCenter
             });
 
+            _game = new Game(new GameBoard());
+            
             var skiaView = new SKControl()
             {
                 Dock = DockStyle.Fill
             };
 
-            skiaView.PaintSurface += (s,e) => e.Surface.Canvas.Clear(SKColors.White);
+            skiaView.Resize += (s, e) => _game.SetSize(skiaView.Width, skiaView.Height);
+            skiaView.PaintSurface += (s,e) => _game.Render(e.Surface);
 
             splitContainer.Panel1.Controls.Add(buttonPanel);
             splitContainer.Panel2.Controls.Add(skiaView);

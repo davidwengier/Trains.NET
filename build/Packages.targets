@@ -1,5 +1,11 @@
 <Project>
 
+  <PropertyGroup>
+    <RestoreSources>
+      https://api.nuget.org/v3/index.json
+    </RestoreSources>
+  </PropertyGroup>
+  
   <!-- Included in every project -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" />

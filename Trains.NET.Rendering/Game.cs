@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using SkiaSharp;
 using Trains.NET.Engine;
@@ -15,10 +16,15 @@ namespace Trains.NET.Rendering
 
         private readonly GameBoard _gameBoard;
         private readonly IBoardRenderer _gridRenderer = new GridRenderer();
+        private readonly IBoardRenderer _trackLayoutRender;
+
+        public Tool CurrentTool { get; set; }
 
         public Game(GameBoard gameBoard)
         {
             _gameBoard = gameBoard;
+
+            _trackLayoutRender = new TrackLayoutRenderer(gameBoard);
         }
 
         public void SetSize(int width, int height)
@@ -47,7 +53,24 @@ namespace Trains.NET.Rendering
             canvas.Clear(SKColors.White);
             canvas.ClipRect(new SKRect(0, 0, _width + 2, _height + 2), SKClipOperation.Intersect, false);
 
+            canvas.Save();
             _gridRenderer.Render(surface, _width, _height);
+            canvas.Restore();
+
+            canvas.Save();
+            _trackLayoutRender.Render(surface, _width, _height);
+            canvas.Restore();
+        }
+
+        public void OnMouseDown(int x, int y)
+        {
+            var column = x / CellSize;
+            var row = y / CellSize;
+
+            if (this.CurrentTool == Tool.Track)
+            {
+                _gameBoard.AddTrack(column, row);
+            }
         }
     }
 }

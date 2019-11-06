@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
@@ -31,38 +34,53 @@ namespace Trains.NET
                 Padding = new Padding(5)
             };
 
-            buttonPanel.Controls.Add(new RadioButton()
+            foreach (Tool tool in ((Tool[])Enum.GetValues(typeof(Tool))).Reverse())
             {
-                Text = "Track",
-                Dock = DockStyle.Top,
-                Height = 50,
-                Appearance = Appearance.Button,
-                TextAlign = ContentAlignment.MiddleCenter
-            });
-            buttonPanel.Controls.Add(new RadioButton()
-            {
-                Text = "Pointer",
-                Dock = DockStyle.Top,
-                Height = 50,
-                Appearance = Appearance.Button,
-                TextAlign = ContentAlignment.MiddleCenter
-            });
+                buttonPanel.Controls.Add(CreateButton(tool));
+            }
 
             _game = new Game(new GameBoard());
-            
+
             var skiaView = new SKControl()
             {
                 Dock = DockStyle.Fill
             };
 
+            skiaView.MouseDown += DoMouseClick;
             skiaView.Resize += (s, e) => _game.SetSize(skiaView.Width, skiaView.Height);
-            skiaView.PaintSurface += (s,e) => _game.Render(e.Surface);
+            skiaView.PaintSurface += (s, e) => _game.Render(e.Surface);
 
             splitContainer.Panel1.Controls.Add(buttonPanel);
             splitContainer.Panel2.Controls.Add(skiaView);
             splitContainer.Panel2.Padding = new Padding(5);
 
             this.Controls.Add(splitContainer);
+
+            void DoMouseClick(object sender, MouseEventArgs e)
+            {
+                if ((e.Button & MouseButtons.Left) != MouseButtons.Left) return;
+
+                _game.OnMouseDown(e.X, e.Y);
+
+                skiaView.Refresh();
+            }
+
+            RadioButton CreateButton(Tool tool)
+            {
+                var button = new RadioButton()
+                {
+                    Text = tool.ToString(),
+                    Dock = DockStyle.Top,
+                    Height = 50,
+                    Appearance = Appearance.Button,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Checked = tool == (Tool)0
+                };
+
+                button.Click += (s, e) => _game.CurrentTool = tool;
+
+                return button;
+            }
         }
     }
 }

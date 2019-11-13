@@ -2,5 +2,6 @@
 {
     public class Track
     {
+        public TrackDirection Direction { get; }
     }
 }

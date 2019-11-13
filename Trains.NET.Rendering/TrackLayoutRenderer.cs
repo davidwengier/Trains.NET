@@ -6,6 +6,7 @@ namespace Trains.NET.Rendering
     internal class TrackLayoutRenderer : IBoardRenderer
     {
         private readonly GameBoard _gameBoard;
+        private readonly TrackRenderer _trackRenderer = new TrackRenderer();
 
         public TrackLayoutRenderer(GameBoard gameBoard)
         {
@@ -22,13 +23,7 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(col * Game.CellSize, row * Game.CellSize);
 
-                using var text = new SKPaint
-                {
-                     Color = SKColors.Black,
-                     TextSize = 32,
-                     TextAlign = SKTextAlign.Center
-                };
-                canvas.DrawText("H", 20, 30, text);
+                _trackRenderer.Render(canvas, track, Game.CellSize);
 
                 canvas.Restore();
             }

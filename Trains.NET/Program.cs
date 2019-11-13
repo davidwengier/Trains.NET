@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace Trains.NET
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form = CreateFromContainer();
+            using var form = CreateFromDiscovery();
 
             Application.Run(form);
         }
@@ -45,15 +46,43 @@ namespace Trains.NET
         {
             var col = new ServiceCollection();
 
-            col.AddScoped<IGame, Game>();
-            col.AddScoped<IGameBoard, GameBoard>();
-            col.AddScoped<ITrackRenderer, TrackRenderer>();
-            col.AddScoped<IBoardRenderer, GridRenderer>();
-            col.AddScoped<IBoardRenderer, TrackLayoutRenderer>();
+            col.AddSingleton<IGame, Game>();
+            col.AddSingleton<IGameBoard, GameBoard>();
+            col.AddSingleton<ITrackRenderer, TrackRenderer>();
+            col.AddSingleton<IBoardRenderer, GridRenderer>();
+            col.AddSingleton<IBoardRenderer, TrackLayoutRenderer>();
 
             ServiceProvider serviceProvider = col.BuildServiceProvider();
 
             return new MainForm(serviceProvider.GetService<IGame>());
+        }
+
+        private static MainForm CreateFromDiscovery()
+        {
+            var col = new ServiceCollection();
+            foreach (Assembly a in GetAssemblies())
+            {
+                foreach (Type t in a.GetTypes())
+                {
+                    foreach (Type inter in t.GetInterfaces())
+                    {
+                        if (inter.Namespace?.StartsWith("Trains.NET", StringComparison.OrdinalIgnoreCase) == true)
+                        {
+                            col.AddSingleton(inter, t);
+                        }
+                    }                
+                }
+            }
+
+            ServiceProvider serviceProvider = col.BuildServiceProvider();
+
+            return new MainForm(serviceProvider.GetService<IGame>());
+        }
+
+        private static IEnumerable<Assembly> GetAssemblies()
+        {
+            yield return typeof(IGameBoard).Assembly;
+            yield return typeof(IGame).Assembly;
         }
     }
 }

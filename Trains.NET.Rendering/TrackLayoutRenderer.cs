@@ -14,7 +14,7 @@ namespace Trains.NET.Rendering
             _trackRenderer = trackRenderer;
         }
 
-        void IBoardRenderer.Render(SKSurface surface, int width, int height)
+        public void Render(SKSurface surface, int width, int height)
         {
             SKCanvas canvas = surface.Canvas;
 

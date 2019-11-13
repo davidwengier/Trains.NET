@@ -18,7 +18,9 @@ namespace Trains.NET
         {
             this.Text = "Trains.NET";
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(1086, 559);
+            this.ClientSize = new System.Drawing.Size(1547, 897);
 
             var splitContainer = new SplitContainer()
             {

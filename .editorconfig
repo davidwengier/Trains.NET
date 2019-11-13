@@ -192,3 +192,6 @@ csharp_prefer_braces = when_multiline:error
 
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
+
+# CA1812: GameBoard is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static members, make it static (Shared in Visual Basic).
+dotnet_diagnostic.CA1812.severity = none

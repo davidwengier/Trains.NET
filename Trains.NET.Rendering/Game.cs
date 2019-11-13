@@ -7,7 +7,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class Game : IGame
+    internal class Game : IGame
     {
         public const int CellSize = 40;
 
@@ -27,9 +27,9 @@ namespace Trains.NET.Rendering
 
         public void SetSize(int width, int height)
         {
-            var columns = Math.Max(width / CellSize, 1);
+            int columns = Math.Max(width / CellSize, 1);
 
-            var rows = Math.Max(height / CellSize, 1);
+            int rows = Math.Max(height / CellSize, 1);
 
             _width = columns * CellSize;
             _height = rows * CellSize;
@@ -61,8 +61,8 @@ namespace Trains.NET.Rendering
 
         public void OnMouseDown(int x, int y)
         {
-            var column = x / CellSize;
-            var row = y / CellSize;
+            int column = x / CellSize;
+            int row = y / CellSize;
 
             if (this.CurrentTool == Tool.Track)
             {

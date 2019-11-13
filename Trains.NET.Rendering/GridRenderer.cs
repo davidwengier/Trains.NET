@@ -5,9 +5,9 @@ using SkiaSharp;
 
 namespace Trains.NET.Rendering
 {
-    public class GridRenderer : IBoardRenderer
+    internal class GridRenderer : IBoardRenderer
     {
-        void IBoardRenderer.Render(SKSurface surface, int width, int height)
+        public void Render(SKSurface surface, int width, int height)
         {
             SKCanvas canvas = surface.Canvas;
 

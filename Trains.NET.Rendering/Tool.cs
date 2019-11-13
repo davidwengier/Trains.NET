@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering
 {
     public enum Tool
     {
-        Pointer,
+        Point,
         Track,
         Train,
         Eraser

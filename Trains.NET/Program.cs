@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
 
@@ -20,7 +21,7 @@ namespace Trains.NET
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form = CreateFormManual();
+            using var form = CreateFromContainer();
 
             Application.Run(form);
         }
@@ -38,6 +39,21 @@ namespace Trains.NET
                             gameBoard,
                             new TrackRenderer())
                     }));
+        }
+
+        private static MainForm CreateFromContainer()
+        {
+            var col = new ServiceCollection();
+
+            col.AddScoped<IGame, Game>();
+            col.AddScoped<IGameBoard, GameBoard>();
+            col.AddScoped<ITrackRenderer, TrackRenderer>();
+            col.AddScoped<IBoardRenderer, GridRenderer>();
+            col.AddScoped<IBoardRenderer, TrackLayoutRenderer>();
+
+            ServiceProvider serviceProvider = col.BuildServiceProvider();
+
+            return new MainForm(serviceProvider.GetService<IGame>());
         }
     }
 }

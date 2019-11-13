@@ -5,10 +5,10 @@ namespace Trains.NET.Rendering
 {
     public class TrackLayoutRenderer : IBoardRenderer
     {
-        private readonly GameBoard _gameBoard;
+        private readonly IGameBoard _gameBoard;
         private readonly ITrackRenderer _trackRenderer;
 
-        public TrackLayoutRenderer(GameBoard gameBoard, ITrackRenderer trackRenderer)
+        public TrackLayoutRenderer(IGameBoard gameBoard, ITrackRenderer trackRenderer)
         {
             _gameBoard = gameBoard;
             _trackRenderer = trackRenderer;

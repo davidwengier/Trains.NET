@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Trains.NET.Engine
 {
-    public class GameBoard
+    public class GameBoard : IGameBoard
     {
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
 

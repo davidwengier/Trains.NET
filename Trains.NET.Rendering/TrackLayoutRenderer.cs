@@ -3,14 +3,15 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrackLayoutRenderer : IBoardRenderer
+    public class TrackLayoutRenderer : IBoardRenderer
     {
         private readonly GameBoard _gameBoard;
-        private readonly TrackRenderer _trackRenderer = new TrackRenderer();
+        private readonly ITrackRenderer _trackRenderer;
 
-        public TrackLayoutRenderer(GameBoard gameBoard)
+        public TrackLayoutRenderer(GameBoard gameBoard, ITrackRenderer trackRenderer)
         {
             _gameBoard = gameBoard;
+            _trackRenderer = trackRenderer;
         }
 
         void IBoardRenderer.Render(SKSurface surface, int width, int height)

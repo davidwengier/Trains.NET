@@ -5,7 +5,7 @@ using SkiaSharp;
 
 namespace Trains.NET.Rendering
 {
-    internal class GridRenderer : IBoardRenderer
+    public class GridRenderer : IBoardRenderer
     {
         void IBoardRenderer.Render(SKSurface surface, int width, int height)
         {

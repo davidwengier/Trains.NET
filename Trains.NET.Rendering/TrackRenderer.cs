@@ -3,7 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrackRenderer
+    public class TrackRenderer : ITrackRenderer
     {
         public void Render(SKCanvas canvas, Track track, int width)
         {

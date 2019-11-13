@@ -14,8 +14,10 @@ namespace Trains.NET
     {
         private readonly Game _game;
 
-        public MainForm()
+        public MainForm(Game game)
         {
+            _game = game;
+
             this.Text = "Trains.NET";
             this.AutoScaleMode = AutoScaleMode.Font;
             this.StartPosition = FormStartPosition.Manual;
@@ -40,8 +42,6 @@ namespace Trains.NET
             {
                 buttonPanel.Controls.Add(CreateButton(tool));
             }
-
-            _game = new Game(new GameBoard());
 
             var skiaView = new SKControl()
             {

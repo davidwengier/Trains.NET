@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trains.NET", "Trains.NET\Trains.NET.csproj", "{DED13C4D-3A94-4DC1-962D-208D1B5485BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET", "Trains.NET\Trains.NET.csproj", "{DED13C4D-3A94-4DC1-962D-208D1B5485BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trains.NET.Rendering", "Trains.NET.Rendering\Trains.NET.Rendering.csproj", "{A273B580-F4C2-49D7-A2D2-E1408A21D1CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Rendering", "Trains.NET.Rendering\Trains.NET.Rendering.csproj", "{A273B580-F4C2-49D7-A2D2-E1408A21D1CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trains.NET.Engine", "Trains.NET.Engine\Trains.NET.Engine.csproj", "{90155811-D4E5-4422-B120-7F0D419C5B12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Engine", "Trains.NET.Engine\Trains.NET.Engine.csproj", "{90155811-D4E5-4422-B120-7F0D419C5B12}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88B2DB4E-E205-46E9-B94D-D6EA6AE7EC13}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		build\Packages.targets = build\Packages.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trains.NET.Tests", "Trains.NET.Tests\Trains.NET.Tests.csproj", "{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{90155811-D4E5-4422-B120-7F0D419C5B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90155811-D4E5-4422-B120-7F0D419C5B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90155811-D4E5-4422-B120-7F0D419C5B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

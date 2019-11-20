@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Trains.NET.Engine
@@ -24,8 +25,16 @@ namespace Trains.NET.Engine
 
         private void SetBestTrackDirection(Track track, int column, int row)
         {
-            if (_tracks.ContainsKey((column, row - 1)) ||
-                _tracks.ContainsKey((column, row + 1)))
+            if (_tracks.ContainsKey((column, row - 1)))
+            {
+                if (GetTrackAt(column, row - 1)?.Direction != TrackDirection.Horizontal ||
+                    !(_tracks.ContainsKey((column - 1, row - 1)) ||
+                    _tracks.ContainsKey((column + 1, row - 1))))
+                {
+                    track.Direction = TrackDirection.Vertical;
+                }
+            }
+            else if (_tracks.ContainsKey((column, row + 1)))
             {
                 track.Direction = TrackDirection.Vertical;
             }
@@ -37,6 +46,15 @@ namespace Trains.NET.Engine
             {
                 yield return (col, row, track);
             }
+        }
+
+        public Track? GetTrackAt(int column, int row)
+        {
+            if (_tracks.TryGetValue((column, row), out Track track))
+            {
+                return track;
+            }
+            return null;
         }
     }
 }

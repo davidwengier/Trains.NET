@@ -49,6 +49,7 @@ namespace Trains.NET
             };
 
             skiaView.MouseDown += DoMouseClick;
+            skiaView.MouseMove += DoMouseClick;
             skiaView.Resize += (s, e) => _game.SetSize(skiaView.Width, skiaView.Height);
             skiaView.PaintSurface += (s, e) => _game.Render(e.Surface);
 

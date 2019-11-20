@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using System;
+using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -7,11 +8,13 @@ namespace Trains.NET.Rendering
     {
         private readonly IGameBoard _gameBoard;
         private readonly ITrackRenderer _trackRenderer;
+        private readonly IPixelMapper _pixelMapper;
 
-        public TrackLayoutRenderer(IGameBoard gameBoard, ITrackRenderer trackRenderer)
+        public TrackLayoutRenderer(IGameBoard gameBoard, ITrackRenderer trackRenderer, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _trackRenderer = trackRenderer;
+            _pixelMapper = pixelMapper;
         }
 
         public void Render(SKSurface surface, int width, int height)
@@ -22,7 +25,9 @@ namespace Trains.NET.Rendering
             {
                 canvas.Save();
 
-                canvas.Translate(col * Game.CellSize, row * Game.CellSize);
+                (int x, int y) = _pixelMapper.CoordsToPixels(col, row);
+
+                canvas.Translate(x, y);
 
                 _trackRenderer.Render(canvas, track, Game.CellSize);
 

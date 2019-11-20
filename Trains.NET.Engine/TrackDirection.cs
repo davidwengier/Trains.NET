@@ -2,6 +2,7 @@
 {
     public enum TrackDirection
     {
-        Horizontal
+        Horizontal,
+        Vertical
     }
 }

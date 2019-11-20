@@ -2,6 +2,6 @@
 {
     public class Track
     {
-        public TrackDirection Direction { get; }
+        public TrackDirection Direction { get; set; }
     }
 }

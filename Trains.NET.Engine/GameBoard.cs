@@ -25,17 +25,24 @@ namespace Trains.NET.Engine
 
         private void SetBestTrackDirection(Track track, int column, int row)
         {
-            if (_tracks.ContainsKey((column, row - 1)))
+            var trackAbove = GetTrackAt(column, row - 1);
+            if (trackAbove != null)
             {
                 if (GetTrackAt(column - 1, row)?.Direction == TrackDirection.Horizontal)
                 {
                     track.Direction = TrackDirection.LeftUp;
                 }
-                else if (GetTrackAt(column, row - 1)?.Direction != TrackDirection.Horizontal ||
-                    !(_tracks.ContainsKey((column - 1, row - 1)) ||
-                    _tracks.ContainsKey((column + 1, row - 1))))
+                else if (GetTrackAt(column, row - 1)?.Direction == TrackDirection.Vertical ||
+                    GetTrackAt(column, row - 1)?.Direction == TrackDirection.LeftDown ||
+                    GetTrackAt(column, row - 1)?.Direction == TrackDirection.RightDown)
                 {
                     track.Direction = TrackDirection.Vertical;
+                }
+                else if (!(_tracks.ContainsKey((column - 1, row - 1)) ||
+                           _tracks.ContainsKey((column + 1, row - 1))))
+                {
+                    track.Direction = TrackDirection.Vertical;
+                    trackAbove.Direction = TrackDirection.Vertical;
                 }
             }
             else if (_tracks.ContainsKey((column, row + 1)))

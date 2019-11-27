@@ -107,44 +107,44 @@ namespace Trains.NET.Rendering
 
             offset = -TrackPadding - 2;
             DrawCurvedTracks(canvas, width * 2, offset);
-        }
 
-        private static void DrawTrackBackground(SKCanvas canvas, int width, float offset)
-        {
-            canvas.Save();
-            canvas.Translate(-width / 2, -width / 2);
-
-            using var clear = new SKPaint
+            static void DrawTrackBackground(SKCanvas canvas, int width, float offset)
             {
-                Color = SKColors.White,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = 5,
-                IsAntialias = true
-            };
-            using var trackPath = new SKPath();
-            trackPath.ArcTo(new SKRect(offset, offset, width + offset, width + offset), 0, 90, true);
+                canvas.Save();
+                canvas.Translate(-width / 2, -width / 2);
 
-            canvas.DrawPath(trackPath, clear);
-            canvas.Restore();
-        }
+                using var clear = new SKPaint
+                {
+                    Color = SKColors.White,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 5,
+                    IsAntialias = true
+                };
+                using var trackPath = new SKPath();
+                trackPath.ArcTo(new SKRect(offset, offset, width + offset, width + offset), 0, 90, true);
 
-        private static void DrawCurvedTracks(SKCanvas canvas, int width, float offset)
-        {
-            canvas.Save();
-            canvas.Translate(-width / 2, -width / 2);
+                canvas.DrawPath(trackPath, clear);
+                canvas.Restore();
+            }
 
-            using var trackPath = new SKPath();
-            trackPath.ArcTo(new SKRect(offset, offset, width + offset, width + offset), 0, 90, true);
-            trackPath.ArcTo(new SKRect(offset - TrackWidth, offset - TrackWidth, width + offset + TrackWidth, width + offset + TrackWidth), 0, 90, true);
-            using var trackPaint = new SKPaint
+            static void DrawCurvedTracks(SKCanvas canvas, int width, float offset)
             {
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = 1,
-                IsAntialias = true
-            };
-            canvas.DrawPath(trackPath, trackPaint);
-            canvas.Restore();
+                canvas.Save();
+                canvas.Translate(-width / 2, -width / 2);
+
+                using var trackPath = new SKPath();
+                trackPath.ArcTo(new SKRect(offset, offset, width + offset, width + offset), 0, 90, true);
+                trackPath.ArcTo(new SKRect(offset - TrackWidth, offset - TrackWidth, width + offset + TrackWidth, width + offset + TrackWidth), 0, 90, true);
+                using var trackPaint = new SKPaint
+                {
+                    Color = SKColors.Black,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 1,
+                    IsAntialias = true
+                };
+                canvas.DrawPath(trackPath, trackPaint);
+                canvas.Restore();
+            }
         }
     }
 }

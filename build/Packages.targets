@@ -15,8 +15,8 @@
   <ItemGroup>
     
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="1.68.1-rc.153" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.1-rc.153" />
+    <PackageReference Update="SkiaSharp"                    Version="1.68.1" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.1" />
     
   </ItemGroup>
   

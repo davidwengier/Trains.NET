@@ -29,6 +29,8 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
+                canvas.ClipRect(new SKRect(0, 0, width, height), SKClipOperation.Intersect, false);
+
                 _trackRenderer.Render(canvas, track, Game.CellSize);
 
                 canvas.Restore();

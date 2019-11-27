@@ -3,6 +3,10 @@
     public enum TrackDirection
     {
         Horizontal,
-        Vertical
+        Vertical,
+        LeftUp,
+        RightUp,
+        RightDown,
+        LeftDown
     }
 }

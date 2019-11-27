@@ -27,7 +27,11 @@ namespace Trains.NET.Engine
         {
             if (_tracks.ContainsKey((column, row - 1)))
             {
-                if (GetTrackAt(column, row - 1)?.Direction != TrackDirection.Horizontal ||
+                if (GetTrackAt(column - 1, row)?.Direction == TrackDirection.Horizontal)
+                {
+                    track.Direction = TrackDirection.LeftUp;
+                }
+                else if (GetTrackAt(column, row - 1)?.Direction != TrackDirection.Horizontal ||
                     !(_tracks.ContainsKey((column - 1, row - 1)) ||
                     _tracks.ContainsKey((column + 1, row - 1))))
                 {

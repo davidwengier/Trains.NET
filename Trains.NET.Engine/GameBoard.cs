@@ -24,6 +24,14 @@ namespace Trains.NET.Engine
                 track.SetBestTrackDirection();
             }
         }
+        public void RemoveTrack(int column, int row)
+        {
+            if (_tracks.TryGetValue((column, row), out Track track))
+            {
+                _tracks.Remove((column, row));
+                track.RefreshNeighbors(false);
+            }
+        }
 
         public IEnumerable<(int, int, Track)> GetTracks()
         {

@@ -49,12 +49,16 @@ namespace Trains.NET.Engine
             TrackDirection.Vertical => true,
             _ => false
         };
-
         public void SetBestTrackDirection()
         {
-            if (this.Happy) return;
+            SetBestTrackDirection(true);
+        }
 
-            var neighbors = GetNeighbors();
+        public void SetBestTrackDirection(bool ignoreIfHappy)
+        {
+            if (this.Happy && ignoreIfHappy) return;
+
+            TrackNeighbors neighbors = GetNeighbors();
 
             TrackDirection newDirection;
             if (neighbors.Up != null || neighbors.Down != null)
@@ -95,38 +99,34 @@ namespace Trains.NET.Engine
             if (newDirection != this.Direction)
             {
                 this.Direction = newDirection;
-                neighbors.Up?.SetBestTrackDirection();
-                neighbors.Down?.SetBestTrackDirection();
-                neighbors.Right?.SetBestTrackDirection();
-                neighbors.Left?.SetBestTrackDirection();
+                RefreshNeighbors(true);
             }
 
-            this.Happy = GetNeighborCount() >= 2;
+            this.Happy = neighbors.Count >= 2;
         }
 
-        public (Track? Left, Track? Up, Track? Right, Track? Down) GetNeighbors()
+        public void RefreshNeighbors(bool ignoreIfHappy)
+        {
+            TrackNeighbors neighbors = GetNeighbors();
+            neighbors.Up?.SetBestTrackDirection(ignoreIfHappy);
+            neighbors.Down?.SetBestTrackDirection(ignoreIfHappy);
+            neighbors.Right?.SetBestTrackDirection(ignoreIfHappy);
+            neighbors.Left?.SetBestTrackDirection(ignoreIfHappy);
+        }
+
+        public TrackNeighbors GetNeighbors()
         {
             var left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
             var up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
             var right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
             var down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
 
-            return (
+            return new TrackNeighbors(
                 left?.CanConnectRight == true ? left : null,
                 up?.CanConnectDown == true ? up : null,
                 right?.CanConnectLeft == true ? right : null,
                 down?.CanConnectUp == true ? down : null
                 );
-        }
-
-        private int GetNeighborCount()
-        {
-            var neighbors = GetNeighbors();
-            return
-                (neighbors.Up == null ? 0 : 1) +
-                (neighbors.Down == null ? 0 : 1) +
-                (neighbors.Right == null ? 0 : 1) +
-                (neighbors.Left == null ? 0 : 1);
         }
     }
 }

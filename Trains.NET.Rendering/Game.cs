@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Text;
 using SkiaSharp;
 using Trains.NET.Engine;
@@ -67,6 +68,10 @@ namespace Trains.NET.Rendering
             if (this.CurrentTool == Tool.Track)
             {
                 _gameBoard.AddTrack(column, row);
+            }
+            else if (this.CurrentTool == Tool.Eraser)
+            {
+                _gameBoard.RemoveTrack(column, row);
             }
         }
     }

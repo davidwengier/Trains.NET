@@ -8,6 +8,9 @@ namespace Trains.NET.Rendering
     {
         private const int PlankWidth = 3;
         private const int NumPlanks = 3;
+        private const int NumCornerPlanks = NumPlanks + 1;
+        private const int CornerEdgeOffsetDegrees = 10;
+        private const int CornerStepDegrees = (90 - 2 * CornerEdgeOffsetDegrees) / (NumCornerPlanks - 1);
         private const int PlankPadding = 5;
         private const int TrackPadding = 10;
         private const int TrackWidth = 4;
@@ -64,7 +67,7 @@ namespace Trains.NET.Rendering
                 Color = SKColors.Black,
                 Style = SKPaintStyle.Stroke,
                 StrokeWidth = 1,
-                IsAntialias = true
+                IsAntialias = false
             };
 
             canvas.DrawPath(trackPath, trackPaint);
@@ -88,10 +91,14 @@ namespace Trains.NET.Rendering
         public void RenderCornerTrack(SKCanvas canvas, int width)
         {
             canvas.Save();
-            for (int i = 0; i < NumPlanks; i++)
+
+            // Rotate to initial angle
+            canvas.RotateDegrees(-CornerEdgeOffsetDegrees);
+
+            for (int i = 0; i < NumCornerPlanks; i++)
             {
-                canvas.RotateDegrees(-90f / (NumPlanks + 1));
                 DrawPlank(canvas, width, 0);
+                canvas.RotateDegrees(-CornerStepDegrees);
             }
             canvas.Restore();
 
@@ -105,6 +112,8 @@ namespace Trains.NET.Rendering
 
             static void DrawArc(SKCanvas canvas, float position, int strokeWidth, SKColor color)
             {
+                // Offset to match other tracks 
+                position += 0.5f;
                 using var trackPath = new SKPath();
                 trackPath.MoveTo(0, position);
                 trackPath.ArcTo(position, position, 0, SKPathArcSize.Small, SKPathDirection.CounterClockwise, position, 0);

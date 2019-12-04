@@ -2,6 +2,7 @@
 {
     public enum TrackDirection
     {
+        Undefined,
         Horizontal,
         Vertical,
         LeftUp,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using SkiaSharp;
 using Trains.NET.Engine;
 
@@ -22,17 +23,29 @@ namespace Trains.NET.Rendering
 
         public void Render(SKCanvas canvas, Track track, int width)
         {
-            if (track.Direction == TrackDirection.Vertical)
+            if (track.Direction == TrackDirection.Vertical || track.Direction == TrackDirection.Horizontal)
             {
-                canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                if (track.Direction == TrackDirection.Vertical)
+                {
+                    canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                }
                 RenderStraightTrack(canvas, width);
             }
-            else if (track.Direction == TrackDirection.Horizontal)
+            else if (track.Direction == TrackDirection.LeftUp || track.Direction == TrackDirection.LeftDown ||
+                track.Direction == TrackDirection.RightDown || track.Direction == TrackDirection.RightUp)
             {
-                RenderStraightTrack(canvas, width);
-            }
-            else if (track.Direction == TrackDirection.LeftUp)
-            {
+                if (track.Direction == TrackDirection.RightUp)
+                {
+                    canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                }
+                else if (track.Direction == TrackDirection.RightDown)
+                {
+                    canvas.RotateDegrees(180, Game.CellSize / 2, Game.CellSize / 2);
+                }
+                else if (track.Direction == TrackDirection.LeftDown)
+                {
+                    canvas.RotateDegrees(270, Game.CellSize / 2, Game.CellSize / 2);
+                }
                 RenderCornerTrack(canvas, width);
             }
         }

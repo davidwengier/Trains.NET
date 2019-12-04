@@ -25,29 +25,55 @@ namespace Trains.NET.Engine
 
         private void SetBestTrackDirection(Track track, int column, int row)
         {
-            var trackAbove = GetTrackAt(column, row - 1);
-            if (trackAbove != null)
+            var neighbors = GetNeighbors(column, row);
+
+            TrackDirection newDirection;
+            if (neighbors.Up != null || neighbors.Down != null)
             {
-                if (GetTrackAt(column - 1, row)?.Direction == TrackDirection.Horizontal)
+                if (neighbors.Left != null)
                 {
-                    track.Direction = TrackDirection.LeftUp;
+                    newDirection = neighbors.Up == null ? TrackDirection.LeftDown : TrackDirection.LeftUp;
                 }
-                else if (GetTrackAt(column, row - 1)?.Direction == TrackDirection.Vertical ||
-                    GetTrackAt(column, row - 1)?.Direction == TrackDirection.LeftDown ||
-                    GetTrackAt(column, row - 1)?.Direction == TrackDirection.RightDown)
+                else if (neighbors.Right != null)
                 {
-                    track.Direction = TrackDirection.Vertical;
+                    newDirection = neighbors.Up == null ? TrackDirection.RightDown : TrackDirection.RightUp;
                 }
-                else if (!(_tracks.ContainsKey((column - 1, row - 1)) ||
-                           _tracks.ContainsKey((column + 1, row - 1))))
+                else
                 {
-                    track.Direction = TrackDirection.Vertical;
-                    trackAbove.Direction = TrackDirection.Vertical;
+                    newDirection = TrackDirection.Vertical;
                 }
             }
-            else if (_tracks.ContainsKey((column, row + 1)))
+            else if (neighbors.Left != null || neighbors.Right != null)
             {
-                track.Direction = TrackDirection.Vertical;
+                if (neighbors.Up != null)
+                {
+                    newDirection = neighbors.Left == null ? TrackDirection.RightUp : TrackDirection.LeftUp;
+                }
+                else if (neighbors.Down != null)
+                {
+                    newDirection = neighbors.Left == null ? TrackDirection.RightDown : TrackDirection.LeftDown;
+                }
+                else
+                {
+                    newDirection = TrackDirection.Horizontal;
+                }
+            }
+            else
+            {
+                newDirection = TrackDirection.Horizontal;
+            }
+
+            if (newDirection != track.Direction)
+            {
+                track.Direction = newDirection;
+                foreach ((int c, int r) in GetNeighborPositions(column, row))
+                {
+                    var nextTrack = GetTrackAt(c, r);
+                    if (nextTrack != null)
+                    {
+                        SetBestTrackDirection(nextTrack, c, r);
+                    }
+                }
             }
         }
 
@@ -66,6 +92,24 @@ namespace Trains.NET.Engine
                 return track;
             }
             return null;
+        }
+
+        public (Track? Left, Track? Up, Track? Right, Track? Down) GetNeighbors(int column, int row)
+        {
+            return (
+                GetTrackAt(column - 1, row),
+                GetTrackAt(column, row - 1),
+                GetTrackAt(column + 1, row),
+                GetTrackAt(column, row + 1)
+               );
+        }
+
+        public IEnumerable<(int col, int row)> GetNeighborPositions(int column, int row)
+        {
+            yield return (column - 1, row);
+            yield return (column, row - 1);
+            yield return (column + 1, row);
+            yield return (column, row + 1);
         }
     }
 }

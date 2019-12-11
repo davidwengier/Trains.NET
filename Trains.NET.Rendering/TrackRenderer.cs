@@ -11,10 +11,10 @@ namespace Trains.NET.Rendering
         private const int NumPlanks = 3;
         private const int NumCornerPlanks = NumPlanks + 1;
         private const int CornerEdgeOffsetDegrees = 10;
-        private const int CornerStepDegrees = 
+        private const int CornerStepDegrees =
             // Initial angle to draw is 90 degrees, but CornerStepDegrees is only for the middle planks
             // so remove the first and last from the swept angle
-            (90 - 2 * CornerEdgeOffsetDegrees) 
+            (90 - 2 * CornerEdgeOffsetDegrees)
             // Now just split up the remainder amongst the middle planks
             / (NumCornerPlanks - 1);
         private const int PlankPadding = 5;
@@ -23,7 +23,13 @@ namespace Trains.NET.Rendering
 
         public void Render(SKCanvas canvas, Track track, int width)
         {
-            if (track.Direction == TrackDirection.Vertical || track.Direction == TrackDirection.Horizontal)
+            if (track.Direction == TrackDirection.Cross)
+            {
+                RenderStraightTrack(canvas, width);
+                canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                RenderStraightTrack(canvas, width);
+            }
+            else if (track.Direction == TrackDirection.Vertical || track.Direction == TrackDirection.Horizontal)
             {
                 if (track.Direction == TrackDirection.Vertical)
                 {

@@ -8,6 +8,7 @@
         LeftUp,
         RightUp,
         RightDown,
-        LeftDown
+        LeftDown,
+        Cross
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
 
 namespace Trains.NET.Engine
 {
     public class Track
     {
+        private bool _isSettingDirection;
         private readonly IGameBoard _gameBoard;
 
         public Track(IGameBoard gameBoard)
@@ -15,12 +17,14 @@ namespace Trains.NET.Engine
         public int Row { get; set; }
         public TrackDirection Direction { get; set; }
         public bool Happy { get; set; }
+
         public bool CanConnectRight => this.Direction switch
         {
             _ when !this.Happy => true,
             TrackDirection.RightDown => true,
             TrackDirection.RightUp => true,
             TrackDirection.Horizontal => true,
+            TrackDirection.Cross => true,
             _ => false
         };
 
@@ -30,6 +34,7 @@ namespace Trains.NET.Engine
             TrackDirection.RightDown => true,
             TrackDirection.LeftDown => true,
             TrackDirection.Vertical => true,
+            TrackDirection.Cross => true,
             _ => false
         };
 
@@ -39,29 +44,59 @@ namespace Trains.NET.Engine
             TrackDirection.LeftDown => true,
             TrackDirection.LeftUp => true,
             TrackDirection.Horizontal => true,
+            TrackDirection.Cross => true,
             _ => false
         };
+
         public bool CanConnectUp => this.Direction switch
         {
             _ when !this.Happy => true,
             TrackDirection.LeftUp => true,
             TrackDirection.RightUp => true,
             TrackDirection.Vertical => true,
+            TrackDirection.Cross => true,
             _ => false
         };
-        public void SetBestTrackDirection()
+
+        public void SetBestTrackDirectionOrCross()
         {
+            TrackNeighbors allNeighbors = GetAllNeighbors();
+            if (allNeighbors.Up != null && allNeighbors.Up.GetNeighbors().Count == 4)
+            {
+                allNeighbors.Up.SetBestTrackDirection(true);
+            }
+            else if (allNeighbors.Left != null && allNeighbors.Left.GetNeighbors().Count == 4)
+            {
+                allNeighbors.Left.SetBestTrackDirection(true);
+            }
+            else if (allNeighbors.Down != null && allNeighbors.Down.GetNeighbors().Count == 4)
+            {
+                allNeighbors.Down.SetBestTrackDirection(true);
+            }
+            else if (allNeighbors.Right != null && allNeighbors.Right.GetNeighbors().Count == 4)
+            {
+                allNeighbors.Right.SetBestTrackDirection(true);
+            }
+
             SetBestTrackDirection(true);
         }
 
-        public void SetBestTrackDirection(bool ignoreIfHappy)
+        public void SetBestTrackDirection(bool refreshNeighbors)
         {
-            if (this.Happy && ignoreIfHappy) return;
+            if (_isSettingDirection) return;
+            _isSettingDirection = true;
 
             TrackNeighbors neighbors = GetNeighbors();
+            
+            int countBefore = neighbors.Count;
 
             TrackDirection newDirection;
-            if (neighbors.Up != null || neighbors.Down != null)
+            // Simple cross, someone filling in the middle
+            if (neighbors.Count == 4)
+            {
+                newDirection = TrackDirection.Cross;
+            }
+            else if (neighbors.Up != null || neighbors.Down != null)
             {
                 if (neighbors.Left != null)
                 {
@@ -96,30 +131,37 @@ namespace Trains.NET.Engine
                 newDirection = TrackDirection.Horizontal;
             }
 
-            if (newDirection != this.Direction)
+            if (newDirection != this.Direction || GetNeighbors().Count > countBefore)
             {
                 this.Direction = newDirection;
-                RefreshNeighbors(true);
+                if (refreshNeighbors)
+                {
+                    RefreshNeighbors(false);
+                }
             }
 
-            this.Happy = neighbors.Count >= 2;
+            this.Happy = neighbors.Count > 1;
+
+            RefreshNeighbors(true);
+
+            _isSettingDirection = false;
         }
 
-        public void RefreshNeighbors(bool ignoreIfHappy)
+        public void RefreshNeighbors(bool refreshAllNeighbors)
         {
             TrackNeighbors neighbors = GetNeighbors();
-            neighbors.Up?.SetBestTrackDirection(ignoreIfHappy);
-            neighbors.Down?.SetBestTrackDirection(ignoreIfHappy);
-            neighbors.Right?.SetBestTrackDirection(ignoreIfHappy);
-            neighbors.Left?.SetBestTrackDirection(ignoreIfHappy);
+            neighbors.Up?.SetBestTrackDirection(refreshAllNeighbors);
+            neighbors.Down?.SetBestTrackDirection(refreshAllNeighbors);
+            neighbors.Right?.SetBestTrackDirection(refreshAllNeighbors);
+            neighbors.Left?.SetBestTrackDirection(refreshAllNeighbors);
         }
 
         public TrackNeighbors GetNeighbors()
         {
-            var left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
-            var up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
-            var right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
-            var down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
+            Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
+            Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
+            Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
+            Track? down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
 
             return new TrackNeighbors(
                 left?.CanConnectRight == true ? left : null,
@@ -127,6 +169,16 @@ namespace Trains.NET.Engine
                 right?.CanConnectLeft == true ? right : null,
                 down?.CanConnectUp == true ? down : null
                 );
+        }
+
+        public TrackNeighbors GetAllNeighbors()
+        {
+            Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
+            Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
+            Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
+            Track? down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
+
+            return new TrackNeighbors(left, up, right, down);
         }
     }
 }

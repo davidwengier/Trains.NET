@@ -16,12 +16,14 @@ namespace Trains.NET.Engine
         {
             if (!_tracks.ContainsKey((column, row)))
             {
-                var track = new Track(this);
-                track.Column = column;
-                track.Row = row;
+                var track = new Track(this)
+                {
+                    Column = column,
+                    Row = row
+                };
                 _tracks.Add((column, row), track);
 
-                track.SetBestTrackDirection();
+                track.SetBestTrackDirectionOrCross();
             }
         }
         public void RemoveTrack(int column, int row)

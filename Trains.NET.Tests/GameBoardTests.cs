@@ -13,6 +13,23 @@ namespace Trains.NET.Tests
     public class GameBoardTests
     {
         [Fact]
+        public void SidewaysHairpin()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 2);
+            board.AddTrack(2, 2);
+            board.AddTrack(3, 2);
+            board.AddTrack(3, 1);
+            board.AddTrack(2, 1);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(3, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 1).Direction);
+        }
+
+        [Fact]
         public void RightAngleWithCircleOnTop()
         {
             var board = new GameBoard();

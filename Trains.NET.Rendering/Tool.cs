@@ -8,7 +8,6 @@ namespace Trains.NET.Rendering
     {
         Point,
         Track,
-        Train,
         Eraser
     }
 }

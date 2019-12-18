@@ -27,7 +27,7 @@ namespace Trains.NET.Engine
                 };
                 _tracks.Add((column, row), track);
 
-                track.SetBestTrackDirectionOrCross();
+                track.SetBestTrackDirection(false);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Trains.NET.Engine
             if (_tracks.TryGetValue((column, row), out Track track))
             {
                 _tracks.Remove((column, row));
-                track.RefreshNeighbors(false);
+                track.RefreshNeighbors(true);
             }
         }
 

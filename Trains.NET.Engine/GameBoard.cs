@@ -14,9 +14,13 @@ namespace Trains.NET.Engine
 
         public void AddTrack(int column, int row)
         {
-            if (!_tracks.ContainsKey((column, row)))
+            if (_tracks.TryGetValue((column, row), out Track track))
             {
-                var track = new Track(this)
+                track.SetBestTrackDirection(true);
+            }
+            else
+            {
+                track = new Track(this)
                 {
                     Column = column,
                     Row = row

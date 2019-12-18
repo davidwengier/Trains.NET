@@ -161,7 +161,7 @@ namespace Trains.NET.Engine
                 this.Direction = newDirection;
                 if (refreshNeighbors)
                 {
-                    RefreshNeighbors(false);
+                    RefreshNeighbors(refreshNeighbors);
                 }
             }
 

@@ -80,15 +80,15 @@ namespace Trains.NET.Engine
             {
                 allNeighbors.Up.SetBestTrackDirection(true);
             }
-            else if (allNeighbors.Left != null && allNeighbors.Left.GetNeighbors().Count == 4)
+            if (allNeighbors.Left != null && allNeighbors.Left.GetNeighbors().Count == 4)
             {
                 allNeighbors.Left.SetBestTrackDirection(true);
             }
-            else if (allNeighbors.Down != null && allNeighbors.Down.GetNeighbors().Count == 4)
+            if (allNeighbors.Down != null && allNeighbors.Down.GetNeighbors().Count == 4)
             {
                 allNeighbors.Down.SetBestTrackDirection(true);
             }
-            else if (allNeighbors.Right != null && allNeighbors.Right.GetNeighbors().Count == 4)
+            if (allNeighbors.Right != null && allNeighbors.Right.GetNeighbors().Count == 4)
             {
                 allNeighbors.Right.SetBestTrackDirection(true);
             }

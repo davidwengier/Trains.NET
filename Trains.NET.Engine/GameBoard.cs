@@ -30,6 +30,7 @@ namespace Trains.NET.Engine
                 track.SetBestTrackDirectionOrCross();
             }
         }
+
         public void RemoveTrack(int column, int row)
         {
             if (_tracks.TryGetValue((column, row), out Track track))

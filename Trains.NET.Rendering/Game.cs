@@ -61,17 +61,17 @@ namespace Trains.NET.Rendering
             }
         }
 
-        public void OnMouseDown(int x, int y)
+        public void OnMouseDown(int x, int y, bool isRightMouseDown)
         {
             (int column, int row) = _pixelMapper.PixelsToCoords(x, y);
 
-            if (this.CurrentTool == Tool.Track)
-            {
-                _gameBoard.AddTrack(column, row);
-            }
-            else if (this.CurrentTool == Tool.Eraser)
+            if (this.CurrentTool == Tool.Eraser || isRightMouseDown)
             {
                 _gameBoard.RemoveTrack(column, row);
+            }
+            else if (this.CurrentTool == Tool.Track)
+            {
+                _gameBoard.AddTrack(column, row);
             }
         }
     }

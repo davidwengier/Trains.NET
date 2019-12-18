@@ -61,9 +61,11 @@ namespace Trains.NET
 
             void DoMouseClick(object sender, MouseEventArgs e)
             {
-                if ((e.Button & MouseButtons.Left) != MouseButtons.Left) return;
+                if (e.Button == MouseButtons.None) return;
+                if ((e.Button & MouseButtons.Middle) == MouseButtons.Middle) return;
 
-                _game.OnMouseDown(e.X, e.Y);
+                bool isRightMouseButton = (e.Button & MouseButtons.Right) == MouseButtons.Right;
+                _game.OnMouseDown(e.X, e.Y, isRightMouseButton);
 
                 skiaView.Refresh();
             }

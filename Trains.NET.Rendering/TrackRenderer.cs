@@ -37,22 +37,26 @@ namespace Trains.NET.Rendering
                 }
                 RenderStraightTrack(canvas, width);
             }
-            else if (track.Direction == TrackDirection.LeftUp || track.Direction == TrackDirection.LeftDown ||
-                track.Direction == TrackDirection.RightDown || track.Direction == TrackDirection.RightUp)
+            else
             {
-                if (track.Direction == TrackDirection.RightUp)
+                if (track.Direction == TrackDirection.RightUp || track.Direction == TrackDirection.RightUpDown)
                 {
                     canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
                 }
-                else if (track.Direction == TrackDirection.RightDown)
+                else if (track.Direction == TrackDirection.RightDown || track.Direction == TrackDirection.LeftRightDown)
                 {
                     canvas.RotateDegrees(180, Game.CellSize / 2, Game.CellSize / 2);
                 }
-                else if (track.Direction == TrackDirection.LeftDown)
+                else if (track.Direction == TrackDirection.LeftDown || track.Direction == TrackDirection.LeftUpDown)
                 {
                     canvas.RotateDegrees(270, Game.CellSize / 2, Game.CellSize / 2);
                 }
-                RenderCornerTrack(canvas, width);
+                bool drawExtra = track.Direction == TrackDirection.RightUpDown ||
+                    track.Direction == TrackDirection.LeftRightDown ||
+                    track.Direction == TrackDirection.LeftUpDown ||
+                    track.Direction == TrackDirection.LeftRightUp;
+
+                RenderCornerTrack(canvas, width, drawExtra);
             }
         }
 
@@ -112,7 +116,7 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(path, plank);
         }
 
-        public void RenderCornerTrack(SKCanvas canvas, int width)
+        public void RenderCornerTrack(SKCanvas canvas, int width, bool drawExtra)
         {
             canvas.Save();
 
@@ -126,13 +130,25 @@ namespace Trains.NET.Rendering
             }
             canvas.Restore();
 
-            DrawArc(canvas, TrackPadding + (TrackWidth / 2), TrackWidth, SKColors.White);
-            DrawArc(canvas, TrackPadding, 1, SKColors.Black);
-            DrawArc(canvas, TrackPadding + TrackWidth, 1, SKColors.Black);
+            DrawTracks(canvas, width);
 
-            DrawArc(canvas, width - TrackPadding - (TrackWidth / 2), TrackWidth, SKColors.White);
-            DrawArc(canvas, width - TrackPadding, 1, SKColors.Black);
-            DrawArc(canvas, width - TrackPadding - TrackWidth, 1, SKColors.Black);
+            if (drawExtra)
+            {
+                canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+
+                DrawTracks(canvas, width);
+            }
+
+            static void DrawTracks(SKCanvas canvas, int width)
+            {
+                DrawArc(canvas, TrackPadding + (TrackWidth / 2), TrackWidth, SKColors.White);
+                DrawArc(canvas, TrackPadding, 1, SKColors.Black);
+                DrawArc(canvas, TrackPadding + TrackWidth, 1, SKColors.Black);
+
+                DrawArc(canvas, width - TrackPadding - (TrackWidth / 2), TrackWidth, SKColors.White);
+                DrawArc(canvas, width - TrackPadding, 1, SKColors.Black);
+                DrawArc(canvas, width - TrackPadding - TrackWidth, 1, SKColors.Black);
+            }
 
             static void DrawArc(SKCanvas canvas, float position, int strokeWidth, SKColor color)
             {

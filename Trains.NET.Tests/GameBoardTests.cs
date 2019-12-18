@@ -74,6 +74,48 @@ namespace Trains.NET.Tests
         }
 
         [Fact]
+        public void RightAngleWithCircleOnTop()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 4);
+            board.AddTrack(1, 3);
+            board.AddTrack(2, 3);
+            board.AddTrack(1, 1);
+            board.AddTrack(2, 1);
+            board.AddTrack(1, 2);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(1, 4).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
+            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.RightUp, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.LeftUpDown, board.GetTrackAt(2, 2).Direction);
+        }
+
+        [Fact]
+        public void LeftAngleWithCircleOnTop()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 3);
+            board.AddTrack(2, 3);
+            board.AddTrack(2, 4);
+            board.AddTrack(1, 1);
+            board.AddTrack(2, 1);
+            board.AddTrack(2, 2);
+            board.AddTrack(1, 2);
+
+            Assert.Equal(TrackDirection.RightUp,  board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.Vertical,    board.GetTrackAt(2, 4).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
+            Assert.Equal(TrackDirection.LeftDown,  board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.LeftUp,   board.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.RightUpDown,board.GetTrackAt(1, 2).Direction);
+        }
+
+        [Fact]
         public void CrossVerticalFirst()
         {
             var board = new GameBoard();
@@ -209,6 +251,67 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(2, 2).Direction);
+        }
+
+        [Fact]
+        public void LeftUpDown()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 2);
+            board.AddTrack(2, 1);
+            board.AddTrack(2, 3);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.LeftUpDown, board.GetTrackAt(2, 2).Direction);
+        }
+
+
+        [Fact]
+        public void RightUpDown()
+        {
+            var board = new GameBoard();
+            board.AddTrack(3, 2);
+            board.AddTrack(2, 1);
+            board.AddTrack(2, 3);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.RightUpDown, board.GetTrackAt(2, 2).Direction);
+        }
+
+        [Fact]
+        public void LeftRightUp()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 2);
+            board.AddTrack(2, 1);
+            board.AddTrack(3, 2);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftRightUp, board.GetTrackAt(2, 2).Direction);
+        }
+
+        [Fact]
+        public void LeftRightDown()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 2);
+            board.AddTrack(2, 3);
+            board.AddTrack(3, 2);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftRightDown, board.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]

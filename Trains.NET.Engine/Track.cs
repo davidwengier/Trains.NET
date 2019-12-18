@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 
 namespace Trains.NET.Engine
 {
+    [DebuggerDisplay("{Direction,nq}")]
     public class Track
     {
         private bool _isSettingDirection;
@@ -25,6 +28,9 @@ namespace Trains.NET.Engine
             TrackDirection.RightUp => true,
             TrackDirection.Horizontal => true,
             TrackDirection.Cross => true,
+            TrackDirection.LeftRightDown => true,
+            TrackDirection.LeftRightUp => true,
+            TrackDirection.RightUpDown => true,
             _ => false
         };
 
@@ -35,6 +41,9 @@ namespace Trains.NET.Engine
             TrackDirection.LeftDown => true,
             TrackDirection.Vertical => true,
             TrackDirection.Cross => true,
+            TrackDirection.LeftRightDown => true,
+            TrackDirection.LeftUpDown => true,
+            TrackDirection.RightUpDown => true,
             _ => false
         };
 
@@ -45,6 +54,9 @@ namespace Trains.NET.Engine
             TrackDirection.LeftUp => true,
             TrackDirection.Horizontal => true,
             TrackDirection.Cross => true,
+            TrackDirection.LeftRightDown => true,
+            TrackDirection.LeftRightUp => true,
+            TrackDirection.LeftUpDown => true,
             _ => false
         };
 
@@ -55,6 +67,9 @@ namespace Trains.NET.Engine
             TrackDirection.RightUp => true,
             TrackDirection.Vertical => true,
             TrackDirection.Cross => true,
+            TrackDirection.LeftUpDown => true,
+            TrackDirection.LeftRightUp => true,
+            TrackDirection.RightUpDown => true,
             _ => false
         };
 
@@ -87,7 +102,7 @@ namespace Trains.NET.Engine
             _isSettingDirection = true;
 
             TrackNeighbors neighbors = GetNeighbors();
-            
+
             int countBefore = neighbors.Count;
 
             TrackDirection newDirection;
@@ -96,6 +111,16 @@ namespace Trains.NET.Engine
             {
                 newDirection = TrackDirection.Cross;
             }
+            // 3-way connections
+            else if (neighbors.Count == 3 && neighbors.Up != null && neighbors.Down != null)
+            {
+                newDirection = neighbors.Left == null ? TrackDirection.RightUpDown : TrackDirection.LeftUpDown;
+            }
+            else if (neighbors.Count == 3 && neighbors.Left != null && neighbors.Right != null)
+            {
+                newDirection = neighbors.Up == null ? TrackDirection.LeftRightDown : TrackDirection.LeftRightUp;
+            }
+            // standard 2-way connections
             else if (neighbors.Up != null || neighbors.Down != null)
             {
                 if (neighbors.Left != null)

@@ -142,8 +142,6 @@ namespace Trains.NET.Engine
 
             this.Happy = neighbors.Count > 1;
 
-            RefreshNeighbors(true);
-
             _isSettingDirection = false;
         }
 

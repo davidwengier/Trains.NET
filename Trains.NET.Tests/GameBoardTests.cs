@@ -13,6 +13,50 @@ namespace Trains.NET.Tests
     public class GameBoardTests
     {
         [Fact]
+        public void FishHook()
+        {
+            var board = new GameBoard();
+            board.AddTrack(5, 2);
+            board.AddTrack(4, 2);
+            board.AddTrack(3, 2);
+            board.AddTrack(3, 3);
+            board.AddTrack(2, 3);
+            board.AddTrack(1, 3);
+            board.AddTrack(1, 2);
+            board.AddTrack(1, 1);
+            board.AddTrack(2, 1);
+            board.AddTrack(3, 1);
+
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(5, 2).Direction);
+            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(4, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown,  board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftUp,   board.GetTrackAt(3, 3).Direction);
+            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.RightUp,   board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.Vertical,  board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown,   board.GetTrackAt(1, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(3, 1).Direction);
+        }
+
+        [Fact]
+        public void VerticalHairpin()
+        {
+            var board = new GameBoard();
+            board.AddTrack(1, 3);
+            board.AddTrack(1, 2);
+            board.AddTrack(1, 1);
+            board.AddTrack(2, 1);
+            board.AddTrack(2, 2);
+
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
+            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 2).Direction);
+        }
+
+        [Fact]
         public void SidewaysHairpin()
         {
             var board = new GameBoard();
@@ -27,27 +71,6 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(3, 2).Direction);
             Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(3, 1).Direction);
             Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 1).Direction);
-        }
-
-        [Fact]
-        public void RightAngleWithCircleOnTop()
-        {
-            var board = new GameBoard();
-            board.AddTrack(1, 4);
-            board.AddTrack(1, 3);
-            board.AddTrack(2, 3);
-            board.AddTrack(1, 1);
-            board.AddTrack(2, 1);
-            board.AddTrack(1, 2);
-            board.AddTrack(2, 2);
-
-            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(1, 4).Direction);
-            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 3).Direction);
-            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
-            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 1).Direction);
-            Assert.Equal(TrackDirection.RightUp, board.GetTrackAt(1, 2).Direction);
-            Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]

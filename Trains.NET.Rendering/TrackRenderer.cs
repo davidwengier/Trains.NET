@@ -5,33 +5,26 @@ namespace Trains.NET.Rendering
 {
     internal class TrackRenderer : ITrackRenderer
     {
-        private const int PlankWidth = 3;
-        private const int NumPlanks = 3;
-        private const int NumCornerPlanks = NumPlanks + 1;
-        private const int CornerEdgeOffsetDegrees = 10;
-        private const int CornerStepDegrees =
-            // Initial angle to draw is 90 degrees, but CornerStepDegrees is only for the middle planks
-            // so remove the first and last from the swept angle
-            (90 - 2 * CornerEdgeOffsetDegrees)
-            // Now just split up the remainder amongst the middle planks
-            / (NumCornerPlanks - 1);
-        private const int PlankPadding = 5;
-        private const int TrackPadding = 10;
-        private const int TrackWidth = 4;
+        private readonly ITrackParameters _parameters;
+
+        public TrackRenderer(ITrackParameters parameters)
+        {
+            _parameters = parameters;
+        }
 
         public void Render(SKCanvas canvas, Track track, int width)
         {
             if (track.Direction == TrackDirection.Cross)
             {
                 RenderStraightTrack(canvas, width);
-                canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
                 RenderStraightTrack(canvas, width);
             }
             else if (track.Direction == TrackDirection.Vertical || track.Direction == TrackDirection.Horizontal)
             {
                 if (track.Direction == TrackDirection.Vertical)
                 {
-                    canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                    canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
                 }
                 RenderStraightTrack(canvas, width);
             }
@@ -39,15 +32,15 @@ namespace Trains.NET.Rendering
             {
                 if (track.Direction == TrackDirection.RightUp || track.Direction == TrackDirection.RightUpDown)
                 {
-                    canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                    canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
                 }
                 else if (track.Direction == TrackDirection.RightDown || track.Direction == TrackDirection.LeftRightDown)
                 {
-                    canvas.RotateDegrees(180, Game.CellSize / 2, Game.CellSize / 2);
+                    canvas.RotateDegrees(180, _parameters.CellSize / 2, _parameters.CellSize / 2);
                 }
                 else if (track.Direction == TrackDirection.LeftDown || track.Direction == TrackDirection.LeftUpDown)
                 {
-                    canvas.RotateDegrees(270, Game.CellSize / 2, Game.CellSize / 2);
+                    canvas.RotateDegrees(270, _parameters.CellSize / 2, _parameters.CellSize / 2);
                 }
                 bool drawExtra = track.Direction == TrackDirection.RightUpDown ||
                     track.Direction == TrackDirection.LeftRightDown ||
@@ -60,8 +53,8 @@ namespace Trains.NET.Rendering
 
         public void RenderStraightTrack(SKCanvas canvas, int width)
         {
-            float plankGap = width / NumPlanks;
-            for (int i = 1; i < NumPlanks + 1; i++)
+            float plankGap = width / _parameters.NumPlanks;
+            for (int i = 1; i < _parameters.NumPlanks + 1; i++)
             {
                 float pos = (i * plankGap) - (plankGap / 2);
                 DrawPlank(canvas, width, pos);
@@ -74,19 +67,19 @@ namespace Trains.NET.Rendering
                 StrokeWidth = 0
             };
 
-            canvas.DrawRect(0, TrackPadding, width, TrackWidth, clear);
-            canvas.DrawRect(0, width - TrackPadding - TrackWidth, width, TrackWidth, clear);
+            canvas.DrawRect(0, _parameters.TrackPadding, width, _parameters.TrackWidth, clear);
+            canvas.DrawRect(0, width - _parameters.TrackPadding - _parameters.TrackWidth, width, _parameters.TrackWidth, clear);
 
             using var trackPath = new SKPath();
-            trackPath.MoveTo(0, TrackPadding);
-            trackPath.LineTo(width, TrackPadding);
-            trackPath.MoveTo(0, TrackPadding + TrackWidth);
-            trackPath.LineTo(width, TrackPadding + TrackWidth);
+            trackPath.MoveTo(0, _parameters.TrackPadding);
+            trackPath.LineTo(width, _parameters.TrackPadding);
+            trackPath.MoveTo(0, _parameters.TrackPadding + _parameters.TrackWidth);
+            trackPath.LineTo(width, _parameters.TrackPadding + _parameters.TrackWidth);
 
-            trackPath.MoveTo(0, width - TrackPadding - TrackWidth);
-            trackPath.LineTo(width, width - TrackPadding - TrackWidth);
-            trackPath.MoveTo(0, width - TrackPadding);
-            trackPath.LineTo(width, width - TrackPadding);
+            trackPath.MoveTo(0, width - _parameters.TrackPadding - _parameters.TrackWidth);
+            trackPath.LineTo(width, width - _parameters.TrackPadding - _parameters.TrackWidth);
+            trackPath.MoveTo(0, width - _parameters.TrackPadding);
+            trackPath.LineTo(width, width - _parameters.TrackPadding);
 
             using var trackPaint = new SKPaint
             {
@@ -99,16 +92,16 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(trackPath, trackPaint);
         }
 
-        private static void DrawPlank(SKCanvas canvas, int width, float pos)
+        private void DrawPlank(SKCanvas canvas, int width, float pos)
         {
             using var path = new SKPath();
-            path.MoveTo(pos, PlankPadding);
-            path.LineTo(pos, width - PlankPadding);
+            path.MoveTo(pos, _parameters.PlankPadding);
+            path.LineTo(pos, width - _parameters.PlankPadding);
             using var plank = new SKPaint
             {
                 Color = SKColors.Black,
                 Style = SKPaintStyle.Stroke,
-                StrokeWidth = PlankWidth,
+                StrokeWidth = _parameters.PlankWidth,
                 IsAntialias = true
             };
             canvas.DrawPath(path, plank);
@@ -119,12 +112,12 @@ namespace Trains.NET.Rendering
             canvas.Save();
 
             // Rotate to initial angle
-            canvas.RotateDegrees(-CornerEdgeOffsetDegrees);
+            canvas.RotateDegrees(-_parameters.CornerEdgeOffsetDegrees);
 
-            for (int i = 0; i < NumCornerPlanks; i++)
+            for (int i = 0; i < _parameters.NumCornerPlanks; i++)
             {
                 DrawPlank(canvas, width, 0);
-                canvas.RotateDegrees(-CornerStepDegrees);
+                canvas.RotateDegrees(-_parameters.CornerStepDegrees);
             }
             canvas.Restore();
 
@@ -132,20 +125,20 @@ namespace Trains.NET.Rendering
 
             if (drawExtra)
             {
-                canvas.RotateDegrees(90, Game.CellSize / 2, Game.CellSize / 2);
+                canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
                 DrawTracks(canvas, width);
             }
 
-            static void DrawTracks(SKCanvas canvas, int width)
+            void DrawTracks(SKCanvas canvas, int width)
             {
-                DrawArc(canvas, TrackPadding + (TrackWidth / 2), TrackWidth, SKColors.White);
-                DrawArc(canvas, TrackPadding, 1, SKColors.Black);
-                DrawArc(canvas, TrackPadding + TrackWidth, 1, SKColors.Black);
+                DrawArc(canvas, _parameters.TrackPadding + (_parameters.TrackWidth / 2), _parameters.TrackWidth, SKColors.White);
+                DrawArc(canvas, _parameters.TrackPadding, 1, SKColors.Black);
+                DrawArc(canvas, _parameters.TrackPadding + _parameters.TrackWidth, 1, SKColors.Black);
 
-                DrawArc(canvas, width - TrackPadding - (TrackWidth / 2), TrackWidth, SKColors.White);
-                DrawArc(canvas, width - TrackPadding, 1, SKColors.Black);
-                DrawArc(canvas, width - TrackPadding - TrackWidth, 1, SKColors.Black);
+                DrawArc(canvas, width - _parameters.TrackPadding - (_parameters.TrackWidth / 2), _parameters.TrackWidth, SKColors.White);
+                DrawArc(canvas, width - _parameters.TrackPadding, 1, SKColors.Black);
+                DrawArc(canvas, width - _parameters.TrackPadding - _parameters.TrackWidth, 1, SKColors.Black);
             }
 
             static void DrawArc(SKCanvas canvas, float position, int strokeWidth, SKColor color)

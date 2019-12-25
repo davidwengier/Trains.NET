@@ -11,16 +11,19 @@ namespace Trains.NET
     public partial class MainForm : Form
     {
         private readonly IGame _game;
+        private readonly ITrackParameters _parameters;
+        private readonly SKControl _skiaView;
+        private Form? _debugForm;
 
-        public MainForm(IGame game, IEnumerable<IBoardRenderer> renderers)
+        public MainForm(IGame game, IEnumerable<IBoardRenderer> renderers, ITrackParameters parameters)
         {
             _game = game;
-
+            _parameters = parameters;
             this.Text = "Trains.NET";
             this.AutoScaleMode = AutoScaleMode.Font;
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(1086, 559);
-            this.ClientSize = new System.Drawing.Size(1547, 897);
+            this.ClientSize = new Size(1547, 897);
 
             var splitContainer = new SplitContainer()
             {
@@ -49,15 +52,43 @@ namespace Trains.NET
                 buttonPanel.Controls.Add(CreateButton(tool));
             }
 
-            var skiaView = new SKControl()
+            var button = new CheckBox
+            {
+                Text = "Configure",
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Top,
+                Appearance = Appearance.Button
+            };
+
+            buttonPanel.Controls.Add(button);
+
+            button.CheckedChanged += (s, e) =>
+            {
+                if (_debugForm == null)
+                {
+                    _debugForm = CreateDebugForm();
+                }
+
+                if (button.Checked)
+                {
+                    _debugForm.Show();
+                }
+                else
+                {
+                    _debugForm.Hide();
+                }
+            };
+
+            _skiaView = new SKControl()
             {
                 Dock = DockStyle.Fill
             };
 
-            skiaView.MouseDown += DoMouseClick;
-            skiaView.MouseMove += DoMouseClick;
-            skiaView.Resize += (s, e) => _game.SetSize(skiaView.Width, skiaView.Height);
-            skiaView.PaintSurface += (s, e) => _game.Render(e.Surface);
+            _skiaView.MouseDown += DoMouseClick;
+            _skiaView.MouseMove += DoMouseClick;
+            _skiaView.Resize += (s, e) => _game.SetSize(_skiaView.Width, _skiaView.Height);
+            _skiaView.PaintSurface += (s, e) => _game.Render(e.Surface);
 
             foreach (IBoardRenderer renderer in renderers)
             {
@@ -66,7 +97,7 @@ namespace Trains.NET
 
             splitContainer.Panel1.Controls.Add(rendererPanel);
             splitContainer.Panel1.Controls.Add(buttonPanel);
-            splitContainer.Panel2.Controls.Add(skiaView);
+            splitContainer.Panel2.Controls.Add(_skiaView);
             splitContainer.Panel2.Padding = new Padding(5);
 
             this.Controls.Add(splitContainer);
@@ -79,7 +110,7 @@ namespace Trains.NET
                 bool isRightMouseButton = (e.Button & MouseButtons.Right) == MouseButtons.Right;
                 _game.OnMouseDown(e.X, e.Y, isRightMouseButton);
 
-                skiaView.Refresh();
+                _skiaView.Refresh();
             }
 
             RadioButton CreateButton(Tool tool)
@@ -114,11 +145,74 @@ namespace Trains.NET
                 checkbox.CheckedChanged += (s, e) =>
                 {
                     renderer.Enabled = checkbox.Checked;
-                    skiaView.Refresh();
+                    _skiaView.Refresh();
                 };
 
                 return checkbox;
             }
+        }
+
+        private Form CreateDebugForm()
+        {
+            var f = new Form()
+            {
+                FormBorderStyle = FormBorderStyle.SizableToolWindow,
+                Text = "Configuration",
+                Width = 200,
+                Height = this.Height,
+                Location = new Point( this.Left - this.Width - 20, this.Top)
+            };
+
+            var panel = new FlowLayoutPanel()
+            {
+                FlowDirection = FlowDirection.TopDown,
+                Dock = DockStyle.Fill
+            };
+
+            SetupControls(panel, () => _parameters.CellSize, v => _parameters.CellSize = v, nameof(_parameters.CellSize), 100);
+            SetupControls(panel, () => _parameters.NumPlanks, v => _parameters.NumPlanks = v, nameof(_parameters.NumPlanks), 10);
+            SetupControls(panel, () => _parameters.NumCornerPlanks, v => _parameters.NumCornerPlanks = v, nameof(_parameters.NumCornerPlanks), 10);
+            SetupControls(panel, () => _parameters.PlankWidth, v => _parameters.PlankWidth = v, nameof(_parameters.PlankWidth), 20);
+            SetupControls(panel, () => _parameters.PlankPadding, v => _parameters.PlankPadding = v, nameof(_parameters.PlankPadding), 50);
+            SetupControls(panel, () => _parameters.TrackPadding, v => _parameters.TrackPadding = v, nameof(_parameters.TrackPadding), 50);
+            SetupControls(panel, () => _parameters.TrackWidth, v => _parameters.TrackWidth = v, nameof(_parameters.TrackWidth), 10);
+            SetupControls(panel, () => _parameters.CornerStepDegrees, v => _parameters.CornerStepDegrees = v, nameof(_parameters.CornerStepDegrees), 90);
+            SetupControls(panel, () => _parameters.CornerEdgeOffsetDegrees, v => _parameters.CornerEdgeOffsetDegrees = v, nameof(_parameters.CornerEdgeOffsetDegrees), 90);
+
+            f.Controls.Add(panel);
+            return f;
+        }
+
+        private void SetupControls(FlowLayoutPanel panel, Func<int> getter, Action<int> setter, string name, int max)
+        {
+            var lbl = new Label
+            {
+                Text = name + ":",
+                AutoSize = true
+            };
+            panel.Controls.Add(lbl);
+
+            var slider = new TrackBar()
+            {
+                Minimum = 1,
+                Maximum = max,
+                Value = getter()
+            };
+
+            slider.ValueChanged += (s, e) =>
+            {
+                setter(slider.Value);
+                _skiaView.Refresh();
+            };
+            panel.Controls.Add(slider);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            _debugForm?.Dispose();
+            _skiaView.Dispose();
         }
     }
 }

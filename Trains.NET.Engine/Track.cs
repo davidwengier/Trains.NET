@@ -86,8 +86,7 @@ namespace Trains.NET.Engine
             {
                 newDirection = TrackDirection.Cross;
             }
-            
-            if (!this.Happy || ignoreHappyness)
+            else if (!this.Happy || ignoreHappyness)
             {
                 // 3-way connections
                 if (neighbors.Up != null && neighbors.Left != null && neighbors.Down != null)
@@ -140,7 +139,7 @@ namespace Trains.NET.Engine
                 RefreshNeighbors(false);
             }
 
-            this.Happy = neighbors.Count > 1;
+            this.Happy = GetNeighbors().Count > 1;
         }
 
         public void RefreshNeighbors(bool ignoreHappyness)

@@ -191,6 +191,8 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Cross, board.GetTrackAt(2, 4).Direction);
             Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(1, 4).Direction);
             Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(3, 4).Direction);
+
+            Assert.True(board.GetTrackAt(2, 3).Happy);
         }
 
         [Fact]

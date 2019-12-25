@@ -82,57 +82,55 @@ namespace Trains.NET.Engine
             {
                 newDirection = TrackDirection.Horizontal;
             }
-            else
+            else if (neighbors.Count == 4)
             {
-                // Crossway
-                if (neighbors.Count == 4)
+                newDirection = TrackDirection.Cross;
+            }
+            
+            if (!this.Happy || ignoreHappyness)
+            {
+                // 3-way connections
+                if (neighbors.Up != null && neighbors.Left != null && neighbors.Down != null)
                 {
-                    newDirection = TrackDirection.Cross;
+                    newDirection = TrackDirection.LeftUpDown;
                 }
-                else if (!this.Happy || ignoreHappyness)
+                else if (neighbors.Up != null && neighbors.Right != null && neighbors.Down != null)
                 {
-                    // 3-way connections
-                    if (neighbors.Up != null && neighbors.Left != null && neighbors.Down != null)
-                    {
-                        newDirection = TrackDirection.LeftUpDown;
-                    }
-                    else if (neighbors.Up != null && neighbors.Right != null && neighbors.Down != null)
-                    {
-                        newDirection = TrackDirection.RightUpDown;
-                    }
-                    else if (neighbors.Up != null && neighbors.Left != null && neighbors.Right != null)
-                    {
-                        newDirection = TrackDirection.LeftRightUp;
-                    }
-                    else if (neighbors.Down != null && neighbors.Left != null && neighbors.Right != null)
-                    {
-                        newDirection = TrackDirection.LeftRightDown;
-                    }
-                    // 2-way connections
-                    else if (neighbors.Up != null && neighbors.Left != null)
-                    {
-                        newDirection = TrackDirection.LeftUp;
-                    }
-                    else if (neighbors.Up != null && neighbors.Right != null)
-                    {
-                        newDirection = TrackDirection.RightUp;
-                    }
-                    else if (neighbors.Down != null && neighbors.Left != null)
-                    {
-                        newDirection = TrackDirection.LeftDown;
-                    }
-                    else if (neighbors.Down != null && neighbors.Right != null)
-                    {
-                        newDirection = TrackDirection.RightDown;
-                    }
-                    else if (neighbors.Up != null || neighbors.Down != null)
-                    {
-                        newDirection = TrackDirection.Vertical;
-                    }
-                    else
-                    {
-                        newDirection = TrackDirection.Horizontal;
-                    }
+                    newDirection = TrackDirection.RightUpDown;
+                }
+                else if (neighbors.Up != null && neighbors.Left != null && neighbors.Right != null)
+                {
+                    newDirection = TrackDirection.LeftRightUp;
+                }
+                else if (neighbors.Down != null && neighbors.Left != null && neighbors.Right != null)
+                {
+                    newDirection = TrackDirection.LeftRightDown;
+                }
+                // 2-way connections
+                else if (neighbors.Up != null && neighbors.Left != null)
+                {
+                    newDirection = TrackDirection.LeftUp;
+                }
+                else if (neighbors.Up != null && neighbors.Right != null)
+                {
+                    newDirection = TrackDirection.RightUp;
+                }
+                else if (neighbors.Down != null && neighbors.Left != null)
+                {
+                    newDirection = TrackDirection.LeftDown;
+                }
+                else if (neighbors.Down != null && neighbors.Right != null)
+                {
+                    newDirection = TrackDirection.RightDown;
+                }
+                // 1-way connection
+                else if (neighbors.Up != null || neighbors.Down != null)
+                {
+                    newDirection = TrackDirection.Vertical;
+                }
+                else
+                {
+                    newDirection = TrackDirection.Horizontal;
                 }
             }
 

@@ -8,7 +8,6 @@ namespace Trains.NET.Engine
     [DebuggerDisplay("{Direction,nq}")]
     public class Track
     {
-        private bool _isSettingDirection;
         private readonly IGameBoard _gameBoard;
 
         public Track(IGameBoard gameBoard)
@@ -73,110 +72,86 @@ namespace Trains.NET.Engine
             _ => false
         };
 
-        public void SetBestTrackDirectionOrCross()
+        public void SetBestTrackDirection(bool ignoreHappyness)
         {
-            TrackNeighbors allNeighbors = GetAllNeighbors();
-            if (allNeighbors.Up != null && allNeighbors.Up.GetNeighbors().Count == 4)
-            {
-                allNeighbors.Up.SetBestTrackDirection(true);
-            }
-            if (allNeighbors.Left != null && allNeighbors.Left.GetNeighbors().Count == 4)
-            {
-                allNeighbors.Left.SetBestTrackDirection(true);
-            }
-            if (allNeighbors.Down != null && allNeighbors.Down.GetNeighbors().Count == 4)
-            {
-                allNeighbors.Down.SetBestTrackDirection(true);
-            }
-            if (allNeighbors.Right != null && allNeighbors.Right.GetNeighbors().Count == 4)
-            {
-                allNeighbors.Right.SetBestTrackDirection(true);
-            }
-
-            SetBestTrackDirection(true);
-        }
-
-        public void SetBestTrackDirection(bool refreshNeighbors)
-        {
-            if (_isSettingDirection) return;
-            _isSettingDirection = true;
-
             TrackNeighbors neighbors = GetNeighbors();
+            TrackDirection newDirection = this.Direction;
 
-            int countBefore = neighbors.Count;
-
-            TrackDirection newDirection;
-            // Simple cross, someone filling in the middle
-            if (neighbors.Count == 4)
-            {
-                newDirection = TrackDirection.Cross;
-            }
-            // 3-way connections
-            else if (neighbors.Count == 3 && neighbors.Up != null && neighbors.Down != null)
-            {
-                newDirection = neighbors.Left == null ? TrackDirection.RightUpDown : TrackDirection.LeftUpDown;
-            }
-            else if (neighbors.Count == 3 && neighbors.Left != null && neighbors.Right != null)
-            {
-                newDirection = neighbors.Up == null ? TrackDirection.LeftRightDown : TrackDirection.LeftRightUp;
-            }
-            // standard 2-way connections
-            else if (neighbors.Up != null || neighbors.Down != null)
-            {
-                if (neighbors.Left != null)
-                {
-                    newDirection = neighbors.Up == null ? TrackDirection.LeftDown : TrackDirection.LeftUp;
-                }
-                else if (neighbors.Right != null)
-                {
-                    newDirection = neighbors.Up == null ? TrackDirection.RightDown : TrackDirection.RightUp;
-                }
-                else
-                {
-                    newDirection = TrackDirection.Vertical;
-                }
-            }
-            else if (neighbors.Left != null || neighbors.Right != null)
-            {
-                if (neighbors.Up != null)
-                {
-                    newDirection = neighbors.Left == null ? TrackDirection.RightUp : TrackDirection.LeftUp;
-                }
-                else if (neighbors.Down != null)
-                {
-                    newDirection = neighbors.Left == null ? TrackDirection.RightDown : TrackDirection.LeftDown;
-                }
-                else
-                {
-                    newDirection = TrackDirection.Horizontal;
-                }
-            }
-            else
+            // Default direction
+            if (neighbors.Count == 0)
             {
                 newDirection = TrackDirection.Horizontal;
             }
-
-            if (newDirection != this.Direction || GetNeighbors().Count > countBefore)
+            else
             {
-                this.Direction = newDirection;
-                if (refreshNeighbors)
+                // Crossway
+                if (neighbors.Count == 4)
                 {
-                    RefreshNeighbors(refreshNeighbors);
+                    newDirection = TrackDirection.Cross;
+                }
+                else if (!this.Happy || ignoreHappyness)
+                {
+                    // 3-way connections
+                    if (neighbors.Up != null && neighbors.Left != null && neighbors.Down != null)
+                    {
+                        newDirection = TrackDirection.LeftUpDown;
+                    }
+                    else if (neighbors.Up != null && neighbors.Right != null && neighbors.Down != null)
+                    {
+                        newDirection = TrackDirection.RightUpDown;
+                    }
+                    else if (neighbors.Up != null && neighbors.Left != null && neighbors.Right != null)
+                    {
+                        newDirection = TrackDirection.LeftRightUp;
+                    }
+                    else if (neighbors.Down != null && neighbors.Left != null && neighbors.Right != null)
+                    {
+                        newDirection = TrackDirection.LeftRightDown;
+                    }
+                    // 2-way connections
+                    else if (neighbors.Up != null && neighbors.Left != null)
+                    {
+                        newDirection = TrackDirection.LeftUp;
+                    }
+                    else if (neighbors.Up != null && neighbors.Right != null)
+                    {
+                        newDirection = TrackDirection.RightUp;
+                    }
+                    else if (neighbors.Down != null && neighbors.Left != null)
+                    {
+                        newDirection = TrackDirection.LeftDown;
+                    }
+                    else if (neighbors.Down != null && neighbors.Right != null)
+                    {
+                        newDirection = TrackDirection.RightDown;
+                    }
+                    else if (neighbors.Up != null || neighbors.Down != null)
+                    {
+                        newDirection = TrackDirection.Vertical;
+                    }
+                    else
+                    {
+                        newDirection = TrackDirection.Horizontal;
+                    }
                 }
             }
 
-            this.Happy = neighbors.Count > 1;
+            if (this.Direction != newDirection)
+            {
+                this.Direction = newDirection;
+                RefreshNeighbors(false);
+            }
 
-            _isSettingDirection = false;
+            this.Happy = neighbors.Count > 1;
         }
 
-        public void RefreshNeighbors(bool refreshAllNeighbors)
+        public void RefreshNeighbors(bool ignoreHappyness)
         {
-            TrackNeighbors neighbors = GetNeighbors();
-            neighbors.Up?.SetBestTrackDirection(refreshAllNeighbors);
-            neighbors.Down?.SetBestTrackDirection(refreshAllNeighbors);
-            neighbors.Right?.SetBestTrackDirection(refreshAllNeighbors);
-            neighbors.Left?.SetBestTrackDirection(refreshAllNeighbors);
+            TrackNeighbors neighbors = GetAllNeighbors();
+            neighbors.Up?.SetBestTrackDirection(ignoreHappyness);
+            neighbors.Down?.SetBestTrackDirection(ignoreHappyness);
+            neighbors.Right?.SetBestTrackDirection(ignoreHappyness);
+            neighbors.Left?.SetBestTrackDirection(ignoreHappyness);
         }
 
         public TrackNeighbors GetNeighbors()

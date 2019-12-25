@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Trains.NET.Rendering
 {
     internal class GridRenderer : IBoardRenderer
     {
+        public bool Enabled { get; set; } = true;
+        public string Name => "Grid";
+
         public void Render(SKSurface surface, int width, int height)
         {
             SKCanvas canvas = surface.Canvas;

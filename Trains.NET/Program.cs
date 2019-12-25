@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Trains.NET.Rendering;
 
 namespace Trains.NET
 {
@@ -34,9 +33,11 @@ namespace Trains.NET
                 }
             }
 
+            col.AddSingleton<MainForm, MainForm>();
+
             ServiceProvider serviceProvider = col.BuildServiceProvider();
 
-            using Form form = new MainForm(serviceProvider.GetService<IGame>());
+            using Form form = serviceProvider.GetService<MainForm>();
 
             Application.Run(form);
 

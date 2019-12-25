@@ -1,5 +1,4 @@
-﻿using System;
-using SkiaSharp;
+﻿using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -9,6 +8,9 @@ namespace Trains.NET.Rendering
         private readonly IGameBoard _gameBoard;
         private readonly ITrackRenderer _trackRenderer;
         private readonly IPixelMapper _pixelMapper;
+
+        public bool Enabled { get; set; } = true;
+        public string Name => "Tracks";
 
         public TrackLayoutRenderer(IGameBoard gameBoard, ITrackRenderer trackRenderer, IPixelMapper pixelMapper)
         {

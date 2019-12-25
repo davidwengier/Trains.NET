@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SkiaSharp;
 using Trains.NET.Engine;
 
@@ -15,6 +13,9 @@ namespace Trains.NET.Rendering
             Color = SKColors.Cyan,
             Style = SKPaintStyle.Fill
         };
+
+        public bool Enabled { get; set; }
+        public string Name => "Happiness";
 
         public HappinessRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper)
         {

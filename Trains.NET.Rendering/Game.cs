@@ -55,6 +55,11 @@ namespace Trains.NET.Rendering
 
             foreach (IBoardRenderer renderer in _boardRenderers)
             {
+                if (!renderer.Enabled)
+                {
+                    continue;
+                }
+
                 canvas.Save();
                 renderer.Render(surface, _width, _height);
                 canvas.Restore();

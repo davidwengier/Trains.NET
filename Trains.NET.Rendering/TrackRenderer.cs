@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using SkiaSharp;
+﻿using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering

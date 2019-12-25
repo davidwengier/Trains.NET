@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Xunit;
 
 #nullable disable
@@ -28,15 +23,15 @@ namespace Trains.NET.Tests
             board.AddTrack(3, 1);
 
             Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(5, 2).Direction);
-            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(4, 2).Direction);
-            Assert.Equal(TrackDirection.RightDown,  board.GetTrackAt(3, 2).Direction);
-            Assert.Equal(TrackDirection.LeftUp,   board.GetTrackAt(3, 3).Direction);
-            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.RightUp,   board.GetTrackAt(1, 3).Direction);
-            Assert.Equal(TrackDirection.Vertical,  board.GetTrackAt(1, 2).Direction);
-            Assert.Equal(TrackDirection.RightDown,   board.GetTrackAt(1, 1).Direction);
-            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(2, 1).Direction);
-            Assert.Equal(TrackDirection.Horizontal,   board.GetTrackAt(3, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(4, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(3, 3).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.RightUp, board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.Horizontal, board.GetTrackAt(3, 1).Direction);
         }
 
         [Fact]
@@ -106,13 +101,13 @@ namespace Trains.NET.Tests
             board.AddTrack(2, 2);
             board.AddTrack(1, 2);
 
-            Assert.Equal(TrackDirection.RightUp,  board.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.RightUp, board.GetTrackAt(1, 3).Direction);
             Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.Vertical,    board.GetTrackAt(2, 4).Direction);
+            Assert.Equal(TrackDirection.Vertical, board.GetTrackAt(2, 4).Direction);
             Assert.Equal(TrackDirection.RightDown, board.GetTrackAt(1, 1).Direction);
-            Assert.Equal(TrackDirection.LeftDown,  board.GetTrackAt(2, 1).Direction);
-            Assert.Equal(TrackDirection.LeftUp,   board.GetTrackAt(2, 2).Direction);
-            Assert.Equal(TrackDirection.RightUpDown,board.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.LeftDown, board.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.LeftUp, board.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.RightUpDown, board.GetTrackAt(1, 2).Direction);
         }
 
         [Fact]

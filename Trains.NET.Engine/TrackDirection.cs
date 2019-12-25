@@ -5,7 +5,7 @@
         Undefined,
         Horizontal,
         Vertical,
-        
+
         LeftUp,
         RightUp,
         RightDown,

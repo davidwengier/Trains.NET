@@ -160,8 +160,9 @@ namespace Trains.NET
                 Text = "Configuration",
                 Width = 200,
                 Height = this.Height,
-                Location = new Point( this.Left - this.Width - 20, this.Top)
+                StartPosition = FormStartPosition.Manual,
             };
+            f.Location = new Point(this.Left - f.Width, this.Top);
 
             var panel = new FlowLayoutPanel()
             {

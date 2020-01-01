@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Clancey.Comet" Version="0.2.204-beta" />
+    <PackageReference Include="Clancey.Comet.Skia" Version="0.2.204-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trains.NET.Comet\Trains.NET.Comet.csproj" />
+  </ItemGroup>
+</Project>

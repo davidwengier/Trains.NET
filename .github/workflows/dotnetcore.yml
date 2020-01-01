@@ -1,4 +1,4 @@
-name: master branch build
+name: Master
 
 on:
   push:
@@ -21,3 +21,6 @@ jobs:
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
+
+    - name: Run tests
+      run: dotnet test

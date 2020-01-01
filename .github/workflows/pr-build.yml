@@ -1,4 +1,4 @@
-name: .NET Core
+name: PR Build
 
 on: [pull_request]
 

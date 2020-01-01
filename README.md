@@ -1,5 +1,7 @@
 # Trains.NET
 
+![Master build status](https://github.com/davidwengier/Trains.NET/workflows/Master/badge.svg)
+
 ### Info
 
 Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twitch.tv/davidwengier) at 9pm Wednesdays from [Melbourne, Australia](https://www.timeanddate.com/worldclock/australia/melbourne).

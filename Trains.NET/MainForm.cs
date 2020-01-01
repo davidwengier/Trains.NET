@@ -72,6 +72,7 @@ namespace Trains.NET
 
                 if (button.Checked)
                 {
+                    _debugForm.Location = new Point(this.Left - _debugForm.Width, this.Top);
                     _debugForm.Show();
                 }
                 else
@@ -162,7 +163,6 @@ namespace Trains.NET
                 Height = this.Height,
                 StartPosition = FormStartPosition.Manual,
             };
-            f.Location = new Point(this.Left - f.Width, this.Top);
 
             var panel = new FlowLayoutPanel()
             {

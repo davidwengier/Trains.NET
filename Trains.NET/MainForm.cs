@@ -89,7 +89,7 @@ namespace Trains.NET
             _skiaView.MouseDown += DoMouseClick;
             _skiaView.MouseMove += DoMouseClick;
             _skiaView.Resize += (s, e) => _game.SetSize(_skiaView.Width, _skiaView.Height);
-            _skiaView.PaintSurface += (s, e) => _game.Render(e.Surface);
+            _skiaView.PaintSurface += (s, e) => _game.Render(e.Surface.Canvas);
 
             foreach (IBoardRenderer renderer in renderers)
             {

@@ -1,0 +1,4 @@
+[submodule "comet"]
+	path = Comet
+	url = https://github.com/Clancey/Comet
+	branch = dev

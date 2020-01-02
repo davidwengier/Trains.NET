@@ -14,10 +14,8 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; } = true;
         public string Name => "Grid";
 
-        public void Render(SKSurface surface, int width, int height)
+        public void Render(SKCanvas canvas, int width, int height)
         {
-            SKCanvas canvas = surface.Canvas;
-
             using var grid = new SKPaint
             {
                 Color = SKColors.LightGray,

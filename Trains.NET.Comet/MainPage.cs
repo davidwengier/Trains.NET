@@ -1,4 +1,5 @@
-﻿using Comet;
+﻿using System;
+using Comet;
 using Trains.NET.Rendering;
 
 namespace Trains.NET.Comet
@@ -11,14 +12,12 @@ namespace Trains.NET.Comet
 
             this.Body = () =>
             {
-                var controlsPanel = new VStack()
+                var controlsPanel = new VStack();
+
+                foreach (Tool tool in Enum.GetValues(typeof(Tool)))
                 {
-                    new Button("Pointer"),
-                    new Button("Track"),
-                    new Button("Eraser"),
-                    new Spacer(),
-                    new Button("Debug")
-                };
+                    controlsPanel.Add(new Button(tool.ToString(), () => game.CurrentTool = tool));
+                }
 
                 return new HStack()
                 {

@@ -23,5 +23,21 @@ namespace Trains.NET.Comet
         {
             _game.Render(canvas);
         }
+
+        public override bool StartInteraction(PointF[] points)
+        {
+            _game.OnMouseDown((int)points[0].X, (int)points[0].Y, false);
+
+            Invalidate();
+
+            return true;
+        }
+
+        public override void DragInteraction(PointF[] points)
+        {
+            _game.OnMouseDown((int)points[0].X, (int)points[0].Y, false);
+
+            Invalidate();
+        }
     }
 }

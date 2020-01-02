@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
-using System;
 using System.Windows;
-using Comet;
 using Comet.WPF;
-using Comet.WPF.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Trains.NET.Comet.WPF
@@ -21,10 +19,10 @@ namespace Trains.NET.Comet.WPF
 
             InitializeComponent();
 
+#if DEBUG
+            global::Comet.Reload.Init();
+#endif
             global::Comet.Skia.UI.Init();
-
-            Registrar.Handlers.Register<HStack, HStackHandler>();
-            Registrar.Handlers.Register<VStack, VStackHandler>();
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
             MainFrame.NavigationService.Navigate(new CometPage(MainFrame, serviceProvider.GetService<MainPage>()));

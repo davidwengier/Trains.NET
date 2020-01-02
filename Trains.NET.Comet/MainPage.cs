@@ -1,23 +1,30 @@
 ﻿using Comet;
-using Comet.Skia;
+using Trains.NET.Rendering;
 
 namespace Trains.NET.Comet
 {
     public class MainPage : View
     {
-        public MainPage()
+        public MainPage(IGame game)
         {
             this.Title("Trains.NET");
 
-            this.Body = () => new HStack()
+            this.Body = () =>
             {
-                new VStack()
+                var controlsPanel = new VStack()
                 {
                     new Button("Pointer"),
                     new Button("Track"),
                     new Button("Eraser"),
-                },
-                new SkiaView()
+                    new Spacer(),
+                    new Button("Debug")
+                };
+
+                return new HStack()
+                {
+                    controlsPanel,
+                    new DrawableControl(new TrainsDelegate(game))
+                };
             };
         }
     }

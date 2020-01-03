@@ -8,6 +8,8 @@ namespace Trains.NET.Comet
     {
         public MainPage(IGame game)
         {
+            HotReloadHelper.Register(this, game);
+
             this.Title("Trains.NET");
 
             this.Body = () =>

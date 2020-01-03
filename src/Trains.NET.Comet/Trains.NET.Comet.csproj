@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Comet\src\Comet.Skia\Comet.Skia.csproj" />
-    <ProjectReference Include="..\..\Comet\src\Comet\Comet.csproj" />
+    <PackageReference Include="Clancey.Comet" />
+    <PackageReference Include="Clancey.Comet.Skia" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
   

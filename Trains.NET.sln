@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Engine", "src\Tr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{88B2DB4E-E205-46E9-B94D-D6EA6AE7EC13}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		build\Packages.targets = build\Packages.targets
 		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
@@ -29,16 +30,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D3160FEF-1D7C-418F-AC54-710EED3B1143}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Game", "Game", "{1BB744EF-DB08-4EAD-AD96-EA4742A198C6}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comet Submodule", "Comet Submodule", "{1719DC77-5800-4EAB-A147-66D4D2D39A75}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet", "Comet\src\Comet\Comet.csproj", "{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comet.WPF", "Comet\src\Comet.WPF\Comet.WPF.csproj", "{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comet.Skia.WPF", "Comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj", "{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet.Skia", "Comet\src\Comet.Skia\Comet.Skia.csproj", "{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,22 +61,6 @@ Global
 		{7D6FD806-FA55-47AE-9D90-6F03C920FC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D6FD806-FA55-47AE-9D90-6F03C920FC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D6FD806-FA55-47AE-9D90-6F03C920FC1B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,10 +72,6 @@ Global
 		{1B378333-3177-4C1E-8ACF-4C4EAD9953BE} = {D3160FEF-1D7C-418F-AC54-710EED3B1143}
 		{59F0D84B-120C-458E-BF4C-5B263C459B46} = {77E57704-D3D8-4228-A195-1F90FD62539A}
 		{7D6FD806-FA55-47AE-9D90-6F03C920FC1B} = {77E57704-D3D8-4228-A195-1F90FD62539A}
-		{8DA98126-E6C8-47EB-AAB3-7F1F82263FC9} = {1719DC77-5800-4EAB-A147-66D4D2D39A75}
-		{F8BA5DE0-AEC0-4423-B036-5F9157E939D0} = {1719DC77-5800-4EAB-A147-66D4D2D39A75}
-		{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA} = {1719DC77-5800-4EAB-A147-66D4D2D39A75}
-		{D52A2DA3-9C9B-4DA9-80C0-E729B2A170DB} = {1719DC77-5800-4EAB-A147-66D4D2D39A75}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8834C621-39E4-4AD6-85D0-97F46ADC88D6}

@@ -9,13 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Clancey.Comet" />
+    <PackageReference Include="Clancey.Comet.Skia" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj" />
-    <ProjectReference Include="..\..\Comet\src\Comet.Skia\Comet.Skia.csproj" />
-    <ProjectReference Include="..\..\Comet\src\Comet.WPF\Comet.WPF.csproj" />
-    <ProjectReference Include="..\..\Comet\src\Comet\Comet.csproj" />
     <ProjectReference Include="..\Trains.NET.Comet\Trains.NET.Comet.csproj" />
   </ItemGroup>
 </Project>

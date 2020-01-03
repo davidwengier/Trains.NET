@@ -16,11 +16,12 @@ namespace Trains.NET.Comet.WPF
         {
             ServiceProvider serviceProvider = BuildServiceProvider();
 
+
             InitializeComponent();
 
-#if DEBUG
-            global::Comet.Reload.Init();
-#endif
+//#if DEBUG
+//            global::Comet.Reload.Init();
+//#endif
             global::Comet.Skia.UI.Init();
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;

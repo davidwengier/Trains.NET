@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{88B2DB4E
 		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Tests", "src\Trains.NET.Tests\Trains.NET.Tests.csproj", "{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Tests", "tests\Trains.NET.Tests\Trains.NET.Tests.csproj", "{1B378333-3177-4C1E-8ACF-4C4EAD9953BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Comet.WPF", "src\Trains.NET.Comet.WPF\Trains.NET.Comet.WPF.csproj", "{59F0D84B-120C-458E-BF4C-5B263C459B46}"
 EndProject

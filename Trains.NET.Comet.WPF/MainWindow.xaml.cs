@@ -16,7 +16,6 @@ namespace Trains.NET.Comet.WPF
         {
             ServiceProvider serviceProvider = BuildServiceProvider();
 
-
             InitializeComponent();
 
 #if DEBUG

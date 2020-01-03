@@ -21,9 +21,9 @@ namespace Trains.NET.Comet
 
                 return new HStack()
                 {
-                    controlsPanel,
-                    new DrawableControl(new TrainsDelegate(game))
-                };
+                    controlsPanel.Frame(100),
+                    new DrawableControl(new TrainsDelegate(game)).FillVertical()
+                }.FillHorizontal();
             };
         }
     }

@@ -35,14 +35,12 @@ namespace Trains.NET.Rendering
             _gameBoard.Rows = rows;
         }
 
-        public void Render(SKSurface surface)
+        public void Render(SKCanvas canvas)
         {
-            if (surface is null)
+            if (canvas is null)
             {
-                throw new ArgumentNullException(nameof(surface));
+                throw new ArgumentNullException(nameof(canvas));
             }
-
-            SKCanvas canvas = surface.Canvas;
 
             canvas.Translate(1, 1);
             canvas.Clear(SKColors.White);
@@ -56,7 +54,7 @@ namespace Trains.NET.Rendering
                 }
 
                 canvas.Save();
-                renderer.Render(surface, _width, _height);
+                renderer.Render(canvas, _width, _height);
                 canvas.Restore();
             }
         }

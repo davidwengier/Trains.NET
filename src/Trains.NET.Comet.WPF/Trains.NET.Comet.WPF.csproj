@@ -4,11 +4,13 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Clancey.Comet" Version="0.2.204-beta" />
-    <PackageReference Include="Clancey.Comet.Skia" Version="0.2.204-beta" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Clancey.Comet" />
+    <PackageReference Include="Clancey.Comet.Skia" />
   </ItemGroup>
 
   <ItemGroup>

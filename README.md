@@ -1,6 +1,6 @@
 # Trains.NET
 
-![Master build status](https://github.com/davidwengier/Trains.NET/workflows/Master/badge.svg)
+[![Master build status](https://github.com/davidwengier/Trains.NET/workflows/Master/badge.svg "Master build status")](https://github.com/davidwengier/Trains.NET/actions?query=workflow%3AMaster)
 
 ### Info
 

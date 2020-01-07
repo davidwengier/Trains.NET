@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering
         Tool CurrentTool { get; set; }
 
         void OnMouseDown(int x, int y, bool isRightMouseButton);
-        void Render(SKSurface surface);
+        void Render(SKCanvas canvas);
         void SetSize(int width, int height);
     }
 }

@@ -14,10 +14,18 @@
   <!-- Need to be opted in -->
   <ItemGroup>
     
+    <!-- DI -->
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.1.0-preview2.19525.4" />
+
     <!-- SkiaSharp -->
     <PackageReference Update="SkiaSharp"                    Version="1.68.1" />
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.1" />
+    <PackageReference Update="SkiaSharp.Views.WPF" Version="1.68.1" />
     
+    <!-- Comet -->
+    <PackageReference Update="Clancey.Comet" Version="0.2.204-beta" />
+    <PackageReference Update="Clancey.Comet.Skia" Version="0.2.204-beta" />
+
   </ItemGroup>
   
 </Project>

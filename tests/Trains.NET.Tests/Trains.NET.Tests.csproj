@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
-    <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+    <ProjectReference Include="..\..\src\Trains.NET.Engine\Trains.NET.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
 
 </Project>

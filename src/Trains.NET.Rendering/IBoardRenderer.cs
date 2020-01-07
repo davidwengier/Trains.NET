@@ -6,6 +6,6 @@ namespace Trains.NET.Rendering
     {
         bool Enabled { get; set; }
         string Name { get; }
-        void Render(SKSurface surface, int width, int height);
+        void Render(SKCanvas canvas, int width, int height);
     }
 }

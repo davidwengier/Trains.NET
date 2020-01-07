@@ -21,10 +21,8 @@ namespace Trains.NET.Rendering
             _parameters = parameters;
         }
 
-        public void Render(SKSurface surface, int width, int height)
+        public void Render(SKCanvas canvas, int width, int height)
         {
-            SKCanvas canvas = surface.Canvas;
-
             foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
             {
                 canvas.Save();

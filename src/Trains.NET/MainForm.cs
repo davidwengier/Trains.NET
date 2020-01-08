@@ -15,7 +15,7 @@ namespace Trains.NET
         private readonly SKControl _skiaView;
         private Form? _debugForm;
 
-        public MainForm(IGame game, IEnumerable<IBoardRenderer> renderers, ITrackParameters parameters)
+        public MainForm(IGame game, IEnumerable<ILayerRenderer> renderers, ITrackParameters parameters)
         {
             _game = game;
             _parameters = parameters;
@@ -91,7 +91,7 @@ namespace Trains.NET
             _skiaView.Resize += (s, e) => _game.SetSize(_skiaView.Width, _skiaView.Height);
             _skiaView.PaintSurface += (s, e) => _game.Render(e.Surface.Canvas);
 
-            foreach (IBoardRenderer renderer in renderers)
+            foreach (ILayerRenderer renderer in renderers)
             {
                 rendererPanel.Controls.Add(CreateRendererCheckbox(renderer));
             }
@@ -131,7 +131,7 @@ namespace Trains.NET
                 return button;
             }
 
-            Control CreateRendererCheckbox(IBoardRenderer renderer)
+            Control CreateRendererCheckbox(ILayerRenderer renderer)
             {
                 var checkbox = new CheckBox
                 {

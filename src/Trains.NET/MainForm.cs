@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using SkiaSharp.Views.Desktop;
+using Trains.NET.Engine;
 using Trains.NET.Rendering;
 
 namespace Trains.NET
@@ -14,11 +15,18 @@ namespace Trains.NET
         private readonly ITrackParameters _parameters;
         private readonly Timer _timer;
         private Form? _debugForm;
+        private ITool _currentTool;
 
-        public MainForm(IGame game, IEnumerable<ILayerRenderer> renderers, ITrackParameters parameters)
+        public MainForm(IGame game,
+                        IPixelMapper pixelMapper,
+                        IEnumerable<ITool> tools,
+                        IEnumerable<ILayerRenderer> renderers,
+                        ITrackParameters parameters)
         {
             _game = game;
             _parameters = parameters;
+            _currentTool = tools.First();
+
             this.Text = "Trains.NET";
             this.AutoScaleMode = AutoScaleMode.Font;
             this.StartPosition = FormStartPosition.Manual;
@@ -47,7 +55,7 @@ namespace Trains.NET
                 AutoSize = true
             };
 
-            foreach (Tool tool in ((Tool[])Enum.GetValues(typeof(Tool))).Reverse())
+            foreach (ITool tool in tools)
             {
                 buttonPanel.Controls.Add(CreateButton(tool));
             }
@@ -110,26 +118,26 @@ namespace Trains.NET
 
             void DoMouseClick(object sender, MouseEventArgs e)
             {
-                if (e.Button == MouseButtons.None) return;
-                if ((e.Button & MouseButtons.Middle) == MouseButtons.Middle) return;
-
-                bool isRightMouseButton = (e.Button & MouseButtons.Right) == MouseButtons.Right;
-                _game.OnMouseDown(e.X, e.Y, isRightMouseButton);
+                if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+                {
+                    (int column, int row) = pixelMapper.PixelsToCoords(e.X, e.Y);
+                    _currentTool.Execute(column, row);
+                }
             }
 
-            RadioButton CreateButton(Tool tool)
+            RadioButton CreateButton(ITool tool)
             {
                 var button = new RadioButton()
                 {
-                    Text = tool.ToString(),
+                    Text = tool.Name,
                     Dock = DockStyle.Top,
                     Height = 50,
                     Appearance = Appearance.Button,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Checked = tool == (Tool)0
+                    Checked = _currentTool == tool
                 };
 
-                button.Click += (s, e) => _game.CurrentTool = tool;
+                button.Click += (s, e) => _currentTool = tool;
 
                 return button;
             }

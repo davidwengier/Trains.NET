@@ -27,8 +27,8 @@ namespace Trains.NET.Rendering
 
         public void Render(SKCanvas canvas, int width, int height)
         {
-            var now = _stopwatch.ElapsedMilliseconds;
-            var timeSinceLastUpdate = now - _lastDrawTime;
+            long now = _stopwatch.ElapsedMilliseconds;
+            long timeSinceLastUpdate = now - _lastDrawTime;
             _lastDrawTime = now;
 
             canvas.DrawText((1000 / timeSinceLastUpdate) + " FPS", 0, 20, _paint);

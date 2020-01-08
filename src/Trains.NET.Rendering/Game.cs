@@ -14,8 +14,6 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
 
-        public Tool CurrentTool { get; set; }
-
         public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
@@ -56,20 +54,6 @@ namespace Trains.NET.Rendering
                 canvas.Save();
                 renderer.Render(canvas, _width, _height);
                 canvas.Restore();
-            }
-        }
-
-        public void OnMouseDown(int x, int y, bool isRightMouseDown)
-        {
-            (int column, int row) = _pixelMapper.PixelsToCoords(x, y);
-
-            if (this.CurrentTool == Tool.Eraser || isRightMouseDown)
-            {
-                _gameBoard.RemoveTrack(column, row);
-            }
-            else if (this.CurrentTool == Tool.Track)
-            {
-                _gameBoard.AddTrack(column, row);
             }
         }
     }

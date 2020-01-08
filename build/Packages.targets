@@ -8,14 +8,14 @@
   
   <!-- Included in every project -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" />
   </ItemGroup>
 
   <!-- Need to be opted in -->
   <ItemGroup>
     
     <!-- DI -->
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.1.0-preview2.19525.4" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
 
     <!-- SkiaSharp -->
     <PackageReference Update="SkiaSharp"                    Version="1.68.1" />

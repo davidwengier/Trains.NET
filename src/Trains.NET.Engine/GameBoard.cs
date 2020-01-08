@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard
     {
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
+        private readonly List<Train> _trains = new List<Train>();
 
         public int Columns { get; set; }
         public int Rows { get; set; }
@@ -37,11 +39,31 @@ namespace Trains.NET.Engine
             }
         }
 
+        public void AddTrain(int column, int row)
+        {
+            if (_tracks.ContainsKey((column, row)) && !_trains.Any(t => t.Column == column && t.Row == row))
+            {
+                _trains.Add(new Train()
+                {
+                    Column = column,
+                    Row = row
+                });
+            }
+        }
+
         public IEnumerable<(int, int, Track)> GetTracks()
         {
             foreach ((int col, int row, Track track) in _tracks)
             {
                 yield return (col, row, track);
+            }
+        }
+
+        public IEnumerable<Train> GetTrains()
+        {
+            foreach (Train train in _trains)
+            {
+                yield return train;
             }
         }
 

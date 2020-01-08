@@ -13,7 +13,7 @@
 
         public void Execute(int column, int row)
         {
-            //_gameBoard.AddTrack(column, row);
+            _gameBoard.AddTrain(column, row);
         }
     }
 }

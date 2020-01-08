@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
-    public interface IBoardRenderer
+    public interface ILayerRenderer
     {
         bool Enabled { get; set; }
         string Name { get; }

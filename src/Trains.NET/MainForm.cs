@@ -12,10 +12,10 @@ namespace Trains.NET
     {
         private readonly IGame _game;
         private readonly ITrackParameters _parameters;
-        private readonly SKControl _skiaView;
+        private readonly Timer _timer;
         private Form? _debugForm;
 
-        public MainForm(IGame game, IEnumerable<IBoardRenderer> renderers, ITrackParameters parameters)
+        public MainForm(IGame game, IEnumerable<ILayerRenderer> renderers, ITrackParameters parameters)
         {
             _game = game;
             _parameters = parameters;
@@ -81,25 +81,30 @@ namespace Trains.NET
                 }
             };
 
-            _skiaView = new SKControl()
+            var skiaView = new SKControl()
             {
                 Dock = DockStyle.Fill
             };
 
-            _skiaView.MouseDown += DoMouseClick;
-            _skiaView.MouseMove += DoMouseClick;
-            _skiaView.Resize += (s, e) => _game.SetSize(_skiaView.Width, _skiaView.Height);
-            _skiaView.PaintSurface += (s, e) => _game.Render(e.Surface.Canvas);
+            skiaView.MouseDown += DoMouseClick;
+            skiaView.MouseMove += DoMouseClick;
+            skiaView.Resize += (s, e) => _game.SetSize(skiaView.Width, skiaView.Height);
+            skiaView.PaintSurface += (s, e) => _game.Render(e.Surface.Canvas);
 
-            foreach (IBoardRenderer renderer in renderers)
+            foreach (ILayerRenderer renderer in renderers)
             {
                 rendererPanel.Controls.Add(CreateRendererCheckbox(renderer));
             }
 
             splitContainer.Panel1.Controls.Add(rendererPanel);
             splitContainer.Panel1.Controls.Add(buttonPanel);
-            splitContainer.Panel2.Controls.Add(_skiaView);
+            splitContainer.Panel2.Controls.Add(skiaView);
             splitContainer.Panel2.Padding = new Padding(5);
+
+            _timer = new Timer();
+            _timer.Tick += (s, e) => skiaView.Refresh();
+            _timer.Interval = 16;
+            _timer.Start();
 
             this.Controls.Add(splitContainer);
 
@@ -110,8 +115,6 @@ namespace Trains.NET
 
                 bool isRightMouseButton = (e.Button & MouseButtons.Right) == MouseButtons.Right;
                 _game.OnMouseDown(e.X, e.Y, isRightMouseButton);
-
-                _skiaView.Refresh();
             }
 
             RadioButton CreateButton(Tool tool)
@@ -131,7 +134,7 @@ namespace Trains.NET
                 return button;
             }
 
-            Control CreateRendererCheckbox(IBoardRenderer renderer)
+            Control CreateRendererCheckbox(ILayerRenderer renderer)
             {
                 var checkbox = new CheckBox
                 {
@@ -146,7 +149,6 @@ namespace Trains.NET
                 checkbox.CheckedChanged += (s, e) =>
                 {
                     renderer.Enabled = checkbox.Checked;
-                    _skiaView.Refresh();
                 };
 
                 return checkbox;
@@ -184,7 +186,7 @@ namespace Trains.NET
             return f;
         }
 
-        private void SetupControls(FlowLayoutPanel panel, Func<int> getter, Action<int> setter, string name, int max)
+        private static void SetupControls(FlowLayoutPanel panel, Func<int> getter, Action<int> setter, string name, int max)
         {
             var lbl = new Label
             {
@@ -203,7 +205,6 @@ namespace Trains.NET
             slider.ValueChanged += (s, e) =>
             {
                 setter(slider.Value);
-                _skiaView.Refresh();
             };
             panel.Controls.Add(slider);
         }
@@ -213,7 +214,7 @@ namespace Trains.NET
             base.Dispose(disposing);
 
             _debugForm?.Dispose();
-            _skiaView.Dispose();
+            _timer.Dispose();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
-    internal class GridRenderer : IBoardRenderer
+    internal class GridRenderer : ILayerRenderer
     {
         private readonly ITrackParameters _parameters;
 

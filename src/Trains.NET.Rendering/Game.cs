@@ -11,12 +11,12 @@ namespace Trains.NET.Rendering
         private int _height;
 
         private readonly IGameBoard _gameBoard;
-        private readonly IEnumerable<IBoardRenderer> _boardRenderers;
+        private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
 
         public Tool CurrentTool { get; set; }
 
-        public Game(IGameBoard gameBoard, IEnumerable<IBoardRenderer> boardRenderers, IPixelMapper pixelMapper)
+        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -46,7 +46,7 @@ namespace Trains.NET.Rendering
             canvas.Clear(SKColors.White);
             canvas.ClipRect(new SKRect(0, 0, _width + 2, _height + 2), SKClipOperation.Intersect, false);
 
-            foreach (IBoardRenderer renderer in _boardRenderers)
+            foreach (ILayerRenderer renderer in _boardRenderers)
             {
                 if (!renderer.Enabled)
                 {

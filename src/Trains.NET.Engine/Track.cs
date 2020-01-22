@@ -43,6 +43,36 @@ namespace Trains.NET.Engine
             _ => false
         };
 
+        internal TrainDirection GetTrainDirection(TrainDirection direction) => this.Direction switch
+        {
+            TrackDirection.RightDown when direction == TrainDirection.Left => TrainDirection.Down,
+            TrackDirection.RightUp when direction == TrainDirection.Left => TrainDirection.Up,
+            TrackDirection.LeftUp when direction == TrainDirection.Right => TrainDirection.Up,
+            TrackDirection.LeftDown when direction == TrainDirection.Right => TrainDirection.Down,
+            TrackDirection.RightDown when direction == TrainDirection.Up => TrainDirection.Right,
+            TrackDirection.RightUp when direction == TrainDirection.Down => TrainDirection.Right,
+            TrackDirection.LeftUp when direction == TrainDirection.Down => TrainDirection.Left,
+            TrackDirection.LeftDown when direction == TrainDirection.Up => TrainDirection.Left,
+
+            TrackDirection.LeftRightDown when direction == TrainDirection.Left => TrainDirection.Down,
+            TrackDirection.LeftRightDown when direction == TrainDirection.Right => TrainDirection.Down,
+            TrackDirection.LeftRightDown when direction == TrainDirection.Up => TrainDirection.Left,
+
+            TrackDirection.LeftRightUp when direction == TrainDirection.Left => TrainDirection.Up,
+            TrackDirection.LeftRightUp when direction == TrainDirection.Right => TrainDirection.Up,
+            TrackDirection.LeftRightUp when direction == TrainDirection.Down => TrainDirection.Left,
+
+            TrackDirection.LeftUpDown when direction == TrainDirection.Down => TrainDirection.Left,
+            TrackDirection.LeftUpDown when direction == TrainDirection.Up => TrainDirection.Left,
+            TrackDirection.LeftUpDown when direction == TrainDirection.Right => TrainDirection.Up,
+
+            TrackDirection.RightUpDown when direction == TrainDirection.Down => TrainDirection.Right,
+            TrackDirection.RightUpDown when direction == TrainDirection.Up => TrainDirection.Right,
+            TrackDirection.RightUpDown when direction == TrainDirection.Left => TrainDirection.Up,
+
+            _ => direction
+        };
+
         public bool CanConnectLeft => this.Direction switch
         {
             _ when !this.Happy => true,

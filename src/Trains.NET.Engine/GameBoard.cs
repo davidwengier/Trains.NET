@@ -1,15 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 
 namespace Trains.NET.Engine
 {
-    internal class GameBoard : IGameBoard
+    internal class GameBoard : IGameBoard, IDisposable
     {
+        private const int GameLoopInterval = 500;
+        private const int SpeedAdjustmentFactor = 1;
+
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
         private readonly List<Train> _trains = new List<Train>();
+        private readonly Timer _gameLoopTimer;
 
         public int Columns { get; set; }
         public int Rows { get; set; }
+
+        public GameBoard()
+        {
+            _gameLoopTimer = new Timer(GameLoopInterval);
+            _gameLoopTimer.Elapsed += GameLoopStep;
+            _gameLoopTimer.Start();
+        }
+
+        private void GameLoopStep(object sender, ElapsedEventArgs e)
+        {
+            foreach (Train train in _trains)
+            {
+                if (_tracks.TryGetValue((train.Column, train.Row), out Track track))
+                {
+                    train.Move(SpeedAdjustmentFactor, track);
+                }
+            }
+        }
 
         public void AddTrack(int column, int row)
         {
@@ -74,6 +98,11 @@ namespace Trains.NET.Engine
                 return track;
             }
             return null;
+        }
+
+        public void Dispose()
+        {
+            _gameLoopTimer.Dispose();
         }
     }
 }

@@ -6,30 +6,35 @@ namespace Trains.NET.Rendering
 {
     internal class TrainRenderer : ITrainRenderer, IDisposable
     {
-        private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
-        private readonly SKPaint _paint = new SKPaint
+        private readonly ITrainParameters _trainParameters;
+        private readonly SKPaint _bodyPaint = new SKPaint
         {
             Color = SKColors.Red,
             Style = SKPaintStyle.Fill
         };
-
-        public TrainRenderer(IPixelMapper pixelMapper, ITrackParameters trackParameters)
+        private readonly SKPaint _headPaint = new SKPaint
         {
-            _pixelMapper = pixelMapper;
+            Color = SKColors.Blue,
+            Style = SKPaintStyle.Fill
+        };
+
+        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters)
+        {
             _trackParameters = trackParameters;
+            _trainParameters = trainParameters;
         }
 
         public void Dispose()
         {
-            _paint.Dispose();
+            _bodyPaint.Dispose();
+            _headPaint.Dispose();
         }
 
         public void Render(SKCanvas canvas, Train train)
         {
-            (int x, int y) = _pixelMapper.CoordsToPixels(train.Column, train.Row);
-
-            canvas.DrawRect(x + (_trackParameters.CellSize / 2) - 5, y + (_trackParameters.CellSize / 2) - 5, 10, 10, _paint);
+            canvas.DrawRect((_trackParameters.CellSize / 2) - _trainParameters.TrainBodyWidth, (_trackParameters.CellSize / 2) - (_trainParameters.TrainBodyWidth / 2), _trainParameters.TrainBodyWidth * 2, _trainParameters.TrainBodyWidth, _bodyPaint);
+            canvas.DrawRect((_trackParameters.CellSize / 2) + _trainParameters.TrainBodyWidth, (_trackParameters.CellSize / 2) - (_trainParameters.TrainHeadWidth / 2), _trainParameters.TrainHeadWidth, _trainParameters.TrainHeadWidth, _headPaint);
         }
     }
 }

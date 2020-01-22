@@ -13,7 +13,7 @@ namespace Trains.NET
     {
         private readonly IGame _game;
         private readonly ITrackParameters _parameters;
-        private readonly Timer _timer;
+        private readonly Timer _renderLoopTimer;
         private Form? _debugForm;
         private ITool _currentTool;
 
@@ -109,10 +109,10 @@ namespace Trains.NET
             splitContainer.Panel2.Controls.Add(skiaView);
             splitContainer.Panel2.Padding = new Padding(5);
 
-            _timer = new Timer();
-            _timer.Tick += (s, e) => skiaView.Refresh();
-            _timer.Interval = 16;
-            _timer.Start();
+            _renderLoopTimer = new Timer();
+            _renderLoopTimer.Tick += (s, e) => skiaView.Refresh();
+            _renderLoopTimer.Interval = 16;
+            _renderLoopTimer.Start();
 
             this.Controls.Add(splitContainer);
 
@@ -222,7 +222,7 @@ namespace Trains.NET
             base.Dispose(disposing);
 
             _debugForm?.Dispose();
-            _timer.Dispose();
+            _renderLoopTimer.Dispose();
         }
     }
 }

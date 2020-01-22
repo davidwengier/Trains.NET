@@ -28,11 +28,21 @@ namespace Trains.NET.Engine
         {
             foreach (Train train in _trains)
             {
-                if (_tracks.TryGetValue((train.Column, train.Row), out Track track))
+                Track? track = GetTrackForTrain(train);
+                if (track != null)
                 {
                     train.Move(SpeedAdjustmentFactor, track);
                 }
             }
+        }
+
+        public Track? GetTrackForTrain(Train train)
+        {
+            if (_tracks.TryGetValue((train.Column, train.Row), out Track track))
+            {
+                return track;
+            }
+            return null;
         }
 
         public void AddTrack(int column, int row)

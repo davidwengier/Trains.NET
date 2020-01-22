@@ -13,5 +13,6 @@ namespace Trains.NET.Engine
         System.Collections.Generic.IEnumerable<(int, int, Track)> GetTracks();
         void AddTrain(int column, int row);
         IEnumerable<Train> GetTrains();
+        Track? GetTrackForTrain(Train train);
     }
 }

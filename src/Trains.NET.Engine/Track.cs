@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Trains.NET.Engine
 {
@@ -41,6 +42,47 @@ namespace Trains.NET.Engine
             TrackDirection.LeftUpDown => true,
             TrackDirection.RightUpDown => true,
             _ => false
+        };
+
+        public float GetTrainAngle(TrainDirection direction) => this.Direction switch
+        {
+            TrackDirection.RightDown when direction == TrainDirection.Down => 225,
+            TrackDirection.RightUp when direction == TrainDirection.Up => 315,
+            TrackDirection.LeftUp when direction == TrainDirection.Up => 45,
+            TrackDirection.LeftDown when direction == TrainDirection.Down => 135,
+            TrackDirection.RightDown when direction == TrainDirection.Right => 45,
+            TrackDirection.RightUp when direction == TrainDirection.Right => 135,
+            TrackDirection.LeftUp when direction == TrainDirection.Left => 225,
+            TrackDirection.LeftDown when direction == TrainDirection.Left => 315,
+
+            TrackDirection.LeftRightDown when direction == TrainDirection.Down => 225,
+            TrackDirection.LeftRightDown when direction == TrainDirection.Down => 135,
+            TrackDirection.LeftRightDown when direction == TrainDirection.Left => 315,
+
+            TrackDirection.LeftRightUp when direction == TrainDirection.Up => 315,
+            TrackDirection.LeftRightUp when direction == TrainDirection.Up => 45,
+            TrackDirection.LeftRightUp when direction == TrainDirection.Left => 225,
+
+            TrackDirection.LeftUpDown when direction == TrainDirection.Left => 225,
+            TrackDirection.LeftUpDown when direction == TrainDirection.Left => 315,
+            TrackDirection.LeftUpDown when direction == TrainDirection.Up => 45,
+
+            TrackDirection.RightUpDown when direction == TrainDirection.Right => 135,
+            TrackDirection.RightUpDown when direction == TrainDirection.Right => 45,
+            TrackDirection.RightUpDown when direction == TrainDirection.Up => 315,
+
+            TrackDirection.Horizontal when direction == TrainDirection.Right => 90,
+            TrackDirection.Horizontal when direction == TrainDirection.Left => 270,
+
+            TrackDirection.Vertical when direction == TrainDirection.Up => 0,
+            TrackDirection.Vertical when direction == TrainDirection.Down => 180,
+
+            TrackDirection.Cross when direction == TrainDirection.Right => 90,
+            TrackDirection.Cross when direction == TrainDirection.Left => 270,
+            TrackDirection.Cross when direction == TrainDirection.Up => 0,
+            TrackDirection.Cross when direction == TrainDirection.Down => 180,
+
+            _ => throw new InvalidOperationException()
         };
 
         internal TrainDirection GetTrainDirection(TrainDirection direction) => this.Direction switch

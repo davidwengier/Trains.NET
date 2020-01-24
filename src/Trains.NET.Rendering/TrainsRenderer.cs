@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using SkiaSharp;
+﻿using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -33,7 +32,7 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
-                var track = _gameBoard.GetTrackForTrain(train);
+                Track? track = _gameBoard.GetTrackForTrain(train);
 
                 if (track != null)
                 {

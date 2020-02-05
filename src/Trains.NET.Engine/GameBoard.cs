@@ -82,7 +82,7 @@ namespace Trains.NET.Engine
             };
 
             Track? track = GetTrackForTrain(train);
-            if (track == null || _trains.Any(t => t.Column == column && t.Row == row))
+            if (track == null)
             {
                 return;
             }

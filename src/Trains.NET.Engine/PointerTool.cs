@@ -7,5 +7,7 @@
         public void Execute(int column, int row)
         {
         }
+
+        public bool IsValid(int column, int row) => true;
     }
 }

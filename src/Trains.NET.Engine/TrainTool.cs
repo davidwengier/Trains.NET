@@ -1,4 +1,6 @@
-﻿namespace Trains.NET.Engine
+﻿using System.Linq;
+
+namespace Trains.NET.Engine
 {
     internal class TrainTool : ITool
     {
@@ -15,5 +17,8 @@
         {
             _gameBoard.AddTrain(column, row);
         }
+
+        public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null &&
+            _gameBoard.GetTrains().Any(t => t.Column == column && t.Row == row);
     }
 }

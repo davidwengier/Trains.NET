@@ -15,5 +15,7 @@
         {
             _gameBoard.RemoveTrack(column, row);
         }
+
+        public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null;
     }
 }

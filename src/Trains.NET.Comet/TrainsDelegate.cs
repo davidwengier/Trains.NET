@@ -34,7 +34,10 @@ namespace Trains.NET.Comet
         {
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
             _lastDragCell = (column, row);
-            this.CurrentTool?.Execute(column, row);
+            if (this.CurrentTool?.IsValid(column, row) == true)
+            {
+                this.CurrentTool?.Execute(column, row);
+            }
 
             return true;
         }
@@ -48,7 +51,10 @@ namespace Trains.NET.Comet
             }
 
             _lastDragCell = (column, row);
-            this.CurrentTool?.Execute(column, row);
+            if (this.CurrentTool?.IsValid(column, row) == true)
+            {
+                this.CurrentTool?.Execute(column, row);
+            }
         }
 
         public override void EndInteraction(PointF[] points)

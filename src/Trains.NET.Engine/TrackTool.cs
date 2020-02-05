@@ -15,5 +15,7 @@
         {
             _gameBoard.AddTrack(column, row);
         }
+
+        public bool IsValid(int column, int row) => true;
     }
 }

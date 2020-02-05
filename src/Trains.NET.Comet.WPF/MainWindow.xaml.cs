@@ -46,7 +46,7 @@ namespace Trains.NET.Comet.WPF
 
             col.AddSingleton<MainPage, MainPage>();
 
-             return col.BuildServiceProvider();
+            return col.BuildServiceProvider();
 
             static IEnumerable<Assembly> GetAssemblies()
             {

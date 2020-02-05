@@ -34,8 +34,6 @@ namespace Trains.NET.Comet
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
             this.CurrentTool?.Execute(column, row);
 
-            Invalidate();
-
             return true;
         }
 
@@ -43,8 +41,6 @@ namespace Trains.NET.Comet
         {
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
             this.CurrentTool?.Execute(column, row);
-
-            Invalidate();
         }
     }
 }

@@ -56,19 +56,19 @@ namespace Trains.NET.Engine
             TrackDirection.LeftDown when direction == TrainDirection.Left => 315,
 
             TrackDirection.LeftRightDown when direction == TrainDirection.Down => 225,
-            TrackDirection.LeftRightDown when direction == TrainDirection.Down => 135,
+            TrackDirection.LeftRightDown when direction == TrainDirection.Right => 135,
             TrackDirection.LeftRightDown when direction == TrainDirection.Left => 315,
 
             TrackDirection.LeftRightUp when direction == TrainDirection.Up => 315,
-            TrackDirection.LeftRightUp when direction == TrainDirection.Up => 45,
+            TrackDirection.LeftRightUp when direction == TrainDirection.Right => 45,
             TrackDirection.LeftRightUp when direction == TrainDirection.Left => 225,
 
             TrackDirection.LeftUpDown when direction == TrainDirection.Left => 225,
-            TrackDirection.LeftUpDown when direction == TrainDirection.Left => 315,
+            TrackDirection.LeftUpDown when direction == TrainDirection.Down => 315,
             TrackDirection.LeftUpDown when direction == TrainDirection.Up => 45,
 
             TrackDirection.RightUpDown when direction == TrainDirection.Right => 135,
-            TrackDirection.RightUpDown when direction == TrainDirection.Right => 45,
+            TrackDirection.RightUpDown when direction == TrainDirection.Down => 45,
             TrackDirection.RightUpDown when direction == TrainDirection.Up => 315,
 
             TrackDirection.Horizontal when direction == TrainDirection.Right => 90,

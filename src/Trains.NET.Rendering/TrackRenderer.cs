@@ -22,13 +22,11 @@ namespace Trains.NET.Rendering
             {
                 Color = SKColors.Black,
                 Style = SKPaintStyle.Stroke,
-                StrokeWidth = _parameters.PlankWidth,
                 IsAntialias = true
             };
             _arcTrackClear = new SKPaint()
             {
                 Style = SKPaintStyle.Stroke,
-                StrokeWidth = _parameters.TrackWidth,
                 Color = SKColors.White,
                 IsAntialias = true
             };
@@ -121,6 +119,8 @@ namespace Trains.NET.Rendering
 
         private void DrawPlank(SKCanvas canvas, int width, float pos)
         {
+            _plankPaint.StrokeWidth = _parameters.PlankWidth;
+
             using var path = new SKPath();
             path.MoveTo(pos, _parameters.PlankPadding);
             path.LineTo(pos, width - _parameters.PlankPadding);
@@ -152,6 +152,8 @@ namespace Trains.NET.Rendering
 
             void DrawTracks(SKCanvas canvas, int width)
             {
+                _arcTrackClear.StrokeWidth = _parameters.TrackWidth;
+
                 DrawArc(canvas, _parameters.TrackPadding + (_parameters.TrackWidth / 2), _arcTrackClear);
                 DrawArc(canvas, _parameters.TrackPadding, _arcTrackPaint);
                 DrawArc(canvas, _parameters.TrackPadding + _parameters.TrackWidth, _arcTrackPaint);

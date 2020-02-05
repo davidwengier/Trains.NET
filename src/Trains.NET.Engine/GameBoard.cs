@@ -75,14 +75,21 @@ namespace Trains.NET.Engine
 
         public void AddTrain(int column, int row)
         {
-            if (_tracks.ContainsKey((column, row)) && !_trains.Any(t => t.Column == column && t.Row == row))
+            var train = new Train()
             {
-                _trains.Add(new Train()
-                {
-                    Column = column,
-                    Row = row
-                });
+                Column = column,
+                Row = row
+            };
+
+            Track? track = GetTrackForTrain(train);
+            if (track == null || _trains.Any(t => t.Column == column && t.Row == row))
+            {
+                return;
             }
+
+            train.SetBestDirection(track);
+
+            _trains.Add(train);
         }
 
         public IEnumerable<(int, int, Track)> GetTracks()

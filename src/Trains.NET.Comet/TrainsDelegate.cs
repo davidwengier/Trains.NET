@@ -10,6 +10,7 @@ namespace Trains.NET.Comet
     {
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
+        private (int column, int row) _lastDragCell;
 
         public ITool? CurrentTool { get; set; }
 
@@ -32,6 +33,7 @@ namespace Trains.NET.Comet
         public override bool StartInteraction(PointF[] points)
         {
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
+            _lastDragCell = (column, row);
             this.CurrentTool?.Execute(column, row);
 
             return true;
@@ -40,7 +42,18 @@ namespace Trains.NET.Comet
         public override void DragInteraction(PointF[] points)
         {
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
+            if (_lastDragCell == (column, row))
+            {
+                return;
+            }
+
+            _lastDragCell = (column, row);
             this.CurrentTool?.Execute(column, row);
+        }
+
+        public override void EndInteraction(PointF[] points)
+        {
+            _lastDragCell = (-1, -1);
         }
     }
 }

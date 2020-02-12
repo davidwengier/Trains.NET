@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using Comet;
 using Trains.NET.Engine;
@@ -8,11 +9,13 @@ namespace Trains.NET.Comet
 {
     public class MainPage : View
     {
+        private readonly State<bool> _configurationShown = false;
+
         private readonly Timer _timer;
 
-        public MainPage(IGame game, IPixelMapper pixelMapper, IEnumerable<ITool> tools)
+        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, IEnumerable<ITool> tools, IEnumerable<ILayerRenderer> layers)
         {
-            HotReloadHelper.Register(this, game);
+            HotReloadHelper.Register(this, game, pixelMapper, trackParameters, tools, layers);
 
             this.Title("Trains.NET");
 
@@ -20,16 +23,18 @@ namespace Trains.NET.Comet
 
             this.Body = () =>
             {
-                var controlsPanel = new VStack();
-
-                foreach (ITool tool in tools)
-                {
-                    controlsPanel.Add(new Button(tool.Name, () => controlDelegate.CurrentTool = tool));
-                }
-
                 return new HStack()
                 {
-                    controlsPanel.Frame(100),
+                    new VStack()
+                    {
+                        new HStack{
+                            new Text("Configure"),
+                            new Toggle(_configurationShown)
+                        },
+                        _configurationShown ?
+                             CreateConfigurationControls(trackParameters, layers) :
+                             CreateToolsControls(tools, controlDelegate)
+                    }.Frame(100, alignment: Alignment.Top),
                     new DrawableControl(controlDelegate).FillVertical()
                 }.FillHorizontal();
             };
@@ -43,6 +48,66 @@ namespace Trains.NET.Comet
                     controlDelegate.Invalidate();
                 });
             }, null, 0, 16);
+        }
+
+        private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate)
+        {
+            var controlsGroup = new RadioGroup(Orientation.Vertical);
+            foreach (ITool tool in tools)
+            {
+                controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool == tool, () => controlDelegate.CurrentTool = tool));
+            }
+
+            return controlsGroup;
+        }
+
+        private static View CreateConfigurationControls(ITrackParameters trackParameters, IEnumerable<ILayerRenderer> layers)
+        {
+            var layersGroup = new VStack();
+            foreach (ILayerRenderer layer in layers)
+            {
+                layersGroup.Add(new HStack
+                            {
+                                new Text(layer.Name),
+                                new Toggle(layer.Enabled, value => layer.Enabled = value)
+                           });
+            }
+#pragma warning disable CA2000 // Dispose objects before losing scope
+            layersGroup.Add(new VStack()
+                                {
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CellSize)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.NumPlanks)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.NumCornerPlanks)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.PlankWidth)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.PlankPadding)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.TrackPadding)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.TrackWidth)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CornerStepDegrees)),
+                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CornerEdgeOffsetDegrees))
+                                }.Margin(top: 50)
+#pragma warning restore CA2000 // Dispose objects before losing scope
+                        );
+            return layersGroup;
+        }
+
+        private static View GetConfigurationControl(ITrackParameters trackParameters, string parameter)
+        {
+            var prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            return new VStack()
+                {
+                    new Text(parameter + ":"),
+                    new HStack()
+                    {
+                        new Button("-", () => AdjustProperty(trackParameters, prop, -1)),
+                        new Text($"{prop.GetValue(trackParameters)}"),
+                        new Button("+", () => AdjustProperty(trackParameters, prop, 1))
+                    }
+                };
+        }
+
+        private static void AdjustProperty(ITrackParameters trackParameters, PropertyInfo prop, int adjustment)
+        {
+            prop.SetValue(trackParameters, (int)prop.GetValue(trackParameters) + adjustment);
         }
 
         protected override void Dispose(bool disposing)

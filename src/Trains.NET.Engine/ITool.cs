@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine
 {
     public interface ITool
     {

@@ -19,6 +19,6 @@ namespace Trains.NET.Engine
         }
 
         public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null &&
-            _gameBoard.GetTrains().Any(t => t.Column == column && t.Row == row);
+            !_gameBoard.GetTrains().Any(t => t.Column == column && t.Row == row);
     }
 }

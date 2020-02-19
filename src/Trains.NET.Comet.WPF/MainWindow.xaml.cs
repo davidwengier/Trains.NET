@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
+using Comet;
 using Comet.WPF;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +22,11 @@ namespace Trains.NET.Comet.WPF
 #if DEBUG
             global::Comet.Reload.Init();
 #endif
+            global::Comet.WPF.UI.Init();
             global::Comet.Skia.UI.Init();
+
+            Registrar.Handlers.Register<RadioButton, ToggleButtonHandler>();
+            Registrar.Handlers.Register<RadioGroup, ToggleButtonGroupHandler>();
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
             MainFrame.NavigationService.Navigate(new CometPage(MainFrame, serviceProvider.GetService<MainPage>()));

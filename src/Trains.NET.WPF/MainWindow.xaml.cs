@@ -5,8 +5,9 @@ using System.Windows;
 using Comet;
 using Comet.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Trains.NET.Comet;
 
-namespace Trains.NET.Comet.WPF
+namespace Trains.NET.WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

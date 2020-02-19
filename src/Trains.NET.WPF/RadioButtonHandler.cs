@@ -1,11 +1,10 @@
-﻿using Comet;
+﻿using System.Windows.Controls.Primitives;
+using Comet;
 using Comet.WPF.Handlers;
 
-using WPFToggleButton = System.Windows.Controls.Primitives.ToggleButton;
-
-namespace Trains.NET.Comet.WPF
+namespace Trains.NET.WPF
 {
-    internal class RadioButtonHandler : AbstractHandler<RadioButton, WPFToggleButton>
+    internal class RadioButtonHandler : AbstractHandler<RadioButton, ToggleButton>
     {
         public static readonly PropertyMapper<RadioButton> Mapper = new PropertyMapper<RadioButton>()
         {
@@ -18,7 +17,7 @@ namespace Trains.NET.Comet.WPF
         {
         }
 
-        protected override void DisposeView(WPFToggleButton nativeView)
+        protected override void DisposeView(ToggleButton nativeView)
         {
             nativeView.Click -= HandleClick;
         }
@@ -28,22 +27,22 @@ namespace Trains.NET.Comet.WPF
             this.VirtualView?.OnClick?.Invoke();
         }
 
-        protected override WPFToggleButton CreateView()
+        protected override ToggleButton CreateView()
         {
-            var toggleButton = new WPFToggleButton();
+            var toggleButton = new ToggleButton();
             toggleButton.Click += HandleClick;
             return toggleButton;
         }
 
         public static void MapLabelProperty(IViewHandler viewHandler, RadioButton virtualRadioButton)
         {
-            var nativeRadioButton = (WPFToggleButton)viewHandler.NativeView;
+            var nativeRadioButton = (ToggleButton)viewHandler.NativeView;
             nativeRadioButton.Content = virtualRadioButton.Label.CurrentValue;
         }
 
         public static void MapSelectedProperty(IViewHandler viewHandler, RadioButton virtualRadioButton)
         {
-            var nativeRadioButton = (WPFToggleButton)viewHandler.NativeView;
+            var nativeRadioButton = (ToggleButton)viewHandler.NativeView;
             nativeRadioButton.IsChecked = virtualRadioButton.Selected;
         }
     }

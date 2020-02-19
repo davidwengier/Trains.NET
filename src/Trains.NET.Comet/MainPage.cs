@@ -27,7 +27,7 @@ namespace Trains.NET.Comet
                 {
                     new VStack()
                     {
-                        new ToggleButton("Configuration", _configurationShown, () => _configurationShown.Value = !_configurationShown.Value),
+                        new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
                         _configurationShown ?
                              CreateConfigurationControls(trackParameters, layers) :
                              CreateToolsControls(tools, controlDelegate)

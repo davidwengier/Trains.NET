@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Comet;
 using Comet.Skia;
 using SkiaSharp;
 using Trains.NET.Engine;
@@ -12,7 +13,7 @@ namespace Trains.NET.Comet
         private readonly IPixelMapper _pixelMapper;
         private (int column, int row) _lastDragCell;
 
-        public ITool? CurrentTool { get; set; }
+        public State<ITool> CurrentTool { get; } = new State<ITool>();
 
         public TrainsDelegate(IGame game, IPixelMapper pixelMapper)
         {
@@ -34,9 +35,9 @@ namespace Trains.NET.Comet
         {
             (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
             _lastDragCell = (column, row);
-            if (this.CurrentTool?.IsValid(column, row) == true)
+            if (this.CurrentTool.Value.IsValid(column, row) == true)
             {
-                this.CurrentTool?.Execute(column, row);
+                this.CurrentTool.Value.Execute(column, row);
             }
 
             return true;
@@ -51,9 +52,9 @@ namespace Trains.NET.Comet
             }
 
             _lastDragCell = (column, row);
-            if (this.CurrentTool?.IsValid(column, row) == true)
+            if (this.CurrentTool.Value.IsValid(column, row) == true)
             {
-                this.CurrentTool?.Execute(column, row);
+                this.CurrentTool.Value.Execute(column, row);
             }
         }
 

@@ -27,10 +27,7 @@ namespace Trains.NET.Comet
                 {
                     new VStack()
                     {
-                        new HStack{
-                            new Text("Configure"),
-                            new Toggle(_configurationShown)
-                        },
+                        new ToggleButton("Configuration", _configurationShown, () => _configurationShown.Value = !_configurationShown.Value),
                         _configurationShown ?
                              CreateConfigurationControls(trackParameters, layers) :
                              CreateToolsControls(tools, controlDelegate)
@@ -55,7 +52,7 @@ namespace Trains.NET.Comet
             var controlsGroup = new RadioGroup(Orientation.Vertical);
             foreach (ITool tool in tools)
             {
-                controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool == tool, () => controlDelegate.CurrentTool = tool));
+                controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
             }
 
             return controlsGroup;
@@ -66,11 +63,7 @@ namespace Trains.NET.Comet
             var layersGroup = new VStack();
             foreach (ILayerRenderer layer in layers)
             {
-                layersGroup.Add(new HStack
-                            {
-                                new Text(layer.Name),
-                                new Toggle(layer.Enabled, value => layer.Enabled = value)
-                           });
+                layersGroup.Add(new ToggleButton(layer.Name, layer.Enabled, () => layer.Enabled = !layer.Enabled));
             }
 #pragma warning disable CA2000 // Dispose objects before losing scope
             layersGroup.Add(new VStack()

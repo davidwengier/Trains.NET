@@ -25,8 +25,8 @@ namespace Trains.NET.Comet.WPF
             global::Comet.WPF.UI.Init();
             global::Comet.Skia.UI.Init();
 
-            Registrar.Handlers.Register<RadioButton, ToggleButtonHandler>();
-            Registrar.Handlers.Register<RadioGroup, ToggleButtonGroupHandler>();
+            Registrar.Handlers.Register<RadioButton, RadioButtonHandler>();
+            Registrar.Handlers.Register<ToggleButton, ToggleButtonHandler>();
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
             MainFrame.NavigationService.Navigate(new CometPage(MainFrame, serviceProvider.GetService<MainPage>()));

@@ -1,11 +1,8 @@
-﻿using System;
-
+﻿
 namespace Trains.NET.Engine
 {
     public class Train
     {
-        private readonly Random _random = new Random();
-
         public int Column { get; internal set; }
         public int Row { get; internal set; }
         public float Angle { get; internal set; }

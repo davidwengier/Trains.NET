@@ -7,18 +7,16 @@ namespace Trains.NET.Rendering
     {
         private readonly IGameBoard _gameBoard;
         private readonly ITrainRenderer _trainRenderer;
-        private readonly ITrackParameters _trackParameters;
         private readonly IPixelMapper _pixelMapper;
 
         public bool Enabled { get; set; } = true;
 
         public string Name => "Trains";
 
-        public TrainsRenderer(IGameBoard gameBoard, ITrainRenderer trainRenderer, ITrackParameters trackParameters, IPixelMapper pixelMapper)
+        public TrainsRenderer(IGameBoard gameBoard, ITrainRenderer trainRenderer, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _trainRenderer = trainRenderer;
-            _trackParameters = trackParameters;
             _pixelMapper = pixelMapper;
         }
 

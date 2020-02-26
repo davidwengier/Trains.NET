@@ -85,7 +85,7 @@ namespace Trains.NET.Comet
 
         private static View GetConfigurationControl(ITrackParameters trackParameters, string parameter)
         {
-            var prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            PropertyInfo prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             return new VStack()
                 {
                     new Text(parameter + ":"),

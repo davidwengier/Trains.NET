@@ -6,8 +6,8 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
-        private const int GameLoopInterval = 500;
-        private const int SpeedAdjustmentFactor = 1;
+        private const int GameLoopInterval = 16;
+        private const int SpeedAdjustmentFactor = 10;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
         private readonly List<Train> _trains = new List<Train>();
@@ -25,14 +25,24 @@ namespace Trains.NET.Engine
 
         private void GameLoopStep(object sender, ElapsedEventArgs e)
         {
+            _gameLoopTimer.Stop();
             foreach (Train train in _trains)
             {
-                Track? track = GetTrackForTrain(train);
-                if (track != null)
+                float distance = 0.005f * SpeedAdjustmentFactor;
+                while (distance > 0.0f)
                 {
-                    train.Move(SpeedAdjustmentFactor, track);
+                    Track? track = GetTrackForTrain(train);
+                    if (track != null)
+                    {
+                        distance = train.Move(distance, track);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
+            _gameLoopTimer.Start();
         }
 
         public Track? GetTrackForTrain(Train train)
@@ -85,8 +95,6 @@ namespace Trains.NET.Engine
             {
                 return;
             }
-
-            train.SetBestDirection(track);
 
             _trains.Add(train);
         }

@@ -32,13 +32,6 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
-                Track? track = _gameBoard.GetTrackForTrain(train);
-
-                if (track != null)
-                {
-                    canvas.RotateDegrees(track.GetTrainAngle(train.Direction) - 90, _trackParameters.CellSize / 2, _trackParameters.CellSize / 2);
-                }
-
                 _trainRenderer.Render(canvas, train);
 
                 canvas.Restore();

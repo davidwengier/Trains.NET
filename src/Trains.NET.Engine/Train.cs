@@ -8,60 +8,47 @@ namespace Trains.NET.Engine
 
         public int Column { get; internal set; }
         public int Row { get; internal set; }
+        public float Angle { get; internal set; }
+        public float RelativeLeft { get; internal set; } = 0.5f;
+        public float RelativeTop { get; internal set; } = 0.5f;
 
-        public TrainDirection Direction { get; internal set; }
-
-        internal void Move(int speedAdjustmentFactor, Track track)
+        internal float Move(float distance, Track track)
         {
-            TrackNeighbors neighbors = track.GetNeighbors();
-            Track? nextTrack = null;
-            if (this.Direction == TrainDirection.Left && neighbors.Left != null)
-            {
-                this.Column -= speedAdjustmentFactor;
-                nextTrack = neighbors.Left;
-            }
-            else if (this.Direction == TrainDirection.Right && neighbors.Right != null)
-            {
-                this.Column += speedAdjustmentFactor;
-                nextTrack = neighbors.Right;
-            }
-            else if (this.Direction == TrainDirection.Up && neighbors.Up != null)
-            {
-                this.Row -= speedAdjustmentFactor;
-                nextTrack = neighbors.Up;
-            }
-            else if (this.Direction == TrainDirection.Down && neighbors.Down != null)
-            {
-                this.Row += speedAdjustmentFactor;
-                nextTrack = neighbors.Down;
-            }
+                float newLeft; 
+                float newTop;
+                int newCoumn = this.Column;
+                int newRow = this.Row;
 
-            if (nextTrack != null)
-            {
-                this.Direction = nextTrack.GetTrainDirection(this.Direction);
-            }
+                (newLeft, newTop, this.Angle, distance) = 
+                    track.Move(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
+
+                if (newLeft < 0.0f) 
+                {
+                    newCoumn--;
+                    newLeft = 0.999f;
+                }
+                if (newLeft > 1.0f)
+                {
+                    newCoumn++;
+                    newLeft = 0.001f;
+                }
+                if (newTop < 0.0f)
+                {
+                    newRow--;
+                    newTop = 0.999f;
+                }
+                if (newTop > 1.0f)
+                {
+                    newRow++;
+                    newTop = 0.001f;
+                }
+
+                // Wrap this in detection logic
+                this.Column = newCoumn;
+                this.Row = newRow;
+                this.RelativeLeft = newLeft;
+                this.RelativeTop = newTop;
+            return distance;
         }
-
-        internal void SetBestDirection(Track track)
-        {
-            TrainDirection direction = track.Direction switch
-            {
-                TrackDirection.Vertical => Randomize(TrainDirection.Up, TrainDirection.Down),
-                TrackDirection.Horizontal => Randomize(TrainDirection.Left, TrainDirection.Right),
-                TrackDirection.LeftUp => Randomize(TrainDirection.Left, TrainDirection.Up),
-                TrackDirection.RightUp => Randomize(TrainDirection.Right, TrainDirection.Up),
-                TrackDirection.RightDown => Randomize(TrainDirection.Right, TrainDirection.Down),
-                TrackDirection.LeftDown => Randomize(TrainDirection.Left, TrainDirection.Down),
-                TrackDirection.RightUpDown => Randomize(TrainDirection.Right, TrainDirection.Up, TrainDirection.Down),
-                TrackDirection.LeftRightDown => Randomize(TrainDirection.Left, TrainDirection.Right, TrainDirection.Down),
-                TrackDirection.LeftUpDown => Randomize(TrainDirection.Left, TrainDirection.Up, TrainDirection.Down),
-                TrackDirection.LeftRightUp => Randomize(TrainDirection.Left, TrainDirection.Right, TrainDirection.Up),
-                TrackDirection.Cross => Randomize(TrainDirection.Up, TrainDirection.Down, TrainDirection.Left, TrainDirection.Right),
-                _ => throw new InvalidOperationException()
-            };
-            this.Direction = direction;
-        }
-
-        private TrainDirection Randomize(params TrainDirection[] possibleDirections) => possibleDirections[_random.Next(0, possibleDirections.Length)];
     }
 }

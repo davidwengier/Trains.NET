@@ -31,6 +31,156 @@ namespace Trains.NET.Engine
             _ => false
         };
 
+        internal (float RelativeLeft, float RelativeTop, float Angle, float Distance) Move(float relativeLeft, float relativeTop, float angle, float distance)
+        => this.Direction switch
+        {
+            TrackDirection.LeftUp => MoveLeftUp(relativeLeft, relativeTop, angle, distance),
+            TrackDirection.RightUp => throw null,
+            TrackDirection.Horizontal => MoveHorizontal(relativeLeft, relativeTop, angle, distance),
+            TrackDirection.Vertical => MoveVertical(relativeLeft, relativeTop, angle, distance),
+            TrackDirection.Cross => throw null,
+            TrackDirection.LeftUpDown => throw null,
+            TrackDirection.LeftRightUp => throw null,
+            TrackDirection.RightUpDown => throw null,
+            _ => throw new System.Exception(null)
+        };
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftUp(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
+
+            float radius = 0.5f;
+            double relAngle = Math.Atan2((double)relativeTop, (double)relativeLeft);
+            double angleToMove = distance / radius;
+            if (angle < 45.0f || angle > 225.0f)
+            {
+                
+                if(relAngle - angleToMove < 0)
+                {
+                    double angleOver = angleToMove - relAngle;
+                    relAngle = -0.001f;
+                    distance = (float)(distance - angleOver * radius);
+                }
+                else
+                {
+                    relAngle -= angleToMove;
+                    distance = 0;
+                }
+                angle = (float)(360 * relAngle / (2 * Math.PI)) - 90.0f;
+                if (angle < 360) angle += 360;
+            }
+            else
+            {
+                if (relAngle + angleToMove > Math.PI / 2)
+                {
+                    double angleOver = (angleToMove + relAngle) - Math.PI / 2;
+                    relAngle = (Math.PI / 2) + 0.001f;
+                    distance = (float)(distance - angleOver * radius);
+                }
+                else
+                {
+                    relAngle += angleToMove;
+                    distance = 0;
+                }
+                angle = (float)(360 * relAngle / (2 * Math.PI)) + 90.0f;
+                if (angle > 360) angle -= 360;
+            }
+
+            relativeTop = (float)(radius * Math.Sin(relAngle));
+            relativeLeft = (float)(radius * Math.Cos(relAngle));
+
+            return (relativeLeft, relativeTop, angle, distance);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveVertical(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            // Snap left
+            relativeLeft = 0.5f;
+
+            // Snap angle
+            if (angle < 180f)
+            {
+                angle = 90f;
+                float toGo = 1.0f - relativeTop;
+
+                if (distance < toGo)
+                {
+                    relativeTop += distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeTop = 1.1f;
+                }
+            }
+            else
+            {
+                angle = 270f;
+                float toGo = relativeTop;
+
+                if (distance < toGo)
+                {
+                    relativeTop -= distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeTop = -0.1f;
+                }
+            }
+
+            return (relativeLeft, relativeTop, angle, distance);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveHorizontal(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            // Snap top
+            relativeTop = 0.5f;
+
+            // Snap angle
+            if (angle < 90f || angle > 270f)
+            {
+                angle = 0f;
+                float toGo = 1.0f - relativeLeft;
+
+                if (distance < toGo)
+                {
+                    relativeLeft += distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeLeft = 1.1f;
+                }
+            }
+            else
+            {
+                angle = 180f;
+                float toGo = relativeLeft;
+
+                if (distance < toGo)
+                {
+                    relativeLeft -= distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeLeft = -0.1f;
+                }
+            }
+
+            return (relativeLeft, relativeTop, angle, distance);
+        }
+
+
+
         public bool CanConnectDown => this.Direction switch
         {
             _ when !this.Happy => true,
@@ -42,77 +192,6 @@ namespace Trains.NET.Engine
             TrackDirection.LeftUpDown => true,
             TrackDirection.RightUpDown => true,
             _ => false
-        };
-
-        public float GetTrainAngle(TrainDirection direction) => this.Direction switch
-        {
-            TrackDirection.RightDown when direction == TrainDirection.Down => 225,
-            TrackDirection.RightUp when direction == TrainDirection.Up => 315,
-            TrackDirection.LeftUp when direction == TrainDirection.Up => 45,
-            TrackDirection.LeftDown when direction == TrainDirection.Down => 135,
-            TrackDirection.RightDown when direction == TrainDirection.Right => 45,
-            TrackDirection.RightUp when direction == TrainDirection.Right => 135,
-            TrackDirection.LeftUp when direction == TrainDirection.Left => 225,
-            TrackDirection.LeftDown when direction == TrainDirection.Left => 315,
-
-            TrackDirection.LeftRightDown when direction == TrainDirection.Down => 225,
-            TrackDirection.LeftRightDown when direction == TrainDirection.Right => 135,
-            TrackDirection.LeftRightDown when direction == TrainDirection.Left => 315,
-
-            TrackDirection.LeftRightUp when direction == TrainDirection.Up => 315,
-            TrackDirection.LeftRightUp when direction == TrainDirection.Right => 45,
-            TrackDirection.LeftRightUp when direction == TrainDirection.Left => 225,
-
-            TrackDirection.LeftUpDown when direction == TrainDirection.Left => 225,
-            TrackDirection.LeftUpDown when direction == TrainDirection.Down => 315,
-            TrackDirection.LeftUpDown when direction == TrainDirection.Up => 45,
-
-            TrackDirection.RightUpDown when direction == TrainDirection.Right => 135,
-            TrackDirection.RightUpDown when direction == TrainDirection.Down => 45,
-            TrackDirection.RightUpDown when direction == TrainDirection.Up => 315,
-
-            TrackDirection.Horizontal when direction == TrainDirection.Right => 90,
-            TrackDirection.Horizontal when direction == TrainDirection.Left => 270,
-
-            TrackDirection.Vertical when direction == TrainDirection.Up => 0,
-            TrackDirection.Vertical when direction == TrainDirection.Down => 180,
-
-            TrackDirection.Cross when direction == TrainDirection.Right => 90,
-            TrackDirection.Cross when direction == TrainDirection.Left => 270,
-            TrackDirection.Cross when direction == TrainDirection.Up => 0,
-            TrackDirection.Cross when direction == TrainDirection.Down => 180,
-
-            _ => throw new InvalidOperationException()
-        };
-
-        internal TrainDirection GetTrainDirection(TrainDirection direction) => this.Direction switch
-        {
-            TrackDirection.RightDown when direction == TrainDirection.Left => TrainDirection.Down,
-            TrackDirection.RightUp when direction == TrainDirection.Left => TrainDirection.Up,
-            TrackDirection.LeftUp when direction == TrainDirection.Right => TrainDirection.Up,
-            TrackDirection.LeftDown when direction == TrainDirection.Right => TrainDirection.Down,
-            TrackDirection.RightDown when direction == TrainDirection.Up => TrainDirection.Right,
-            TrackDirection.RightUp when direction == TrainDirection.Down => TrainDirection.Right,
-            TrackDirection.LeftUp when direction == TrainDirection.Down => TrainDirection.Left,
-            TrackDirection.LeftDown when direction == TrainDirection.Up => TrainDirection.Left,
-
-            TrackDirection.LeftRightDown when direction == TrainDirection.Left => TrainDirection.Down,
-            TrackDirection.LeftRightDown when direction == TrainDirection.Right => TrainDirection.Down,
-            TrackDirection.LeftRightDown when direction == TrainDirection.Up => TrainDirection.Left,
-
-            TrackDirection.LeftRightUp when direction == TrainDirection.Left => TrainDirection.Up,
-            TrackDirection.LeftRightUp when direction == TrainDirection.Right => TrainDirection.Up,
-            TrackDirection.LeftRightUp when direction == TrainDirection.Down => TrainDirection.Left,
-
-            TrackDirection.LeftUpDown when direction == TrainDirection.Down => TrainDirection.Left,
-            TrackDirection.LeftUpDown when direction == TrainDirection.Up => TrainDirection.Left,
-            TrackDirection.LeftUpDown when direction == TrainDirection.Right => TrainDirection.Up,
-
-            TrackDirection.RightUpDown when direction == TrainDirection.Down => TrainDirection.Right,
-            TrackDirection.RightUpDown when direction == TrainDirection.Up => TrainDirection.Right,
-            TrackDirection.RightUpDown when direction == TrainDirection.Left => TrainDirection.Up,
-
-            _ => direction
         };
 
         public bool CanConnectLeft => this.Direction switch

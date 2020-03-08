@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering
             TextSize = 20
         };
 
-        public bool Enabled { get; set; };
+        public bool Enabled { get; set; }
         public string Name => "AngleHelper";
 
         public ZZZAngleHelperRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters)

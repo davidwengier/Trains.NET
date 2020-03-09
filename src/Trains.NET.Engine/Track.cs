@@ -6,6 +6,8 @@ namespace Trains.NET.Engine
     [DebuggerDisplay("{Direction,nq}")]
     public class Track
     {
+        private const float RelativeCellRadius = 0.5f;
+        private const float OutsideCellAnglePadding = 0.001f;
         private readonly IGameBoard _gameBoard;
 
         public Track(IGameBoard gameBoard)
@@ -45,54 +47,109 @@ namespace Trains.NET.Engine
             _ => throw new System.Exception(null)
         };
 
-        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftUp(float relativeLeft, float relativeTop, float angle, float distance)
+        private static double RadToDegree(double angle) => angle * 180.0 / Math.PI;
+
+        private static double DegreeToRad(double angle) => angle / (180.0 / Math.PI);
+
+        private static float KeepWithin0and360(float angle)
         {
+            while (angle < 0) angle += 360;
+            while (angle > 360) angle -= 360;
+            return angle;
+        }
+
+        private static double PointsToAngle(float x, float y)
+        {
+            // Atan2 allows us to find the angle between 0,0 and a point
+            // Atan2 is special, as it takes into account where on the circle the point is
+            // BUT BE CAREFUL!!! Atan takes Y as the FRIST paramater, tricky math!
+
+            return Math.Atan2(y, x);
+        }
+        private static (float x, float y) AngleToPoints(double angle, float radius)
+        {
+            // Sin for Y, Cos for X, multiply them by the radius and we are done!
+            float y = (float)(radius * Math.Sin(angle));
+            float x = (float)(radius * Math.Cos(angle));
+
+            return (x, y);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            // Find the angle within the tracks circle using the current position
+            // This *should* be perpendicular to angle
+            double currentAngle = PointsToAngle(relativeLeft, relativeTop);
+
             // To travel 2PIr, we need to move 360
             // To travel x we need to move x/2PIr * 360
             // To travel x rad we need to move x/2PIr * 2PI
             // To travel x rad we need to move x/r
+            double angleToMove = distance / RelativeCellRadius;
 
-            float radius = 0.5f;
-            double relAngle = Math.Atan2((double)relativeTop, (double)relativeLeft);
-            double angleToMove = distance / radius;
-            if (angle < 45.0f || angle > 225.0f)
+            // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
+            if (trainAngle < 45.0f || trainAngle > 225.0f)
             {
-                
-                if(relAngle - angleToMove < 0)
-                {
-                    double angleOver = angleToMove - relAngle;
-                    relAngle = -0.001f;
-                    distance = (float)(distance - angleOver * radius);
-                }
-                else
-                {
-                    relAngle -= angleToMove;
-                    distance = 0;
-                }
-                angle = (float)(360 * relAngle / (2 * Math.PI)) - 90.0f;
-                if (angle < 360) angle += 360;
+                // We are facing right/up, so we move counter clockwise, with a minimum angle of 0
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, 0);
+
+                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
-                if (relAngle + angleToMove > Math.PI / 2)
-                {
-                    double angleOver = (angleToMove + relAngle) - Math.PI / 2;
-                    relAngle = (Math.PI / 2) + 0.001f;
-                    distance = (float)(distance - angleOver * radius);
-                }
-                else
-                {
-                    relAngle += angleToMove;
-                    distance = 0;
-                }
-                angle = (float)(360 * relAngle / (2 * Math.PI)) + 90.0f;
-                if (angle > 360) angle -= 360;
+                // We are NOT facing right/up, so we move clockwise, with a maximum angle of 90 aka PI/2
+                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, Math.PI / 2);
+
+                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
             }
 
-            relativeTop = (float)(radius * Math.Sin(relAngle));
-            relativeLeft = (float)(radius * Math.Cos(relAngle));
+            // Double check to keep our angle in range, this makes our angle checks easier!:
+            trainAngle = KeepWithin0and360(trainAngle);
 
-            return (relativeLeft, relativeTop, angle, distance);
+            // Find our new position on the track
+            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+
+            return (relativeLeft, relativeTop, trainAngle, distance);
+        }
+
+        private static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, double angleToMove, float distance, double minimumNewAngle)
+        {
+            // If the angle to move is outside our limits, then only move as much as we can
+            if (currentAngle - angleToMove < minimumNewAngle)
+            {
+                // Calculate how far over we are
+                double angleOver = (angleToMove - currentAngle) + minimumNewAngle;
+
+                // Set our angle to the limit, and a bit over
+                currentAngle = minimumNewAngle - OutsideCellAnglePadding;
+
+                // Calculate how far we could move
+                distance = (float)(distance - angleOver * RelativeCellRadius);
+            }
+            else
+            {
+                currentAngle -= angleToMove;
+                distance = 0;
+            }
+
+            return (currentAngle, distance);
+        }
+
+        private static (double currentAngle, float distance) MoveClockwise(double currentAngle, double angleToMove, float distance, double maximumNewAngle)
+        {
+            if (currentAngle + angleToMove > maximumNewAngle)
+            {
+                double angleOver = (angleToMove + currentAngle) - maximumNewAngle;
+                currentAngle = maximumNewAngle + OutsideCellAnglePadding;
+                distance = (float)(distance - angleOver * RelativeCellRadius);
+            }
+            else
+            {
+                currentAngle += angleToMove;
+                distance = 0;
+            }
+
+            return (currentAngle, distance);
         }
 
         private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveVertical(float relativeLeft, float relativeTop, float angle, float distance)

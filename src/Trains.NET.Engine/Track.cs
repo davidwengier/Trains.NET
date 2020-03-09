@@ -55,10 +55,6 @@ namespace Trains.NET.Engine
 
         private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveCorner(float relativeLeft, float relativeTop, float trainAngle, float distance, float cornerAngle)
         {
-            // As the train is perpendicular to the corner angle, we can use the corner angle as a maximum to find clockwise vs counterclockwise
-            //  minus 180 to get the minimum limit, but keep it in the 0-360 range (wrap it!)
-            float minimumCornerAngle = MathHelpers.KeepWithin0and360(cornerAngle - 180.0f);
-
             // Use the angle to figure out which quadrent the corner is in
             (float scaleLeft, float scaleTop) = CalculateQuadrantScale(cornerAngle);
 
@@ -69,26 +65,41 @@ namespace Trains.NET.Engine
             double angleToMove = distance / RelativeCellRadius;
 
             // Using the angle of the train, find clockwise vs counterclockwise
-            float directionScale = MathHelpers.BetweenAngles(trainAngle, minimumCornerAngle, cornerAngle) ? -1.0f : 1.0f;
+            float directionScale = CalculateDirectionScale(cornerAngle, trainAngle);
 
             // Using the corner angle, we can now find the limit angle, aka, maxiumum angle in our given direction before we are in the next cell
             //  Note: we use 44.999... here as jumping can happen when exactly 90 degrees
             double limitAngle = MathHelpers.KeepWithinNegPIandPIRads(MathHelpers.DegreeToRad(cornerAngle + directionScale * 44.999f));
 
             // Find our new angle, and if we have any distance left over
-            (currentAngle, distance) = TravelAlongArc(currentAngle, angleToMove, distance, limitAngle, directionScale);
+            (double newAngle, float newDistance) = TravelAlongArc(currentAngle, angleToMove, distance, limitAngle, directionScale);
 
             // Our train will be prependicular (at 90 degrees) to the angle returned
-            trainAngle = (float)MathHelpers.RadToDegree(currentAngle) + directionScale * 90.0f;
+            float newTrainAngle = (float)MathHelpers.RadToDegree(newAngle) + directionScale * 90.0f;
 
             // Keep things in the circle
-            trainAngle = MathHelpers.KeepWithin0and360(trainAngle);
+            newTrainAngle = MathHelpers.KeepWithin0and360(newTrainAngle);
 
             // Find the new point on the track
-            (relativeLeft, relativeTop) = MathHelpers.AngleToPoints(currentAngle, RelativeCellRadius);
+            (float newRelativeLeft, float newRelativeTop) = MathHelpers.AngleToPoints(newAngle, RelativeCellRadius);
 
             // Return everything, shifting back
-            return (relativeLeft + scaleLeft, relativeTop + scaleTop, trainAngle, distance);
+            return (newRelativeLeft + scaleLeft, newRelativeTop + scaleTop, newTrainAngle, newDistance);
+        }
+
+        private static float CalculateDirectionScale(float cornerAngle, float trainAngle)
+        {
+            // As the train is perpendicular to the corner angle, we can use the corner angle as a maximum to find clockwise vs counterclockwise
+            //  minus 180 to get the minimum limit, but keep it in the 0-360 range (wrap it!)
+            float minimumCornerAngle = MathHelpers.KeepWithin0and360(cornerAngle - 180.0f);
+
+            // Using the angle of the train, find clockwise vs counterclockwise
+            if(MathHelpers.BetweenAngles(trainAngle, minimumCornerAngle, cornerAngle))
+            {
+                return -1.0f;
+            }
+
+            return 1.0f;
         }
 
         private static (float scaleLeft, float scaleTop) CalculateQuadrantScale(float cornerAngle)

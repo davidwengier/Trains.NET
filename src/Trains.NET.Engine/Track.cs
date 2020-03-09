@@ -37,13 +37,12 @@ namespace Trains.NET.Engine
         => this.Direction switch
         {
             TrackDirection.LeftUp => MoveLeftUp(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.RightUp => throw null,
+            TrackDirection.RightUp => MoveRightUp(relativeLeft, relativeTop, angle, distance),
+            TrackDirection.LeftDown => MoveLeftDown(relativeLeft, relativeTop, angle, distance),
+            TrackDirection.RightDown => MoveRightDown(relativeLeft, relativeTop, angle, distance),
             TrackDirection.Horizontal => MoveHorizontal(relativeLeft, relativeTop, angle, distance),
             TrackDirection.Vertical => MoveVertical(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.Cross => throw null,
-            TrackDirection.LeftUpDown => throw null,
-            TrackDirection.LeftRightUp => throw null,
-            TrackDirection.RightUpDown => throw null,
+            TrackDirection.Cross => MoveCross(relativeLeft, relativeTop, angle, distance),
             _ => throw new System.Exception(null)
         };
 
@@ -73,6 +72,117 @@ namespace Trains.NET.Engine
             float x = (float)(radius * Math.Cos(angle));
 
             return (x, y);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            // Find the angle within the tracks circle using the current position
+            // This *should* be perpendicular to angle
+            double currentAngle = PointsToAngle(relativeLeft , relativeTop- 1.0f);
+
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
+            double angleToMove = distance / RelativeCellRadius;
+
+            // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
+            if (trainAngle > 135.0f && trainAngle < 315.0f)
+            {
+                // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, -Math.PI / 2);
+
+                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+            }
+            else
+            {
+                // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
+                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, 0);
+
+                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+            }
+
+            // Double check to keep our angle in range, this makes our angle checks easier!:
+            trainAngle = KeepWithin0and360(trainAngle);
+
+            // Find our new position on the track
+            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+
+            return (relativeLeft, relativeTop + 1.0f, trainAngle, distance);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveRightDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            // Find the angle within the tracks circle using the current position
+            // This *should* be perpendicular to angle
+            double currentAngle = PointsToAngle(relativeLeft - 1.0f, relativeTop - 1.0f);
+
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
+            double angleToMove = distance / RelativeCellRadius;
+
+            // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
+            if (trainAngle > 45.0f && trainAngle < 220.0f)
+            {
+                // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, -Math.PI);
+
+                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+            }
+            else
+            {
+                // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
+                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, 2 * Math.PI);
+
+                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+            }
+
+            // Double check to keep our angle in range, this makes our angle checks easier!:
+            trainAngle = KeepWithin0and360(trainAngle);
+
+            // Find our new position on the track
+            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+
+            return (relativeLeft + 1.0f, relativeTop + 1.0f, trainAngle, distance);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveRightUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            // Find the angle within the tracks circle using the current position
+            // This *should* be perpendicular to angle
+            double currentAngle = PointsToAngle(relativeLeft - 1.0f, relativeTop);
+
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
+            double angleToMove = distance / RelativeCellRadius;
+
+            // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
+            if (trainAngle > -45.0f && trainAngle < 135.0f)
+            {
+                // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, Math.PI / 2);
+
+                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+            }
+            else
+            {
+                // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
+                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, Math.PI);
+
+                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+            }
+
+            // Double check to keep our angle in range, this makes our angle checks easier!:
+            trainAngle = KeepWithin0and360(trainAngle);
+
+            // Find our new position on the track
+            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+
+            return (relativeLeft + 1.0f, relativeTop, trainAngle, distance);
         }
 
         private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
@@ -192,6 +302,19 @@ namespace Trains.NET.Engine
             }
 
             return (relativeLeft, relativeTop, angle, distance);
+        }
+
+        private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveCross(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            if ((angle > 45.0f && angle < 135.0f) ||
+                (angle > 225.0f && angle < 315.0f))
+            {
+                return MoveVertical(relativeLeft, relativeTop, angle, distance);
+            }
+            else
+            {
+                return MoveHorizontal(relativeLeft, relativeTop, angle, distance);
+            }
         }
 
         private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveHorizontal(float relativeLeft, float relativeTop, float angle, float distance)

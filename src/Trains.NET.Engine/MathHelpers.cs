@@ -35,5 +35,13 @@ namespace Trains.NET.Engine
         public static bool BetweenAngles(float angle, float limit1, float limit2) =>
             (limit1 < limit2 && (angle > limit1 && angle < limit2)) ||
                 (limit2 < limit1 && (angle > limit1 || angle < limit2));
+
+        public static double KeepWithinNegPIandPIRads(double angle)
+        {
+            while (angle > Math.PI) angle -= Math.PI * 2;
+            while (angle < -Math.PI) angle += Math.PI * 2;
+            return angle;
+        }
+
     }
 }

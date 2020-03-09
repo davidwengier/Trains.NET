@@ -104,13 +104,11 @@ namespace Trains.NET.Engine
 
         private static (double currentAngle, float distance) TravelAlongArc(double currentAngle, double angleToMove, float distance, double limit, float scale)
         {
-            if (scale * (limit - currentAngle) < angleToMove)
+            double angleOver = scale * (limit - currentAngle) - angleToMove;
+            if (angleOver < 0)
             {
-                double angleOver = angleToMove + scale * (currentAngle - limit);
-
                 currentAngle = limit + scale * OutsideCellAnglePadding;
-
-                distance = (float)(distance - angleOver * RelativeCellRadius);
+                distance = (float)(distance + angleOver * RelativeCellRadius);
             }
             else
             {

@@ -46,39 +46,11 @@ namespace Trains.NET.Engine
             _ => throw new System.Exception(null)
         };
 
-        private static double RadToDegree(double angle) => angle * 180.0 / Math.PI;
-
-        private static double DegreeToRad(double angle) => angle / (180.0 / Math.PI);
-
-        private static float KeepWithin0and360(float angle)
-        {
-            while (angle < 0) angle += 360;
-            while (angle > 360) angle -= 360;
-            return angle;
-        }
-
-        private static double PointsToAngle(float x, float y)
-        {
-            // Atan2 allows us to find the angle between 0,0 and a point
-            // Atan2 is special, as it takes into account where on the circle the point is
-            // BUT BE CAREFUL!!! Atan takes Y as the FRIST paramater, tricky math!
-
-            return Math.Atan2(y, x);
-        }
-        private static (float x, float y) AngleToPoints(double angle, float radius)
-        {
-            // Sin for Y, Cos for X, multiply them by the radius and we are done!
-            float y = (float)(radius * Math.Sin(angle));
-            float x = (float)(radius * Math.Cos(angle));
-
-            return (x, y);
-        }
-
         private static (float RelativeLeft, float RelativeTop, float Angle, float Distance) MoveLeftDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
         {
             // Find the angle within the tracks circle using the current position
             // This *should* be perpendicular to angle
-            double currentAngle = PointsToAngle(relativeLeft , relativeTop- 1.0f);
+            double currentAngle = MathHelpers.PointsToAngle(relativeLeft , relativeTop- 1.0f);
 
             // To travel 2PIr, we need to move 360
             // To travel x we need to move x/2PIr * 360
@@ -92,21 +64,21 @@ namespace Trains.NET.Engine
                 // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
                 (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, -Math.PI / 2);
 
-                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
                 // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
                 (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, 0);
 
-                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) + 90.0f;
             }
 
             // Double check to keep our angle in range, this makes our angle checks easier!:
-            trainAngle = KeepWithin0and360(trainAngle);
+            trainAngle = MathHelpers.KeepWithin0and360(trainAngle);
 
             // Find our new position on the track
-            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+            (relativeLeft, relativeTop) = MathHelpers.AngleToPoints(currentAngle, RelativeCellRadius);
 
             return (relativeLeft, relativeTop + 1.0f, trainAngle, distance);
         }
@@ -115,7 +87,7 @@ namespace Trains.NET.Engine
         {
             // Find the angle within the tracks circle using the current position
             // This *should* be perpendicular to angle
-            double currentAngle = PointsToAngle(relativeLeft - 1.0f, relativeTop - 1.0f);
+            double currentAngle = MathHelpers.PointsToAngle(relativeLeft - 1.0f, relativeTop - 1.0f);
 
             // To travel 2PIr, we need to move 360
             // To travel x we need to move x/2PIr * 360
@@ -129,21 +101,21 @@ namespace Trains.NET.Engine
                 // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
                 (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, -Math.PI);
 
-                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
                 // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
                 (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, 2 * Math.PI);
 
-                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) + 90.0f;
             }
 
             // Double check to keep our angle in range, this makes our angle checks easier!:
-            trainAngle = KeepWithin0and360(trainAngle);
+            trainAngle = MathHelpers.KeepWithin0and360(trainAngle);
 
             // Find our new position on the track
-            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+            (relativeLeft, relativeTop) = MathHelpers.AngleToPoints(currentAngle, RelativeCellRadius);
 
             return (relativeLeft + 1.0f, relativeTop + 1.0f, trainAngle, distance);
         }
@@ -152,7 +124,7 @@ namespace Trains.NET.Engine
         {
             // Find the angle within the tracks circle using the current position
             // This *should* be perpendicular to angle
-            double currentAngle = PointsToAngle(relativeLeft - 1.0f, relativeTop);
+            double currentAngle = MathHelpers.PointsToAngle(relativeLeft - 1.0f, relativeTop);
 
             // To travel 2PIr, we need to move 360
             // To travel x we need to move x/2PIr * 360
@@ -166,21 +138,21 @@ namespace Trains.NET.Engine
                 // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
                 (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, Math.PI / 2);
 
-                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
                 // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
                 (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, Math.PI);
 
-                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) + 90.0f;
             }
 
             // Double check to keep our angle in range, this makes our angle checks easier!:
-            trainAngle = KeepWithin0and360(trainAngle);
+            trainAngle = MathHelpers.KeepWithin0and360(trainAngle);
 
             // Find our new position on the track
-            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+            (relativeLeft, relativeTop) = MathHelpers.AngleToPoints(currentAngle, RelativeCellRadius);
 
             return (relativeLeft + 1.0f, relativeTop, trainAngle, distance);
         }
@@ -189,7 +161,7 @@ namespace Trains.NET.Engine
         {
             // Find the angle within the tracks circle using the current position
             // This *should* be perpendicular to angle
-            double currentAngle = PointsToAngle(relativeLeft, relativeTop);
+            double currentAngle = MathHelpers.PointsToAngle(relativeLeft, relativeTop);
 
             // To travel 2PIr, we need to move 360
             // To travel x we need to move x/2PIr * 360
@@ -203,21 +175,21 @@ namespace Trains.NET.Engine
                 // We are facing right/up, so we move counter clockwise, with a minimum angle of 0
                 (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, distance, 0);
 
-                trainAngle = (float)RadToDegree(currentAngle) - 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
                 // We are NOT facing right/up, so we move clockwise, with a maximum angle of 90 aka PI/2
                 (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, distance, Math.PI / 2);
 
-                trainAngle = (float)RadToDegree(currentAngle) + 90.0f;
+                trainAngle = (float)MathHelpers.RadToDegree(currentAngle) + 90.0f;
             }
 
             // Double check to keep our angle in range, this makes our angle checks easier!:
-            trainAngle = KeepWithin0and360(trainAngle);
+            trainAngle = MathHelpers.KeepWithin0and360(trainAngle);
 
             // Find our new position on the track
-            (relativeLeft, relativeTop) = AngleToPoints(currentAngle, RelativeCellRadius);
+            (relativeLeft, relativeTop) = MathHelpers.AngleToPoints(currentAngle, RelativeCellRadius);
 
             return (relativeLeft, relativeTop, trainAngle, distance);
         }

@@ -31,80 +31,87 @@ namespace Trains.NET.Engine
             _ => false
         };
 
-        internal TrainPosition Move(float relativeLeft, float relativeTop, float angle, float distance)
-        => this.Direction switch
+        internal void Move(TrainPosition position)
         {
-            TrackDirection.LeftUp => TrainMovement.MoveLeftUp(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.RightUp => TrainMovement.MoveRightUp(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.LeftDown => TrainMovement.MoveLeftDown(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.RightDown => TrainMovement.MoveRightDown(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.Horizontal => TrainMovement.MoveHorizontal(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.Vertical => TrainMovement.MoveVertical(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.Cross => MoveCross(relativeLeft, relativeTop, angle, distance),
-
-            TrackDirection.LeftRightDown => MoveLeftRightDown(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.LeftUpDown => MoveLeftUpDown(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.LeftRightUp => MoveLeftRightUp(relativeLeft, relativeTop, angle, distance),
-            TrackDirection.RightUpDown => MoveRightUpDown(relativeLeft, relativeTop, angle, distance),
-
-            _ => throw new System.Exception(null)
-        };
-
-        private static TrainPosition MoveLeftRightDown(float relativeLeft, float relativeTop, float angle, float distance)
-        {
-            // if from left, its a left down track
-            if (angle <= 90.0)
+            switch (this.Direction)
             {
-                return TrainMovement.MoveLeftDown(relativeLeft, relativeTop, angle, distance);
+                case TrackDirection.Horizontal: TrainMovement.MoveHorizontal(position); break;
+                case TrackDirection.Vertical: TrainMovement.MoveVertical(position); break;
+                case TrackDirection.LeftUp: TrainMovement.MoveLeftUp(position); break;
+                case TrackDirection.RightUp: TrainMovement.MoveRightUp(position); break;
+                case TrackDirection.RightDown: TrainMovement.MoveRightDown(position); break;
+                case TrackDirection.LeftDown: TrainMovement.MoveLeftDown(position); break;
+                case TrackDirection.RightUpDown: MoveRightUpDown(position); break;
+                case TrackDirection.LeftRightDown: MoveLeftRightDown(position); break;
+                case TrackDirection.LeftUpDown: MoveLeftUpDown(position); break;
+                case TrackDirection.LeftRightUp: MoveLeftRightUp(position); break;
+                case TrackDirection.Cross: MoveCross(position); break;
+                default: throw new InvalidOperationException("I don't know what that track is!");
             }
-
-            return TrainMovement.MoveRightDown(relativeLeft, relativeTop, angle, distance);
         }
 
-        private static TrainPosition MoveLeftUpDown(float relativeLeft, float relativeTop, float angle, float distance)
+        private static void MoveLeftRightDown(TrainPosition position)
         {
             // if from left, its a left down track
-            if (TrainMovement.BetweenAngles(angle, 89, 181))
+            if (position.Angle <= 90.0)
             {
-                return TrainMovement.MoveLeftUp(relativeLeft, relativeTop, angle, distance);
-            }
-
-            return TrainMovement.MoveLeftDown(relativeLeft, relativeTop, angle, distance);
-        }
-
-        private static TrainPosition MoveLeftRightUp(float relativeLeft, float relativeTop, float angle, float distance)
-        {
-            // if from left, its a left down track
-            if (TrainMovement.BetweenAngles(angle, 179, 271))
-            {
-                return TrainMovement.MoveRightUp(relativeLeft, relativeTop, angle, distance);
-            }
-
-            return TrainMovement.MoveLeftUp(relativeLeft, relativeTop, angle, distance);
-        }
-
-        private static TrainPosition MoveRightUpDown(float relativeLeft, float relativeTop, float angle, float distance)
-        {
-            // if from left, its a left down track
-            if (angle >= 270.0)
-            {
-                return TrainMovement.MoveRightDown(relativeLeft, relativeTop, angle, distance);
-            }
-
-            return TrainMovement.MoveRightUp(relativeLeft, relativeTop, angle, distance);
-        }
-
-
-        private static TrainPosition MoveCross(float relativeLeft, float relativeTop, float angle, float distance)
-        {
-            if ((angle > 45.0f && angle < 135.0f) ||
-                (angle > 225.0f && angle < 315.0f))
-            {
-                return TrainMovement.MoveVertical(relativeLeft, relativeTop, angle, distance);
+                TrainMovement.MoveLeftDown(position);
             }
             else
             {
-                return TrainMovement.MoveHorizontal(relativeLeft, relativeTop, angle, distance);
+                TrainMovement.MoveRightDown(position);
+            }
+        }
+
+        private static void MoveLeftUpDown(TrainPosition position)
+        {
+            // if from left, its a left down track
+            if (TrainMovement.BetweenAngles(position.Angle, 89, 181))
+            {
+                TrainMovement.MoveLeftUp(position);
+            }
+            else
+            {
+                TrainMovement.MoveLeftDown(position);
+            }
+        }
+
+        private static void MoveLeftRightUp(TrainPosition position)
+        {
+            // if from left, its a left down track
+            if (TrainMovement.BetweenAngles(position.Angle, 179, 271))
+            {
+                TrainMovement.MoveRightUp(position);
+            }
+            else
+            {
+                TrainMovement.MoveLeftUp(position);
+            }
+        }
+
+        private static void MoveRightUpDown(TrainPosition position)
+        {
+            // if from left, its a left down track
+            if (position.Angle > 180.0)
+            {
+                TrainMovement.MoveRightDown(position);
+            }
+            else
+            {
+                TrainMovement.MoveRightUp(position);
+            }
+        }
+
+        private static void MoveCross(TrainPosition position)
+        {
+            if ((position.Angle > 45.0f && position.Angle < 135.0f) ||
+                (position.Angle > 225.0f && position.Angle < 315.0f))
+            {
+                TrainMovement.MoveVertical(position);
+            }
+            else
+            {
+                TrainMovement.MoveHorizontal(position);
             }
         }
 

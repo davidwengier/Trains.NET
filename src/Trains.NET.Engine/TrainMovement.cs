@@ -85,32 +85,24 @@ namespace Trains.NET.Engine
             position.RelativeTop += Math.Abs(quadrantPositionY);
         }
 
-        public static TrainPosition MoveLeftDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        public static void MoveLeftDown(TrainPosition position)
         {
-            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
-            TrainMovement.MoveAroundCorner(p, 0, -1, 135, 315, -90, 0);
-            return p;
+            TrainMovement.MoveAroundCorner(position, 0, -1, 135, 315, -90, 0);
         }
 
-        public static TrainPosition MoveRightDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        public static void MoveRightDown(TrainPosition position)
         {
-            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
-            TrainMovement.MoveAroundCorner(p, -1, -1, 45, 220, -180, 360);
-            return p;
+            TrainMovement.MoveAroundCorner(position, -1, -1, 45, 220, -180, 360);
         }
 
-        public static TrainPosition MoveRightUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        public static void MoveRightUp(TrainPosition position)
         {
-            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
-            TrainMovement.MoveAroundCorner(p, -1, 0, -45, 135, 90, 180);
-            return p;
+            TrainMovement.MoveAroundCorner(position, -1, 0, -45, 135, 90, 180);
         }
 
-        public static TrainPosition MoveLeftUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        public static void MoveLeftUp(TrainPosition position)
         {
-            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
-            TrainMovement.MoveAroundCorner(p, 0, 0, 225, 45, 0, 90);
-            return p;
+            TrainMovement.MoveAroundCorner(position, 0, 0, 225, 45, 0, 90);
         }
 
         public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, double angleToMove, float distance, double minimumNewAngle)
@@ -153,88 +145,84 @@ namespace Trains.NET.Engine
             return (currentAngle, distance);
         }
 
-        public static TrainPosition MoveVertical(float relativeLeft, float relativeTop, float angle, float distance)
+        public static void MoveVertical(TrainPosition position)
         {
             // Snap left
-            relativeLeft = 0.5f;
+            position.RelativeLeft = 0.5f;
 
             // Snap angle
-            if (angle < 180f)
+            if (position.Angle < 180f)
             {
-                angle = 90f;
-                float toGo = 1.0f - relativeTop;
+                position.Angle = 90f;
+                float toGo = 1.0f - position.RelativeTop;
 
-                if (distance < toGo)
+                if (position.Distance < toGo)
                 {
-                    relativeTop += distance;
-                    distance = 0;
+                    position.RelativeTop += position.Distance;
+                    position.Distance = 0;
                 }
                 else
                 {
-                    distance -= toGo;
-                    relativeTop = 1.1f;
+                    position.Distance -= toGo;
+                    position.RelativeTop = 1.1f;
                 }
             }
             else
             {
-                angle = 270f;
-                float toGo = relativeTop;
+                position.Angle = 270f;
+                float toGo = position.RelativeTop;
 
-                if (distance < toGo)
+                if (position.Distance < toGo)
                 {
-                    relativeTop -= distance;
-                    distance = 0;
+                    position.RelativeTop -= position.Distance;
+                    position.Distance = 0;
                 }
                 else
                 {
-                    distance -= toGo;
-                    relativeTop = -0.1f;
+                    position.Distance -= toGo;
+                    position.RelativeTop = -0.1f;
                 }
             }
-
-            return (relativeLeft, relativeTop, angle, distance);
         }
 
-        public static TrainPosition MoveHorizontal(float relativeLeft, float relativeTop, float angle, float distance)
+        public static void MoveHorizontal(TrainPosition position)
         {
             // Snap top
-            relativeTop = 0.5f;
+            position.RelativeTop = 0.5f;
 
             // Snap angle
-            if (angle < 90f || angle > 270f)
+            if (position.Angle < 90f || position.Angle > 270f)
             {
-                angle = 0f;
-                float toGo = 1.0f - relativeLeft;
+                position.Angle = 0f;
+                float toGo = 1.0f - position.RelativeLeft;
 
-                if (distance < toGo)
+                if (position.Distance < toGo)
                 {
-                    relativeLeft += distance;
-                    distance = 0;
+                    position.RelativeLeft += position.Distance;
+                    position.Distance = 0;
                 }
                 else
                 {
-                    distance -= toGo;
-                    relativeLeft = 1.1f;
+                    position.Distance -= toGo;
+                    position.RelativeLeft = 1.1f;
                 }
             }
             else
             {
-                angle = 180f;
-                float toGo = relativeLeft;
+                position.Angle = 180f;
+                float toGo = position.RelativeLeft;
 
-                if (distance < toGo)
+                if (position.Distance < toGo)
                 {
-                    relativeLeft -= distance;
-                    distance = 0;
+                    position.RelativeLeft -= position.Distance;
+                    position.Distance = 0;
                 }
                 else
                 {
-                    distance -= toGo;
-                    relativeLeft = -0.1f;
+                    position.Distance -= toGo;
+                    position.RelativeLeft = -0.1f;
                 }
             }
-
-            return (relativeLeft, relativeTop, angle, distance);
         }
 
     }

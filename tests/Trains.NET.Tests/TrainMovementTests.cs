@@ -6,21 +6,21 @@ using Xunit;
 
 namespace Trains.NET.Tests
 {
-    public class MathHelpersTests
+    public class TrainMovementTests
     {
         [Theory]
         [InlineData(0.0, 0.0)]
         [InlineData(Math.PI / 2, 90.0)]
         [InlineData(Math.PI, 180.0)]
         [InlineData(Math.PI * 2, 360.0)]
-        public void RadToDegree(double angle, double expected) => Assert.Equal(expected, MathHelpers.RadToDegree(angle), 1);
+        public void RadToDegree(double angle, double expected) => Assert.Equal(expected, TrainMovement.RadToDegree(angle), 1);
 
         [Theory]
         [InlineData(0.0, 0.0)]
         [InlineData(90.0, Math.PI / 2)]
         [InlineData(180.0, Math.PI)]
         [InlineData(360.0, Math.PI * 2)]
-        public void DegreeToRad(double angle, double expected) => Assert.Equal(expected, MathHelpers.DegreeToRad(angle), 1);
+        public void DegreeToRad(double angle, double expected) => Assert.Equal(expected, TrainMovement.DegreeToRad(angle), 1);
 
         [Theory]
         [InlineData(0.0, 0.0)]
@@ -33,7 +33,7 @@ namespace Trains.NET.Tests
         [InlineData(-360.0, 0.0)]
         [InlineData(-810.0, 270.0)]
         [InlineData(-630.0, 90.0)]
-        public void KeepWithin0and360(float angle, float expected) => Assert.Equal(expected, MathHelpers.KeepWithin0and360(angle), 1);
+        public void KeepWithin0and360(float angle, float expected) => Assert.Equal(expected, TrainMovement.KeepWithin0and360(angle), 1);
 
         [Theory]
         [InlineData(45.0f, 0.0f, 90.0f)]
@@ -41,20 +41,20 @@ namespace Trains.NET.Tests
         [InlineData(270.0f, 180.0f, 360.0f)]
         [InlineData(360.0f, 270.0f, 90.0f)]
         [InlineData(0.0f, 270.0f, 90.0f)]
-        public void BetweenAngles_WithinAngle(float angle, float limit1, float limit2) => Assert.True(MathHelpers.BetweenAngles(angle, limit1, limit2));
+        public void BetweenAngles_WithinAngle(float angle, float limit1, float limit2) => Assert.True(TrainMovement.BetweenAngles(angle, limit1, limit2));
 
         [Theory]
         [InlineData(180.0f, 0.0f, 90.0f)]
         [InlineData(90.0f, 180.0f, 360.0f)]
         [InlineData(180.0f, 270.0f, 90.0f)]
-        public void BetweenAngles_OutsideAngle(float angle, float limit1, float limit2) => Assert.False(MathHelpers.BetweenAngles(angle, limit1, limit2));
+        public void BetweenAngles_OutsideAngle(float angle, float limit1, float limit2) => Assert.False(TrainMovement.BetweenAngles(angle, limit1, limit2));
 
         [Theory]
         [InlineData(1.0f, 0.0f, 0.0)]
         [InlineData(0.0f, 1.0f, Math.PI / 2)]
         [InlineData(-1.0f, 0.0f, Math.PI)]
         [InlineData(0.0f, -1.0f, -Math.PI / 2)]
-        public void PointsToAngle(float x, float y, double expected) => Assert.Equal(expected, MathHelpers.PointsToAngle(x, y), 1);
+        public void PointsToAngle(float x, float y, double expected) => Assert.Equal(expected, TrainMovement.PointsToAngle(x, y), 1);
 
 
         [Theory]
@@ -67,11 +67,10 @@ namespace Trains.NET.Tests
         [InlineData(Math.PI / 4, 1.0f, 0.707f, 0.707f)]
         public void AngleToPoints(double angle, float radius, float expectedX, float expectedY)
         {
-            (float x, float y) = MathHelpers.AngleToPoints(angle, radius);
+            (float x, float y) = TrainMovement.AngleToPoints(angle, radius);
 
             Assert.Equal(expectedX, x, 3);
             Assert.Equal(expectedY, y, 3);
         }
-
     }
 }

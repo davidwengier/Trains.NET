@@ -1,0 +1,241 @@
+﻿using System;
+
+namespace Trains.NET.Engine
+{
+    public static class TrainMovement
+    {
+        public static double RadToDegree(double angle) => angle * 180.0 / Math.PI;
+
+        public static double DegreeToRad(double angle) => angle / (180.0 / Math.PI);
+
+        public static float KeepWithin0and360(float angle)
+        {
+            while (angle < 0) angle += 360;
+            while (angle > 360) angle -= 360;
+            return angle;
+        }
+
+        public static double PointsToAngle(float x, float y)
+        {
+            // Atan2 allows us to find the angle between 0,0 and a point
+            // Atan2 is special, as it takes into account where on the circle the point is
+            // BUT BE CAREFUL!!! Atan takes Y as the FRIST paramater, tricky math!
+
+            return Math.Atan2(y, x);
+        }
+        public static (float x, float y) AngleToPoints(double angle, float radius)
+        {
+            // Sin for Y, Cos for X, multiply them by the radius and we are done!
+            float y = (float)(radius * Math.Sin(angle));
+            float x = (float)(radius * Math.Cos(angle));
+
+            return (x, y);
+        }
+
+        public static bool BetweenAngles(float angle, float limit1, float limit2)
+        {
+            return (limit1 < limit2 && (angle > limit1 && angle < limit2)) ||
+                (limit2 < limit1 && (angle > limit1 || angle < limit2));
+        }
+
+        /// <summary>
+        /// Moves a train around a 90 degree arc, in either direction
+        /// </summary>
+        /// <param name="position">The trains position</param>
+        /// <param name="quadrantPositionX">The distance between the center of the circle, and the left hand side of the cell</param>
+        /// <param name="quadrantPositionY">The distance between the center of the circle, and the top of the cell</param>
+        /// <param name="midpointAngle">The angle at the middle of the arc you want to move</param>
+        public static void MoveAroundCorner(TrainPosition position, int quadrantPositionX, int quadrantPositionY, int minTrainAngleCCW, int maxTrainAngleCCW, int minimumAngle, int maximumAngle)
+        {
+            // Find the angle within the tracks circle using the current position
+            // This *should* be perpendicular to angle
+            double currentAngle = TrainMovement.PointsToAngle(position.RelativeLeft - Math.Abs(quadrantPositionX), position.RelativeTop - Math.Abs(quadrantPositionY));
+
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
+            double angleToMove = position.Distance / 0.5;
+            float distance;
+            // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
+            if (BetweenAngles(position.Angle, minTrainAngleCCW, maxTrainAngleCCW))
+            {
+                // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, position.Distance, DegreeToRad(minimumAngle));
+
+                position.Angle = (float)TrainMovement.RadToDegree(currentAngle) - 90.0f;
+            }
+            else
+            {
+                // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
+                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, position.Distance, DegreeToRad(maximumAngle));
+
+                position.Angle = (float)TrainMovement.RadToDegree(currentAngle) + 90.0f;
+            }
+
+            position.Distance = distance;
+
+            // Double check to keep our angle in range, this makes our angle checks easier!:
+            position.Angle = TrainMovement.KeepWithin0and360(position.Angle);
+
+            // Find our new position on the track
+            (position.RelativeLeft, position.RelativeTop) = TrainMovement.AngleToPoints(currentAngle, 0.5f);
+
+            position.RelativeLeft += Math.Abs(quadrantPositionX);
+            position.RelativeTop += Math.Abs(quadrantPositionY);
+        }
+
+        public static TrainPosition MoveLeftDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
+            TrainMovement.MoveAroundCorner(p, 0, -1, 135, 315, -90, 0);
+            return p;
+        }
+
+        public static TrainPosition MoveRightDown(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
+            TrainMovement.MoveAroundCorner(p, -1, -1, 45, 220, -180, 360);
+            return p;
+        }
+
+        public static TrainPosition MoveRightUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
+            TrainMovement.MoveAroundCorner(p, -1, 0, -45, 135, 90, 180);
+            return p;
+        }
+
+        public static TrainPosition MoveLeftUp(float relativeLeft, float relativeTop, float trainAngle, float distance)
+        {
+            TrainPosition p = new TrainPosition(relativeLeft, relativeTop, trainAngle, distance);
+            TrainMovement.MoveAroundCorner(p, 0, 0, 225, 45, 0, 90);
+            return p;
+        }
+
+        public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, double angleToMove, float distance, double minimumNewAngle)
+        {
+            // If the angle to move is outside our limits, then only move as much as we can
+            if (currentAngle - angleToMove < minimumNewAngle)
+            {
+                // Calculate how far over we are
+                double angleOver = (angleToMove - currentAngle) + minimumNewAngle;
+
+                // Set our angle to the limit, and a bit over
+                currentAngle = minimumNewAngle - 0.001f;
+
+                // Calculate how far we could move
+                distance = (float)(distance - angleOver * 0.5f);
+            }
+            else
+            {
+                currentAngle -= angleToMove;
+                distance = 0;
+            }
+
+            return (currentAngle, distance);
+        }
+
+        public static (double currentAngle, float distance) MoveClockwise(double currentAngle, double angleToMove, float distance, double maximumNewAngle)
+        {
+            if (currentAngle + angleToMove > maximumNewAngle)
+            {
+                double angleOver = (angleToMove + currentAngle) - maximumNewAngle;
+                currentAngle = maximumNewAngle + 0.001f;
+                distance = (float)(distance - angleOver * 0.5f);
+            }
+            else
+            {
+                currentAngle += angleToMove;
+                distance = 0;
+            }
+
+            return (currentAngle, distance);
+        }
+
+        public static TrainPosition MoveVertical(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            // Snap left
+            relativeLeft = 0.5f;
+
+            // Snap angle
+            if (angle < 180f)
+            {
+                angle = 90f;
+                float toGo = 1.0f - relativeTop;
+
+                if (distance < toGo)
+                {
+                    relativeTop += distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeTop = 1.1f;
+                }
+            }
+            else
+            {
+                angle = 270f;
+                float toGo = relativeTop;
+
+                if (distance < toGo)
+                {
+                    relativeTop -= distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeTop = -0.1f;
+                }
+            }
+
+            return (relativeLeft, relativeTop, angle, distance);
+        }
+
+        public static TrainPosition MoveHorizontal(float relativeLeft, float relativeTop, float angle, float distance)
+        {
+            // Snap top
+            relativeTop = 0.5f;
+
+            // Snap angle
+            if (angle < 90f || angle > 270f)
+            {
+                angle = 0f;
+                float toGo = 1.0f - relativeLeft;
+
+                if (distance < toGo)
+                {
+                    relativeLeft += distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeLeft = 1.1f;
+                }
+            }
+            else
+            {
+                angle = 180f;
+                float toGo = relativeLeft;
+
+                if (distance < toGo)
+                {
+                    relativeLeft -= distance;
+                    distance = 0;
+                }
+                else
+                {
+                    distance -= toGo;
+                    relativeLeft = -0.1f;
+                }
+            }
+
+            return (relativeLeft, relativeTop, angle, distance);
+        }
+
+    }
+}

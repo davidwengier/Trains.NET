@@ -39,8 +39,7 @@ namespace Trains.NET.Rendering
             _lastDrawTime = now;
 
             int y = 1;
-            if(timeSinceLastUpdate != 0)
-                canvas.DrawText((1000 / timeSinceLastUpdate) + " FPS", 0, (y++)*25, _paint);
+            canvas.DrawText((1000 / timeSinceLastUpdate) + " FPS", 0, (y++)*25, _paint);
 
             canvas.DrawText(_gameBoard.GetTracks().Count() + " Tracks", 0, (y++) * 25, _paint);
 

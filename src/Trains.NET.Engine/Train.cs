@@ -11,41 +11,41 @@ namespace Trains.NET.Engine
 
         internal float Move(float distance, Track track)
         {
-                float newLeft; 
-                float newTop;
-                int newCoumn = this.Column;
-                int newRow = this.Row;
+            int newColumn = this.Column;
+            int newRow = this.Row;
 
-                (newLeft, newTop, this.Angle, distance) = 
-                    track.Move(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
+            TrainPosition position = new TrainPosition(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
 
-                if (newLeft < 0.0f) 
-                {
-                    newCoumn--;
-                    newLeft = 0.999f;
-                }
-                if (newLeft > 1.0f)
-                {
-                    newCoumn++;
-                    newLeft = 0.001f;
-                }
-                if (newTop < 0.0f)
-                {
-                    newRow--;
-                    newTop = 0.999f;
-                }
-                if (newTop > 1.0f)
-                {
-                    newRow++;
-                    newTop = 0.001f;
-                }
+            track.Move(position);
 
-                // Wrap this in detection logic
-                this.Column = newCoumn;
-                this.Row = newRow;
-                this.RelativeLeft = newLeft;
-                this.RelativeTop = newTop;
-            return distance;
+            if (position.RelativeLeft < 0.0f)
+            {
+                newColumn--;
+                position.RelativeLeft = 0.999f;
+            }
+            if (position.RelativeLeft > 1.0f)
+            {
+                newColumn++;
+                position.RelativeLeft = 0.001f;
+            }
+            if (position.RelativeTop < 0.0f)
+            {
+                newRow--;
+                position.RelativeTop = 0.999f;
+            }
+            if (position.RelativeTop > 1.0f)
+            {
+                newRow++;
+                position.RelativeTop = 0.001f;
+            }
+
+            // Wrap this in detection logic
+            this.Column = newColumn;
+            this.Row = newRow;
+            this.RelativeLeft = position.RelativeLeft;
+            this.RelativeTop = position.RelativeTop;
+            this.Angle = position.Angle;
+            return position.Distance;
         }
     }
 }

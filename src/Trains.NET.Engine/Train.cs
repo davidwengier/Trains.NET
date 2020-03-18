@@ -1,8 +1,10 @@
 ﻿
 namespace Trains.NET.Engine
 {
-    public class Train
+    public class Train : IMovable
     {
+        public float FrontEdgeDistance => 0.8f;
+
         public int Column { get; internal set; }
         public int Row { get; internal set; }
         public float Angle { get; internal set; }
@@ -14,7 +16,7 @@ namespace Trains.NET.Engine
             int newColumn = this.Column;
             int newRow = this.Row;
 
-            TrainPosition position = new TrainPosition(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
+            var position = new TrainPosition(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
 
             track.Move(position);
 

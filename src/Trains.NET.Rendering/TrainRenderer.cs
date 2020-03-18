@@ -33,10 +33,8 @@ namespace Trains.NET.Rendering
 
         public void Render(SKCanvas canvas, Train train)
         {
-            float x = _trackParameters.CellSize * train.RelativeLeft;
-            float y = _trackParameters.CellSize * train.RelativeTop;
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(train.Angle);
+            SetupCanvasToDrawTrain(canvas, train, _trackParameters);
+
             canvas.DrawRect(-_trainParameters.TrainBodyWidth,
                             -(_trainParameters.TrainBodyWidth / 2),
                             _trainParameters.TrainBodyWidth * 2,
@@ -47,6 +45,14 @@ namespace Trains.NET.Rendering
                             _trainParameters.TrainHeadWidth,
                             _trainParameters.TrainHeadWidth,
                             _headPaint);
+        }
+
+        public static void SetupCanvasToDrawTrain(SKCanvas canvas, IMovable train, ITrackParameters trackParameters)
+        {
+            float x = trackParameters.CellSize * train.RelativeLeft;
+            float y = trackParameters.CellSize * train.RelativeTop;
+            canvas.Translate(x, y);
+            canvas.RotateDegrees(train.Angle);
         }
     }
 }

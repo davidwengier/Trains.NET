@@ -44,7 +44,7 @@ namespace Trains.NET.Rendering
 
             canvas.DrawText(_gameBoard.GetTracks().Count() + " Tracks", 0, (y++) * 25, _paint);
 
-            canvas.DrawText(_gameBoard.GetTrains().Count() + " Trains", 0, (y++) * 25, _paint);
+            canvas.DrawText(_gameBoard.GetMovables().Count() + " Trains", 0, (y++) * 25, _paint);
         }
     }
 }

@@ -12,7 +12,8 @@ namespace Trains.NET.Engine
         Track? GetTrackAt(int column, int row);
         System.Collections.Generic.IEnumerable<(int, int, Track)> GetTracks();
         void AddTrain(int column, int row);
-        IEnumerable<Train> GetTrains();
+        IEnumerable<IMovable> GetMovables();
+        IEnumerable<T> GetMovables<T>() where T : IMovable;
         Track? GetTrackForTrain(Train train);
     }
 }

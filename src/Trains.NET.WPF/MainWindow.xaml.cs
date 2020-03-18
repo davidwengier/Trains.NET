@@ -47,11 +47,11 @@ namespace Trains.NET.WPF
                         Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
                         col.AddSingleton(orderedListOfT, sp =>
                         {
-                            var services = sp.GetServices(t);
+                            IEnumerable<object>? services = sp.GetServices(t);
 
                             if (!(Activator.CreateInstance(orderedListOfT) is OrderedList orderedList))
                             {
-                                throw new ArgumentException($"Couldn't create an ordered list of type '{t.ToString()}'.");
+                                throw new ArgumentException($"Couldn't create an ordered list of type '{t}'.");
                             }
 
                             orderedList.AddRange(from svc in services

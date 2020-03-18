@@ -23,7 +23,7 @@ namespace Trains.NET.Rendering
 
         public void Render(SKCanvas canvas, int width, int height)
         {
-            foreach (Train train in _gameBoard.GetTrains())
+            foreach (Train train in _gameBoard.GetMovables())
             {
                 canvas.Save();
 

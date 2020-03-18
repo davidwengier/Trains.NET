@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 
 namespace Trains.NET.Engine
@@ -10,7 +11,7 @@ namespace Trains.NET.Engine
         private const int SpeedAdjustmentFactor = 10;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
-        private readonly List<Train> _trains = new List<Train>();
+        private readonly List<IMovable> _movables = new List<IMovable>();
         private readonly Timer _gameLoopTimer;
 
         public int Columns { get; set; }
@@ -26,7 +27,7 @@ namespace Trains.NET.Engine
         private void GameLoopStep(object sender, ElapsedEventArgs e)
         {
             _gameLoopTimer.Stop();
-            foreach (Train train in _trains)
+            foreach (Train train in _movables)
             {
                 float distance = 0.005f * SpeedAdjustmentFactor;
                 while (distance > 0.0f)
@@ -96,7 +97,7 @@ namespace Trains.NET.Engine
                 return;
             }
 
-            _trains.Add(train);
+            _movables.Add(train);
         }
 
         public IEnumerable<(int, int, Track)> GetTracks()
@@ -107,13 +108,22 @@ namespace Trains.NET.Engine
             }
         }
 
-        public IEnumerable<Train> GetTrains()
+        public IEnumerable<IMovable> GetMovables()
         {
-            foreach (Train train in _trains)
+            foreach (IMovable movable in _movables)
             {
-                yield return train;
+                yield return movable;
             }
         }
+
+        public IEnumerable<T> GetMovables<T>() where T : IMovable
+        {
+            foreach (T movable in _movables.OfType<T>())
+            {
+                yield return movable;
+            }
+        }
+
 
         public Track? GetTrackAt(int column, int row)
         {

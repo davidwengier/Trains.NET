@@ -3,6 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
+    [Order(500)]
     internal class TrainsRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;

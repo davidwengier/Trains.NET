@@ -1,5 +1,6 @@
 ﻿namespace Trains.NET.Engine
 {
+    [Order(20)]
     internal class EraserTool : ITool
     {
         private readonly IGameBoard _gameBoard;

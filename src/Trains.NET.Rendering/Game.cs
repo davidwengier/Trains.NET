@@ -14,7 +14,7 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
 
-        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper)
+        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;

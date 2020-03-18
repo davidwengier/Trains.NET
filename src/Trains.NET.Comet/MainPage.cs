@@ -13,7 +13,7 @@ namespace Trains.NET.Comet
 
         private readonly Timer _timer;
 
-        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, IEnumerable<ITool> tools, IEnumerable<ILayerRenderer> layers)
+        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, OrderedList<ITool> tools, OrderedList<ILayerRenderer> layers)
         {
             HotReloadHelper.Register(this, game, pixelMapper, trackParameters, tools, layers);
 

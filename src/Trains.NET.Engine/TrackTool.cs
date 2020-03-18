@@ -1,5 +1,6 @@
 ﻿namespace Trains.NET.Engine
 {
+    [Order(10)]
     internal class TrackTool : ITool
     {
         private readonly IGameBoard _gameBoard;

@@ -204,3 +204,6 @@ dotnet_diagnostic.CA1062.severity = none
 
 # IDE0005: Using directive is unnecessary.
 dotnet_diagnostic.IDE0005.severity = error
+
+# CA1710: Identifiers should have correct suffix
+dotnet_diagnostic.CA1710.severity = none

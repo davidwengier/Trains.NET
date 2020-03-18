@@ -4,6 +4,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
+    [Order(449)]
     internal class HappinessRenderer : ILayerRenderer, IDisposable
     {
         private readonly IGameBoard _gameBoard;

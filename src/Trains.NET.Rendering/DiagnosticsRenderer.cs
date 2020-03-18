@@ -6,6 +6,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
+    [Order(1000)]
     internal class DiagnosticsRenderer : ILayerRenderer, IDisposable
     {
         private long _lastDrawTime;

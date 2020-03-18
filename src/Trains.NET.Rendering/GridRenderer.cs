@@ -1,7 +1,9 @@
 ﻿using SkiaSharp;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
+    [Order(0)]
     internal class GridRenderer : ILayerRenderer
     {
         private readonly ITrackParameters _parameters;

@@ -2,6 +2,7 @@
 
 namespace Trains.NET.Engine
 {
+    [Order(50)]
     internal class TrainTool : ITool
     {
         private readonly IGameBoard _gameBoard;

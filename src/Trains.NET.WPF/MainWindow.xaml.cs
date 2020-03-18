@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using Comet;
 using Comet.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using Trains.NET.Comet;
+using Trains.NET.Engine;
 
 namespace Trains.NET.WPF
 {
@@ -40,15 +42,38 @@ namespace Trains.NET.WPF
             {
                 foreach (Type t in a.GetTypes())
                 {
-                    foreach (Type inter in t.GetInterfaces())
+                    if (t.IsInterface)
                     {
-                        if (inter.Namespace?.StartsWith("Trains.NET", StringComparison.OrdinalIgnoreCase) == true)
+                        Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
+                        col.AddSingleton(orderedListOfT, sp =>
                         {
-                            col.AddSingleton(inter, t);
+                            var services = sp.GetServices(t);
+
+                            if (!(Activator.CreateInstance(orderedListOfT) is OrderedList orderedList))
+                            {
+                                throw new ArgumentException($"Couldn't create an ordered list of type '{t.ToString()}'.");
+                            }
+
+                            orderedList.AddRange(from svc in services
+                                                let order = svc.GetType().GetCustomAttribute<OrderAttribute>(true)?.Order ?? 0
+                                                orderby order
+                                                select svc);
+                            return orderedList;
+                        });
+                    }
+                    else
+                    {
+                        foreach (Type inter in t.GetInterfaces())
+                        {
+                            if (inter.Namespace?.StartsWith("Trains.NET", StringComparison.OrdinalIgnoreCase) == true)
+                            {
+                                col.AddSingleton(inter, t);
+                            }
                         }
                     }
                 }
             }
+
 
             col.AddSingleton<MainPage, MainPage>();
 

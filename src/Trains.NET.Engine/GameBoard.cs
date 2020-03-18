@@ -13,15 +13,31 @@ namespace Trains.NET.Engine
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
         private readonly List<IMovable> _movables = new List<IMovable>();
         private readonly Timer _gameLoopTimer;
+        private readonly IGameStorage _storage;
 
         public int Columns { get; set; }
         public int Rows { get; set; }
 
-        public GameBoard()
+        public GameBoard(IGameStorage storage)
         {
             _gameLoopTimer = new Timer(GameLoopInterval);
             _gameLoopTimer.Elapsed += GameLoopStep;
             _gameLoopTimer.Start();
+
+            _storage = storage;
+
+            IEnumerable<Track> tracks = storage.ReadTracks();
+
+            foreach (Track track in tracks)
+            {
+                _tracks[(track.Column, track.Row)] = new Track(this)
+                {
+                    Column = track.Column,
+                    Row = track.Row,
+                    Direction = track.Direction,
+                    Happy = track.Happy
+                };
+            }
         }
 
         private void GameLoopStep(object sender, ElapsedEventArgs e)
@@ -72,6 +88,8 @@ namespace Trains.NET.Engine
 
                 track.SetBestTrackDirection(false);
             }
+
+            _storage.WriteTracks(_tracks.Values);
         }
 
         public void RemoveTrack(int column, int row)
@@ -81,6 +99,8 @@ namespace Trains.NET.Engine
                 _tracks.Remove((column, row));
                 track.RefreshNeighbors(true);
             }
+
+            _storage.WriteTracks(_tracks.Values);
         }
 
         public void AddTrain(int column, int row)

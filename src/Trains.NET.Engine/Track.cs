@@ -18,19 +18,6 @@ namespace Trains.NET.Engine
         public TrackDirection Direction { get; set; }
         public bool Happy { get; set; }
 
-        public bool CanConnectRight => this.Direction switch
-        {
-            _ when !this.Happy => true,
-            TrackDirection.RightDown => true,
-            TrackDirection.RightUp => true,
-            TrackDirection.Horizontal => true,
-            TrackDirection.Cross => true,
-            TrackDirection.LeftRightDown => true,
-            TrackDirection.LeftRightUp => true,
-            TrackDirection.RightUpDown => true,
-            _ => false
-        };
-
         internal void Move(TrainPosition position)
         {
             switch (this.Direction)
@@ -114,8 +101,20 @@ namespace Trains.NET.Engine
                 TrainMovement.MoveHorizontal(position);
             }
         }
+        private bool CanConnectRight() => this.Direction switch
+        {
+            _ when !this.Happy => true,
+            TrackDirection.RightDown => true,
+            TrackDirection.RightUp => true,
+            TrackDirection.Horizontal => true,
+            TrackDirection.Cross => true,
+            TrackDirection.LeftRightDown => true,
+            TrackDirection.LeftRightUp => true,
+            TrackDirection.RightUpDown => true,
+            _ => false
+        };
 
-        public bool CanConnectDown => this.Direction switch
+        private bool CanConnectDown() => this.Direction switch
         {
             _ when !this.Happy => true,
             TrackDirection.RightDown => true,
@@ -128,7 +127,7 @@ namespace Trains.NET.Engine
             _ => false
         };
 
-        public bool CanConnectLeft => this.Direction switch
+        private bool CanConnectLeft() => this.Direction switch
         {
             _ when !this.Happy => true,
             TrackDirection.LeftDown => true,
@@ -141,7 +140,7 @@ namespace Trains.NET.Engine
             _ => false
         };
 
-        public bool CanConnectUp => this.Direction switch
+        private bool CanConnectUp() => this.Direction switch
         {
             _ when !this.Happy => true,
             TrackDirection.LeftUp => true,
@@ -233,7 +232,7 @@ namespace Trains.NET.Engine
             neighbors.Left?.SetBestTrackDirection(ignoreHappyness);
         }
 
-        public TrackNeighbors GetNeighbors()
+        private TrackNeighbors GetNeighbors()
         {
             Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
             Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
@@ -241,14 +240,14 @@ namespace Trains.NET.Engine
             Track? down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
 
             return new TrackNeighbors(
-                left?.CanConnectRight == true ? left : null,
-                up?.CanConnectDown == true ? up : null,
-                right?.CanConnectLeft == true ? right : null,
-                down?.CanConnectUp == true ? down : null
+                left?.CanConnectRight() == true ? left : null,
+                up?.CanConnectDown() == true ? up : null,
+                right?.CanConnectLeft() == true ? right : null,
+                down?.CanConnectUp() == true ? down : null
                 );
         }
 
-        public TrackNeighbors GetAllNeighbors()
+        private TrackNeighbors GetAllNeighbors()
         {
             Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
             Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);

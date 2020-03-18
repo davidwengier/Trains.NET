@@ -7,10 +7,12 @@ namespace Trains.NET.Tests
 {
     public class GameBoardTests
     {
+        private readonly IGameStorage _storage = new NullStorage();
+
         [Fact]
         public void FishHook()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(5, 2);
             board.AddTrack(4, 2);
             board.AddTrack(3, 2);
@@ -37,7 +39,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void VerticalHairpin()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 3);
             board.AddTrack(1, 2);
             board.AddTrack(1, 1);
@@ -54,7 +56,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void SidewaysHairpin()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 2);
             board.AddTrack(3, 2);
@@ -71,7 +73,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void RightAngleWithCircleOnTop()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 4);
             board.AddTrack(1, 3);
             board.AddTrack(2, 3);
@@ -92,7 +94,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftAngleWithCircleOnTop()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 3);
             board.AddTrack(2, 3);
             board.AddTrack(2, 4);
@@ -113,7 +115,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void CrossVerticalFirst()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(2, 1);
             board.AddTrack(2, 2);
             board.AddTrack(2, 3);
@@ -130,7 +132,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void CrossHortizontalFirst()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 2);
             board.AddTrack(3, 2);
@@ -147,7 +149,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void CrossMiddleLast()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(3, 2);
             board.AddTrack(2, 1);
@@ -164,7 +166,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void TwoCrosses()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 2);
             board.AddTrack(3, 2);
@@ -193,7 +195,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Horizontal()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(2, 1);
 
@@ -204,7 +206,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Vertical()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
 
@@ -215,7 +217,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Two_Verticals()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
             board.AddTrack(1, 3);
@@ -237,7 +239,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Three_Verticals()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
             board.AddTrack(1, 3);
@@ -266,7 +268,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftUp()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 1);
             board.AddTrack(2, 2);
@@ -279,7 +281,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftUpDown()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 1);
             board.AddTrack(2, 3);
@@ -295,7 +297,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void RightUpDown()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(3, 2);
             board.AddTrack(2, 1);
             board.AddTrack(2, 3);
@@ -310,7 +312,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftRightUp()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 1);
             board.AddTrack(3, 2);
@@ -325,7 +327,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftRightDown()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 2);
             board.AddTrack(2, 3);
             board.AddTrack(3, 2);
@@ -340,7 +342,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftDown()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(2, 1);
             board.AddTrack(2, 2);
@@ -353,7 +355,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void RightUp()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
             board.AddTrack(2, 2);
@@ -366,7 +368,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void RightDown()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(2, 1);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
@@ -379,7 +381,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void RightUpDown_DrawOver()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
             board.AddTrack(1, 3);
@@ -402,7 +404,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftUpDown_DrawOver()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(3, 1);
             board.AddTrack(3, 2);
             board.AddTrack(3, 3);
@@ -424,7 +426,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftRightDown_DrawOver()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(2, 1);
             board.AddTrack(3, 1);
@@ -446,7 +448,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftRightUp_DrawOver()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 3);
             board.AddTrack(2, 3);
             board.AddTrack(3, 3);
@@ -468,7 +470,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Happiness()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
 
             Assert.False(board.GetTrackAt(1, 1).Happy);
@@ -488,7 +490,7 @@ namespace Trains.NET.Tests
         [Fact]
         public void Trident()
         {
-            var board = new GameBoard();
+            var board = new GameBoard(_storage);
             board.AddTrack(1, 1);
             board.AddTrack(1, 2);
             board.AddTrack(2, 2);

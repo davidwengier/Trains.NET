@@ -83,6 +83,7 @@ namespace Trains.NET.WPF
             {
                 yield return typeof(Trains.NET.Engine.IGameBoard).Assembly;
                 yield return typeof(Trains.NET.Rendering.IGame).Assembly;
+                yield return typeof(MainWindow).Assembly;
             }
         }
     }

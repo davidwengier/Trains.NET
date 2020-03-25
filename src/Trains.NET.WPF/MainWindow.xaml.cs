@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using Comet;
@@ -45,21 +44,7 @@ namespace Trains.NET.WPF
                     if (t.IsInterface)
                     {
                         Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
-                        col.AddSingleton(orderedListOfT, sp =>
-                        {
-                            IEnumerable<object>? services = sp.GetServices(t);
-
-                            if (!(Activator.CreateInstance(orderedListOfT) is OrderedList orderedList))
-                            {
-                                throw new ArgumentException($"Couldn't create an ordered list of type '{t}'.");
-                            }
-
-                            orderedList.AddRange(from svc in services
-                                                let order = svc.GetType().GetCustomAttribute<OrderAttribute>(true)?.Order ?? 0
-                                                orderby order
-                                                select svc);
-                            return orderedList;
-                        });
+                        col.AddSingleton(orderedListOfT, sp => Activator.CreateInstance(orderedListOfT, sp.GetServices(t)));
                     }
                     else
                     {
@@ -73,7 +58,6 @@ namespace Trains.NET.WPF
                     }
                 }
             }
-
 
             col.AddSingleton<MainPage, MainPage>();
 

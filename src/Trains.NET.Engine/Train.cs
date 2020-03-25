@@ -11,6 +11,11 @@ namespace Trains.NET.Engine
         public float RelativeLeft { get; internal set; } = 0.5f;
         public float RelativeTop { get; internal set; } = 0.5f;
 
+        public void SetAngle(float angle)
+        {
+            this.Angle = angle;
+        }
+
         internal float Move(float distance, Track track)
         {
             int newColumn = this.Column;

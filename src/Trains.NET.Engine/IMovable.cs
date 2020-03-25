@@ -8,5 +8,7 @@
         float Angle { get; }
         float RelativeLeft { get; }
         float RelativeTop { get; }
+
+        void SetAngle(float angle);
     }
 }

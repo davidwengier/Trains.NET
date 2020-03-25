@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
 
 namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
         private const int GameLoopInterval = 16;
-        private const int SpeedAdjustmentFactor = 10;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
         private readonly List<IMovable> _movables = new List<IMovable>();
-        private readonly Timer _gameLoopTimer;
+        private readonly ITimer? _gameLoopTimer;
         private readonly IGameStorage _storage;
 
         public int Columns { get; set; }
         public int Rows { get; set; }
+        public int SpeedAdjustmentFactor { get; set; } = 10;
 
-        public GameBoard(IGameStorage storage)
+        public GameBoard(IGameStorage storage, ITimer? timer)
         {
-            _gameLoopTimer = new Timer(GameLoopInterval);
-            _gameLoopTimer.Elapsed += GameLoopStep;
-            _gameLoopTimer.Start();
+            _gameLoopTimer = timer;
+            if (_gameLoopTimer != null)
+            {
+                _gameLoopTimer.Interval = GameLoopInterval;
+                _gameLoopTimer.Elapsed += GameLoopStep;
+                _gameLoopTimer.Start();
+            }
 
             _storage = storage;
 
@@ -40,12 +43,12 @@ namespace Trains.NET.Engine
             }
         }
 
-        private void GameLoopStep(object sender, ElapsedEventArgs e)
+        private void GameLoopStep(object sender, EventArgs e)
         {
-            _gameLoopTimer.Stop();
+            _gameLoopTimer?.Stop();
             foreach (Train train in _movables)
             {
-                float distance = 0.005f * SpeedAdjustmentFactor;
+                float distance = 0.005f * this.SpeedAdjustmentFactor;
                 while (distance > 0.0f)
                 {
                     Track? track = GetTrackForTrain(train);
@@ -59,7 +62,7 @@ namespace Trains.NET.Engine
                     }
                 }
             }
-            _gameLoopTimer.Start();
+            _gameLoopTimer?.Start();
         }
 
         public Track? GetTrackForTrain(Train train)
@@ -156,7 +159,7 @@ namespace Trains.NET.Engine
 
         public void Dispose()
         {
-            _gameLoopTimer.Dispose();
+            _gameLoopTimer?.Dispose();
         }
     }
 }

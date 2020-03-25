@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Trains.NET.Engine;
 using Xunit;
 

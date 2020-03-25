@@ -25,7 +25,7 @@ namespace Trains.NET.Tests
             gameBoard.AddTrack(1, 2);
 
             gameBoard.AddTrain(startColumn, startRow);
-            var train = gameBoard.GetMovables().First();
+            IMovable? train = gameBoard.GetMovables().First();
             train.SetAngle(startAngle);
 
             timer.Tick();
@@ -53,7 +53,7 @@ namespace Trains.NET.Tests
             gameBoard.AddTrack(2, 2);
 
             gameBoard.AddTrain(startColumn, startRow);
-            var train = gameBoard.GetMovables().First();
+            IMovable? train = gameBoard.GetMovables().First();
             train.SetAngle(startAngle);
 
             timer.Tick();

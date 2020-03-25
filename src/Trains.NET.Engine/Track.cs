@@ -6,9 +6,9 @@ namespace Trains.NET.Engine
     [DebuggerDisplay("{Direction,nq}")]
     public class Track
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly IGameBoard? _gameBoard;
 
-        public Track(IGameBoard gameBoard)
+        public Track(IGameBoard? gameBoard)
         {
             _gameBoard = gameBoard;
         }
@@ -231,6 +231,8 @@ namespace Trains.NET.Engine
 
         private TrackNeighbors GetNeighbors()
         {
+            _ = _gameBoard ?? throw new InvalidOperationException("Game board can't be null");
+
             Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
             Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
             Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
@@ -246,6 +248,8 @@ namespace Trains.NET.Engine
 
         private TrackNeighbors GetAllNeighbors()
         {
+            _ = _gameBoard ?? throw new InvalidOperationException("Game board can't be null");
+
             Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
             Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
             Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);

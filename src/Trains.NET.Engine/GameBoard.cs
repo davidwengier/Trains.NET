@@ -17,6 +17,7 @@ namespace Trains.NET.Engine
         public int Rows { get; set; }
         public int SpeedAdjustmentFactor { get; set; } = 10;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public GameBoard(IGameStorage storage, ITimer? timer)
         {
             _gameLoopTimer = timer;
@@ -29,17 +30,25 @@ namespace Trains.NET.Engine
 
             _storage = storage;
 
-            IEnumerable<Track> tracks = storage.ReadTracks();
-
-            foreach (Track track in tracks)
+            IEnumerable<Track> tracks = null;
+            try
             {
-                _tracks[(track.Column, track.Row)] = new Track(this)
+                tracks = storage.ReadTracks();
+            }
+            catch { }
+
+            if (tracks != null)
+            {
+                foreach (Track track in tracks)
                 {
-                    Column = track.Column,
-                    Row = track.Row,
-                    Direction = track.Direction,
-                    Happy = track.Happy
-                };
+                    _tracks[(track.Column, track.Row)] = new Track(this)
+                    {
+                        Column = track.Column,
+                        Row = track.Row,
+                        Direction = track.Direction,
+                        Happy = track.Happy
+                    };
+                }
             }
         }
 

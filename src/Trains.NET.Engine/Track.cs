@@ -39,7 +39,6 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftRightDown(TrainPosition position)
         {
-            // if from left, its a left down track
             if (position.Angle <= 90.0)
             {
                 TrainMovement.MoveLeftDown(position);
@@ -52,7 +51,6 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftUpDown(TrainPosition position)
         {
-            // if from left, its a left down track
             if (TrainMovement.BetweenAngles(position.Angle, 89, 181))
             {
                 TrainMovement.MoveLeftUp(position);
@@ -65,7 +63,6 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftRightUp(TrainPosition position)
         {
-            // if from left, its a left down track
             if (TrainMovement.BetweenAngles(position.Angle, 179, 271))
             {
                 TrainMovement.MoveRightUp(position);
@@ -78,8 +75,8 @@ namespace Trains.NET.Engine
 
         private static void MoveRightUpDown(TrainPosition position)
         {
-            // if from left, its a left down track
-            if (position.Angle > 180.0)
+            if ((position.Angle >= 180 && position.Angle <= 90.0) ||
+                (position.Angle >= 270 && position.Angle <= 360))
             {
                 TrainMovement.MoveRightDown(position);
             }

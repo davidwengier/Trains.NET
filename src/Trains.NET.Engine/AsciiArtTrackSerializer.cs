@@ -25,21 +25,23 @@ namespace Trains.NET.Engine
 
         public IEnumerable<Track> Deserialize(string[] lines)
         {
-            List<Track> tracks = new List<Track>();
+            var tracks = new List<Track>();
 
             for (int r = 0; r < lines.Length; r++)
             {
                 for (int c = 0; c < lines[r].Length; c++)
                 {
                     char current = lines[r][c];
-                    var pair = s_trackMapping.FirstOrDefault(kvp => kvp.Value == current);
+                    KeyValuePair<TrackDirection, char> pair = s_trackMapping.FirstOrDefault(kvp => kvp.Value == current);
 
                     if (pair.Value != default)
                     {
-                        var track = new Track(null);
-                        track.Column = c;
-                        track.Row = r;
-                        track.Direction = pair.Key;
+                        var track = new Track(null)
+                        {
+                            Column = c,
+                            Row = r,
+                            Direction = pair.Key
+                        };
                         tracks.Add(track);
                     }
                 }
@@ -50,7 +52,7 @@ namespace Trains.NET.Engine
 
         public string Serialize(IEnumerable<Track> tracks)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             int maxColumn = tracks.Max(t => t.Column);
             int maxRow = tracks.Max(t => t.Row);

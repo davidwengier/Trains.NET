@@ -30,7 +30,7 @@ namespace Trains.NET.Engine
 
             _storage = storage;
 
-            IEnumerable<Track> tracks = null;
+            IEnumerable<Track>? tracks = null;
             try
             {
                 tracks = storage.ReadTracks();

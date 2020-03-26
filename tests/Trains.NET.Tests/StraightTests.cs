@@ -1,0 +1,48 @@
+﻿using Trains.NET.Engine;
+using Xunit;
+
+namespace Trains.NET.Tests
+{
+    public class StraightTests : TestBase
+    {
+        [Theory]
+        [InlineData(270, 1, 3, 1, 1)]
+        [InlineData(90, 1, 1, 1, 3)]
+        public void Vertical_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
+        {
+            GameBoard.AddTrack(1, 1);
+            GameBoard.AddTrack(1, 2);
+            GameBoard.AddTrack(1, 3);
+
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
+        }
+
+        [Theory]
+        [InlineData(0, 1, 1, 3, 1)]
+        [InlineData(180, 3, 1, 1, 1)]
+        public void Horizontal_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
+        {
+            GameBoard.AddTrack(1, 1);
+            GameBoard.AddTrack(2, 1);
+            GameBoard.AddTrack(3, 1);
+
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
+        }
+
+        [Theory]
+        [InlineData(0, 1, 2, 3, 2)]
+        [InlineData(180, 3, 2, 1, 2)]
+        [InlineData(270, 2, 3, 2, 1)]
+        [InlineData(90, 2, 1, 2, 3)]
+        public void Cross_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
+        {
+            GameBoard.AddTrack(2, 1);
+            GameBoard.AddTrack(2, 2);
+            GameBoard.AddTrack(2, 3);
+            GameBoard.AddTrack(1, 2);
+            GameBoard.AddTrack(3, 2);
+
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
+        }
+    }
+}

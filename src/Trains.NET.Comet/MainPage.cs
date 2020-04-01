@@ -13,7 +13,7 @@ namespace Trains.NET.Comet
 
         private readonly Timer _timer;
 
-        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, OrderedList<ITool> tools, OrderedList<ILayerRenderer> layers)
+        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, OrderedList<ITool> tools, OrderedList<ILayerRenderer> layers, OrderedList<ICommand> commands)
         {
             HotReloadHelper.Register(this, game, pixelMapper, trackParameters, tools, layers);
 
@@ -28,9 +28,15 @@ namespace Trains.NET.Comet
                     new VStack()
                     {
                         new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
+                        new Spacer(),
                         _configurationShown ?
                              CreateConfigurationControls(trackParameters, layers) :
-                             CreateToolsControls(tools, controlDelegate)
+                             CreateToolsControls(tools, controlDelegate),
+                        new Spacer(),
+                        _configurationShown ? null :
+                            CreateCommandControls(commands),
+                        new Spacer()
+
                     }.Frame(100, alignment: Alignment.Top),
                     new DrawableControl(controlDelegate).FillVertical()
                 }.FillHorizontal();
@@ -45,6 +51,17 @@ namespace Trains.NET.Comet
                     controlDelegate.Invalidate();
                 });
             }, null, 0, 16);
+        }
+
+        private static View CreateCommandControls(IEnumerable<ICommand> commands)
+        {
+            var controlsGroup = new VStack();
+            foreach (ICommand cmd in commands)
+            {
+                controlsGroup.Add(new Button(cmd.Name, () => cmd.Execute()));
+            }
+
+            return controlsGroup;
         }
 
         private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate)

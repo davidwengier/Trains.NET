@@ -52,6 +52,8 @@ namespace Trains.NET.Engine
 
         public string Serialize(IEnumerable<Track> tracks)
         {
+            if (!tracks.Any()) return string.Empty;
+
             var sb = new StringBuilder();
 
             int maxColumn = tracks.Max(t => t.Column);

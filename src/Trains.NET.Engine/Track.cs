@@ -217,6 +217,11 @@ namespace Trains.NET.Engine
                 RefreshNeighbors(false);
             }
 
+            ReevaluateHappiness();
+        }
+
+        public void ReevaluateHappiness()
+        {
             this.Happy = GetNeighbors().Count > 1;
         }
 

@@ -165,7 +165,6 @@ namespace Trains.NET.Engine
             }
         }
 
-
         public Track? GetTrackAt(int column, int row)
         {
             if (_tracks.TryGetValue((column, row), out Track track))
@@ -173,6 +172,14 @@ namespace Trains.NET.Engine
                 return track;
             }
             return null;
+        }
+
+        public void ClearAll()
+        {
+            _tracks.Clear();
+            _movables.Clear();
+
+            _storage.WriteTracks(_tracks.Values);
         }
 
         public void Dispose()

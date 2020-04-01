@@ -17,6 +17,8 @@ namespace Trains.NET.WPF
     {
         public MainWindow()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             ServiceProvider serviceProvider = BuildServiceProvider();
 
             InitializeComponent();
@@ -32,6 +34,11 @@ namespace Trains.NET.WPF
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
             MainFrame.NavigationService.Navigate(new CometPage(MainFrame, serviceProvider.GetService<MainPage>()));
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
         }
 
         private ServiceProvider BuildServiceProvider()

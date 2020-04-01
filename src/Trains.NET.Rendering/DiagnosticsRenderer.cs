@@ -19,7 +19,7 @@ namespace Trains.NET.Rendering
             TextAlign = SKTextAlign.Left,
         };
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; }
 
         public string Name => "Diagnostics";
 

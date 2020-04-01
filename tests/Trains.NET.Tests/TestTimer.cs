@@ -3,7 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Tests
 {
-    internal class TestTimer : ITimer
+    public class TestTimer : ITimer
     {
         public double Interval { get; set; }
 

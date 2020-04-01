@@ -1,39 +1,23 @@
-﻿using System.Linq;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Xunit;
 
 namespace Trains.NET.Tests
 {
-    public class TIntersectionTests
+    public class TIntersectionTests : TestBase
     {
-        private readonly IGameStorage _storage = new NullStorage();
-
         [Theory]
         [InlineData(90, 1, 1, 2, 2)]
         [InlineData(270, 1, 3, 2, 2)]
         [InlineData(180, 2, 2, 1, 1)]
         public void RightUpDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            var timer = new TestTimer();
-            var gameBoard = new GameBoard(_storage, timer);
-            gameBoard.SpeedAdjustmentFactor = 100;
+            GameBoard.AddTrack(1, 1);
+            GameBoard.AddTrack(1, 2);
+            GameBoard.AddTrack(1, 3);
+            GameBoard.AddTrack(2, 2);
+            GameBoard.AddTrack(1, 2);
 
-            gameBoard.AddTrack(1, 1);
-            gameBoard.AddTrack(1, 2);
-            gameBoard.AddTrack(1, 3);
-            gameBoard.AddTrack(2, 2);
-            gameBoard.AddTrack(1, 2);
-
-            gameBoard.AddTrain(startColumn, startRow);
-            IMovable? train = gameBoard.GetMovables().First();
-            train.SetAngle(startAngle);
-
-            timer.Tick();
-            timer.Tick();
-            timer.Tick();
-
-            Assert.Equal(endColumn, train.Column);
-            Assert.Equal(endRow, train.Row);
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
 
         [Theory]
@@ -42,26 +26,43 @@ namespace Trains.NET.Tests
         [InlineData(0, 1, 2, 2, 3)]
         public void LeftUpDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            var timer = new TestTimer();
-            var gameBoard = new GameBoard(_storage, timer);
-            gameBoard.SpeedAdjustmentFactor = 100;
+            GameBoard.AddTrack(2, 1);
+            GameBoard.AddTrack(2, 2);
+            GameBoard.AddTrack(2, 3);
+            GameBoard.AddTrack(1, 2);
+            GameBoard.AddTrack(2, 2);
 
-            gameBoard.AddTrack(2, 1);
-            gameBoard.AddTrack(2, 2);
-            gameBoard.AddTrack(2, 3);
-            gameBoard.AddTrack(1, 2);
-            gameBoard.AddTrack(2, 2);
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
+        }
 
-            gameBoard.AddTrain(startColumn, startRow);
-            IMovable? train = gameBoard.GetMovables().First();
-            train.SetAngle(startAngle);
+        [Theory]
+        [InlineData(0, 1, 1, 2, 2)]
+        [InlineData(180, 3, 1, 2, 2)]
+        [InlineData(270, 2, 2, 3, 1)]
+        public void LeftRightDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
+        {
+            GameBoard.AddTrack(1, 1);
+            GameBoard.AddTrack(2, 1);
+            GameBoard.AddTrack(3, 1);
+            GameBoard.AddTrack(2, 2);
+            GameBoard.AddTrack(2, 1);
 
-            timer.Tick();
-            timer.Tick();
-            timer.Tick();
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
+        }
 
-            Assert.Equal(endColumn, train.Column);
-            Assert.Equal(endRow, train.Row);
+        [Theory]
+        [InlineData(0, 1, 2, 2, 1)]
+        [InlineData(180, 3, 2, 2, 1)]
+        [InlineData(90, 2, 1, 1, 2)]
+        public void LeftRightUp_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
+        {
+            GameBoard.AddTrack(1, 2);
+            GameBoard.AddTrack(2, 2);
+            GameBoard.AddTrack(3, 2);
+            GameBoard.AddTrack(2, 1);
+            GameBoard.AddTrack(2, 2);
+
+            AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
     }
 }

@@ -16,5 +16,6 @@ namespace Trains.NET.Engine
         IEnumerable<IMovable> GetMovables();
         IEnumerable<T> GetMovables<T>() where T : IMovable;
         Track? GetTrackForTrain(Train train);
+        void LoadTracks(IEnumerable<Track> tracks);
     }
 }

@@ -30,11 +30,6 @@ namespace Trains.NET.Engine
 
             _storage = storage;
 
-            LoadSavedTracks(storage);
-        }
-
-        private void LoadSavedTracks(IGameStorage storage)
-        {
             IEnumerable<Track>? tracks = null;
             try
             {
@@ -44,20 +39,27 @@ namespace Trains.NET.Engine
 
             if (tracks != null)
             {
-                foreach (Track track in tracks)
-                {
-                    _tracks[(track.Column, track.Row)] = new Track(this)
-                    {
-                        Column = track.Column,
-                        Row = track.Row,
-                        Direction = track.Direction,
-                    };
-                }
+                LoadTracks(tracks);
+            }
+        }
 
-                foreach (Track track in _tracks.Values)
+        public void LoadTracks(IEnumerable<Track> tracks)
+        {
+            ClearAll();
+
+            foreach (Track track in tracks)
+            {
+                _tracks[(track.Column, track.Row)] = new Track(this)
                 {
-                    track.ReevaluateHappiness();
-                }
+                    Column = track.Column,
+                    Row = track.Row,
+                    Direction = track.Direction,
+                };
+            }
+
+            foreach (Track track in _tracks.Values)
+            {
+                track.ReevaluateHappiness();
             }
         }
 

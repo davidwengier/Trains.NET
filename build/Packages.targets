@@ -26,9 +26,6 @@
     <PackageReference Update="Clancey.Comet"                Version="0.2.273-beta" />
     <PackageReference Update="Clancey.Comet.Skia"           Version="0.2.273-beta" />
     
-    <!-- Json -->
-    <PackageReference Update="NewtonSoft.Json"              Version="12.0.2" />
-
   </ItemGroup>
   
 </Project>

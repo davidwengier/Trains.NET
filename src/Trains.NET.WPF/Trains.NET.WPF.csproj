@@ -12,7 +12,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Clancey.Comet" />
     <PackageReference Include="Clancey.Comet.Skia" />
-    <PackageReference Include="NewtonSoft.Json" />
   </ItemGroup>
 
   <ItemGroup>

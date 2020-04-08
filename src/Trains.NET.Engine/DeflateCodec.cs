@@ -5,7 +5,7 @@ using System.IO.Compression;
 
 namespace Trains.NET.Engine
 {
-    internal class DeflateCodec : ITrackCodec
+    internal class DeflateCodec // RETIRED: : ITrackCodec
     {
         public IEnumerable<Track> Decode(string input)
         {

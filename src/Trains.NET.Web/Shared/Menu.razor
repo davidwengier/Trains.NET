@@ -1,0 +1,32 @@
+﻿@using Trains.NET.Engine;
+
+@inject OrderedList<ITool> tools
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Trains.NET.Web</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass">
+    <ul class="nav flex-column">
+        @foreach (var tool in tools)
+        {
+            <li class="nav-item px-3">
+                <a href="#">@tool.Name</a>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,14 @@
+﻿@page "/"
+@inject Trains.NET.Rendering.IGame _game;
+
+<canvas class="col-xs-12" id="game" />
+
+
+@code
+{
+    [JSInvokable]
+    private void SetSize(int width, int height)
+    {
+        _game.SetSize(width, height);
+    }
+}

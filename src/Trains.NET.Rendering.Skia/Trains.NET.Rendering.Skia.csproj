@@ -1,18 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Clancey.Comet" />
-    <PackageReference Include="Clancey.Comet.Skia" />
+    <PackageReference Include="SkiaSharp" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
   
 </Project>
-

@@ -1,58 +1,57 @@
-﻿using System;
-using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrackRenderer : ITrackRenderer, IDisposable
+    internal class TrackRenderer : ITrackRenderer //, IDisposable
     {
         private readonly ITrackParameters _parameters;
+        private readonly IPathFactory _pathFactory;
 
-        private readonly SKPaint _straightTrackClear;
-        private readonly SKPaint _straightTrackPaint;
-        private readonly SKPaint _arcTrackPaint;
-        private readonly SKPaint _arcTrackClear;
-        private readonly SKPaint _plankPaint;
+        private readonly PaintBrush _straightTrackClear;
+        private readonly PaintBrush _straightTrackPaint;
+        private readonly PaintBrush _arcTrackPaint;
+        private readonly PaintBrush _arcTrackClear;
+        private readonly PaintBrush _plankPaint;
         
-        public TrackRenderer(ITrackParameters parameters)
+        public TrackRenderer(ITrackParameters parameters, IPathFactory pathFactory)
         {
             _parameters = parameters;
-
-            _plankPaint = new SKPaint
+            _pathFactory = pathFactory;
+            _plankPaint = new PaintBrush
             {
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
+                Color = Colors.Black,
+                Style = PaintStyle.Stroke,
                 IsAntialias = true
             };
-            _arcTrackClear = new SKPaint()
+            _arcTrackClear = new PaintBrush()
             {
-                Style = SKPaintStyle.Stroke,
-                Color = SKColors.White,
+                Style = PaintStyle.Stroke,
+                Color = Colors.White,
                 IsAntialias = true
             };
-            _arcTrackPaint = new SKPaint()
+            _arcTrackPaint = new PaintBrush()
             {
-                Style = SKPaintStyle.Stroke,
+                Style = PaintStyle.Stroke,
                 StrokeWidth = 1,
-                Color = SKColors.Black,
+                Color = Colors.Black,
                 IsAntialias = true
             };
-            _straightTrackPaint = new SKPaint
+            _straightTrackPaint = new PaintBrush
             {
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
+                Color = Colors.Black,
+                Style = PaintStyle.Stroke,
                 StrokeWidth = 1,
                 IsAntialias = false
             };
-            _straightTrackClear = new SKPaint
+            _straightTrackClear = new PaintBrush
             {
-                Color = SKColors.White,
-                Style = SKPaintStyle.Fill,
+                Color = Colors.White,
+                Style = PaintStyle.Fill,
                 StrokeWidth = 0
             };
         }
 
-        public void Render(SKCanvas canvas, Track track, int width)
+        public void Render(ICanvas canvas, Track track, int width)
         {
             if (track.Direction == TrackDirection.Cross)
             {
@@ -91,7 +90,7 @@ namespace Trains.NET.Rendering
             }
         }
 
-        public void RenderStraightTrack(SKCanvas canvas, int width)
+        public void RenderStraightTrack(ICanvas canvas, int width)
         {
             float plankGap = width / _parameters.NumPlanks;
             for (int i = 1; i < _parameters.NumPlanks + 1; i++)
@@ -103,7 +102,7 @@ namespace Trains.NET.Rendering
             canvas.DrawRect(0, _parameters.TrackPadding, width, _parameters.TrackWidth, _straightTrackClear);
             canvas.DrawRect(0, width - _parameters.TrackPadding - _parameters.TrackWidth, width, _parameters.TrackWidth, _straightTrackClear);
 
-            using var trackPath = new SKPath();
+            var trackPath = _pathFactory.Create();
             trackPath.MoveTo(0, _parameters.TrackPadding);
             trackPath.LineTo(width, _parameters.TrackPadding);
             trackPath.MoveTo(0, _parameters.TrackPadding + _parameters.TrackWidth);
@@ -117,17 +116,17 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(trackPath, _straightTrackPaint);
         }
 
-        private void DrawPlank(SKCanvas canvas, int width, float pos)
+        private void DrawPlank(ICanvas canvas, int width, float pos)
         {
             _plankPaint.StrokeWidth = _parameters.PlankWidth;
 
-            using var path = new SKPath();
+            var path = _pathFactory.Create();
             path.MoveTo(pos, _parameters.PlankPadding);
             path.LineTo(pos, width - _parameters.PlankPadding);
             canvas.DrawPath(path, _plankPaint);
         }
 
-        public void RenderCornerTrack(SKCanvas canvas, int width, bool drawExtra)
+        public void RenderCornerTrack(ICanvas canvas, int width, bool drawExtra)
         {
             canvas.Save();
 
@@ -150,7 +149,7 @@ namespace Trains.NET.Rendering
                 DrawTracks(canvas, width);
             }
 
-            void DrawTracks(SKCanvas canvas, int width)
+            void DrawTracks(ICanvas canvas, int width)
             {
                 _arcTrackClear.StrokeWidth = _parameters.TrackWidth;
 
@@ -162,25 +161,26 @@ namespace Trains.NET.Rendering
                 DrawArc(canvas, width - _parameters.TrackPadding, _arcTrackPaint);
                 DrawArc(canvas, width - _parameters.TrackPadding - _parameters.TrackWidth, _arcTrackPaint);
             }
-            static void DrawArc(SKCanvas canvas, float position, SKPaint trackPaint)
+
+            void DrawArc(ICanvas canvas, float position, PaintBrush trackPaint)
             {
                 // Offset to match other tracks 
                 position += 0.5f;
-                using var trackPath = new SKPath();
+                var trackPath = _pathFactory.Create();
                 trackPath.MoveTo(0, position);
-                trackPath.ArcTo(position, position, 0, SKPathArcSize.Small, SKPathDirection.CounterClockwise, position, 0);
+                trackPath.ArcTo(position, position, 0, PathArcSize.Small, PathDirection.CounterClockwise, position, 0);
 
                 canvas.DrawPath(trackPath, trackPaint);
             }
         }
 
-        public void Dispose()
-        {
-            _straightTrackClear.Dispose();
-            _straightTrackPaint.Dispose();
-            _arcTrackPaint.Dispose();
-            _arcTrackClear.Dispose();
-            _plankPaint.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _straightTrackClear.Dispose();
+        //    _straightTrackPaint.Dispose();
+        //    _arcTrackPaint.Dispose();
+        //    _arcTrackClear.Dispose();
+        //    _plankPaint.Dispose();
+        //}
     }
 }

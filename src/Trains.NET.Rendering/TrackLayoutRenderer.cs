@@ -1,5 +1,4 @@
-﻿using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -22,7 +21,7 @@ namespace Trains.NET.Rendering
             _parameters = parameters;
         }
 
-        public void Render(SKCanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height)
         {
             foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
             {
@@ -32,7 +31,7 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
-                canvas.ClipRect(new SKRect(0, 0, _parameters.CellSize, _parameters.CellSize), SKClipOperation.Intersect, false);
+                canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize), ClipOperation.Intersect, false);
 
                 _trackRenderer.Render(canvas, track, _parameters.CellSize);
 

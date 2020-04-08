@@ -1,19 +1,17 @@
-﻿using System;
-using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     [Order(449)]
-    internal class HappinessRenderer : ILayerRenderer, IDisposable
+    internal class HappinessRenderer : ILayerRenderer//, IDisposable
     {
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
-        private readonly SKPaint _paint = new SKPaint
+        private readonly PaintBrush _paint = new PaintBrush
         {
-            Color = SKColors.Cyan,
-            Style = SKPaintStyle.Fill
+            Color = Colors.Cyan,
+            Style = PaintStyle.Fill
         };
 
         public bool Enabled { get; set; }
@@ -26,12 +24,12 @@ namespace Trains.NET.Rendering
             _parameters = parameters;
         }
 
-        public void Dispose()
-        {
-            _paint.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _paint.Dispose();
+        //}
 
-        public void Render(SKCanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height)
         {
             foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
             {

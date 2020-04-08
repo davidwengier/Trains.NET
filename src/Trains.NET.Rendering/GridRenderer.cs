@@ -1,5 +1,4 @@
-﻿using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -16,13 +15,13 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; } = true;
         public string Name => "Grid";
 
-        public void Render(SKCanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height)
         {
-            using var grid = new SKPaint
+            var grid = new PaintBrush
             {
-                Color = SKColors.LightGray,
+                Color = Colors.LightGray,
                 StrokeWidth = 1,
-                Style = SKPaintStyle.Stroke
+                Style = PaintStyle.Stroke
             };
 
             for (int x = 0; x < width + 1; x += _parameters.CellSize)

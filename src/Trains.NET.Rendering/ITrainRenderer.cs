@@ -1,10 +1,9 @@
-﻿using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     public interface ITrainRenderer
     {
-        void Render(SKCanvas canvas, Train train);
+        void Render(ICanvas canvas, Train train);
     }
 }

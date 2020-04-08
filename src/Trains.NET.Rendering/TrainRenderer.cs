@@ -1,22 +1,20 @@
-﻿using System;
-using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrainRenderer : ITrainRenderer, IDisposable
+    internal class TrainRenderer : ITrainRenderer //, IDisposable
     {
         private readonly ITrackParameters _trackParameters;
         private readonly ITrainParameters _trainParameters;
-        private readonly SKPaint _bodyPaint = new SKPaint
+        private readonly PaintBrush _bodyPaint = new PaintBrush
         {
-            Color = SKColors.Red,
-            Style = SKPaintStyle.Fill
+            Color = Colors.Red,
+            Style = PaintStyle.Fill
         };
-        private readonly SKPaint _headPaint = new SKPaint
+        private readonly PaintBrush _headPaint = new PaintBrush
         {
-            Color = SKColors.Blue,
-            Style = SKPaintStyle.Fill
+            Color = Colors.Blue,
+            Style = PaintStyle.Fill
         };
 
         public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters)
@@ -25,13 +23,13 @@ namespace Trains.NET.Rendering
             _trainParameters = trainParameters;
         }
 
-        public void Dispose()
-        {
-            _bodyPaint.Dispose();
-            _headPaint.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _bodyPaint.Dispose();
+        //    _headPaint.Dispose();
+        //}
 
-        public void Render(SKCanvas canvas, Train train)
+        public void Render(ICanvas canvas, Train train)
         {
             SetupCanvasToDrawTrain(canvas, train, _trackParameters);
 
@@ -47,7 +45,7 @@ namespace Trains.NET.Rendering
                             _headPaint);
         }
 
-        public static void SetupCanvasToDrawTrain(SKCanvas canvas, IMovable train, ITrackParameters trackParameters)
+        public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train, ITrackParameters trackParameters)
         {
             float x = trackParameters.CellSize * train.RelativeLeft;
             float y = trackParameters.CellSize * train.RelativeTop;

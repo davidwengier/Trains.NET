@@ -1,5 +1,4 @@
-﻿using SkiaSharp;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -21,7 +20,7 @@ namespace Trains.NET.Rendering
             _pixelMapper = pixelMapper;
         }
 
-        public void Render(SKCanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height)
         {
             foreach (Train train in _gameBoard.GetMovables())
             {

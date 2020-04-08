@@ -11,14 +11,14 @@ namespace Trains.NET.Engine
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
         private readonly List<IMovable> _movables = new List<IMovable>();
         private readonly ITimer? _gameLoopTimer;
-        private readonly IGameStorage _storage;
+        private readonly IGameStorage? _storage;
 
         public int Columns { get; set; }
         public int Rows { get; set; }
         public int SpeedAdjustmentFactor { get; set; } = 10;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public GameBoard(IGameStorage storage, ITimer? timer)
+        public GameBoard(IGameStorage? storage, ITimer? timer)
         {
             _gameLoopTimer = timer;
             if (_gameLoopTimer != null)
@@ -29,6 +29,11 @@ namespace Trains.NET.Engine
             }
 
             _storage = storage;
+
+            if (storage == null)
+            {
+                return;
+            }
 
             IEnumerable<Track>? tracks = null;
             try
@@ -112,7 +117,7 @@ namespace Trains.NET.Engine
                 track.SetBestTrackDirection(false);
             }
 
-            _storage.WriteTracks(_tracks.Values);
+            _storage?.WriteTracks(_tracks.Values);
         }
 
         public void RemoveTrack(int column, int row)
@@ -123,7 +128,7 @@ namespace Trains.NET.Engine
                 track.RefreshNeighbors(true);
             }
 
-            _storage.WriteTracks(_tracks.Values);
+            _storage?.WriteTracks(_tracks.Values);
         }
 
         public void AddTrain(int column, int row)
@@ -181,7 +186,7 @@ namespace Trains.NET.Engine
             _tracks.Clear();
             _movables.Clear();
 
-            _storage.WriteTracks(_tracks.Values);
+            _storage?.WriteTracks(_tracks.Values);
         }
 
         public void Dispose()

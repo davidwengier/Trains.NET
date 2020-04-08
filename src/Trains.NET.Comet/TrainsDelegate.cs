@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using Comet;
 using Comet.Skia;
-using SkiaSharp;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
+using Trains.NET.Rendering.Skia;
 
 namespace Trains.NET.Comet
 {
@@ -26,9 +26,9 @@ namespace Trains.NET.Comet
             _game.SetSize((int)bounds.Width, (int)bounds.Height);
         }
 
-        public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
+        public override void Draw(SkiaSharp.SKCanvas canvas, RectangleF dirtyRect)
         {
-            _game.Render(canvas);
+            _game.Render(new SKCanvasWrapper(canvas));
         }
 
         public override bool StartInteraction(PointF[] points)

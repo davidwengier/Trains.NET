@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -33,7 +32,7 @@ namespace Trains.NET.Rendering
             _gameBoard.Rows = rows;
         }
 
-        public void Render(SKCanvas canvas)
+        public void Render(ICanvas canvas)
         {
             if (canvas is null)
             {
@@ -41,8 +40,8 @@ namespace Trains.NET.Rendering
             }
 
             canvas.Translate(1, 1);
-            canvas.Clear(SKColors.White);
-            canvas.ClipRect(new SKRect(0, 0, _width + 2, _height + 2), SKClipOperation.Intersect, false);
+            canvas.Clear(Colors.White);
+            canvas.ClipRect(new Rectangle(0, 0, _width + 2, _height + 2), ClipOperation.Intersect, false);
 
             foreach (ILayerRenderer renderer in _boardRenderers)
             {

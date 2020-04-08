@@ -1,22 +1,20 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using SkiaSharp;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     [Order(1000)]
-    internal class DiagnosticsRenderer : ILayerRenderer, IDisposable
+    internal class DiagnosticsRenderer : ILayerRenderer //, IDisposable
     {
         private long _lastDrawTime;
         private readonly IGameBoard _gameBoard;
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-        private readonly SKPaint _paint = new SKPaint
+        private readonly PaintBrush _paint = new PaintBrush
         {
-            Color = SKColors.Purple,
+            Color = Colors.Purple,
             TextSize = 20,
-            TextAlign = SKTextAlign.Left,
+            TextAlign = TextAlign.Left,
         };
 
         public bool Enabled { get; set; }
@@ -28,12 +26,12 @@ namespace Trains.NET.Rendering
             _gameBoard = gameBoard;
         }
 
-        public void Dispose()
-        {
-            _paint.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _paint.Dispose();
+        //}
 
-        public void Render(SKCanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height)
         {
             long now = _stopwatch.ElapsedMilliseconds;
             long timeSinceLastUpdate = now - _lastDrawTime;

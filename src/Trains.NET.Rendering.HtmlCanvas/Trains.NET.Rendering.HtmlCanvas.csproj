@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.JSInterop" Version="5.0.0-preview.2.20167.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,6 +13,6 @@
         public void RotateDegrees(float degrees, float x, float y);
         public void DrawPath(IPath trackPath, PaintBrush straightTrackPaint);
         public void RotateDegrees(float degrees);
-        void Clear(Colors white);
+        void Clear(Colors color);
     }
 }

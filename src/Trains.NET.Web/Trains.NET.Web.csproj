@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
+    <ProjectReference Include="..\Trains.NET.Rendering.HtmlCanvas\Trains.NET.Rendering.HtmlCanvas.csproj" />
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
 </Project>

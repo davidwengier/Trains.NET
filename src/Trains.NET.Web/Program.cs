@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
+using Trains.NET.Rendering.HtmlCanvas;
 
 namespace Trains.NET.Web
 {
@@ -18,6 +19,7 @@ namespace Trains.NET.Web
             builder.Services.AddFromAssembly(typeof(IGameBoard).Assembly);
             builder.Services.AddFromAssembly(typeof(IGame).Assembly);
             builder.Services.AddFromAssembly(typeof(Program).Assembly);
+            builder.Services.AddFromAssembly(typeof(CanvasWrapper).Assembly);
 
             await builder.Build().RunAsync().ConfigureAwait(false);
         }

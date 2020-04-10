@@ -1,14 +1,30 @@
 ﻿@page "/"
-@inject Trains.NET.Rendering.IGame _game;
+@inject Trains.NET.Rendering.IGame _game
+@inject Trains.NET.Engine.IGameBoard _gameBoard
+@inject IJSRuntime _jsRuntime
+
+@using Trains.NET.Rendering.HtmlCanvas
 
 <canvas class="col-xs-12" id="game" />
 
-
 @code
 {
-    [JSInvokable]
-    private void SetSize(int width, int height)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _game.SetSize(width, height);
+        if (firstRender)
+        {
+            var canvas = new CanvasWrapper();
+            await canvas.InitAsync("game", _jsRuntime);
+
+            _game.SetSize(canvas.Width, canvas.Height);
+
+            _game.Render(canvas);
+
+            //_gameBoard.AddTrack(2, 2);
+            //_gameBoard.AddTrack(2, 3);
+            //_gameBoard.AddTrack(3, 3);
+
+            //_game.Render(canvas);
+        }
     }
 }

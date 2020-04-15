@@ -165,7 +165,6 @@ namespace Trains.NET.Rendering
             void DrawArc(ICanvas canvas, float position, PaintBrush trackPaint)
             {
                 // Offset to match other tracks 
-                position += 0.5f;
                 var trackPath = _pathFactory.Create();
                 trackPath.MoveTo(0, position);
                 trackPath.ArcTo(position, position, 0, PathArcSize.Small, PathDirection.CounterClockwise, position, 0);

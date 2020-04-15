@@ -56,7 +56,7 @@ namespace Trains.NET.Rendering.HtmlCanvas
 
         public void DrawRect(float x, float y, float width, float height, PaintBrush paint)
         {
-            _jsRuntime.InvokeVoidAsync("canvas.drawRect", x, y, width, height, paint.StrokeWidth, paint.Color.ToString());
+            _jsRuntime.InvokeVoidAsync("canvas.drawRect", x, y, width, height, paint.StrokeWidth, paint.Color.ToString(), paint.Style == PaintStyle.Fill);
         }
 
         public void DrawText(string text, float x, float y, PaintBrush paint)

@@ -10,7 +10,7 @@ namespace Trains.NET.Rendering.HtmlCanvas
 
         public void ArcTo(float radiusX, float radiusY, int xAxisRotate, PathArcSize arcSize, PathDirection direction, float x, int y)
         {
-            _commands.Add(("canvas.arcTo", new object[] { radiusX, radiusY, xAxisRotate, arcSize.ToString(), direction.ToString(), x, y }));
+            _commands.Add(("canvas.arcTo", new object[] { x, y, radiusX, direction == PathDirection.CounterClockwise }));
         }
 
         public void LineTo(float x, float y)

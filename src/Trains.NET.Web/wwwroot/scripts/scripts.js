@@ -1,8 +1,4 @@
-﻿
-
-
-
-window.canvas = (function () {
+﻿window.canvas = (function () {
 
     var canvas, context;
 
@@ -12,6 +8,9 @@ window.canvas = (function () {
         init: function (id) {
             canvas = document.getElementById(id);
             context = canvas.getContext('2d');
+
+            canvas.height = this.getHeight();
+            canvas.width = this.getWidth();
         },
         getHeight: function () {
             return canvas.clientHeight;
@@ -28,8 +27,8 @@ window.canvas = (function () {
         },
 
         clipRect: function (l, t, r, b) {
-            //context.rect(l, t, r, b);
-            //context.clip();
+            context.rect(l, t, r, b);
+            context.clip();
         },
 
         drawCircle: function (x, y, r, width, color) {
@@ -49,8 +48,9 @@ window.canvas = (function () {
             context.beginPath();
         },
 
-        arcTo: function (radiusX, radiusY, xAxisRotate, arcSize, direction, x, y) {
-            
+        arcTo: function (x, y, radius, counterClockwise) {
+            context.moveTo(x, y);
+            context.arc(0, 0, radius, 0, Math.PI / 2, false);
         },
 
         moveTo: function (x, y) {
@@ -67,11 +67,16 @@ window.canvas = (function () {
             context.stroke();
         },
 
-        drawRect: function (x, y, w, h, width, color) {
+        drawRect: function (x, y, w, h, width, color, fill) {
             context.strokeStyle = color;
             context.lineWidth = width;
 
-            context.strokeRect(x, y, w, h);
+            if (fill === true) {
+                context.fillRect(x, y, w, h);
+            }
+            else {
+                context.strokeRect(x, y, w, h);
+            }
         },
 
         drawText: function (text, x, y, size, align, color) {
@@ -103,5 +108,4 @@ window.canvas = (function () {
             context.translate(x, y);
         }
     };
-
 })();

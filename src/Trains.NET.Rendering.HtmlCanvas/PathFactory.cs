@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Rendering.HtmlCanvas
+﻿namespace Trains.NET.Rendering.HtmlCanvas
 {
     internal class PathFactory : IPathFactory
     {

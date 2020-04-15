@@ -39,6 +39,7 @@ namespace Trains.NET.Rendering
                 throw new ArgumentNullException(nameof(canvas));
             }
 
+            canvas.Save();
             canvas.Translate(1, 1);
             canvas.Clear(Colors.White);
             canvas.ClipRect(new Rectangle(0, 0, _width + 2, _height + 2), ClipOperation.Intersect, false);
@@ -54,6 +55,7 @@ namespace Trains.NET.Rendering
                 renderer.Render(canvas, _width, _height);
                 canvas.Restore();
             }
+            canvas.Restore();
         }
     }
 }

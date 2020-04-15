@@ -1,6 +1,7 @@
 ﻿@using Trains.NET.Engine;
 
 @inject OrderedList<ITool> tools
+@inject GameState _state
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Trains.NET.Web</a>
@@ -14,7 +15,9 @@
         @foreach (var tool in tools)
         {
             <li class="nav-item px-3">
-                <a href="#">@tool.Name</a>
+                <a href="#" @onclick="@(e => _state.CurrentTool = tool)">
+                    @tool.Name
+                </a>
             </li>
         }
     </ul>

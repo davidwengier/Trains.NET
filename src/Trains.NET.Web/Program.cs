@@ -21,6 +21,8 @@ namespace Trains.NET.Web
             builder.Services.AddFromAssembly(typeof(Program).Assembly);
             builder.Services.AddFromAssembly(typeof(CanvasWrapper).Assembly);
 
+            builder.Services.AddSingleton(typeof(GameState));
+
             await builder.Build().RunAsync().ConfigureAwait(false);
         }
     }

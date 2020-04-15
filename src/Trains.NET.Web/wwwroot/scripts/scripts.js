@@ -5,18 +5,39 @@
     return {
         // Guff:
 
-        init: function (id) {
+        init: function (id, razorView) {
             canvas = document.getElementById(id);
             context = canvas.getContext('2d');
 
             canvas.height = this.getHeight();
             canvas.width = this.getWidth();
+
+            //var redraw = function () {
+            //    razorView.invokeMethodAsync('Redraw');
+            //    requestAnimationFrame(redraw);
+            //}
+            //requestAnimationFrame(redraw);
         },
         getHeight: function () {
             return canvas.clientHeight;
         },
         getWidth: function () {
             return canvas.clientWidth;
+        },
+        getClientX: function () {
+            return canvas.getBoundingClientRect().x;
+        },
+        getClientY: function () {
+            return canvas.getBoundingClientRect().y;
+        },
+
+        // Render:
+
+        render: function (data) {
+            var commands = JSON.parse(data);
+            commands.forEach(function (item) {
+                DotNet.jsCallDispatcher.invokeJSFromDotNet(item.command, item.args);
+            });
         },
 
         // Drawing:

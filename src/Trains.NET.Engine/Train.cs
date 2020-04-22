@@ -16,7 +16,7 @@ namespace Trains.NET.Engine
             this.Angle = angle;
         }
 
-        internal float Move(float distance, Track track)
+        internal (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(float distance, Track track)
         {
             int newColumn = this.Column;
             int newRow = this.Row;
@@ -46,13 +46,7 @@ namespace Trains.NET.Engine
                 position.RelativeTop = 0.001f;
             }
 
-            // Wrap this in detection logic
-            this.Column = newColumn;
-            this.Row = newRow;
-            this.RelativeLeft = position.RelativeLeft;
-            this.RelativeTop = position.RelativeTop;
-            this.Angle = position.Angle;
-            return position.Distance;
+            return (position, newColumn, newRow);
         }
     }
 }

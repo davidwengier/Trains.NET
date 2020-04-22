@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine
 {
     [Order(50)]
     internal class TrainTool : ITool
@@ -20,6 +18,6 @@ namespace Trains.NET.Engine
         }
 
         public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null &&
-            !_gameBoard.GetMovables().Any(t => t.Column == column && t.Row == row);
+            _gameBoard.GetMovableAt(column, row) == null;
     }
 }

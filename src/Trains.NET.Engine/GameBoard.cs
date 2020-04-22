@@ -79,7 +79,23 @@ namespace Trains.NET.Engine
                     Track? track = GetTrackForTrain(train);
                     if (track != null)
                     {
-                        distance = train.Move(distance, track);
+                        (var newPosition, var newColumn, var newRow) = train.GetNextPosition(distance, track);
+
+                        IMovable? otherTrain = GetMovableAt(newColumn, newRow);
+                        if (GetTrackAt(newColumn, newRow) != null &&
+                            (otherTrain == null || otherTrain == train))
+                        {
+                            train.Column = newColumn;
+                            train.Row = newRow;
+                            train.Angle = newPosition.Angle;
+                            train.RelativeLeft = newPosition.RelativeLeft;
+                            train.RelativeTop = newPosition.RelativeTop;
+                            distance = newPosition.Distance;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -193,5 +209,7 @@ namespace Trains.NET.Engine
         {
             _gameLoopTimer?.Dispose();
         }
+
+        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t.Column == column && t.Row == row);
     }
 }

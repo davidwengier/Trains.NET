@@ -2,10 +2,10 @@
 {
     public interface ITrainPalette
     {
-        Colors OutlineColor { get; }
-        Colors RearSectionStartColor { get; }
-        Colors RearSectionEndColor { get; }
-        Colors FrontSectionStartColor { get; }
-        Colors FrontSectionEndColor { get; }
+        Color OutlineColor { get; }
+        Color RearSectionStartColor { get; }
+        Color RearSectionEndColor { get; }
+        Color FrontSectionStartColor { get; }
+        Color FrontSectionEndColor { get; }
     }
 }

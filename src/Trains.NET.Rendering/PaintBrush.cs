@@ -2,7 +2,7 @@
 {
     public class PaintBrush
     {
-        public Colors? Color { get; internal set; }
+        public Color? Color { get; internal set; }
         public PaintStyle? Style { get; internal set; }
         public int? TextSize { get; internal set; }
         public TextAlign? TextAlign { get; internal set; }

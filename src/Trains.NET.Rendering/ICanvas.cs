@@ -13,7 +13,7 @@
         public void RotateDegrees(float degrees, float x, float y);
         public void DrawPath(IPath trackPath, PaintBrush straightTrackPaint);
         public void RotateDegrees(float degrees);
-        void Clear(Colors color);
-        void GradientRect(float x, float y, float width, float height, Colors start, Colors end);
+        void Clear(Color color);
+        void GradientRect(float x, float y, float width, float height, Color start, Color end);
     }
 }

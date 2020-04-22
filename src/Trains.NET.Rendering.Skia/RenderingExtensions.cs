@@ -5,33 +5,7 @@ namespace Trains.NET.Rendering.Skia
 {
     public static class RenderingExtensions
     {
-        public static SKColor ToSkia(this Colors color) => color switch
-        {
-            Colors.Cyan => SKColors.Cyan,
-            Colors.Green => SKColors.Green,
-            Colors.Magenta => SKColors.Magenta,
-            Colors.Purple => SKColors.Purple,
-            Colors.LightGray => SKColors.LightGray,
-            Colors.Black => SKColors.Black,
-            Colors.White => SKColors.White,
-            Colors.Red => SKColors.Red,
-            Colors.Blue => SKColors.Blue,
-            Colors.Gold => SKColors.Gold,
-            Colors.Gray => SKColors.Gray,
-            Colors.LegacyDarkRed => LegacySKColors.LegacyDarkRed,
-            Colors.LegacyLightRed => LegacySKColors.LegacyLightRed,
-            Colors.LegacyDarkBlue => LegacySKColors.LegacyDarkBlue,
-            Colors.LegacyLightBlue => LegacySKColors.LegacyLightBlue,
-            Colors.LegacyDarkGreen => LegacySKColors.LegacyDarkGreen,
-            Colors.LegacyLightGreen => LegacySKColors.LegacyLightGreen,
-            Colors.LegacyDarkPurple => LegacySKColors.LegacyDarkPurple,
-            Colors.LegacyLightPurple => LegacySKColors.LegacyLightPurple,
-            Colors.LegacyDarkYellow => LegacySKColors.LegacyDarkYellow,
-            Colors.LegacyLightYellow => LegacySKColors.LegacyLightYellow,
-            Colors.LegacyNearlyBlack => LegacySKColors.LegacyNearlyBlack,
-            Colors.LegacyGray => LegacySKColors.LegacyGray,
-            _ => throw new NotImplementedException()
-        };
+        public static SKColor ToSkia(this Color color) => SKColor.Parse(color.HexCode);
 
         public static SKClipOperation ToSkia(this ClipOperation operation) => operation switch
         {
@@ -72,7 +46,7 @@ namespace Trains.NET.Rendering.Skia
 
             if (brush.Color != null)
             {
-                paint.Color = brush.Color.Value.ToSkia();
+                paint.Color = brush.Color.ToSkia();
             }
             if (brush.IsAntialias != null)
             {

@@ -49,7 +49,7 @@ namespace Trains.NET.Rendering.HtmlCanvas
 
         }
 
-        public void Clear(Colors color)
+        public void Clear(Color color)
         {
             AddCommand("canvas.clear", color.ToString());
         }
@@ -123,7 +123,7 @@ namespace Trains.NET.Rendering.HtmlCanvas
             AddCommand("canvas.translate", x, y);
         }
 
-        public void GradientRect(float x, float y, float width, float height, Colors start, Colors end)
+        public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {
             throw new System.NotImplementedException();
         }

@@ -12,7 +12,7 @@ namespace Trains.NET.Rendering
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private readonly PaintBrush _paint = new PaintBrush
         {
-            Color = Colors.Purple,
+            Color = Colors.Black,
             TextSize = 20,
             TextAlign = TextAlign.Left,
         };

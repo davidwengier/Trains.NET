@@ -11,7 +11,7 @@ namespace Trains.NET.Rendering.Skia
             _canvas = canvas;
         }
 
-        public void Clear(Colors color)
+        public void Clear(Color color)
             => _canvas.Clear(color.ToSkia());
 
         public void ClipRect(Rectangle rect, ClipOperation operation, bool antialias)
@@ -32,7 +32,7 @@ namespace Trains.NET.Rendering.Skia
         public void DrawText(string text, float x, float y, PaintBrush paint)
             => _canvas.DrawText(text, x, y, paint.ToSkia());
 
-        public void GradientRect(float x, float y, float width, float height, Colors start, Colors end)
+        public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
                                                        new SKPoint(x, y + height),

@@ -2,7 +2,7 @@
 {
     internal class TrainParameters : ITrainParameters
     {
-        public float RearHeight { get; set; } = 25;
+        public float RearHeight { get; set; } = 22;
 
         public float RearWidth { get; set; } = 10;
 

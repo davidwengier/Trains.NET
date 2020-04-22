@@ -13,17 +13,6 @@ namespace Trains.NET.Rendering
 
         private readonly Dictionary<Train, ITrainPalette> _paletteMap = new Dictionary<Train, ITrainPalette>();
 
-        private readonly PaintBrush _bodyPaint = new PaintBrush
-        {
-            Color = Colors.Red,
-            Style = PaintStyle.Fill
-        };
-        private readonly PaintBrush _headPaint = new PaintBrush
-        {
-            Color = Colors.Blue,
-            Style = PaintStyle.Fill
-        };
-
         public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, OrderedList<ITrainPalette> trainPalettes)
         {
             _trackParameters = trackParameters;

@@ -28,7 +28,7 @@
 
             _timer = new System.Threading.Timer(state =>
             {
-                _timer.Change(0, System.Threading.Timeout.Infinite);
+                _timer!.Change(0, System.Threading.Timeout.Infinite);
                 _game.Render(canvas);
                 _timer.Change(0, 16);
             }, null, 0, 16);

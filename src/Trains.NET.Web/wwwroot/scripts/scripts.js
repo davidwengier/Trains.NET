@@ -89,13 +89,14 @@
         },
 
         drawRect: function (x, y, w, h, width, color, fill) {
-            context.strokeStyle = color;
             context.lineWidth = width;
 
             if (fill === true) {
+                context.fillStyle = color;
                 context.fillRect(x, y, w, h);
             }
             else {
+                context.strokeStyle = color;
                 context.strokeRect(x, y, w, h);
             }
         },

@@ -140,14 +140,16 @@ namespace Trains.NET.Rendering
             }
             canvas.Restore();
 
-            DrawTracks(canvas, width);
-
             if (drawExtra)
             {
+                canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
                 DrawTracks(canvas, width);
+                canvas.Restore();
             }
+
+            DrawTracks(canvas, width);
 
             void DrawTracks(ICanvas canvas, int width)
             {

@@ -18,6 +18,18 @@ namespace Trains.NET.Rendering.Skia
             Colors.Blue => SKColors.Blue,
             Colors.Gold => SKColors.Gold,
             Colors.Gray => SKColors.Gray,
+            Colors.LegacyDarkRed => LegacySKColors.LegacyDarkRed,
+            Colors.LegacyLightRed => LegacySKColors.LegacyLightRed,
+            Colors.LegacyDarkBlue => LegacySKColors.LegacyDarkBlue,
+            Colors.LegacyLightBlue => LegacySKColors.LegacyLightBlue,
+            Colors.LegacyDarkGreen => LegacySKColors.LegacyDarkGreen,
+            Colors.LegacyLightGreen => LegacySKColors.LegacyLightGreen,
+            Colors.LegacyDarkPurple => LegacySKColors.LegacyDarkPurple,
+            Colors.LegacyLightPurple => LegacySKColors.LegacyLightPurple,
+            Colors.LegacyDarkYellow => LegacySKColors.LegacyDarkYellow,
+            Colors.LegacyLightYellow => LegacySKColors.LegacyLightYellow,
+            Colors.LegacyNearlyBlack => LegacySKColors.LegacyNearlyBlack,
+            Colors.LegacyGray => LegacySKColors.LegacyGray,
             _ => throw new NotImplementedException()
         };
 

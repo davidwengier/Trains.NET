@@ -12,6 +12,18 @@
         Red,
         Blue,
         Gold,
-        Gray
+        Gray,
+        LegacyDarkRed,
+        LegacyLightRed,
+        LegacyDarkBlue,
+        LegacyLightBlue,
+        LegacyDarkGreen,
+        LegacyLightGreen,
+        LegacyDarkPurple,
+        LegacyLightPurple,
+        LegacyDarkYellow,
+        LegacyLightYellow,
+        LegacyNearlyBlack,
+        LegacyGray
     }
 }

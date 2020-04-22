@@ -1,4 +1,6 @@
-﻿using Trains.NET.Engine;
+﻿using System;
+using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -6,6 +8,11 @@ namespace Trains.NET.Rendering
     {
         private readonly ITrackParameters _trackParameters;
         private readonly ITrainParameters _trainParameters;
+        private readonly OrderedList<ITrainPalette> _trainPalettes;
+        private readonly Random _random = new Random();
+
+        private readonly Dictionary<Train, ITrainPalette> _paletteMap = new Dictionary<Train, ITrainPalette>();
+
         private readonly PaintBrush _bodyPaint = new PaintBrush
         {
             Color = Colors.Red,
@@ -17,10 +24,11 @@ namespace Trains.NET.Rendering
             Style = PaintStyle.Fill
         };
 
-        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters)
+        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, OrderedList<ITrainPalette> trainPalettes)
         {
             _trackParameters = trackParameters;
             _trainParameters = trainParameters;
+            _trainPalettes = trainPalettes;
         }
 
         //public void Dispose()
@@ -31,18 +39,63 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, Train train)
         {
+            if (!_paletteMap.ContainsKey(train))
+            {
+                _paletteMap.Add(train, GetRandomPalette());
+            }
+            var palette = _paletteMap[train];
+
             SetupCanvasToDrawTrain(canvas, train, _trackParameters);
 
-            canvas.DrawRect(-_trainParameters.TrainBodyWidth,
-                            -(_trainParameters.TrainBodyWidth / 2),
-                            _trainParameters.TrainBodyWidth * 2,
-                            _trainParameters.TrainBodyWidth,
-                            _bodyPaint);
-            canvas.DrawRect(_trainParameters.TrainBodyWidth,
-                            -(_trainParameters.TrainHeadWidth / 2),
-                            _trainParameters.TrainHeadWidth,
-                            _trainParameters.TrainHeadWidth,
-                            _headPaint);
+            var outline = new PaintBrush
+            {
+                Color = palette.OutlineColor,
+                Style = PaintStyle.Stroke,
+                StrokeWidth = 2
+            };
+
+            var smokeStack = new PaintBrush
+            {
+                Color = palette.OutlineColor,
+                Style = PaintStyle.Fill,
+                StrokeWidth = 2
+            };
+
+            float startPos = -((_trainParameters.HeadWidth + _trainParameters.RearWidth) / 2);
+
+            canvas.GradientRect(startPos,
+                            -(_trainParameters.RearHeight / 2),
+                            _trainParameters.RearWidth,
+                            _trainParameters.RearHeight,
+
+                            palette.RearSectionStartColor, palette.RearSectionEndColor);
+
+            canvas.GradientRect(startPos + _trainParameters.RearWidth,
+                            -(_trainParameters.HeadHeight / 2),
+                            _trainParameters.HeadWidth,
+                            _trainParameters.HeadHeight,
+
+                            palette.FrontSectionStartColor, palette.FrontSectionEndColor);
+
+            canvas.DrawRect(startPos,
+                            -(_trainParameters.RearHeight / 2),
+                            _trainParameters.RearWidth,
+                            _trainParameters.RearHeight,
+                            outline);
+
+            canvas.DrawRect(startPos + _trainParameters.RearWidth,
+                            -(_trainParameters.HeadHeight / 2),
+                            _trainParameters.HeadWidth,
+                            _trainParameters.HeadHeight,
+                            outline);
+
+            canvas.DrawCircle(startPos + _trainParameters.RearWidth + _trainParameters.HeadWidth - 5, 0, 2, smokeStack);
+
+        }
+
+        private ITrainPalette GetRandomPalette()
+        {
+            return _trainPalettes[_random.Next(0, _trainPalettes.Count)];
         }
 
         public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train, ITrackParameters trackParameters)

@@ -1,6 +1,8 @@
-﻿namespace Trains.NET.Rendering.Skia
+﻿using SkiaSharp;
+
+namespace Trains.NET.Rendering.Skia
 {
-    public class SKCanvasWrapper : Trains.NET.Rendering.ICanvas
+    public class SKCanvasWrapper : ICanvas
     {
         private readonly SkiaSharp.SKCanvas _canvas;
 
@@ -30,6 +32,19 @@
         public void DrawText(string text, float x, float y, PaintBrush paint)
             => _canvas.DrawText(text, x, y, paint.ToSkia());
 
+        public void GradientRect(float x, float y, float width, float height, Colors start, Colors end)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
+                                                       new SKPoint(x, y + height),
+                                                       new SKColor[] { start.ToSkia(), end.ToSkia(), start.ToSkia() },
+                                                       SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
         public void Restore()
             => _canvas.Restore();
 
@@ -44,5 +59,7 @@
 
         public void Translate(float x, float y)
             => _canvas.Translate(x, y);
+
+
     }
 }

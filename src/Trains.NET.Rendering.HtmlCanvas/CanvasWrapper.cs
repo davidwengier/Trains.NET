@@ -122,5 +122,10 @@ namespace Trains.NET.Rendering.HtmlCanvas
         {
             AddCommand("canvas.translate", x, y);
         }
+
+        public void GradientRect(float x, float y, float width, float height, Colors start, Colors end)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

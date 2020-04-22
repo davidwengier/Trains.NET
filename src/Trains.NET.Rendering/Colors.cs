@@ -10,6 +10,8 @@
         Black,
         White,
         Red,
-        Blue
+        Blue,
+        Gold,
+        Gray
     }
 }

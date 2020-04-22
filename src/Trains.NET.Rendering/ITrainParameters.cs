@@ -2,7 +2,9 @@
 {
     public interface ITrainParameters
     {
-        int TrainBodyWidth { get; set;  }
-        float TrainHeadWidth { get; set; }
+        float RearHeight { get; set; }
+        float RearWidth { get; set; }
+        float HeadWidth { get; set; }
+        float HeadHeight { get; set; }
     }
 }

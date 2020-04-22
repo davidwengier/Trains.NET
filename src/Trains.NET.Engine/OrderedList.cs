@@ -9,6 +9,10 @@ namespace Trains.NET.Engine
     {
         private readonly List<T> _list;
 
+        public int Count => _list.Count;
+
+        public T this[int index] => _list[index];
+
         public OrderedList(IEnumerable<object?> services)
         {
             _list = new List<T>(from svc in services

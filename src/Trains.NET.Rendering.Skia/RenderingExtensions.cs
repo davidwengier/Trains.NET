@@ -16,6 +16,8 @@ namespace Trains.NET.Rendering.Skia
             Colors.White => SKColors.White,
             Colors.Red => SKColors.Red,
             Colors.Blue => SKColors.Blue,
+            Colors.Gold => SKColors.Gold,
+            Colors.Gray => SKColors.Gray,
             _ => throw new NotImplementedException()
         };
 

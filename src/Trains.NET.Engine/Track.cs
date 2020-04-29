@@ -234,7 +234,7 @@ namespace Trains.NET.Engine
             neighbors.Left?.SetBestTrackDirection(ignoreHappyness);
         }
 
-        private TrackNeighbors GetNeighbors()
+        public TrackNeighbors GetNeighbors()
         {
             _ = _gameBoard ?? throw new InvalidOperationException("Game board can't be null");
 

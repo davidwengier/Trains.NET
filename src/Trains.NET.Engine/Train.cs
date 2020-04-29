@@ -4,7 +4,7 @@ namespace Trains.NET.Engine
 {
     public class Train : IMovable
     {
-        public float FrontEdgeDistance => 0.8f;
+        public float FrontEdgeDistance => 0.5f;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }

@@ -73,39 +73,94 @@ namespace Trains.NET.Engine
         private void GameLoopStep(object sender, EventArgs e)
         {
             _gameLoopTimer?.Stop();
-            foreach (Train train in _movables)
+            try
             {
-                float distance = 0.005f * this.SpeedAdjustmentFactor;
-                while (distance > 0.0f)
+                foreach (Train train in _movables)
                 {
-                    Track? track = GetTrackForTrain(train);
-                    if (track != null)
-                    {
-                        (var newPosition, var newColumn, var newRow) = train.GetNextPosition(distance, track);
+                    float distance = 0.005f * this.SpeedAdjustmentFactor;
 
-                        IMovable? otherTrain = GetMovableAt(newColumn, newRow);
-                        if (GetTrackAt(newColumn, newRow) != null &&
-                            (otherTrain == null || otherTrain == train))
-                        {
-                            train.Column = newColumn;
-                            train.Row = newRow;
-                            train.Angle = newPosition.Angle;
-                            train.RelativeLeft = newPosition.RelativeLeft;
-                            train.RelativeTop = newPosition.RelativeTop;
-                            distance = newPosition.Distance;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                    Train dummyTrain = train.Clone();
+
+                    if (MoveTrain(dummyTrain, distance + train.FrontEdgeDistance))
+                    {
+                        MoveTrain(train, distance);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            _gameLoopTimer?.Start();
+        }
+
+        private bool MoveTrain(Train train, float distanceToMove)
+        {
+            float distance = distanceToMove;
+            while (distance > 0.0f)
+            {
+                Track? track = GetTrackForTrain(train);
+                if (track != null)
+                {
+                    (var newPosition, var newColumn, var newRow) = GetNextPosition(train, distance, track);
+
+                    IMovable? otherTrain = GetMovableAt(newColumn, newRow);
+                    Track? nextTrack = GetTrackAt(newColumn, newRow);
+                    if ((nextTrack != null && (track == nextTrack || track.GetNeighbors().Contains(nextTrack))) &&
+                        (otherTrain == null || otherTrain.UniqueID == train.UniqueID))
+                    {
+                        train.Column = newColumn;
+                        train.Row = newRow;
+                        train.Angle = newPosition.Angle;
+                        train.RelativeLeft = newPosition.RelativeLeft;
+                        train.RelativeTop = newPosition.RelativeTop;
+                        distance = newPosition.Distance;
                     }
                     else
                     {
                         break;
                     }
                 }
+                else
+                {
+                    break;
+                }
             }
-            _gameLoopTimer?.Start();
+
+            return distance <= 0.0f;
+        }
+
+        private static (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(Train train, float distance, Track track)
+        {
+            int newColumn = train.Column;
+            int newRow = train.Row;
+
+            var position = new TrainPosition(train.RelativeLeft, train.RelativeTop, train.Angle, distance);
+
+            track.Move(position);
+
+            if (position.RelativeLeft < 0.0f)
+            {
+                newColumn--;
+                position.RelativeLeft = 0.999f;
+            }
+            if (position.RelativeLeft > 1.0f)
+            {
+                newColumn++;
+                position.RelativeLeft = 0.001f;
+            }
+            if (position.RelativeTop < 0.0f)
+            {
+                newRow--;
+                position.RelativeTop = 0.999f;
+            }
+            if (position.RelativeTop > 1.0f)
+            {
+                newRow++;
+                position.RelativeTop = 0.001f;
+            }
+
+            return (position, newColumn, newRow);
         }
 
         public Track? GetTrackForTrain(Train train)

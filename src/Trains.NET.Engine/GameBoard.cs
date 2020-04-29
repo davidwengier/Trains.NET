@@ -66,49 +66,106 @@ namespace Trains.NET.Engine
             {
                 track.ReevaluateHappiness();
             }
+
+            _storage?.WriteTracks(_tracks.Values);
+        }
+        
+        private void GameLoopStep(object sender, EventArgs e)
+        {
+            _gameLoopTimer?.Stop();
+            GameLoopStep(0.005f * this.SpeedAdjustmentFactor);
+            _gameLoopTimer?.Start();
         }
 
         public void GameLoopStep(float stepDistance)
         {
-            foreach (Train train in _movables)
+            _gameLoopTimer?.Stop();
+            try
             {
-                float distance = stepDistance;
-                while (distance > 0.0f)
+                foreach (Train train in _movables)
                 {
-                    Track? track = GetTrackForTrain(train);
-                    if (track != null)
-                    {
-                        (var newPosition, var newColumn, var newRow) = train.GetNextPosition(distance, track);
+                    Train dummyTrain = train.Clone();
 
-                        IMovable? otherTrain = GetMovableAt(newColumn, newRow);
-                        if (GetTrackAt(newColumn, newRow) != null &&
-                            (otherTrain == null || otherTrain == train))
-                        {
-                            train.Column = newColumn;
-                            train.Row = newRow;
-                            train.Angle = newPosition.Angle;
-                            train.RelativeLeft = newPosition.RelativeLeft;
-                            train.RelativeTop = newPosition.RelativeTop;
-                            distance = newPosition.Distance;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                    if (MoveTrain(dummyTrain, stepDistance + train.FrontEdgeDistance))
+                    {
+                        MoveTrain(train, stepDistance);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            _gameLoopTimer?.Start();
+        }
+
+        private bool MoveTrain(Train train, float distanceToMove)
+        {
+            float distance = distanceToMove;
+            while (distance > 0.0f)
+            {
+                Track? track = GetTrackForTrain(train);
+                if (track != null)
+                {
+                    (var newPosition, var newColumn, var newRow) = GetNextPosition(train, distance, track);
+
+                    IMovable? otherTrain = GetMovableAt(newColumn, newRow);
+                    Track? nextTrack = GetTrackAt(newColumn, newRow);
+                    if ((nextTrack != null && (track == nextTrack || track.GetNeighbors().Contains(nextTrack))) &&
+                        (otherTrain == null || otherTrain.UniqueID == train.UniqueID))
+                    {
+                        train.Column = newColumn;
+                        train.Row = newRow;
+                        train.Angle = newPosition.Angle;
+                        train.RelativeLeft = newPosition.RelativeLeft;
+                        train.RelativeTop = newPosition.RelativeTop;
+                        distance = newPosition.Distance;
                     }
                     else
                     {
                         break;
                     }
                 }
+                else
+                {
+                    break;
+                }
             }
+            
+            return distance <= 0.0f;
         }
 
-        private void GameLoopStep(object sender, EventArgs e)
+        private static (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(Train train, float distance, Track track)
         {
-            _gameLoopTimer?.Stop();
-            GameLoopStep(0.005f * this.SpeedAdjustmentFactor);
-            _gameLoopTimer?.Start();
+            int newColumn = train.Column;
+            int newRow = train.Row;
+
+            var position = new TrainPosition(train.RelativeLeft, train.RelativeTop, train.Angle, distance);
+
+            track.Move(position);
+
+            if (position.RelativeLeft < 0.0f)
+            {
+                newColumn--;
+                position.RelativeLeft = 0.999f;
+            }
+            if (position.RelativeLeft > 1.0f)
+            {
+                newColumn++;
+                position.RelativeLeft = 0.001f;
+            }
+            if (position.RelativeTop < 0.0f)
+            {
+                newRow--;
+                position.RelativeTop = 0.999f;
+            }
+            if (position.RelativeTop > 1.0f)
+            {
+                newRow++;
+                position.RelativeTop = 0.001f;
+            }
+
+            return (position, newColumn, newRow);
         }
 
         public Track? GetTrackForTrain(Train train)
@@ -167,6 +224,11 @@ namespace Trains.NET.Engine
             }
 
             _movables.Add(train);
+        }
+
+        public void RemoveMovable(IMovable movable)
+        {
+            _movables.Remove(movable);
         }
 
         public IEnumerable<(int, int, Track)> GetTracks()

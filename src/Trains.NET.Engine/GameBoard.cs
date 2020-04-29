@@ -166,6 +166,11 @@ namespace Trains.NET.Engine
             _movables.Add(train);
         }
 
+        public void RemoveMovable(IMovable movable)
+        {
+            _movables.Remove(movable);
+        }
+
         public IEnumerable<(int, int, Track)> GetTracks()
         {
             foreach ((int col, int row, Track track) in _tracks)

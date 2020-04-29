@@ -12,6 +12,15 @@
                 (this.Right == null ? 0 : 1) +
                 (this.Left == null ? 0 : 1);
 
+        public bool Contains(Track otherTrack)
+        {
+            return otherTrack != null &&
+                (this.Left == otherTrack ||
+                this.Right == otherTrack ||
+                this.Up == otherTrack ||
+                this.Down == otherTrack);
+        }
+
         public TrackNeighbors(Track? left, Track? up, Track? right, Track? down)
         {
             this.Left = left;

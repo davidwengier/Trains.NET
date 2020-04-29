@@ -1,10 +1,12 @@
-﻿
+﻿using System;
+
 namespace Trains.NET.Engine
 {
     public class Train : IMovable
     {
         public float FrontEdgeDistance => 0.8f;
 
+        public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }
         public int Row { get; internal set; }
         public float Angle { get; internal set; }
@@ -16,37 +18,17 @@ namespace Trains.NET.Engine
             this.Angle = angle;
         }
 
-        internal (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(float distance, Track track)
+        internal Train Clone()
         {
-            int newColumn = this.Column;
-            int newRow = this.Row;
-
-            var position = new TrainPosition(this.RelativeLeft, this.RelativeTop, this.Angle, distance);
-
-            track.Move(position);
-
-            if (position.RelativeLeft < 0.0f)
+            return new Train()
             {
-                newColumn--;
-                position.RelativeLeft = 1.0f;
-            }
-            else if (position.RelativeLeft > 1.0f)
-            {
-                newColumn++;
-                position.RelativeLeft = 0.0f;
-            }
-            if (position.RelativeTop < 0.0f)
-            {
-                newRow--;
-                position.RelativeTop = 1.0f;
-            }
-            else if (position.RelativeTop > 1.0f)
-            {
-                newRow++;
-                position.RelativeTop = 0.0f;
-            }
-
-            return (position, newColumn, newRow);
+                UniqueID = this.UniqueID,
+                Column = this.Column,
+                Row = this.Row,
+                Angle = this.Angle,
+                RelativeLeft = this.RelativeLeft,
+                RelativeTop = this.RelativeTop
+            };
         }
     }
 }

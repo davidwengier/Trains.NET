@@ -3,7 +3,7 @@ using Xunit;
 
 #nullable disable
 
-namespace Trains.NET.Tests.TrainMovementTests
+namespace Trains.NET.Tests
 {
     public class ClockwiseCounterClockwise : TrainMovementTestsHelper
     {

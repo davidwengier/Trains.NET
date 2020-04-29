@@ -78,16 +78,47 @@ namespace Trains.NET.Engine
 
             position.RelativeLeft += Math.Abs(quadrantPositionX);
             position.RelativeTop += Math.Abs(quadrantPositionY);
+
+            DoAnEdgeSnap(position);
+        }
+        public static void DoAnEdgeSnap(TrainPosition position)
+        {
+            // Do some fun snapping
+            if (position.RelativeLeft < 0)
+            {
+                position.RelativeLeft = -0.1f;
+                position.RelativeTop = 0.5f;
+                position.Angle = 180.0f;
+            }
+            else if (position.RelativeLeft >= 1.0f)
+            {
+                position.RelativeLeft = 1.1f;
+                position.RelativeTop = 0.5f;
+                position.Angle = 0.0f;
+            }
+
+            if (position.RelativeTop < 0)
+            {
+                position.RelativeTop = -0.1f;
+                position.RelativeLeft = 0.5f;
+                position.Angle = 270.0f;
+            }
+            else if (position.RelativeTop >= 1.0f)
+            {
+                position.RelativeTop = 1.1f;
+                position.RelativeLeft = 0.5f;
+                position.Angle = 90.0f;
+            }
         }
 
         public static void MoveLeftDown(TrainPosition position)
         {
-            TrainMovement.MoveAroundCorner(position, 0, -1, 135, 315, -90, 0);
+            TrainMovement.MoveAroundCorner(position, 0, -1, 135, 315, 270, 360);
         }
 
         public static void MoveRightDown(TrainPosition position)
         {
-            TrainMovement.MoveAroundCorner(position, -1, -1, 45, 220, -180, 360);
+            TrainMovement.MoveAroundCorner(position, -1, -1, 45, 225, -180, 270);
         }
 
         public static void MoveRightUp(TrainPosition position)
@@ -102,24 +133,30 @@ namespace Trains.NET.Engine
 
         public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, float distance, double minimumNewAngle)
         {
+            if (currentAngle <= 0) currentAngle += Math.PI * 2.0;
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
             const double radius = 0.5;
             double angleToMove = distance / radius;
 
             // If the angle to move is outside our limits, then only move as much as we can
-            if (currentAngle - angleToMove < minimumNewAngle)
-            {
-                // Calculate how far over we are
-                double angleOver = (angleToMove - currentAngle) + minimumNewAngle;
 
+            double angleOver = currentAngle - angleToMove - minimumNewAngle;
+
+            if (angleOver < -0.00001)
+            {
                 // Set our angle to the limit, and a bit over
-                currentAngle = minimumNewAngle - 0.001f;
+                currentAngle = minimumNewAngle - 0.1f;
 
                 // Calculate how far we could move
-                distance = (float)(distance - angleOver * 0.5f);
+                distance = -(float)(angleOver * radius);
             }
             else
             {
                 currentAngle -= angleToMove;
+                currentAngle = Math.Max(currentAngle, minimumNewAngle);
                 distance = 0;
             }
 
@@ -128,18 +165,28 @@ namespace Trains.NET.Engine
 
         public static (double currentAngle, float distance) MoveClockwise(double currentAngle, float distance, double maximumNewAngle)
         {
+            if (currentAngle < 0) currentAngle += Math.PI * 2.0;
+            // To travel 2PIr, we need to move 360
+            // To travel x we need to move x/2PIr * 360
+            // To travel x rad we need to move x/2PIr * 2PI
+            // To travel x rad we need to move x/r
             const double radius = 0.5;
             double angleToMove = distance / radius;
 
-            if (currentAngle + angleToMove > maximumNewAngle)
+            double angleOver = currentAngle + angleToMove - maximumNewAngle;
+
+            if (angleOver > 0.00001)
             {
-                double angleOver = (angleToMove + currentAngle) - maximumNewAngle;
-                currentAngle = maximumNewAngle + 0.001f;
-                distance = (float)(distance - angleOver * 0.5f);
+                currentAngle = maximumNewAngle + 0.1f;
+
+                if (currentAngle > Math.PI * 2.0) currentAngle -= Math.PI * 2.0;
+
+                distance = (float)(angleOver * radius);
             }
             else
             {
                 currentAngle += angleToMove;
+                currentAngle = Math.Min(currentAngle, maximumNewAngle);
                 distance = 0;
             }
 

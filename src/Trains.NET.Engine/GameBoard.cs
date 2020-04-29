@@ -68,12 +68,11 @@ namespace Trains.NET.Engine
             }
         }
 
-        private void GameLoopStep(object sender, EventArgs e)
+        public void GameLoopStep(float stepDistance)
         {
-            _gameLoopTimer?.Stop();
             foreach (Train train in _movables)
             {
-                float distance = 0.005f * this.SpeedAdjustmentFactor;
+                float distance = stepDistance;
                 while (distance > 0.0f)
                 {
                     Track? track = GetTrackForTrain(train);
@@ -103,6 +102,12 @@ namespace Trains.NET.Engine
                     }
                 }
             }
+        }
+
+        private void GameLoopStep(object sender, EventArgs e)
+        {
+            _gameLoopTimer?.Stop();
+            GameLoopStep(0.005f * this.SpeedAdjustmentFactor);
             _gameLoopTimer?.Start();
         }
 

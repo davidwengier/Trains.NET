@@ -4,9 +4,9 @@ using Xunit;
 
 #nullable disable
 
-namespace Trains.NET.Tests
+namespace Trains.NET.Tests.TrainMovementTests
 {
-    public class TrainMovementHelperTests
+    public class MathHelpers
     {
         [Theory]
         [InlineData(0.0, 0.0)]

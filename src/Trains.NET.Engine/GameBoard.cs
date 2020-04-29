@@ -66,6 +66,8 @@ namespace Trains.NET.Engine
             {
                 track.ReevaluateHappiness();
             }
+
+            _storage?.WriteTracks(_tracks.Values);
         }
 
         private void GameLoopStep(object sender, EventArgs e)

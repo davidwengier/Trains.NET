@@ -51,24 +51,19 @@ namespace Trains.NET.Engine
             // This *should* be perpendicular to angle
             double currentAngle = TrainMovement.PointsToAngle(position.RelativeLeft - Math.Abs(quadrantPositionX), position.RelativeTop - Math.Abs(quadrantPositionY));
 
-            // To travel 2PIr, we need to move 360
-            // To travel x we need to move x/2PIr * 360
-            // To travel x rad we need to move x/2PIr * 2PI
-            // To travel x rad we need to move x/r
-            double angleToMove = position.Distance / 0.5;
             float distance;
             // In order to figure out if we are moving clockwise or counter-clockwise, look at the angle of the train
             if (BetweenAngles(position.Angle, minTrainAngleCCW, maxTrainAngleCCW))
             {
                 // We are facing left/up, so we move counter clockwise, with a minimum angle of 90
-                (currentAngle, distance) = MoveCounterClockwise(currentAngle, angleToMove, position.Distance, DegreeToRad(minimumAngle));
+                (currentAngle, distance) = MoveCounterClockwise(currentAngle, position.Distance, DegreeToRad(minimumAngle));
 
                 position.Angle = (float)TrainMovement.RadToDegree(currentAngle) - 90.0f;
             }
             else
             {
                 // We are NOT facing left/up, so we move clockwise, with a maximum angle of 180, Math.PI
-                (currentAngle, distance) = MoveClockwise(currentAngle, angleToMove, position.Distance, DegreeToRad(maximumAngle));
+                (currentAngle, distance) = MoveClockwise(currentAngle, position.Distance, DegreeToRad(maximumAngle));
 
                 position.Angle = (float)TrainMovement.RadToDegree(currentAngle) + 90.0f;
             }
@@ -105,8 +100,11 @@ namespace Trains.NET.Engine
             TrainMovement.MoveAroundCorner(position, 0, 0, 225, 45, 0, 90);
         }
 
-        public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, double angleToMove, float distance, double minimumNewAngle)
+        public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, float distance, double minimumNewAngle)
         {
+            const double radius = 0.5;
+            double angleToMove = distance / radius;
+
             // If the angle to move is outside our limits, then only move as much as we can
             if (currentAngle - angleToMove < minimumNewAngle)
             {
@@ -128,8 +126,11 @@ namespace Trains.NET.Engine
             return (currentAngle, distance);
         }
 
-        public static (double currentAngle, float distance) MoveClockwise(double currentAngle, double angleToMove, float distance, double maximumNewAngle)
+        public static (double currentAngle, float distance) MoveClockwise(double currentAngle, float distance, double maximumNewAngle)
         {
+            const double radius = 0.5;
+            double angleToMove = distance / radius;
+
             if (currentAngle + angleToMove > maximumNewAngle)
             {
                 double angleOver = (angleToMove + currentAngle) - maximumNewAngle;

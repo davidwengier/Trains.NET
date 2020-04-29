@@ -48,6 +48,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = angle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -84,6 +86,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = angle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -121,6 +125,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -161,6 +167,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -202,6 +210,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -242,6 +252,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -288,6 +300,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = angle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -325,6 +339,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -369,6 +385,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -413,6 +431,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);
@@ -457,6 +477,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             Train train = (Train)board.GetMovables().Single();
             train.Angle = startingAngle;
+            // We have an edge coming up, disable lookahead
+            train.FrontEdgeDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
             Assert.Equal(startingRow, train.Row);

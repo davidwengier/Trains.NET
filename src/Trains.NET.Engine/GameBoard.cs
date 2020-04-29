@@ -147,22 +147,22 @@ namespace Trains.NET.Engine
             if (position.RelativeLeft < 0.0f)
             {
                 newColumn--;
-                position.RelativeLeft = 0.999f;
+                position.RelativeLeft = 1.0f;
             }
             if (position.RelativeLeft > 1.0f)
             {
                 newColumn++;
-                position.RelativeLeft = 0.001f;
+                position.RelativeLeft = 0.0f;
             }
             if (position.RelativeTop < 0.0f)
             {
                 newRow--;
-                position.RelativeTop = 0.999f;
+                position.RelativeTop = 1.0f;
             }
             if (position.RelativeTop > 1.0f)
             {
                 newRow++;
-                position.RelativeTop = 0.001f;
+                position.RelativeTop = 0.0f;
             }
 
             return (position, newColumn, newRow);

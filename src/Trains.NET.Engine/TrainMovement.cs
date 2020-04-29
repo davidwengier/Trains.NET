@@ -113,7 +113,7 @@ namespace Trains.NET.Engine
 
         public static void MoveLeftDown(TrainPosition position) => TrainMovement.MoveAroundCorner(position, 0, -1, 135, 315, 270, 360);
 
-        public static void MoveRightDown(TrainPosition position) => TrainMovement.MoveAroundCorner(position, -1, -1, 45, 225, -180, 270);
+        public static void MoveRightDown(TrainPosition position) => TrainMovement.MoveAroundCorner(position, -1, -1, 45, 225, 180, 270);
 
         public static void MoveRightUp(TrainPosition position) => TrainMovement.MoveAroundCorner(position, -1, 0, -45, 135, 90, 180);
 

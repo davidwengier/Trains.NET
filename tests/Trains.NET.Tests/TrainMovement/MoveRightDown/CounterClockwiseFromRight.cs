@@ -65,8 +65,8 @@ namespace Trains.NET.Tests.TrainMovementTests.MoveRightDown
 
         [Theory]
         [InlineData(1.0f, 0.5f, 180.0f, MovementDistanceOf45Degrees * 3, MovementDistanceOf45Degrees)]
-        //[InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, MovementDistanceOf45Degrees * 2, MovementDistanceOf45Degrees)]
-        //[InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, 1.0f + MovementDistanceOf45Degrees, 1.0f)]
+        [InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, MovementDistanceOf45Degrees * 2, MovementDistanceOf45Degrees)]
+        [InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, 1.0f + MovementDistanceOf45Degrees, 1.0f)]
         public void MoveRightDown_CounterClockwiseFromRight_BeyondCell(float initalLeft, float initalTop, float initialAngle, float distance, float expectedDistance)
         {
             TrainPosition position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);

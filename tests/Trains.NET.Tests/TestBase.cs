@@ -24,15 +24,25 @@ namespace Trains.NET.Tests
         protected void AssertTrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
             GameBoard.AddTrain(startColumn, startRow);
-            IMovable? train = GameBoard.GetMovables().First();
+            Train? train = (Train)GameBoard.GetMovables().First();
+            
             train.SetAngle(startAngle);
+            // Run until we get to the very end of the track
+            train.FrontEdgeDistance = 0.01f;
 
             Timer.Tick();
             Timer.Tick();
             Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            Timer.Tick();
+            // BOOM!
 
-            Assert.Equal(endColumn, train.Column);
-            Assert.Equal(endRow, train.Row);
+            Assert.Equal((endColumn, endRow), (train.Column, train.Row));
         }
 
         public void Dispose()

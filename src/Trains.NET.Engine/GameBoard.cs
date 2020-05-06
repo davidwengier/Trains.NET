@@ -77,7 +77,9 @@ namespace Trains.NET.Engine
             {
                 foreach (Train train in _movables)
                 {
-                    float distance = 0.005f * this.SpeedAdjustmentFactor;
+                    if (train.Speed == 0) continue;
+
+                    float distance = 0.005f * this.SpeedAdjustmentFactor * train.Speed;
 
                     Train dummyTrain = train.Clone();
 
@@ -204,7 +206,7 @@ namespace Trains.NET.Engine
             _storage?.WriteTracks(_tracks.Values);
         }
 
-        public void AddTrain(int column, int row)
+        public IMovable? AddTrain(int column, int row)
         {
             var train = new Train()
             {
@@ -215,10 +217,12 @@ namespace Trains.NET.Engine
             Track? track = GetTrackForTrain(train);
             if (track == null)
             {
-                return;
+                return null;
             }
 
             _movables.Add(train);
+
+            return train;
         }
 
         public void RemoveMovable(IMovable movable)

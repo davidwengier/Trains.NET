@@ -13,7 +13,14 @@ namespace Trains.NET.Comet
 
         private readonly Timer _timer;
 
-        public MainPage(IGame game, IPixelMapper pixelMapper, ITrackParameters trackParameters, OrderedList<ITool> tools, OrderedList<ILayerRenderer> layers, OrderedList<ICommand> commands)
+        public MainPage(IGame game,
+                        IPixelMapper pixelMapper,
+                        ITrackParameters trackParameters,
+                        OrderedList<ITool> tools,
+                        OrderedList<ILayerRenderer> layers,
+                        OrderedList<ICommand> commands,
+                        IGameState gameState,
+                        IGameBoard gameBoard)
         {
             HotReloadHelper.Register(this, game, pixelMapper, trackParameters, tools, layers);
 
@@ -23,6 +30,20 @@ namespace Trains.NET.Comet
 
             this.Body = () =>
             {
+                HStack trainControlPanel = new HStack()
+                {
+                    new Text(() => gameState.CurrentTrain.Value?.Name ?? "< No train selected >"),
+                    new Button("Go", () => gameState.CurrentTrain.Value?.Start()),
+                    new Text(() => gameState.CurrentTrain.Value?.Speed.ToString() ?? ""),
+                    new Button("Stop", () => gameState.CurrentTrain.Value?.Stop()),
+                    new Button("Delete", () => {
+                        if (gameState.CurrentTrain.Value != null)
+                        {
+                            gameBoard.RemoveMovable(gameState.CurrentTrain.Value);
+                            gameState.SetCurrentTrain(null);
+                        }
+                    })
+                };
                 return new HStack()
                 {
                     new VStack()
@@ -36,9 +57,12 @@ namespace Trains.NET.Comet
                         _configurationShown ? null :
                             CreateCommandControls(commands),
                         new Spacer()
-
                     }.Frame(100, alignment: Alignment.Top),
-                    new DrawableControl(controlDelegate).FillVertical()
+                    new VStack()
+                    {
+                        trainControlPanel,
+                        new DrawableControl(controlDelegate).FillVertical()
+                    }
                 }.FillHorizontal();
             };
 
@@ -84,17 +108,17 @@ namespace Trains.NET.Comet
             }
 #pragma warning disable CA2000 // Dispose objects before losing scope
             layersGroup.Add(new VStack()
-                                {
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CellSize)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.NumPlanks)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.NumCornerPlanks)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.PlankWidth)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.PlankPadding)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.TrackPadding)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.TrackWidth)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CornerStepDegrees)),
-                                    GetConfigurationControl(trackParameters, nameof(trackParameters.CornerEdgeOffsetDegrees))
-                                }.Margin(top: 50)
+                            {
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.CellSize)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.NumPlanks)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.NumCornerPlanks)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.PlankWidth)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.PlankPadding)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.TrackPadding)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.TrackWidth)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.CornerStepDegrees)),
+                                GetConfigurationControl(trackParameters, nameof(trackParameters.CornerEdgeOffsetDegrees))
+                            }.Margin(top: 50)
 #pragma warning restore CA2000 // Dispose objects before losing scope
                         );
             return layersGroup;

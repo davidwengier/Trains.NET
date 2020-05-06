@@ -4,6 +4,14 @@ namespace Trains.NET.Engine
 {
     public class Train : IMovable
     {
+        private readonly Random _random = new Random();
+        private float _previousSpeed;
+
+        public Train()
+        {
+            this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
+        }
+
         public float FrontEdgeDistance => 0.5f;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
@@ -12,6 +20,8 @@ namespace Trains.NET.Engine
         public float Angle { get; internal set; }
         public float RelativeLeft { get; internal set; } = 0.5f;
         public float RelativeTop { get; internal set; } = 0.5f;
+        public string Name { get; set; }
+        public float Speed { get; internal set; } = 1;
 
         public void SetAngle(float angle)
         {
@@ -24,11 +34,24 @@ namespace Trains.NET.Engine
             {
                 UniqueID = this.UniqueID,
                 Column = this.Column,
+                Name = this.Name,
                 Row = this.Row,
                 Angle = this.Angle,
                 RelativeLeft = this.RelativeLeft,
-                RelativeTop = this.RelativeTop
+                RelativeTop = this.RelativeTop,
+                Speed = this.Speed
             };
+        }
+
+        public void Start()
+        {
+            this.Speed = _previousSpeed;
+        }
+
+        public void Stop()
+        {
+            _previousSpeed = this.Speed;
+            this.Speed = 0;
         }
     }
 }

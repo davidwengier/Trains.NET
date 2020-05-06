@@ -14,15 +14,7 @@
 
         public void Execute(int column, int row)
         {
-            var thing = _gameBoard.GetMovableAt(column, row);
-            if (thing != null)
-            {
-                _gameBoard.RemoveMovable(thing);
-            }
-            else
-            {
-                _gameBoard.RemoveTrack(column, row);
-            }
+            _gameBoard.RemoveTrack(column, row);
         }
 
         public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null;

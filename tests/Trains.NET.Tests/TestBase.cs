@@ -24,7 +24,7 @@ namespace Trains.NET.Tests
             train!.LookaheadDistance = 0.1f;
             train.SetAngle(startAngle);
             // Run until we get to the very end of the track
-            train.FrontEdgeDistance = 0.01f;
+            train.LookaheadDistance = 0.01f;
 
             for (int i = 0; i < 500; i++)
             {

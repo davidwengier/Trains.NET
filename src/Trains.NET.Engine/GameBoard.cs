@@ -133,7 +133,7 @@ namespace Trains.NET.Engine
         private void GameLoopStep(object sender, EventArgs e)
         {
             _gameLoopTimer?.Stop();
-            GameLoopStep(0.005f * this.SpeedAdjustmentFactor);
+            GameLoopStep(0.005f);
             _gameLoopTimer?.Start();
         }
 

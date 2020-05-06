@@ -15,7 +15,6 @@ namespace Trains.NET.Engine
 
         public int Columns { get; set; }
         public int Rows { get; set; }
-        public int SpeedAdjustmentFactor { get; set; } = 10;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public GameBoard(IGameStorage? storage, ITimer? timer)
@@ -79,19 +78,18 @@ namespace Trains.NET.Engine
                 {
                     if (train.Speed == 0) continue;
 
-                    float distance = 0.005f * this.SpeedAdjustmentFactor * train.Speed;
+                    float distance = 0.005f * train.Speed;
 
                     Train dummyTrain = train.Clone();
 
-                    if (MoveTrain(dummyTrain, distance + train.FrontEdgeDistance))
+                    if (MoveTrain(dummyTrain, distance + train.LookaheadDistance))
                     {
                         MoveTrain(train, distance);
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
             }
             _gameLoopTimer?.Start();
         }

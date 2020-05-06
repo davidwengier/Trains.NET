@@ -5,7 +5,7 @@ namespace Trains.NET.Engine
     public interface IMovable
     {
         Guid UniqueID { get; }
-        float FrontEdgeDistance { get; }
+        float LookaheadDistance { get; }
         int Column { get; }
         int Row { get; }
         float Angle { get; }

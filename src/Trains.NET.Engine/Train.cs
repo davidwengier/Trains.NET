@@ -12,7 +12,7 @@ namespace Trains.NET.Engine
             this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
         }
 
-        public float FrontEdgeDistance => 0.8f;
+        public float LookaheadDistance { get; set; } = 1.5f;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }
@@ -21,7 +21,7 @@ namespace Trains.NET.Engine
         public float RelativeLeft { get; internal set; } = 0.5f;
         public float RelativeTop { get; internal set; } = 0.5f;
         public string Name { get; set; }
-        public float Speed { get; internal set; } = 1;
+        public float Speed { get; internal set; } = 10;
 
         public void SetAngle(float angle)
         {
@@ -42,6 +42,22 @@ namespace Trains.NET.Engine
                 Speed = this.Speed
             };
         }
+
+        public void Slower()
+        {
+            if (this.Speed > 5)
+            {
+                this.Speed -= 5;
+            }
+        }
+        public void Faster()
+        {
+            if (this.Speed < 100)
+            {
+                this.Speed += 5;
+            }
+        }
+
 
         public void Start()
         {

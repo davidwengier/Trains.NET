@@ -33,9 +33,11 @@ namespace Trains.NET.Comet
                 HStack trainControlPanel = new HStack()
                 {
                     new Text(() => gameState.CurrentTrain.Value?.Name ?? "< No train selected >"),
-                    new Button("Go", () => gameState.CurrentTrain.Value?.Start()),
-                    new Text(() => gameState.CurrentTrain.Value?.Speed.ToString() ?? ""),
                     new Button("Stop", () => gameState.CurrentTrain.Value?.Stop()),
+                    new Button("Slower", () => gameState.CurrentTrain.Value?.Slower()),
+                    new Text(() => gameState.CurrentTrain.Value?.Speed.ToString() + " km/h" ?? "0 km/h"),
+                    new Button("Faster", () => gameState.CurrentTrain.Value?.Faster()),
+                    new Button("Go", () => gameState.CurrentTrain.Value?.Start()),
                     new Button("Delete", () => {
                         if (gameState.CurrentTrain.Value != null)
                         {

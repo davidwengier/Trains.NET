@@ -4,6 +4,8 @@ namespace Trains.NET.Engine
 {
     public static class TrainMovement
     {
+        private const double Radius = 0.5;
+
         public static double RadToDegree(double angle) => angle * 180.0 / Math.PI;
 
         public static double DegreeToRad(double angle) => angle / (180.0 / Math.PI);
@@ -14,7 +16,6 @@ namespace Trains.NET.Engine
             while (angle > 360) angle -= 360;
             return angle;
         }
-
         public static double PointsToAngle(float x, float y)
         {
             // Atan2 allows us to find the angle between 0,0 and a point
@@ -90,7 +91,7 @@ namespace Trains.NET.Engine
                 position.RelativeTop = 0.5f;
                 position.Angle = 180.0f;
             }
-            else if (position.RelativeLeft >= 1.0f)
+            else if (position.RelativeLeft > 1f)
             {
                 position.RelativeLeft = 1.1f;
                 position.RelativeTop = 0.5f;
@@ -103,7 +104,7 @@ namespace Trains.NET.Engine
                 position.RelativeLeft = 0.5f;
                 position.Angle = 270.0f;
             }
-            else if (position.RelativeTop >= 1.0f)
+            else if (position.RelativeTop > 1f)
             {
                 position.RelativeTop = 1.1f;
                 position.RelativeLeft = 0.5f;
@@ -122,12 +123,8 @@ namespace Trains.NET.Engine
         public static (double currentAngle, float distance) MoveCounterClockwise(double currentAngle, float distance, double minimumNewAngle)
         {
             if (currentAngle <= 0) currentAngle += Math.PI * 2.0;
-            // To travel 2PIr, we need to move 360
-            // To travel x we need to move x/2PIr * 360
-            // To travel x rad we need to move x/2PIr * 2PI
-            // To travel x rad we need to move x/r
-            const double radius = 0.5;
-            double angleToMove = distance / radius;
+
+            double angleToMove = distance / Radius;
 
             // If the angle to move is outside our limits, then only move as much as we can
 
@@ -139,7 +136,7 @@ namespace Trains.NET.Engine
                 currentAngle = minimumNewAngle - 0.1f;
 
                 // Calculate how far we could move
-                distance = (float)(angleOver * 0.5f);
+                distance = -(float)(angleOver * 0.5f);
             }
             else
             {
@@ -154,12 +151,8 @@ namespace Trains.NET.Engine
         public static (double currentAngle, float distance) MoveClockwise(double currentAngle, float distance, double maximumNewAngle)
         {
             if (currentAngle < 0) currentAngle += Math.PI * 2.0;
-            // To travel 2PIr, we need to move 360
-            // To travel x we need to move x/2PIr * 360
-            // To travel x rad we need to move x/2PIr * 2PI
-            // To travel x rad we need to move x/r
-            const double radius = 0.5;
-            double angleToMove = distance / radius;
+
+            double angleToMove = distance / Radius;
 
             double angleOver = currentAngle + angleToMove - maximumNewAngle;
 
@@ -169,7 +162,7 @@ namespace Trains.NET.Engine
 
                 if (currentAngle > Math.PI * 2.0) currentAngle -= Math.PI * 2.0;
 
-                distance = (float)(angleOver * radius);
+                distance = (float)(angleOver * Radius);
             }
             else
             {

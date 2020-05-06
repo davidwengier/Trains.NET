@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Trains.NET.Engine;
 using Xunit;
 
@@ -23,7 +22,15 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
     {
         public PointToPoint_10Step() : base(10) { }
     }
-    public abstract class PointToPoint
+    public class PointToPoint_100Step : PointToPoint
+    {
+        public PointToPoint_100Step() : base(100) { }
+    }
+    public class PointToPoint_1000Step : PointToPoint
+    {
+        public PointToPoint_1000Step() : base(1000) { }
+    }
+    public abstract class PointToPoint : TrainMovementTestsHelper
     {
         private readonly int _movementSteps;
         private const int MovementPrecision = 4;
@@ -46,7 +53,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -57,12 +67,11 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(angle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + whole 2nd straight + to middle of 3rd straight
-            float distance = 0.5f + 1.0f + 0.5f;
+            
 
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -84,7 +93,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -95,12 +107,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(angle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + whole 2nd straight + to middle of 3rd straight
-            float distance = 0.5f + 1.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -123,7 +132,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -134,16 +146,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 1.0f + circleCircumference / 4.0f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -165,7 +170,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -176,16 +184,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 1.0f + circleCircumference / 4.0f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -208,7 +209,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -219,16 +223,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -250,7 +247,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -261,18 +261,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            //float distance = 0.5f + (float)Math.PI / 4.0f + 0.5f;
-
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -298,7 +289,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -309,11 +303,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(angle, train.Angle, MovementPrecision);
 
-            float distance = 2.0f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -337,7 +329,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -348,18 +343,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            //float distance = 0.5f + (float)Math.PI / 4.0f + 0.5f;
-
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -383,7 +369,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -394,18 +383,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            //float distance = 0.5f + (float)Math.PI / 4.0f + 0.5f;
-
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -429,7 +409,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -440,18 +423,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            //float distance = 0.5f + (float)Math.PI / 4.0f + 0.5f;
-
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);
@@ -475,7 +449,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(startingColumn, startingRow);
 
+            float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+
             Train train = (Train)board.GetMovables().Single();
+            train.Speed = distance / _movementSteps / GameBoard.SpeedScaleModifier;
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -486,18 +463,9 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
-            // Traveling from middle of 1 straight + curve + to middle of 2nd straight
-            //  This assumes that track radius is 0.5f
-            //float distance = 0.5f + (float)Math.PI / 4.0f + 0.5f;
-
-            float radius = 0.5f;
-            float circleCircumference = 2.0f * (float)Math.PI * radius;
-
-            float distance = 0.5f + circleCircumference / 4.0f + 0.5f;
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
-                board.GameLoopStep(distance / _movementSteps);
+                board.GameLoopStep();
 
             Assert.Equal(expectedColumn, train.Column);
             Assert.Equal(expectedRow, train.Row);

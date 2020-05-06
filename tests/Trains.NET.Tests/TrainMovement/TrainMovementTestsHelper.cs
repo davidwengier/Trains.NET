@@ -27,5 +27,10 @@ namespace Trains.NET.Tests
         internal const double Angle180InRads = Math.PI;
         internal const double Angle270InRads = 3.0 * Math.PI / 2.0;
         internal const double Angle360InRads = 2.0 * Math.PI;
+
+        internal const double CornerRadius = 0.5;
+        internal const double StraightTrackDistance = 1.0;
+        internal const double HalfStraightTrackDistance = StraightTrackDistance / 2.0;
+        internal const double CornerTrackDistance = (Math.PI / 2.0) * CornerRadius;
     }
 }

@@ -139,7 +139,7 @@ namespace Trains.NET.Engine
                 currentAngle = minimumNewAngle - 0.1f;
 
                 // Calculate how far we could move
-                distance = -(float)(angleOver * radius);
+                distance = (float)(angleOver * 0.5f);
             }
             else
             {

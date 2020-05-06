@@ -15,7 +15,6 @@ namespace Trains.NET.Engine
 
         public int Columns { get; set; }
         public int Rows { get; set; }
-        public int SpeedAdjustmentFactor { get; set; } = 10;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public GameBoard(IGameStorage? storage, ITimer? timer)
@@ -77,17 +76,20 @@ namespace Trains.NET.Engine
             {
                 foreach (Train train in _movables)
                 {
+                    if (train.Speed == 0) continue;
+
+                    float distance = 0.005f * train.Speed;
+
                     Train dummyTrain = train.Clone();
 
-                    if (MoveTrain(dummyTrain, stepDistance + train.FrontEdgeDistance))
+                    if (MoveTrain(dummyTrain, distance + train.LookaheadDistance))
                     {
                         MoveTrain(train, stepDistance);
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
             }
             _gameLoopTimer?.Start();
         }
@@ -209,7 +211,7 @@ namespace Trains.NET.Engine
             _storage?.WriteTracks(_tracks.Values);
         }
 
-        public void AddTrain(int column, int row)
+        public IMovable? AddTrain(int column, int row)
         {
             var train = new Train()
             {
@@ -220,10 +222,12 @@ namespace Trains.NET.Engine
             Track? track = GetTrackForTrain(train);
             if (track == null)
             {
-                return;
+                return null;
             }
 
             _movables.Add(train);
+
+            return train;
         }
 
         public void RemoveMovable(IMovable movable)

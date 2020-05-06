@@ -76,6 +76,7 @@ namespace Trains.NET.WPF
                 yield return typeof(Trains.NET.Rendering.IGame).Assembly;
                 yield return typeof(Trains.NET.Rendering.Skia.SKCanvasWrapper).Assembly;
                 yield return typeof(MainWindow).Assembly;
+                yield return typeof(MainPage).Assembly;
             }
         }
     }

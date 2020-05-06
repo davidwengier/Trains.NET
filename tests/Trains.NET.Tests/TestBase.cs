@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Trains.NET.Engine;
 using Xunit;
 
@@ -15,32 +14,22 @@ namespace Trains.NET.Tests
         {
             Storage = new NullStorage();
             Timer = new TestTimer();
-            GameBoard = new GameBoard(Storage, Timer)
-            {
-                SpeedAdjustmentFactor = 100
-            };
+            GameBoard = new GameBoard(Storage, Timer);
         }
 
         protected void AssertTrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            GameBoard.AddTrain(startColumn, startRow);
-            Train? train = (Train)GameBoard.GetMovables().First();
-            
+            var train = GameBoard.AddTrain(startColumn, startRow) as Train;
+
+            train!.LookaheadDistance = 0.1f;
             train.SetAngle(startAngle);
             // Run until we get to the very end of the track
             train.FrontEdgeDistance = 0.01f;
 
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            Timer.Tick();
-            // BOOM!
+            for (int i = 0; i < 500; i++)
+            {
+                Timer.Tick();
+            }
 
             Assert.Equal((endColumn, endRow), (train.Column, train.Row));
         }

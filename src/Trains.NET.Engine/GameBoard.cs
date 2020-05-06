@@ -6,6 +6,8 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
+        public static readonly float SpeedScaleModifier = 0.005f;
+
         private const int GameLoopInterval = 16;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
@@ -23,7 +25,7 @@ namespace Trains.NET.Engine
             if (_gameLoopTimer != null)
             {
                 _gameLoopTimer.Interval = GameLoopInterval;
-                _gameLoopTimer.Elapsed += GameLoopStep;
+                _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
                 _gameLoopTimer.Start();
             }
 
@@ -69,29 +71,27 @@ namespace Trains.NET.Engine
             _storage?.WriteTracks(_tracks.Values);
         }
 
-        public void GameLoopStep(float stepDistance)
+        public void GameLoopStep()
         {
-            _gameLoopTimer?.Stop();
             try
             {
                 foreach (Train train in _movables)
                 {
                     if (train.Speed == 0) continue;
 
-                    float distance = 0.005f * train.Speed;
+                    float distance = SpeedScaleModifier * train.Speed;
 
                     Train dummyTrain = train.Clone();
 
                     if (MoveTrain(dummyTrain, distance + train.LookaheadDistance))
                     {
-                        MoveTrain(train, stepDistance);
+                        MoveTrain(train, distance);
                     }
                 }
             }
             catch (Exception)
             {
             }
-            _gameLoopTimer?.Start();
         }
 
         private bool MoveTrain(Train train, float distanceToMove)
@@ -130,10 +130,10 @@ namespace Trains.NET.Engine
             return distance <= 0.0f;
         }
 
-        private void GameLoopStep(object sender, EventArgs e)
+        private void GameLoopTimerElapsed(object sender, EventArgs e)
         {
             _gameLoopTimer?.Stop();
-            GameLoopStep(0.005f);
+            GameLoopStep();
             _gameLoopTimer?.Start();
         }
 

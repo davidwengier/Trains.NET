@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <RestoreSources>
-      https://api.nuget.org/v3/index.json
+      https://api.nuget.org/v3/index.json;
+      $(MSBuildThisFileDirectory)\..\packages;
     </RestoreSources>
   </PropertyGroup>
   
@@ -23,8 +24,8 @@
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="1.68.1" />
     
     <!-- Comet -->
-    <PackageReference Update="Clancey.Comet"                Version="0.2.273-beta" />
-    <PackageReference Update="Clancey.Comet.Skia"           Version="0.2.273-beta" />
+    <PackageReference Update="Clancey.Comet"                Version="0.2.328-beta" />
+    <PackageReference Update="Clancey.Comet.Skia"           Version="0.2.328-beta" />
     
   </ItemGroup>
   

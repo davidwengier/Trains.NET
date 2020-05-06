@@ -15,7 +15,7 @@ namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp
         [InlineData(195.0f)] // Extreme
         public void MoveRightUp_ClockwiseFromRight_WithinCell_VariedInitialAngles(float angle)
         {
-            TrainPosition position = new TrainPosition(1.0f, 0.5f, angle, MovementDistanceOf45Degrees);
+            TrainPosition position = new TrainPosition(1.0f, 0.5f, angle, (float)HalfCornerTrackDistance);
             TrainPosition expectedPos = new TrainPosition(1.0f - Cos45ByRadius, Sin45ByRadius, 225, 0.0f);
 
             TrainMovement.MoveRightUp(position);
@@ -34,7 +34,7 @@ namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp
         [InlineData(0.9f)] // Extreme
         public void MoveRightUp_ClockwiseFromRight_WithinCell_SnappingToCenter(float relativeTop)
         {
-            TrainPosition position = new TrainPosition(1.0f, relativeTop, 180, MovementDistanceOf45Degrees);
+            TrainPosition position = new TrainPosition(1.0f, relativeTop, 180, (float)HalfCornerTrackDistance);
             TrainPosition expectedPos = new TrainPosition(1.0f - Cos45ByRadius, Sin45ByRadius, 225, 0.0f);
 
             TrainMovement.MoveRightUp(position);
@@ -46,10 +46,10 @@ namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp
         }
 
         [Theory]
-        [InlineData(1.0f, 0.5f, 180.0f, MovementDistanceOf45Degrees, 1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f)]
-        [InlineData(1.0f, 0.5f, 180.0f, MovementDistanceOf30Degrees, 1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f)]
-        [InlineData(1.0f, 0.5f, 180.0f, MovementDistanceOf30Degrees * 2, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
-        [InlineData(1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f, MovementDistanceOf30Degrees, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
+        [InlineData(1.0f, 0.5f, 180.0f, HalfCornerTrackDistance, 1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f)]
+        [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance, 1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f)]
+        [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance * 2, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
+        [InlineData(1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f, ThirdCornerTrackDistance, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
         public void MoveRightUp_ClockwiseFromRight_WithinCell_VariedDistance(float initalLeft, float initalTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
         {
             TrainPosition position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
@@ -64,9 +64,9 @@ namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp
         }
 
         [Theory]
-        [InlineData(1.0f, 0.5f, 180.0f, MovementDistanceOf45Degrees * 3, MovementDistanceOf45Degrees)]
-        [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, MovementDistanceOf45Degrees * 2, MovementDistanceOf45Degrees)]
-        [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, 1.0f + MovementDistanceOf45Degrees, 1.0f)]
+        [InlineData(1.0f, 0.5f, 180.0f, HalfCornerTrackDistance * 3, HalfCornerTrackDistance)]
+        [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, HalfCornerTrackDistance * 2, HalfCornerTrackDistance)]
+        [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, 1.0f + HalfCornerTrackDistance, 1.0f)]
         public void MoveRightUp_ClockwiseFromRight_BeyondCell(float initalLeft, float initalTop, float initialAngle, float distance, float expectedDistance)
         {
             TrainPosition position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);

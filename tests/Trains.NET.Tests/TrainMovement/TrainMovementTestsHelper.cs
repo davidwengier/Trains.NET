@@ -6,17 +6,25 @@ namespace Trains.NET.Tests
 {
     public class TrainMovementTestsHelper
     {
-        internal const float Radius = 0.5f;
+        internal const float CornerRadius = 0.5f;
 
-        internal const float MovementDistanceOf45Degrees = 0.39269908169872415480783042290994f;
+        
+        // 0.5 * cos(45) =
         internal const float Cos45ByRadius = 0.35355339059327376220042218105242f;
+
+        // 0.5 * sin(45) =
         internal const float Sin45ByRadius = 0.35355339059327376220042218105242f;
 
-        internal const float MovementDistanceOf30Degrees = 0.26179938779914943653855361527329f;
+        // 0.5 * cos(30) =
         internal const float Cos30ByRadius = 0.43301270189221932338186158537647f;
+
+        // 0.5 * sin(30) =
         internal const float Sin30ByRadius = 0.25f;
 
+        // 0.5 * cos(60) =
         internal const float Cos60ByRadius = Sin30ByRadius; // Gotta love the unit circle!
+
+        // 0.5 * sin(60) =
         internal const float Sin60ByRadius = Cos30ByRadius;
 
         internal const double Angle45InRads = Math.PI / 4.0;
@@ -28,9 +36,14 @@ namespace Trains.NET.Tests
         internal const double Angle270InRads = 3.0 * Math.PI / 2.0;
         internal const double Angle360InRads = 2.0 * Math.PI;
 
-        internal const double CornerRadius = 0.5;
+        
         internal const double StraightTrackDistance = 1.0;
         internal const double HalfStraightTrackDistance = StraightTrackDistance / 2.0;
+
         internal const double CornerTrackDistance = (Math.PI / 2.0) * CornerRadius;
+        // Half corner is equivalent to traveling 45 degrees 
+        internal const double HalfCornerTrackDistance = CornerTrackDistance / 2.0;
+        // Third corner is equivalent to traveling 30 degrees
+        internal const double ThirdCornerTrackDistance = CornerTrackDistance / 3.0;
     }
 }

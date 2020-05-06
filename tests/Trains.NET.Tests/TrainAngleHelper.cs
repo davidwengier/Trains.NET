@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Tests
 {
-    internal class TrainAngle
+    internal class TrainAngleHelper
     {
         public const float TrainFacingLeft = 180;
         public const float TrainFacingRight = 0;

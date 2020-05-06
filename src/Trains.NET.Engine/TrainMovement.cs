@@ -83,6 +83,36 @@ namespace Trains.NET.Engine
 
             position.RelativeLeft += Math.Abs(quadrantPositionX);
             position.RelativeTop += Math.Abs(quadrantPositionY);
+            DoAnEdgeSnap(position);
+        }
+        private static void DoAnEdgeSnap(TrainPosition position)
+        {
+            // Do some fun snapping
+            if (position.RelativeLeft < 0)
+            {
+                position.RelativeLeft = -0.1f;
+                position.RelativeTop = 0.5f;
+                position.Angle = 180.0f;
+            }
+            else if (position.RelativeLeft >= 1.0f)
+            {
+                position.RelativeLeft = 1.1f;
+                position.RelativeTop = 0.5f;
+                position.Angle = 0.0f;
+            }
+
+            if (position.RelativeTop < 0)
+            {
+                position.RelativeTop = -0.1f;
+                position.RelativeLeft = 0.5f;
+                position.Angle = 270.0f;
+            }
+            else if (position.RelativeTop >= 1.0f)
+            {
+                position.RelativeTop = 1.1f;
+                position.RelativeLeft = 0.5f;
+                position.Angle = 90.0f;
+            }
         }
 
         public static void MoveLeftDown(TrainPosition position)
@@ -92,7 +122,7 @@ namespace Trains.NET.Engine
 
         public static void MoveRightDown(TrainPosition position)
         {
-            TrainMovement.MoveAroundCorner(position, -1, -1, 45, 225, -180, 360);
+            TrainMovement.MoveAroundCorner(position, -1, -1, 45, 225, -180, 270);
         }
 
         public static void MoveRightUp(TrainPosition position)
@@ -114,10 +144,10 @@ namespace Trains.NET.Engine
                 double angleOver = (angleToMove - currentAngle) + minimumNewAngle;
 
                 // Set our angle to the limit, and a bit over
-                currentAngle = minimumNewAngle - 0.001f;
+                currentAngle = minimumNewAngle - 0.1f;
 
                 // Calculate how far we could move
-                distance = (float)(distance - angleOver * 0.5f);
+                distance = (float)(angleOver * 0.5f);
             }
             else
             {
@@ -133,8 +163,8 @@ namespace Trains.NET.Engine
             if (currentAngle + angleToMove > maximumNewAngle)
             {
                 double angleOver = (angleToMove + currentAngle) - maximumNewAngle;
-                currentAngle = maximumNewAngle + 0.001f;
-                distance = (float)(distance - angleOver * 0.5f);
+                currentAngle = maximumNewAngle + 0.1f;
+                distance = (float)(angleOver * 0.5f);
             }
             else
             {

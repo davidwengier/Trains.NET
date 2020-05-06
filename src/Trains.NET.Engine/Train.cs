@@ -12,7 +12,7 @@ namespace Trains.NET.Engine
             this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
         }
 
-        public float FrontEdgeDistance => 0.5f;
+        public float FrontEdgeDistance => 0.8f;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }

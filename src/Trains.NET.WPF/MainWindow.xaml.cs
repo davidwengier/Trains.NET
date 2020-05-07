@@ -23,9 +23,6 @@ namespace Trains.NET.WPF
 
             InitializeComponent();
 
-#if DEBUG
-            global::Comet.Reload.Init();
-#endif
             global::Comet.WPF.UI.Init();
             global::Comet.Skia.UI.Init();
 

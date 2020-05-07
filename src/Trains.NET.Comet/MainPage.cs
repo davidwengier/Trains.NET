@@ -22,8 +22,6 @@ namespace Trains.NET.Comet
                         IGameState gameState,
                         IGameBoard gameBoard)
         {
-            HotReloadHelper.Register(this, game, pixelMapper, trackParameters, tools, layers);
-
             this.Title("Trains.NET");
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);

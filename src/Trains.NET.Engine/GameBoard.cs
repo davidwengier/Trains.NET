@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
         public static readonly float SpeedScaleModifier = 0.005f;
+
+        private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameLoopStepTime");
 
         private const int GameLoopInterval = 16;
 
@@ -73,6 +76,7 @@ namespace Trains.NET.Engine
 
         public void GameLoopStep()
         {
+            _gameUpdateTime.Start();
             try
             {
                 foreach (Train train in _movables)
@@ -92,6 +96,7 @@ namespace Trains.NET.Engine
             catch (Exception)
             {
             }
+            _gameUpdateTime.Stop();
         }
 
         private bool MoveTrain(Train train, float distanceToMove)

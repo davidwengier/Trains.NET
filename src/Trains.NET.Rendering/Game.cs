@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
+using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Rendering
 {
@@ -13,11 +15,17 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
 
+        private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaFPS");
+        private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SkiaDrawTime");
+        private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
+
         public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
             _pixelMapper = pixelMapper;
+
+            _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(x.Name.Replace(" ", "") + "DrawTime"));
         }
 
         public void SetSize(int width, int height)
@@ -34,6 +42,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas)
         {
+            _skiaDrawTime.Start();
             if (canvas is null)
             {
                 throw new ArgumentNullException(nameof(canvas));
@@ -50,12 +59,15 @@ namespace Trains.NET.Rendering
                 {
                     continue;
                 }
-
+                _renderLayerDrawTimes[renderer].Start();
                 canvas.Save();
                 renderer.Render(canvas, _width, _height);
                 canvas.Restore();
+                _renderLayerDrawTimes[renderer].Stop();
             }
             canvas.Restore();
+            _skiaDrawTime.Stop();
+            _skiaFps.Update();
         }
     }
 }

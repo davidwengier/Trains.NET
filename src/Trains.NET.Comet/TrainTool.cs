@@ -6,11 +6,11 @@ namespace Trains.NET.Comet
     internal class TrainTool : ITool
     {
         private readonly IGameBoard _gameBoard;
-        private readonly IGameState _gameState;
+        private readonly ITrainController _gameState;
 
         public string Name => "Train";
 
-        public TrainTool(IGameBoard gameBoard, IGameState gameState)
+        public TrainTool(IGameBoard gameBoard, ITrainController gameState)
         {
             _gameBoard = gameBoard;
             _gameState = gameState;

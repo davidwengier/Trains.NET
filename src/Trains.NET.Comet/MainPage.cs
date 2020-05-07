@@ -19,7 +19,7 @@ namespace Trains.NET.Comet
                         OrderedList<ITool> tools,
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
-                        IGameState gameState,
+                        ITrainController trainControls,
                         IGameBoard gameBoard)
         {
             this.Title("Trains.NET");
@@ -30,19 +30,13 @@ namespace Trains.NET.Comet
             {
                 HStack trainControlPanel = new HStack()
                 {
-                    new Text(() => gameState.CurrentTrain.Value?.Name ?? "< No train selected >"),
-                    new Button("Stop", () => gameState.CurrentTrain.Value?.Stop()),
-                    new Button("Slower", () => gameState.CurrentTrain.Value?.Slower()),
-                    new Text(() => gameState.CurrentTrain.Value?.Speed.ToString() + " km/h" ?? "0 km/h"),
-                    new Button("Faster", () => gameState.CurrentTrain.Value?.Faster()),
-                    new Button("Go", () => gameState.CurrentTrain.Value?.Start()),
-                    new Button("Delete", () => {
-                        if (gameState.CurrentTrain.Value != null)
-                        {
-                            gameBoard.RemoveMovable(gameState.CurrentTrain.Value);
-                            gameState.SetCurrentTrain(null);
-                        }
-                    })
+                    new Text(trainControls.Display),
+                    new Button("Stop", trainControls.Stop),
+                    new Button("Slower", trainControls.Slower),
+                    new Text(trainControls.SpeedDisplay),
+                    new Button("Faster", trainControls.Faster),
+                    new Button("Go", trainControls.Start),
+                    new Button("Delete", trainControls.Delete)
                 };
                 return new HStack()
                 {

@@ -5,10 +5,10 @@ namespace Trains.NET.Comet
     [Order(1)]
     internal class PointerTool : ITool
     {
-        private readonly IGameState _gameState;
+        private readonly ITrainController _gameState;
         private readonly IGameBoard _gameBoard;
 
-        public PointerTool(IGameState gameState, IGameBoard gameBoard)
+        public PointerTool(ITrainController gameState, IGameBoard gameBoard)
         {
             _gameState = gameState;
             _gameBoard = gameBoard;

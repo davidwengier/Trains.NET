@@ -19,8 +19,7 @@ namespace Trains.NET.Comet
                         OrderedList<ITool> tools,
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
-                        ITrainController trainControls,
-                        IGameBoard gameBoard)
+                        ITrainController trainControls)
         {
             this.Title("Trains.NET");
 
@@ -28,16 +27,6 @@ namespace Trains.NET.Comet
 
             this.Body = () =>
             {
-                HStack trainControlPanel = new HStack()
-                {
-                    new Text(trainControls.Display),
-                    new Button("Stop", trainControls.Stop),
-                    new Button("Slower", trainControls.Slower),
-                    new Text(trainControls.SpeedDisplay),
-                    new Button("Faster", trainControls.Faster),
-                    new Button("Go", trainControls.Start),
-                    new Button("Delete", trainControls.Delete)
-                };
                 return new HStack()
                 {
                     new VStack()
@@ -54,7 +43,7 @@ namespace Trains.NET.Comet
                     }.Frame(100, alignment: Alignment.Top),
                     new VStack()
                     {
-                        trainControlPanel,
+                        new TrainControllerPanel(trainControls),
                         new DrawableControl(controlDelegate).FillVertical()
                     }
                 }.FillHorizontal();

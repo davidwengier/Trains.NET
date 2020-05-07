@@ -10,7 +10,8 @@
             "The Tainted Teabag",
             "The Transcontinental Tuple",
             "The Great Curtislusmore",
-
+            "The Evening Express",
+            "The Majestic Steve"
         };
 
     }

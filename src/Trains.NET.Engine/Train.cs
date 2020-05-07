@@ -69,5 +69,7 @@ namespace Trains.NET.Engine
             _previousSpeed = this.Speed;
             this.Speed = 0;
         }
+
+        public override string ToString() => $"Train {this.UniqueID} [Column: {this.Column} | Row: {this.Row} | Left: {this.RelativeLeft} | Top: {this.RelativeTop} | Angle: {this.Angle} | Speed: {this.Speed}]";
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using Comet;
@@ -44,7 +43,7 @@ namespace Trains.NET.WPF
             var col = new ServiceCollection();
             foreach (Assembly a in GetAssemblies())
             {
-                foreach (Type t in a.GetTypes().Where(x=>!x.Name.EndsWith("Stat")))
+                foreach (Type t in a.GetTypes())
                 {
                     if (t.IsInterface)
                     {

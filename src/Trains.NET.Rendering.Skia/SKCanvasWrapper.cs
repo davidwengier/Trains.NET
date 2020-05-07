@@ -1,14 +1,27 @@
-﻿using SkiaSharp;
+﻿using System.Collections.Generic;
+using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia
 {
     public class SKCanvasWrapper : ICanvas
     {
+        private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new Dictionary<PaintBrush, SKPaint>();
+
         private readonly SkiaSharp.SKCanvas _canvas;
 
         public SKCanvasWrapper(SkiaSharp.SKCanvas canvas)
         {
             _canvas = canvas;
+        }
+
+        private static SKPaint GetSKPaint(PaintBrush paint)
+        {
+            if (!s_paintCache.TryGetValue(paint, out SKPaint skPaint))
+            {
+                skPaint = paint.ToSkia();
+                s_paintCache.Add(paint, skPaint);
+            }
+            return skPaint;
         }
 
         public void Clear(Color color)
@@ -18,19 +31,19 @@ namespace Trains.NET.Rendering.Skia
             => _canvas.ClipRect(rect.ToSkia(), operation.ToSkia(), antialias);
 
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)
-            => _canvas.DrawCircle(x, y, radius, paint.ToSkia());
+            => _canvas.DrawCircle(x, y, radius, GetSKPaint(paint));
 
-        public void DrawLine(float x1, float y1, float x2, float y2, PaintBrush grid)
-            => _canvas.DrawLine(x1, y1, x2, y2, grid.ToSkia());
+        public void DrawLine(float x1, float y1, float x2, float y2, PaintBrush paint)
+            => _canvas.DrawLine(x1, y1, x2, y2, GetSKPaint(paint));
 
-        public void DrawPath(IPath trackPath, PaintBrush straightTrackPaint)
-            => _canvas.DrawPath(trackPath.ToSkia(), straightTrackPaint.ToSkia());
+        public void DrawPath(IPath trackPath, PaintBrush paint)
+            => _canvas.DrawPath(trackPath.ToSkia(), GetSKPaint(paint));
 
         public void DrawRect(float x, float y, float width, float height, PaintBrush paint)
-            => _canvas.DrawRect(x, y, width, height, paint.ToSkia());
+            => _canvas.DrawRect(x, y, width, height, GetSKPaint(paint));
 
         public void DrawText(string text, float x, float y, PaintBrush paint)
-            => _canvas.DrawText(text, x, y, paint.ToSkia());
+            => _canvas.DrawText(text, x, y, GetSKPaint(paint));
 
         public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {

@@ -6,6 +6,8 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
+        public static readonly float SpeedScaleModifier = 0.005f;
+
         private const int GameLoopInterval = 16;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
@@ -23,7 +25,7 @@ namespace Trains.NET.Engine
             if (_gameLoopTimer != null)
             {
                 _gameLoopTimer.Interval = GameLoopInterval;
-                _gameLoopTimer.Elapsed += GameLoopStep;
+                _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
                 _gameLoopTimer.Start();
             }
 
@@ -69,16 +71,15 @@ namespace Trains.NET.Engine
             _storage?.WriteTracks(_tracks.Values);
         }
 
-        private void GameLoopStep(object sender, EventArgs e)
+        public void GameLoopStep()
         {
-            _gameLoopTimer?.Stop();
             try
             {
                 foreach (Train train in _movables)
                 {
                     if (train.Speed == 0) continue;
 
-                    float distance = 0.005f * train.Speed;
+                    float distance = SpeedScaleModifier * train.Speed;
 
                     Train dummyTrain = train.Clone();
 
@@ -91,7 +92,6 @@ namespace Trains.NET.Engine
             catch (Exception)
             {
             }
-            _gameLoopTimer?.Start();
         }
 
         private bool MoveTrain(Train train, float distanceToMove)
@@ -128,6 +128,13 @@ namespace Trains.NET.Engine
             }
 
             return distance <= 0.0f;
+        }
+
+        private void GameLoopTimerElapsed(object sender, EventArgs e)
+        {
+            _gameLoopTimer?.Stop();
+            GameLoopStep();
+            _gameLoopTimer?.Start();
         }
 
         private static (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(Train train, float distance, Track track)

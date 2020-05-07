@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Trains.NET.Tests
 {
-    public class TrainMovementTests
+    public class TrainMovementHelperTests
     {
         [Theory]
         [InlineData(0.0, 0.0)]

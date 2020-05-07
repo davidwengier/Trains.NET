@@ -39,7 +39,17 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftRightDown(TrainPosition position)
         {
-            if (position.Angle <= 90.0)
+            // Check single track extremes, as there are 2 places where the
+            //  train angle could be at 0 degrees
+            if(position.RelativeLeft < 0.4f)
+            {
+                TrainMovement.MoveLeftDown(position);
+            } 
+            else if (position.RelativeLeft > 0.6f) 
+            {
+                TrainMovement.MoveRightDown(position);
+            }
+            else if (position.Angle <= 90.0)
             {
                 TrainMovement.MoveLeftDown(position);
             }
@@ -51,7 +61,15 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftUpDown(TrainPosition position)
         {
-            if (TrainMovement.BetweenAngles(position.Angle, 89, 181))
+            if (position.RelativeTop < 0.4f)
+            {
+                TrainMovement.MoveLeftUp(position);
+            }
+            else if (position.RelativeTop > 0.6f)
+            {
+                TrainMovement.MoveLeftDown(position);
+            }
+            else if (TrainMovement.BetweenAngles(position.Angle, 89, 181))
             {
                 TrainMovement.MoveLeftUp(position);
             }
@@ -63,7 +81,15 @@ namespace Trains.NET.Engine
 
         private static void MoveLeftRightUp(TrainPosition position)
         {
-            if (TrainMovement.BetweenAngles(position.Angle, 179, 271))
+            if (position.RelativeLeft < 0.4f)
+            {
+                TrainMovement.MoveLeftUp(position);
+            }
+            else if (position.RelativeLeft > 0.6f)
+            {
+                TrainMovement.MoveRightUp(position);
+            }
+            else if (TrainMovement.BetweenAngles(position.Angle, 179, 271))
             {
                 TrainMovement.MoveRightUp(position);
             }
@@ -75,8 +101,18 @@ namespace Trains.NET.Engine
 
         private static void MoveRightUpDown(TrainPosition position)
         {
-            if ((position.Angle >= 180 && position.Angle <= 90.0) ||
-                (position.Angle >= 270 && position.Angle <= 360))
+            // Right -> Up, Enters 180, Leaves 270
+            // Up -> Right, Enters 90, Leaves 0
+            // Down -> Right, Enters 270, Leaves 0
+            if (position.RelativeTop < 0.4f)
+            {
+                TrainMovement.MoveRightUp(position);
+            }
+            else if (position.RelativeTop > 0.6f)
+            {
+                TrainMovement.MoveRightDown(position);
+            }
+            else if (position.Angle >= 270.0)
             {
                 TrainMovement.MoveRightDown(position);
             }

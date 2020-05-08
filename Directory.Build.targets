@@ -4,6 +4,7 @@
   <PropertyGroup>
     <WarningLevel>0</WarningLevel>
     <NoWarn>CS1998;NU1605</NoWarn>
+    <EnableSourceLink>false</EnableSourceLink>
   </PropertyGroup>
 
 </Project>

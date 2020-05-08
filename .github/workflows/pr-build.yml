@@ -22,7 +22,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build with msbuild
-      run: msbuild /p:Configuration Release
+      run: msbuild Trains.NET.sln /p:Configuration=Release
 
     - name: Run tests
       run: dotnet test

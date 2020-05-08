@@ -11,7 +11,8 @@
             "The Transcontinental Tuple",
             "The Great Curtislusmore",
             "The Evening Express",
-            "The Majestic Steve"
+            "The Majestic Steve",
+            "The Awkward Scotsman"
         };
 
     }

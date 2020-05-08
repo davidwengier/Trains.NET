@@ -7,7 +7,7 @@ namespace Trains.NET.Tests
     {
         public double Interval { get; set; }
 
-        public event EventHandler? Elapsed;
+        public event EventHandler Elapsed;
 
         public void Dispose()
         {

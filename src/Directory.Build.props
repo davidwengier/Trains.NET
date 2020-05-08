@@ -1,9 +1,9 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <NoWarn>NU1701</NoWarn>
+    <IsTrains>true</IsTrains>
   </PropertyGroup>
+
+  <Import Project="..\Directory.Build.props" />
 
 </Project>

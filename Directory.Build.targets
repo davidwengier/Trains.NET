@@ -1,12 +1,19 @@
 <Project>
 
-  <!-- only applies to Comet, as src and tests have their own Directory.Build.targets -->
-  <PropertyGroup>
+  <!-- Only applies to Comet -->
+  <PropertyGroup Condition="'$(IsTrains)' == ''">
+    <!-- Turn off various things for comet to be happy in CI and not bother us in Visual Studio -->
     <WarningLevel>0</WarningLevel>
     <NoWarn>CS1998;NU1605</NoWarn>
-    <!-- The following two properties are to work around Comet things that break the CI on GitHub Actions -->
     <EnableSourceLink>false</EnableSourceLink>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
+
+  <!-- Only applies to Trains.NET things -->
+  <ItemGroup Condition="'$(IsTrains)' == 'true'">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
+  </ItemGroup>
+
+  <Import Project="build\Packages.targets" Condition="'$(IsTrains)' == 'true'" />
 
 </Project>

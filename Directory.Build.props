@@ -1,0 +1,10 @@
+<Project>
+
+  <!-- Only applies to Trains.NET things -->
+  <PropertyGroup Condition="'$(IsTrains)' == 'true'">
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+
+</Project>

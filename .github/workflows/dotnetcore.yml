@@ -21,8 +21,11 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build with msbuild
+      run: msbuild Trains.NET.sln /restore /p:Configuration=Release
 
     - name: Run tests
       run: dotnet test

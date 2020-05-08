@@ -12,14 +12,17 @@ jobs:
       uses: actions/checkout@v1
       with:
         submodules: true
-
+      
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
 
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
-    
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build with msbuild
+      run: msbuild Trains.NET.sln /p:Configuration Release
+
     - name: Run tests
       run: dotnet test

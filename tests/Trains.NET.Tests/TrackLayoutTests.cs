@@ -2,8 +2,6 @@
 using Xunit;
 using Xunit.Abstractions;
 
-#nullable disable
-
 namespace Trains.NET.Tests
 {
     public class TrackLayoutTests : TestBase

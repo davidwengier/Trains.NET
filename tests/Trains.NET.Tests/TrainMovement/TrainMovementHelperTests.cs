@@ -2,8 +2,6 @@
 using Trains.NET.Engine;
 using Xunit;
 
-#nullable disable
-
 namespace Trains.NET.Tests
 {
     public class TrainMovementHelperTests

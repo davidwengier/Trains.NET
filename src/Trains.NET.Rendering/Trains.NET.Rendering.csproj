@@ -4,8 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-
-
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
     <ProjectReference Include="..\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj" />

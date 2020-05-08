@@ -7,7 +7,7 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
-        public static readonly float SpeedScaleModifier = 0.005f;
+        public const float SpeedScaleModifier = 0.005f;
 
         private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameLoopStepTime");
 
@@ -107,7 +107,7 @@ namespace Trains.NET.Engine
                 Track? track = GetTrackForTrain(train);
                 if (track != null)
                 {
-                    (var newPosition, var newColumn, var newRow) = GetNextPosition(train, distance, track);
+                    (TrainPosition? newPosition, int newColumn, int newRow) = GetNextPosition(train, distance, track);
 
                     IMovable? otherTrain = GetMovableAt(newColumn, newRow);
                     Track? nextTrack = GetTrackAt(newColumn, newRow);

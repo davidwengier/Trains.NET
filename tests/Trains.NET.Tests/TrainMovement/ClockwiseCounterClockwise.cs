@@ -1,11 +1,10 @@
 ﻿using Trains.NET.Engine;
 using Xunit;
-
-#nullable disable
+using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests
 {
-    public class ClockwiseCounterClockwise : TrainMovementTestsHelper
+    public class ClockwiseCounterClockwise
     {
         [Theory]
         [InlineData(0.0f, HalfCornerTrackDistance, Angle90InRads, Angle45InRads, 0)] // 0-90, within arc

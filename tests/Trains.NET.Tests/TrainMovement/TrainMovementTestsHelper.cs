@@ -1,10 +1,8 @@
 ﻿using System;
 
-#nullable disable
-
 namespace Trains.NET.Tests
 {
-    public class TrainMovementTestsHelper
+    public static class TrainMovementTestsHelper
     {
         internal const float CornerRadius = 0.5f;
 

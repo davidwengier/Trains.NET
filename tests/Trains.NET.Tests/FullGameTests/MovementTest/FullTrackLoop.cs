@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Trains.NET.Engine;
 using Xunit;
-
-#nullable disable
+using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.FullGameTests.MovementTest
 {
@@ -30,7 +29,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
     {
         public FullTrackLoop_1000Step() : base(1000) { }
     }
-    public abstract class FullTrackLoop : TrainMovementTestsHelper
+    public abstract class FullTrackLoop
     {
         private const int MovementPrecision = 3;
         private readonly int _movementSteps;
@@ -58,7 +57,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(2, 1);
 
-            Train train = (Train)board.GetMovables().Single();
+            var train = (Train)board.GetMovables().Single();
 
             float distance = (float)(4 * StraightTrackDistance +
                                      4 * CornerTrackDistance);
@@ -116,7 +115,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             board.AddTrain(3, 2);
 
-            Train train = (Train)board.GetMovables().Single();
+            var train = (Train)board.GetMovables().Single();
 
             float distance = (float)(12 * StraightTrackDistance +
                                      12 * CornerTrackDistance);

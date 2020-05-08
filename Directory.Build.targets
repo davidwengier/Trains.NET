@@ -1,5 +1,9 @@
 <Project>
-  
-  <Import Project="build\Packages.targets" />
-  
+
+  <!-- only applies to Comet, as src and tests have their own Directory.Build.targets -->
+  <PropertyGroup>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>CS1998;NU1605</NoWarn>
+  </PropertyGroup>
+
 </Project>

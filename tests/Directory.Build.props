@@ -1,0 +1,8 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+
+</Project>

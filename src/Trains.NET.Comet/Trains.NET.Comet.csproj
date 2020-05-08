@@ -4,9 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Clancey.Comet" />
-    <PackageReference Include="Clancey.Comet.Skia" />
+   <ItemGroup>
+    <ProjectReference Include="..\..\comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj" />
+    <ProjectReference Include="..\..\comet\src\Comet.Skia\Comet.Skia.csproj" />
+    <ProjectReference Include="..\..\comet\src\Comet.WPF\Comet.WPF.csproj" />
+    <ProjectReference Include="..\..\comet\src\Comet\Comet.csproj" />
   </ItemGroup>
   
   <ItemGroup>

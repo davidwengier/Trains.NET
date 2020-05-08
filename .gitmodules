@@ -1,0 +1,3 @@
+[submodule "Comet"]
+	path = Comet
+	url = https://github.com/davidwengier/Comet

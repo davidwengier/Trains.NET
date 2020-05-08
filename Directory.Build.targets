@@ -4,7 +4,9 @@
   <PropertyGroup>
     <WarningLevel>0</WarningLevel>
     <NoWarn>CS1998;NU1605</NoWarn>
+    <!-- The following two properties are to work around Comet things that break the CI on GitHub Actions -->
     <EnableSourceLink>false</EnableSourceLink>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
 
 </Project>

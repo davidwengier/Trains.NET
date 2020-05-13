@@ -77,15 +77,16 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Start();
             try
             {
+                HashSet<Track> takenTracks = new HashSet<Track>();
                 foreach (Train train in _movables)
                 {
                     if (train.Speed == 0) continue;
 
                     Train dummyTrain = train.Clone();
 
-                    if (MoveTrain(dummyTrain, train.LookaheadDistance))
+                    if (MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks))
                     {
-                        MoveTrain(train, train.DistanceToMove);
+                        MoveTrain(train, train.DistanceToMove, null);
                     }
                 }
             }
@@ -95,12 +96,14 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Stop();
         }
 
-        private bool MoveTrain(Train train, float distanceToMove)
+        private bool MoveTrain(Train train, float distanceToMove, HashSet<Track>? takenTracks)
         {
+            List<Track> newTakenTracks = new List<Track>();
+
             if (distanceToMove <= 0) return true;
 
             List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
-            
+
             TrainPosition? lastPosition = null;
 
             foreach (TrainPosition newPosition in steps)
@@ -110,21 +113,40 @@ namespace Trains.NET.Engine
 
                 IMovable? otherTrain = GetMovableAt(newPosition.Column, newPosition.Row);
                 Track? nextTrack = GetTrackAt(newPosition.Column, newPosition.Row);
-                if ((nextTrack != null && (track == nextTrack || track.GetNeighbors().Contains(nextTrack))) &&
-                    (otherTrain == null || otherTrain.UniqueID == train.UniqueID))
-                {
-                    lastPosition = newPosition;
 
-                    train.Column = newPosition.Column;
-                    train.Row = newPosition.Row;
-                    train.Angle = newPosition.Angle;
-                    train.RelativeLeft = newPosition.RelativeLeft;
-                    train.RelativeTop = newPosition.RelativeTop;
-                }
-                else
+                if (nextTrack == null)   // No track to move to
                 {
                     break;
                 }
+
+                if (track != nextTrack && !track.GetNeighbors().Contains(nextTrack)) // next track is not connected
+                {
+                    break;
+                }
+                if (otherTrain != null && otherTrain.UniqueID != train.UniqueID) // There is a train that isn't us
+                {
+                    break;
+                }
+
+                if (takenTracks != null && takenTracks.Contains(nextTrack))
+                {
+                    break;
+                }
+
+                newTakenTracks.Add(nextTrack);
+
+                lastPosition = newPosition;
+
+                train.Column = newPosition.Column;
+                train.Row = newPosition.Row;
+                train.Angle = newPosition.Angle;
+                train.RelativeLeft = newPosition.RelativeLeft;
+                train.RelativeTop = newPosition.RelativeTop;
+            }
+
+            if (takenTracks != null)
+            {
+                takenTracks.UnionWith(newTakenTracks);
             }
 
             return lastPosition?.Distance <= 0.0f;

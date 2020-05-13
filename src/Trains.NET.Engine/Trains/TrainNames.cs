@@ -12,7 +12,8 @@
             "The Great Curtislusmore",
             "The Evening Express",
             "The Majestic Steve",
-            "The Awkward Scotsman"
+            "The Awkward Scotsman",
+            "The Comet Caboose"
         };
 
     }

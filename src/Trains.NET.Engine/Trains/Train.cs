@@ -4,15 +4,30 @@ namespace Trains.NET.Engine
 {
     public class Train : IMovable
     {
+        public const float SpeedScaleModifier = 0.005f;
+
         private readonly Random _random = new Random();
         private float _previousSpeed;
+        private float? _lookaheadOverride;
 
         public Train()
         {
             this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
         }
 
-        public float LookaheadDistance { get; set; } = 1.5f;
+        public float LookaheadDistance
+        {
+            get
+            {
+                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * this.Speed;
+            }
+            set
+            {
+                _lookaheadOverride = value;
+            }
+        }
+
+        public float DistanceToMove => SpeedScaleModifier * this.Speed;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }
@@ -21,7 +36,7 @@ namespace Trains.NET.Engine
         public float RelativeLeft { get; internal set; } = 0.5f;
         public float RelativeTop { get; internal set; } = 0.5f;
         public string Name { get; set; }
-        public float Speed { get; set; } = 10;
+        public float Speed { get; set; } = 20;
 
         public void SetAngle(float angle)
         {
@@ -30,7 +45,7 @@ namespace Trains.NET.Engine
 
         internal Train Clone()
         {
-            return new Train()
+            var result = new Train()
             {
                 UniqueID = this.UniqueID,
                 Column = this.Column,
@@ -41,6 +56,9 @@ namespace Trains.NET.Engine
                 RelativeTop = this.RelativeTop,
                 Speed = this.Speed
             };
+            result._lookaheadOverride = _lookaheadOverride;
+
+            return result;
         }
 
         public void Start()
@@ -55,5 +73,7 @@ namespace Trains.NET.Engine
         }
 
         public override string ToString() => $"Train {this.UniqueID} [Column: {this.Column} | Row: {this.Row} | Left: {this.RelativeLeft} | Top: {this.RelativeTop} | Angle: {this.Angle} | Speed: {this.Speed}]";
+
+        internal TrainPosition GetPosition() => new TrainPosition(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, 0);
     }
 }

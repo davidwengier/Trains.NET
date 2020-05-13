@@ -19,5 +19,6 @@ namespace Trains.NET.Engine
         IMovable? GetMovableAt(int column, int row);
         Track? GetTrackForTrain(Train train);
         void LoadTracks(IEnumerable<Track> tracks);
+        List<TrainPosition> GetNextSteps(Train train, float distanceToMove);
     }
 }

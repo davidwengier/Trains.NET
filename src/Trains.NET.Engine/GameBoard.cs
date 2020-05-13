@@ -7,8 +7,6 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
-        public const float SpeedScaleModifier = 0.005f;
-
         private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameLoopStepTime");
 
         private const int GameLoopInterval = 16;
@@ -83,13 +81,11 @@ namespace Trains.NET.Engine
                 {
                     if (train.Speed == 0) continue;
 
-                    float distance = SpeedScaleModifier * train.Speed;
-
                     Train dummyTrain = train.Clone();
 
-                    if (MoveTrain(dummyTrain, distance + train.LookaheadDistance))
+                    if (MoveTrain(dummyTrain, train.LookaheadDistance))
                     {
-                        MoveTrain(train, distance);
+                        MoveTrain(train, train.DistanceToMove);
                     }
                 }
             }
@@ -101,30 +97,29 @@ namespace Trains.NET.Engine
 
         private bool MoveTrain(Train train, float distanceToMove)
         {
-            float distance = distanceToMove;
-            while (distance > 0.0f)
+            if (distanceToMove <= 0) return true;
+
+            List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
+            
+            TrainPosition? lastPosition = null;
+
+            foreach (TrainPosition newPosition in steps)
             {
                 Track? track = GetTrackForTrain(train);
-                if (track != null)
-                {
-                    (TrainPosition? newPosition, int newColumn, int newRow) = GetNextPosition(train, distance, track);
+                if (track == null) return false;
 
-                    IMovable? otherTrain = GetMovableAt(newColumn, newRow);
-                    Track? nextTrack = GetTrackAt(newColumn, newRow);
-                    if ((nextTrack != null && (track == nextTrack || track.GetNeighbors().Contains(nextTrack))) &&
-                        (otherTrain == null || otherTrain.UniqueID == train.UniqueID))
-                    {
-                        train.Column = newColumn;
-                        train.Row = newRow;
-                        train.Angle = newPosition.Angle;
-                        train.RelativeLeft = newPosition.RelativeLeft;
-                        train.RelativeTop = newPosition.RelativeTop;
-                        distance = newPosition.Distance;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                IMovable? otherTrain = GetMovableAt(newPosition.Column, newPosition.Row);
+                Track? nextTrack = GetTrackAt(newPosition.Column, newPosition.Row);
+                if ((nextTrack != null && (track == nextTrack || track.GetNeighbors().Contains(nextTrack))) &&
+                    (otherTrain == null || otherTrain.UniqueID == train.UniqueID))
+                {
+                    lastPosition = newPosition;
+
+                    train.Column = newPosition.Column;
+                    train.Row = newPosition.Row;
+                    train.Angle = newPosition.Angle;
+                    train.RelativeLeft = newPosition.RelativeLeft;
+                    train.RelativeTop = newPosition.RelativeTop;
                 }
                 else
                 {
@@ -132,7 +127,31 @@ namespace Trains.NET.Engine
                 }
             }
 
-            return distance <= 0.0f;
+            return lastPosition?.Distance <= 0.0f;
+        }
+
+        public List<TrainPosition> GetNextSteps(Train train, float distanceToMove)
+        {
+            List<TrainPosition> result = new List<TrainPosition>();
+
+            float distance = distanceToMove;
+            while (distance > 0.0f)
+            {
+                TrainPosition position = result.LastOrDefault() ?? train.GetPosition();
+
+                TrainPosition? newPosition = GetNextPosition(position, distance);
+                if (newPosition != null)
+                {
+                    result.Add(newPosition);
+                    distance = newPosition.Distance;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return result;
         }
 
         private void GameLoopTimerElapsed(object sender, EventArgs e)
@@ -142,37 +161,39 @@ namespace Trains.NET.Engine
             _gameLoopTimer?.Start();
         }
 
-        private static (TrainPosition NewPosition, int NewColumn, int NewRow) GetNextPosition(Train train, float distance, Track track)
+        private TrainPosition? GetNextPosition(TrainPosition currentPosition, float distance)
         {
-            int newColumn = train.Column;
-            int newRow = train.Row;
+            Track? track = GetTrackAt(currentPosition.Column, currentPosition.Row);
 
-            var position = new TrainPosition(train.RelativeLeft, train.RelativeTop, train.Angle, distance);
+            if (track == null) return null;
+
+            TrainPosition position = currentPosition.Clone();
+            position.Distance = distance;
 
             track.Move(position);
 
             if (position.RelativeLeft < 0.0f)
             {
-                newColumn--;
+                position.Column--;
                 position.RelativeLeft = 1.0f;
             }
             if (position.RelativeLeft > 1.0f)
             {
-                newColumn++;
+                position.Column++;
                 position.RelativeLeft = 0.0f;
             }
             if (position.RelativeTop < 0.0f)
             {
-                newRow--;
+                position.Row--;
                 position.RelativeTop = 1.0f;
             }
             if (position.RelativeTop > 1.0f)
             {
-                newRow++;
+                position.Row++;
                 position.RelativeTop = 0.0f;
             }
 
-            return (position, newColumn, newRow);
+            return position;
         }
 
         public Track? GetTrackForTrain(Train train)

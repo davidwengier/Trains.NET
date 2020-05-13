@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
-    [Order(449)]
+    [Order(400)]
     internal class HappinessRenderer : ILayerRenderer//, IDisposable
     {
         private readonly IGameBoard _gameBoard;

@@ -31,9 +31,8 @@ jobs:
       run: dotnet test
     
     - name: Zip release
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -qq ./release.zip ./src/Trains.NET.WPF/bin/Release/
+      run: Compress-Archive -Path ./src/Trains.NET.WPF/bin/Release/ -DestinationPath release.zip
+      shell: powershell
     
     - name: Create Release
       id: create_release

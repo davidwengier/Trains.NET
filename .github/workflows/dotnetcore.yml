@@ -31,7 +31,7 @@ jobs:
       run: dotnet test
     
     - name: Zip release
-      run: Compress-Archive -Path ./src/Trains.NET.WPF/bin/Release/ -DestinationPath release.zip
+      run: Get-ChildItem -Path .\src\Trains.NET.WPF\bin\Release\net472\* | Compress-Archive -DestinationPath release.zip   
       shell: powershell
     
     - name: Create Release

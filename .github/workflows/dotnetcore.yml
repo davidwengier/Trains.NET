@@ -36,8 +36,7 @@ jobs:
 
     - uses: aarnott/nbgv@master
       id: nbgv
-    - run: 
-        echo 'Release version will be: ${{ steps.nbgv.outputs.SemVer2 }}'
+    - run: echo 'Release version will be: ${{ steps.nbgv.outputs.SemVer2 }}'
     
     - name: Create Release
       id: create_release

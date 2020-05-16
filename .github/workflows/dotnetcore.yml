@@ -40,7 +40,8 @@ jobs:
       with:
         setAllVars: true
     
-    - run: echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
+    - run: |
+        echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
     
     - name: Create Release
       id: create_release

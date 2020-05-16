@@ -30,10 +30,6 @@ jobs:
     - name: Run tests
       run: dotnet test
     
-    - name: Zip release
-      run: Get-ChildItem -Path .\src\Trains.NET.WPF\bin\Release\net472\* | Compress-Archive -DestinationPath release.zip   
-      shell: powershell
-
     - name: GitVersion
       id: nbgv
       uses: aarnott/nbgv@master
@@ -42,16 +38,20 @@ jobs:
     
     - run: |
         echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
+
+    - name: Zip release
+      run: Get-ChildItem -File -Path .\src\Trains.NET.WPF\bin\Release\net472\* | Compress-Archive -DestinationPath trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip   
+      shell: powershell
     
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: $NBGV_SemVer2
-        release_name: Release $NBGV_SemVer2
-        body: Release $NBGV_SemVer2
+        tag_name: v${{ steps.nbgv.outputs.SemVer2 }}
+        release_name: Trains.NET v${{ steps.nbgv.outputs.SemVer2 }}
+        body: Trains.NET v${{ steps.nbgv.outputs.SemVer2 }}
         draft: false
         prerelease: true
         
@@ -61,7 +61,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./release.zip
-        asset_name: release.zip
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip  
+        asset_name: trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip  
         asset_content_type: application/zip

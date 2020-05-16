@@ -37,6 +37,8 @@ jobs:
     - name: GitVersion
       uses: aarnott/nbgv@master
       id: nbgv
+      with:
+        setAllVars: true
     
     - name: Create Release
       id: create_release
@@ -44,9 +46,9 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ steps.nbgv.SemVer2 }}
-        release_name: Release ${{ steps.nbgv.SemVer2 }}
-        body: Release ${{ steps.nbgv.SemVer2 }}
+        tag_name: $NBGV_SemVer2
+        release_name: Release $NBGV_SemVer2
+        body: Release $NBGV_SemVer2
         draft: false
         prerelease: true
         

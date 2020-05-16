@@ -30,7 +30,10 @@ namespace Trains.NET.WPF
             Registrar.Handlers.Register<ToggleButton, ToggleButtonHandler>();
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainFrame.NavigationService.Navigate(new CometPage(MainFrame, serviceProvider.GetService<MainPage>()));
+            var page = new CometPage(MainFrame, serviceProvider.GetService<MainPage>());
+            MainFrame.Content = page;
+
+            this.Title = page.View.GetTitle();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

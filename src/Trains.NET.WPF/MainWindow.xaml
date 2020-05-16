@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Trains.NET.Comet"
         mc:Ignorable="d"
-        Title="Trains.NET" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+        Height="600" Width="800" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/RedTrain.png">
     <Frame x:Name="MainFrame">
 
     </Frame>

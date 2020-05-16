@@ -34,9 +34,9 @@ jobs:
       run: Get-ChildItem -Path .\src\Trains.NET.WPF\bin\Release\net472\* | Compress-Archive -DestinationPath release.zip   
       shell: powershell
 
-    - uses: aarnott/nbgv@master
+    - name: GitVersion
+      uses: aarnott/nbgv@master
       id: nbgv
-    - run: echo 'Release version will be: ${{ steps.nbgv.outputs.SemVer2 }}'
     
     - name: Create Release
       id: create_release

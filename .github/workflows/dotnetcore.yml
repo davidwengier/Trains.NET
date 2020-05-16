@@ -35,10 +35,11 @@ jobs:
       shell: powershell
 
     - name: GitVersion
-      uses: aarnott/nbgv@master
       id: nbgv
+      uses: aarnott/nbgv@master
       with:
         setAllVars: true
+      run: echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
     
     - name: Create Release
       id: create_release

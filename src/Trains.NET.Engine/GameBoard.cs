@@ -98,9 +98,14 @@ namespace Trains.NET.Engine
                     {
                         if (this.Enabled)
                         {
-                            MoveTrain(train, train.DistanceToMove, null);
+                            train.Resume();
                         }
                     }
+                    else
+                    {
+                        train.Pause();
+                    }
+                    MoveTrain(train, train.DistanceToMove, null);
                 }
             }
             catch (Exception)

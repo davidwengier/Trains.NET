@@ -84,13 +84,29 @@ namespace Trains.NET.Engine
         public void Stop()
         {
             this.Stopped = true;
+            if (this.DesiredSpeed == 0) return;
             _nextDesiredSpeed = this.DesiredSpeed;
             this.DesiredSpeed = 0;
         }
 
+        internal void Pause()
+        {
+            if (this.DesiredSpeed == 0) return;
+            _nextDesiredSpeed = this.DesiredSpeed;
+            this.DesiredSpeed = 0;
+        }
+
+        internal void Resume()
+        {
+            if (this.DesiredSpeed == 0)
+            {
+                this.DesiredSpeed = _nextDesiredSpeed;
+            }
+        }
+
         public void Slower()
         {
-            if (_nextDesiredSpeed > 0)
+            if (_nextDesiredSpeed > 5)
             {
                 _nextDesiredSpeed -= 5;
             }

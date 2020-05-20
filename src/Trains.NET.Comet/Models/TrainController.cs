@@ -25,9 +25,9 @@ namespace Trains.NET.Comet
                 this.CurrentTrain.Value.PropertyChanged -= Train_PropertyChanged;
             }
             this.CurrentTrain.Value = train;
-            if (train != null)
+            if (this.CurrentTrain.Value != null)
             {
-                train.PropertyChanged += Train_PropertyChanged;
+                this.CurrentTrain.Value.PropertyChanged += Train_PropertyChanged;
             }
             Update();
         }

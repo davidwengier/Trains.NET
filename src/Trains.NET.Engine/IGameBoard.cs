@@ -6,6 +6,7 @@ namespace Trains.NET.Engine
     {
         int Columns { get; set; }
         int Rows { get; set; }
+        bool Enabled { get; set; }
 
         void AddTrack(int column, int row);
         void RemoveTrack(int column, int row);

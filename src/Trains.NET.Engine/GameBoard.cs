@@ -18,6 +18,7 @@ namespace Trains.NET.Engine
 
         public int Columns { get; set; }
         public int Rows { get; set; }
+        public bool Enabled { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public GameBoard(IGameStorage? storage, ITimer? timer)
@@ -77,7 +78,14 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Start();
             try
             {
-                HashSet<Track> takenTracks = new HashSet<Track>();
+                Dictionary<Track,(Train, int)> takenTracks = new Dictionary<Track, (Train, int)>();
+                foreach (Train train in _movables)
+                {
+                    Train dummyTrain = train.Clone();
+
+                    MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks);
+                }
+
                 foreach (Train train in _movables)
                 {
                     if (train.CurrentSpeed == 0 && train.DesiredSpeed == 0) continue;
@@ -88,7 +96,10 @@ namespace Trains.NET.Engine
 
                     if (MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks))
                     {
-                        MoveTrain(train, train.DistanceToMove, null);
+                        if (this.Enabled)
+                        {
+                            MoveTrain(train, train.DistanceToMove, null);
+                        }
                     }
                 }
             }
@@ -98,18 +109,19 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Stop();
         }
 
-        private bool MoveTrain(Train train, float distanceToMove, HashSet<Track>? takenTracks)
+        private bool MoveTrain(Train train, float distanceToMove, Dictionary<Track, (Train, int)>? takenTracks)
         {
-            List<Track> newTakenTracks = new List<Track>();
-
             if (distanceToMove <= 0) return true;
 
             List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
 
             TrainPosition? lastPosition = null;
 
+            int numSteps = 0;
             foreach (TrainPosition newPosition in steps)
             {
+                numSteps++;
+
                 Track? track = GetTrackForTrain(train);
                 if (track == null) return false;
 
@@ -130,12 +142,18 @@ namespace Trains.NET.Engine
                     break;
                 }
 
-                if (takenTracks != null && takenTracks.Contains(nextTrack))
+                if (takenTracks != null &&
+                    takenTracks.TryGetValue(nextTrack, out (Train Train, int NumSteps) otherTrains) && 
+                    otherTrains.Train.UniqueID != train.UniqueID &&
+                    otherTrains.NumSteps < numSteps)
                 {
                     break;
                 }
 
-                newTakenTracks.Add(nextTrack);
+                if (takenTracks != null)
+                {
+                    takenTracks[nextTrack] = (train, numSteps);
+                }
 
                 lastPosition = newPosition;
 
@@ -144,11 +162,6 @@ namespace Trains.NET.Engine
                 train.Angle = newPosition.Angle;
                 train.RelativeLeft = newPosition.RelativeLeft;
                 train.RelativeTop = newPosition.RelativeTop;
-            }
-
-            if (takenTracks != null)
-            {
-                takenTracks.UnionWith(newTakenTracks);
             }
 
             return lastPosition?.Distance <= 0.0f;

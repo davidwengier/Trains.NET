@@ -15,7 +15,8 @@ namespace Trains.NET.Comet
                     new Text(trainControls.SpeedDisplay),
                     new Button("Faster", trainControls.Faster),
                     new Button("Go", trainControls.Start),
-                    new Button("Delete", trainControls.Delete)
+                    new Button("Delete", trainControls.Delete),
+                    new Button("Toggle Power", trainControls.ToggleGlobalStop)
                 });
         }
     }

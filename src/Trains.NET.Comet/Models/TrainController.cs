@@ -89,5 +89,10 @@ namespace Trains.NET.Comet
                 this.SpeedDisplay.Value = $"{this.CurrentTrain.Value.CurrentSpeed} km/h";
             }
         }
+
+        public void ToggleGlobalStop()
+        {
+            _gameBoard.Enabled = !_gameBoard.Enabled;
+        }
     }
 }

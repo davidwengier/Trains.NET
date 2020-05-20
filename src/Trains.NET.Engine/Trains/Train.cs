@@ -23,7 +23,7 @@ namespace Trains.NET.Engine
         {
             get
             {
-                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * this.CurrentSpeed;
+                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * this.CurrentSpeed * 20;
             }
             set
             {

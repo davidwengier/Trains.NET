@@ -20,7 +20,20 @@ namespace Trains.NET.Comet
 
         public void SetCurrentTrain(Train? train)
         {
+            if (this.CurrentTrain.Value != null)
+            {
+                this.CurrentTrain.Value.PropertyChanged -= Train_PropertyChanged;
+            }
             this.CurrentTrain.Value = train;
+            if (train != null)
+            {
+                train.PropertyChanged += Train_PropertyChanged;
+            }
+            Update();
+        }
+
+        private void Train_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             Update();
         }
 
@@ -40,7 +53,7 @@ namespace Trains.NET.Comet
         {
             if (this.CurrentTrain.Value != null)
             {
-                this.CurrentTrain.Value.Speed -= 5;
+                this.CurrentTrain.Value.Slower();
             }
             Update();
         }
@@ -49,7 +62,7 @@ namespace Trains.NET.Comet
         {
             if (this.CurrentTrain.Value != null)
             {
-                this.CurrentTrain.Value.Speed += 5;
+                this.CurrentTrain.Value.Faster();
             }
             Update();
         }
@@ -73,7 +86,7 @@ namespace Trains.NET.Comet
             else
             {
                 this.Display.Value = this.CurrentTrain.Value.Name;
-                this.SpeedDisplay.Value = $"{this.CurrentTrain.Value.Speed} km/h";
+                this.SpeedDisplay.Value = $"{this.CurrentTrain.Value.CurrentSpeed} km/h";
             }
         }
     }

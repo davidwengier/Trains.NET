@@ -55,7 +55,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -95,7 +95,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -134,7 +134,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -172,7 +172,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -211,7 +211,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -249,7 +249,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -291,7 +291,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = angle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -331,7 +331,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -371,7 +371,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -411,7 +411,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;
@@ -451,7 +451,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
             var train = (Train)board.GetMovables().Single();
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
             // We have an edge coming up, disable lookahead
             train.LookaheadDistance = 0.0f;

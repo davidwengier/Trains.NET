@@ -63,7 +63,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
                                      4 * CornerTrackDistance);
 
             // Train speed & angle
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.SetAngle(initialTrainAngle);
 
             Assert.Equal(2, train.Column);
@@ -121,7 +121,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
                                      12 * CornerTrackDistance);
 
             train.Angle = initialTrainAngle;
-            train.Speed = distance / _movementSteps / Train.SpeedScaleModifier;
+            train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
 
             Assert.Equal(3, train.Column);
             Assert.Equal(2, train.Row);

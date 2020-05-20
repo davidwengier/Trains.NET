@@ -80,7 +80,9 @@ namespace Trains.NET.Engine
                 HashSet<Track> takenTracks = new HashSet<Track>();
                 foreach (Train train in _movables)
                 {
-                    if (train.Speed == 0) continue;
+                    if (train.CurrentSpeed == 0 && train.DesiredSpeed == 0) continue;
+
+                    train.AdjustSpeed();
 
                     Train dummyTrain = train.Clone();
 

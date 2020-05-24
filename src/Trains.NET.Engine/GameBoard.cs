@@ -196,12 +196,7 @@ namespace Trains.NET.Engine
             return result;
         }
 
-        private void GameLoopTimerElapsed(object sender, EventArgs e)
-        {
-            _gameLoopTimer?.Stop();
-            GameLoopStep();
-            _gameLoopTimer?.Start();
-        }
+        private void GameLoopTimerElapsed(object sender, EventArgs e) => GameLoopStep();
 
         private TrainPosition? GetNextPosition(TrainPosition currentPosition, float distance)
         {

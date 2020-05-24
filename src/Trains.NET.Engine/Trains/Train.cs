@@ -78,7 +78,7 @@ namespace Trains.NET.Engine
 
         public void Start() => this.Stopped = false;
 
-        public void Stop() => this.Stopped = false;
+        public void Stop() => this.Stopped = true;
 
         internal void Pause() => this.CollisionAhead = true;
 

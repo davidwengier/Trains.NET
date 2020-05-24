@@ -48,6 +48,8 @@ namespace Trains.NET.Engine
 
         public void SetAngle(float angle)
         {
+            while (angle < 0) angle += 360;
+            while (angle > 360) angle -= 360;
             this.Angle = angle;
         }
 

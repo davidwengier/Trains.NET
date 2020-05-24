@@ -104,8 +104,14 @@ namespace Trains.NET.Engine
                     // If we can't even move the required ammount, we have hit an edge case
                     //  we should deal with it here! Maybe call stop?
 
-                    // Clone our train for lookahead purposes
+                    // Clone our train for look-behind purposes & claim behind us
                     Train dummyTrain = train.Clone();
+                    dummyTrain.SetAngle(dummyTrain.Angle - 180);
+                    // Set our parent as the dummy to abuse the fact no one can pause it
+                    MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
+
+                    // Clone our train for look-ahead purposes
+                    dummyTrain = train.Clone();
 
                     // Move our lookahead train clone, traking the tracks we need
                     if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.DistanceToMove, _takenTracks))

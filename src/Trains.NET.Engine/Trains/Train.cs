@@ -7,8 +7,9 @@ namespace Trains.NET.Engine
     {
         public const float SpeedScaleModifier = 0.005f;
         private const int MaximumSpeed = 200;
+        private const float MinimumLookaheadSpeed = 5.0f;
+        private const float DefaultSpeed = 20.0f;
         private readonly Random _random = new Random();
-        private float _nextDesiredSpeed = 20;
         private float? _lookaheadOverride;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -16,14 +17,14 @@ namespace Trains.NET.Engine
         public Train()
         {
             this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
-            this.DesiredSpeed = _nextDesiredSpeed;
+            this.DesiredSpeed = DefaultSpeed;
         }
 
         public float LookaheadDistance
         {
             get
             {
-                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * this.CurrentSpeed * 20;
+                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 30;
             }
             set
             {
@@ -42,7 +43,8 @@ namespace Trains.NET.Engine
         public string Name { get; set; }
         public float CurrentSpeed { get; private set; }
         public float DesiredSpeed { get; private set; }
-        public bool Stopped { get; set; }
+        public bool Stopped { get; private set; }
+        public bool CollisionAhead { get; private set; }
 
         public void SetAngle(float angle)
         {
@@ -72,61 +74,28 @@ namespace Trains.NET.Engine
         {
             this.CurrentSpeed = speed;
             this.DesiredSpeed = speed;
-            _nextDesiredSpeed = speed;
         }
 
-        public void Start()
-        {
-            this.Stopped = false;
-            this.DesiredSpeed = _nextDesiredSpeed;
-        }
+        public void Start() => this.Stopped = false;
 
-        public void Stop()
-        {
-            this.Stopped = true;
-            if (this.DesiredSpeed == 0) return;
-            _nextDesiredSpeed = this.DesiredSpeed;
-            this.DesiredSpeed = 0;
-        }
+        public void Stop() => this.Stopped = true;
 
-        internal void Pause()
-        {
-            if (this.DesiredSpeed == 0) return;
-            _nextDesiredSpeed = this.DesiredSpeed;
-            this.DesiredSpeed = 0;
-        }
+        internal void Pause() => this.CollisionAhead = true;
 
-        internal void Resume()
-        {
-            if (this.DesiredSpeed == 0)
-            {
-                this.DesiredSpeed = _nextDesiredSpeed;
-            }
-        }
+        internal void Resume() => this.CollisionAhead = false;
 
         public void Slower()
         {
-            if (_nextDesiredSpeed > 5)
+            if (this.DesiredSpeed > 5)
             {
-                _nextDesiredSpeed -= 5;
-            }
-
-            if (!this.Stopped)
-            {
-                this.DesiredSpeed = _nextDesiredSpeed;
+                this.DesiredSpeed -= 5;
             }
         }
         public void Faster()
         {
-            if (_nextDesiredSpeed < MaximumSpeed)
+            if (this.DesiredSpeed < MaximumSpeed)
             {
-                _nextDesiredSpeed += 5;
-            }
-
-
-            if (!this.Stopped)
-            {
-                this.DesiredSpeed = _nextDesiredSpeed;
+                this.DesiredSpeed += 5;
             }
         }
 
@@ -136,13 +105,17 @@ namespace Trains.NET.Engine
 
         internal void AdjustSpeed()
         {
-            if (this.DesiredSpeed > this.CurrentSpeed)
+            if (this.Stopped || this.CollisionAhead)
             {
-                this.CurrentSpeed++;
+                this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
+            }
+            else if (this.DesiredSpeed > this.CurrentSpeed)
+            {
+                this.CurrentSpeed = Math.Min(this.CurrentSpeed + 1.0f, this.DesiredSpeed);
             }
             else if (this.DesiredSpeed < this.CurrentSpeed)
             {
-                this.CurrentSpeed--;
+                this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
         }

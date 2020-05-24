@@ -98,22 +98,25 @@ namespace Trains.NET.Engine
                     // Adjust our speed ahead of moving
                     train.AdjustSpeed();
 
+                    // Clone our train for look-behind purposes ahead of moving
+                    //  so we always look the same distance behind irrespective of speed
+                    Train dummyTrain = train.Clone();
+                    dummyTrain.SetAngle(dummyTrain.Angle - 180);
+
                     // Move the actual train by the required distance
                     bool badMove = MoveTrain(train, train, train.DistanceToMove, _takenTracks);
 
                     // If we can't even move the required ammount, we have hit an edge case
                     //  we should deal with it here! Maybe call stop?
 
-                    // Clone our train for look-behind purposes & claim behind us
-                    Train dummyTrain = train.Clone();
-                    dummyTrain.SetAngle(dummyTrain.Angle - 180);
-                    // Set our parent as the dummy to abuse the fact no one can pause it
+                    // Claim behind us & set our parent as the dummy 
+                    //  to abuse the fact no one can pause it
                     MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
 
                     // Clone our train for look-ahead purposes
                     dummyTrain = train.Clone();
 
-                    // Move our lookahead train clone, traking the tracks we need
+                    // Move our lookahead train clone, claiming the tracks we cover
                     if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.DistanceToMove, _takenTracks))
                     {
                         train.Resume();

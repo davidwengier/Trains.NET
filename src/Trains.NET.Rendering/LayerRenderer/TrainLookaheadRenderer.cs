@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.LayerRenderer
             _parameters = parameters;
         }
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; } = false;
 
         public string Name => "Hitbox";
 

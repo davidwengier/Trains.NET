@@ -6,6 +6,8 @@ namespace Trains.NET.Engine
     internal class GameTimer : ITimer
     {
         private readonly Timer _timer;
+        private bool _invoking = false;
+        private readonly object _invokingLockObject = new object();
 
         public double Interval
         {
@@ -23,7 +25,23 @@ namespace Trains.NET.Engine
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Elapsed?.Invoke(sender, e);
+            if (_invoking) return;
+            lock (_invokingLockObject)
+            {
+                if (_invoking) return;
+                _invoking = true;
+            }
+            try
+            {
+                Elapsed?.Invoke(sender, e);
+            }
+            finally
+            {
+                lock (_invokingLockObject)
+                {
+                    _invoking = false;
+                }
+            }
         }
 
         public void Dispose() => _timer.Dispose();

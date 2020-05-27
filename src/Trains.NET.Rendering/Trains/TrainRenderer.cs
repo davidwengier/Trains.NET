@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrainRenderer : ITrainRenderer //, IDisposable
+    internal class TrainRenderer : ITrainRenderer
     {
         private readonly ITrackParameters _trackParameters;
         private readonly ITrainParameters _trainParameters;
@@ -18,12 +16,6 @@ namespace Trains.NET.Rendering
             _trainParameters = trainParameters;
             _trainPainter = trainPainter;
         }
-
-        //public void Dispose()
-        //{
-        //    _bodyPaint.Dispose();
-        //    _headPaint.Dispose();
-        //}
 
         public void Render(ICanvas canvas, Train train)
         {

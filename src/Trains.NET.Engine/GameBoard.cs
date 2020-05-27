@@ -12,6 +12,7 @@ namespace Trains.NET.Engine
         private const int GameLoopInterval = 16;
 
         private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
+        private readonly Dictionary<Track, (Train, float)> _takenTracks = new Dictionary<Track, (Train, float)>();
         private readonly List<IMovable> _movables = new List<IMovable>();
         private readonly ITimer? _gameLoopTimer;
         private readonly IGameStorage? _storage;
@@ -80,23 +81,43 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Start();
             try
             {
-                Dictionary<Track,(Train, int)> takenTracks = new Dictionary<Track, (Train, int)>();
+                _takenTracks.Clear();
                 foreach (Train train in _movables)
                 {
-                    Train dummyTrain = train.Clone();
+                    // Claim the track we are currently on, distance of 0
+                    Track myTrack = GetTrackAt(train.Column, train.Row)!;
+                    _takenTracks.Add(myTrack, (train, 0));
 
-                    MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks);
-                }
+                    // If we are stopped, nothing more for this train to do
 
-                foreach (Train train in _movables)
-                {
-                    if (train.CurrentSpeed == 0 && train.DesiredSpeed == 0) continue;
+                    if (train.Stopped && train.CurrentSpeed <= 0.0f)
+                    {
+                        continue;
+                    }
 
+                    // Adjust our speed ahead of moving
                     train.AdjustSpeed();
 
+                    // Clone our train for look-behind purposes ahead of moving
+                    //  so we always look the same distance behind irrespective of speed
                     Train dummyTrain = train.Clone();
+                    dummyTrain.SetAngle(dummyTrain.Angle - 180);
 
-                    if (MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks))
+                    // Move the actual train by the required distance
+                    bool badMove = MoveTrain(train, train, train.DistanceToMove, _takenTracks);
+
+                    // If we can't even move the required ammount, we have hit an edge case
+                    //  we should deal with it here! Maybe call stop?
+
+                    // Claim behind us & set our parent as the dummy 
+                    //  to abuse the fact no one can pause it
+                    MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
+
+                    // Clone our train for look-ahead purposes
+                    dummyTrain = train.Clone();
+
+                    // Move our lookahead train clone, claiming the tracks we cover
+                    if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.DistanceToMove, _takenTracks))
                     {
                         train.Resume();
                     }
@@ -104,7 +125,6 @@ namespace Trains.NET.Engine
                     {
                         train.Pause();
                     }
-                    MoveTrain(train, train.DistanceToMove, null);
                 }
             }
             catch (Exception)
@@ -113,7 +133,7 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Stop();
         }
 
-        private bool MoveTrain(Train train, float distanceToMove, Dictionary<Track, (Train, int)>? takenTracks)
+        private bool MoveTrain(Train train, Train parentTrain, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks)
         {
             if (distanceToMove <= 0) return true;
 
@@ -125,6 +145,8 @@ namespace Trains.NET.Engine
             foreach (TrainPosition newPosition in steps)
             {
                 numSteps++;
+
+                float timeAway = numSteps / train.DesiredSpeed;
 
                 Track? track = GetTrackForTrain(train);
                 if (track == null) return false;
@@ -146,17 +168,29 @@ namespace Trains.NET.Engine
                     break;
                 }
 
-                if (takenTracks != null &&
-                    takenTracks.TryGetValue(nextTrack, out (Train Train, int NumSteps) otherTrains) && 
-                    otherTrains.Train.UniqueID != train.UniqueID &&
-                    otherTrains.NumSteps < numSteps)
+                // Check to see if there is another claim
+                if (takenTracks.TryGetValue(nextTrack, out (Train Train, float TimeAway) otherTrains))
                 {
-                    break;
+                    // If it's not us
+                    if (otherTrains.Train.UniqueID != train.UniqueID)
+                    {
+                        // and if they win, break
+                        if (otherTrains.TimeAway < timeAway)
+                        {
+                            break;
+                        }
+                        // else we win, so pause them, and take the claim
+                        else
+                        {
+                            otherTrains.Train.Pause();
+                            takenTracks[nextTrack] = (parentTrain, timeAway);
+                        }
+                    }
                 }
-
-                if (takenTracks != null)
+                // No claim, we take it!
+                else
                 {
-                    takenTracks[nextTrack] = (train, numSteps);
+                    takenTracks[nextTrack] = (parentTrain, timeAway);
                 }
 
                 lastPosition = newPosition;
@@ -343,6 +377,6 @@ namespace Trains.NET.Engine
             _gameLoopTimer?.Dispose();
         }
 
-        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t.Column == column && t.Row == row);
+        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t != null && t.Column == column && t.Row == row);
     }
 }

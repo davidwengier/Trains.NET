@@ -24,7 +24,7 @@ namespace Trains.NET.Engine
         {
             get
             {
-                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 20;
+                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 30;
             }
             set
             {
@@ -48,6 +48,8 @@ namespace Trains.NET.Engine
 
         public void SetAngle(float angle)
         {
+            while (angle < 0) angle += 360;
+            while (angle > 360) angle -= 360;
             this.Angle = angle;
         }
 
@@ -107,15 +109,15 @@ namespace Trains.NET.Engine
         {
             if (this.Stopped || this.CollisionAhead)
             {
-                this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1, 0);
+                this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }
             else if (this.DesiredSpeed > this.CurrentSpeed)
             {
-                this.CurrentSpeed++;
+                this.CurrentSpeed = Math.Min(this.CurrentSpeed + 1.0f, this.DesiredSpeed);
             }
             else if (this.DesiredSpeed < this.CurrentSpeed)
             {
-                this.CurrentSpeed--;
+                this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
         }

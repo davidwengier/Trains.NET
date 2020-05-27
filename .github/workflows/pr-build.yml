@@ -18,11 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Build with msbuild
-      run: msbuild Trains.NET.sln /m /restore /p:Configuration=Release
+    - name: Build
+      run: dotnet build
 
     - name: Run tests
       run: dotnet test

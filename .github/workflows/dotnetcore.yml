@@ -21,11 +21,8 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Build with msbuild
-      run: msbuild Trains.NET.sln /m /restore /p:Configuration=Release
+    - name: Build
+      run: dotnet build -c Release
 
     - name: Run tests
       run: dotnet test
@@ -40,7 +37,7 @@ jobs:
         echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
 
     - name: Zip release
-      run: Get-ChildItem -File -Path .\src\Trains.NET.WPF\bin\Release\net472\* | Compress-Archive -DestinationPath trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip   
+      run: Get-ChildItem -File -Path .\src\Trains.NET.WPF\bin\Release\netcoreapp3.1\* | Compress-Archive -DestinationPath trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip   
       shell: powershell
     
     - name: Create Release

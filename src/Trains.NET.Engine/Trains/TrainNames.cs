@@ -13,7 +13,8 @@
             "The Evening Express",
             "The Majestic Steve",
             "The Awkward Scotsman",
-            "The Comet Caboose"
+            "The Comet Caboose",
+            "Tolkien Express"
         };
 
     }

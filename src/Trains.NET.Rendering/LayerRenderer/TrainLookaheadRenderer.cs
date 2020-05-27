@@ -1,4 +1,5 @@
 ﻿using Trains.NET.Engine;
+using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering.LayerRenderer
 {
@@ -8,17 +9,14 @@ namespace Trains.NET.Rendering.LayerRenderer
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
-        private readonly PaintBrush _paint = new PaintBrush
-        {
-            Color = Colors.LightPurple,
-            Style = PaintStyle.Fill
-        };
+        private readonly ITrainPainter _painter;
 
-        public TrainLookaheadRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters)
+        public TrainLookaheadRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters, ITrainPainter painter)
         {
             _gameBoard = gameBoard;
             _pixelMapper = pixelMapper;
             _parameters = parameters;
+            _painter = painter;
         }
 
         public bool Enabled { get; set; } = false;
@@ -29,6 +27,12 @@ namespace Trains.NET.Rendering.LayerRenderer
         {
             foreach (Train train in _gameBoard.GetMovables())
             {
+                PaintBrush _paint = new PaintBrush
+                {
+                    Color = _painter.GetPalette(train).FrontSectionEndColor,
+                    Style = PaintStyle.Fill
+                };
+
                 (int x, int y) = _pixelMapper.CoordsToPixels(train.Column, train.Row);
 
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);

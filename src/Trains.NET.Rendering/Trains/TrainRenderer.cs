@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Trains.NET.Engine;
+using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering
 {
@@ -8,16 +9,14 @@ namespace Trains.NET.Rendering
     {
         private readonly ITrackParameters _trackParameters;
         private readonly ITrainParameters _trainParameters;
-        private readonly OrderedList<ITrainPalette> _trainPalettes;
-        private readonly Random _random = new Random();
+        private readonly ITrainPainter _trainPainter;
 
-        private readonly Dictionary<Train, ITrainPalette> _paletteMap = new Dictionary<Train, ITrainPalette>();
 
-        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, OrderedList<ITrainPalette> trainPalettes)
+        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, ITrainPainter trainPainter)
         {
             _trackParameters = trackParameters;
             _trainParameters = trainParameters;
-            _trainPalettes = trainPalettes;
+            _trainPainter = trainPainter;
         }
 
         //public void Dispose()
@@ -28,11 +27,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, Train train)
         {
-            if (!_paletteMap.ContainsKey(train))
-            {
-                _paletteMap.Add(train, GetRandomPalette());
-            }
-            var palette = _paletteMap[train];
+            var palette = _trainPainter.GetPalette(train);
 
             SetupCanvasToDrawTrain(canvas, train, _trackParameters);
 
@@ -80,11 +75,6 @@ namespace Trains.NET.Rendering
 
             canvas.DrawCircle(startPos + _trainParameters.RearWidth + _trainParameters.HeadWidth - 5, 0, 2, smokeStack);
 
-        }
-
-        private ITrainPalette GetRandomPalette()
-        {
-            return _trainPalettes[_random.Next(0, _trainPalettes.Count)];
         }
 
         public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train, ITrackParameters trackParameters)

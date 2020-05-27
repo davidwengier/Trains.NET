@@ -75,6 +75,8 @@ namespace Trains.NET.Engine
 
         public void GameLoopStep()
         {
+            if (!this.Enabled) return;
+
             _gameUpdateTime.Start();
             try
             {
@@ -96,10 +98,7 @@ namespace Trains.NET.Engine
 
                     if (MoveTrain(dummyTrain, train.LookaheadDistance, takenTracks))
                     {
-                        if (this.Enabled)
-                        {
-                            train.Resume();
-                        }
+                        train.Resume();
                     }
                     else
                     {

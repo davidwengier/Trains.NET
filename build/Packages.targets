@@ -14,9 +14,9 @@
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
 
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="1.68.1" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.1" />
-    <PackageReference Update="SkiaSharp.Views.WPF"          Version="1.68.1" />
+    <PackageReference Update="SkiaSharp"                    Version="1.68.3" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="1.68.3" />
+    <PackageReference Update="SkiaSharp.Views.WPF"          Version="1.68.3" />
     
     <!-- Comet 
               <PackageReference Update="Clancey.Comet"                Version="0.2.328-beta" />

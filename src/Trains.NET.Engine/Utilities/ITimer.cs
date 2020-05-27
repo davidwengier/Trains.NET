@@ -5,6 +5,7 @@ namespace Trains.NET.Engine
     public interface ITimer : IDisposable
     {
         double Interval { get; set; }
+        long TimeSinceLastTick { get; }
 
         event EventHandler Elapsed;
 

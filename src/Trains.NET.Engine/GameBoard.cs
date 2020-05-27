@@ -104,7 +104,7 @@ namespace Trains.NET.Engine
                     dummyTrain.SetAngle(dummyTrain.Angle - 180);
 
                     // Move the actual train by the required distance
-                    bool badMove = MoveTrain(train, train, train.DistanceToMove, _takenTracks);
+                    bool badMove = MoveTrain(train, train, train.CurrentSpeed, _takenTracks);
 
                     // If we can't even move the required ammount, we have hit an edge case
                     //  we should deal with it here! Maybe call stop?
@@ -117,7 +117,7 @@ namespace Trains.NET.Engine
                     dummyTrain = train.Clone();
 
                     // Move our lookahead train clone, claiming the tracks we cover
-                    if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.DistanceToMove, _takenTracks))
+                    if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, _takenTracks))
                     {
                         train.Resume();
                     }
@@ -137,8 +137,11 @@ namespace Trains.NET.Engine
         {
             if (distanceToMove <= 0) return true;
 
-            List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
+            float speedModifier = 0.005f * ((_gameLoopTimer?.TimeSinceLastTick / 16f) ?? 1);
+            distanceToMove = distanceToMove * speedModifier;
 
+            List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
+            
             TrainPosition? lastPosition = null;
 
             int numSteps = 0;

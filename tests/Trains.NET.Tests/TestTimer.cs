@@ -7,6 +7,8 @@ namespace Trains.NET.Tests
     {
         public double Interval { get; set; }
 
+        public long TimeSinceLastTick => 16;
+
         public event EventHandler Elapsed;
 
         public void Dispose()

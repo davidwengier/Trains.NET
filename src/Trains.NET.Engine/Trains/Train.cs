@@ -24,7 +24,7 @@ namespace Trains.NET.Engine
         {
             get
             {
-                return _lookaheadOverride ?? 0.8f + SpeedScaleModifier * Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 30;
+                return _lookaheadOverride ?? Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 30;
             }
             set
             {
@@ -32,7 +32,7 @@ namespace Trains.NET.Engine
             }
         }
 
-        public float DistanceToMove => SpeedScaleModifier * this.CurrentSpeed;
+        public float DistanceToMove => this.CurrentSpeed;
 
         public Guid UniqueID { get; internal set; } = Guid.NewGuid();
         public int Column { get; internal set; }

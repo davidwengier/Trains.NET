@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Timers;
 
 namespace Trains.NET.Engine
@@ -8,6 +9,11 @@ namespace Trains.NET.Engine
         private readonly Timer _timer;
         private bool _invoking = false;
         private readonly object _invokingLockObject = new object();
+        private long _timeSinceLastTick;
+        private long _lastTick = 0;
+        private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
+        public long TimeSinceLastTick => _timeSinceLastTick;
 
         public double Interval
         {
@@ -33,6 +39,9 @@ namespace Trains.NET.Engine
             }
             try
             {
+                long time = _stopwatch.ElapsedMilliseconds;
+                _timeSinceLastTick = time - _lastTick;
+                _lastTick = time;
                 Elapsed?.Invoke(sender, e);
             }
             finally

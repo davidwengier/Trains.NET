@@ -5,7 +5,13 @@ namespace Trains.NET.Rendering.Skia
 {
     public static class RenderingExtensions
     {
-        public static SKColor ToSkia(this Color color) => SKColor.Parse(color.HexCode);
+        public static SKBitmap ToSkia(this IBitmap bitmap) => ((SKBitmapWrapper)bitmap).Bitmap;
+
+        public static SKColor ToSkia(this Color color) => color switch
+        {
+            Color c when c == Colors.Empty => SKColor.Empty,
+            _ => SKColor.Parse(color.HexCode)
+        };
 
         public static SKClipOperation ToSkia(this ClipOperation operation) => operation switch
         {

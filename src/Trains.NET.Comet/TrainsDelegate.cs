@@ -26,6 +26,7 @@ namespace Trains.NET.Comet
             _game.SetSize((int)bounds.Width, (int)bounds.Height);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public override void Draw(SkiaSharp.SKCanvas canvas, RectangleF dirtyRect)
         {
             _game.Render(new SKCanvasWrapper(canvas));

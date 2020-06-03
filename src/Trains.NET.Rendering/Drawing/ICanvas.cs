@@ -1,6 +1,8 @@
-﻿namespace Trains.NET.Rendering
+﻿using System;
+
+namespace Trains.NET.Rendering
 {
-    public interface ICanvas
+    public interface ICanvas : IDisposable
     {
         public void DrawRect(float x, float y, float width, float height, PaintBrush paint);
         public void Save();
@@ -15,5 +17,6 @@
         public void RotateDegrees(float degrees);
         void Clear(Color color);
         void GradientRect(float x, float y, float width, float height, Color start, Color end);
+        void DrawBitmap(IBitmap bitmap, int v1, int v2);
     }
 }

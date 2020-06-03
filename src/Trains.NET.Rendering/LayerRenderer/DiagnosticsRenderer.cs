@@ -4,10 +4,8 @@ using Trains.NET.Instrumentation;
 namespace Trains.NET.Rendering
 {
     [Order(1000)]
-    internal class DiagnosticsRenderer : ILayerRenderer //, IDisposable
+    internal class DiagnosticsRenderer : ILayerRenderer
     {
-        
-
         private readonly PaintBrush _paint = new PaintBrush
         {
             Color = Colors.Black,
@@ -22,11 +20,6 @@ namespace Trains.NET.Rendering
         public DiagnosticsRenderer()
         {
         }
-
-        //public void Dispose()
-        //{
-        //    _paint.Dispose();
-        //}
 
         public void Render(ICanvas canvas, int width, int height)
         {

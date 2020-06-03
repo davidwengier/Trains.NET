@@ -17,6 +17,8 @@ namespace Trains.NET.Engine
         private readonly ITimer? _gameLoopTimer;
         private readonly IGameStorage? _storage;
 
+        public event EventHandler? TracksChanged;
+
         public int Columns { get; set; }
         public int Rows { get; set; }
         public bool Enabled { get; set; } = true;
@@ -72,6 +74,8 @@ namespace Trains.NET.Engine
             }
 
             _storage?.WriteTracks(_tracks.Values);
+
+            TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
@@ -303,6 +307,8 @@ namespace Trains.NET.Engine
             }
 
             _storage?.WriteTracks(_tracks.Values);
+
+            TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void RemoveTrack(int column, int row)
@@ -314,6 +320,8 @@ namespace Trains.NET.Engine
             }
 
             _storage?.WriteTracks(_tracks.Values);
+
+            TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public IMovable? AddTrain(int column, int row)
@@ -379,6 +387,8 @@ namespace Trains.NET.Engine
             _movables.Clear();
 
             _storage?.WriteTracks(_tracks.Values);
+
+            TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia
@@ -13,7 +14,6 @@ namespace Trains.NET.Rendering.Skia
         {
             _canvas = canvas;
         }
-
         private static SKPaint GetSKPaint(PaintBrush paint)
         {
             if (!s_paintCache.TryGetValue(paint, out SKPaint skPaint))
@@ -29,6 +29,15 @@ namespace Trains.NET.Rendering.Skia
 
         public void ClipRect(Rectangle rect, ClipOperation operation, bool antialias)
             => _canvas.ClipRect(rect.ToSkia(), operation.ToSkia(), antialias);
+
+        public void Dispose()
+        {
+            ((IDisposable)_canvas).Dispose();
+        }
+
+        public void DrawBitmap(IBitmap bitmap, int width, int height)
+            => _canvas.DrawBitmap(bitmap.ToSkia(), width, height);
+
 
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)
             => _canvas.DrawCircle(x, y, radius, GetSKPaint(paint));
@@ -72,7 +81,5 @@ namespace Trains.NET.Rendering.Skia
 
         public void Translate(float x, float y)
             => _canvas.Translate(x, y);
-
-
     }
 }

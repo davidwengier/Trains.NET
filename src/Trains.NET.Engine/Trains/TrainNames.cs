@@ -14,8 +14,9 @@
             "The Majestic Steve",
             "The Awkward Scotsman",
             "The Comet Caboose",
-            "Tolkien Express"
+            "The Tolkien Express",
+            "The Dirty Nullable",
+            "The Diagnostics Session"
         };
-
     }
 }

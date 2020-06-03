@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Engine
 {
     public interface IGameBoard
     {
+        event EventHandler? TracksChanged;
         int Columns { get; set; }
         int Rows { get; set; }
         bool Enabled { get; set; }

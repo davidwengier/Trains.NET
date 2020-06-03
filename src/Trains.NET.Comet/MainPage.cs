@@ -107,9 +107,13 @@ namespace Trains.NET.Comet
             return layersGroup;
         }
 
-        private static View GetConfigurationControl(ITrackParameters trackParameters, string parameter)
+        private static View? GetConfigurationControl(ITrackParameters trackParameters, string parameter)
         {
-            PropertyInfo prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            PropertyInfo? prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (prop == null)
+            {
+                return null;
+            }
             return new VStack()
                 {
                     new Text(parameter + ":"),
@@ -124,7 +128,11 @@ namespace Trains.NET.Comet
 
         private static void AdjustProperty(ITrackParameters trackParameters, PropertyInfo prop, int adjustment)
         {
-            prop.SetValue(trackParameters, (int)prop.GetValue(trackParameters) + adjustment);
+            object? value = prop.GetValue(trackParameters);
+            if (value is int intValue)
+            {
+                prop.SetValue(trackParameters, intValue + adjustment);
+            }
         }
 
         protected override void Dispose(bool disposing)

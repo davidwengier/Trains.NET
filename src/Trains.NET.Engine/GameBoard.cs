@@ -74,6 +74,7 @@ namespace Trains.NET.Engine
             _storage?.WriteTracks(_tracks.Values);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public void GameLoopStep()
         {
             if (!this.Enabled) return;
@@ -81,56 +82,61 @@ namespace Trains.NET.Engine
             _gameUpdateTime.Start();
             try
             {
-                _takenTracks.Clear();
-                foreach (Train train in _movables)
-                {
-                    // Claim the track we are currently on, distance of 0
-                    Track myTrack = GetTrackAt(train.Column, train.Row)!;
-                    _takenTracks.Add(myTrack, (train, 0));
-
-                    // If we are stopped, nothing more for this train to do
-
-                    if (train.Stopped && train.CurrentSpeed <= 0.0f)
-                    {
-                        continue;
-                    }
-
-                    // Adjust our speed ahead of moving
-                    train.AdjustSpeed();
-
-                    // Clone our train for look-behind purposes ahead of moving
-                    //  so we always look the same distance behind irrespective of speed
-                    Train dummyTrain = train.Clone();
-                    dummyTrain.SetAngle(dummyTrain.Angle - 180);
-
-                    // Move the actual train by the required distance
-                    bool badMove = MoveTrain(train, train, train.CurrentSpeed, _takenTracks);
-
-                    // If we can't even move the required ammount, we have hit an edge case
-                    //  we should deal with it here! Maybe call stop?
-
-                    // Claim behind us & set our parent as the dummy 
-                    //  to abuse the fact no one can pause it
-                    MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
-
-                    // Clone our train for look-ahead purposes
-                    dummyTrain = train.Clone();
-
-                    // Move our lookahead train clone, claiming the tracks we cover
-                    if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, _takenTracks))
-                    {
-                        train.Resume();
-                    }
-                    else
-                    {
-                        train.Pause();
-                    }
-                }
+                DoGameLoopStep();
             }
             catch (Exception)
             {
             }
             _gameUpdateTime.Stop();
+        }
+
+        private void DoGameLoopStep()
+        {
+            _takenTracks.Clear();
+            foreach (Train train in _movables)
+            {
+                // Claim the track we are currently on, distance of 0
+                Track myTrack = GetTrackAt(train.Column, train.Row)!;
+                _takenTracks.Add(myTrack, (train, 0));
+
+                // If we are stopped, nothing more for this train to do
+
+                if (train.Stopped && train.CurrentSpeed <= 0.0f)
+                {
+                    continue;
+                }
+
+                // Adjust our speed ahead of moving
+                train.AdjustSpeed();
+
+                // Clone our train for look-behind purposes ahead of moving
+                //  so we always look the same distance behind irrespective of speed
+                Train dummyTrain = train.Clone();
+                dummyTrain.SetAngle(dummyTrain.Angle - 180);
+
+                // Move the actual train by the required distance
+                MoveTrain(train, train, train.CurrentSpeed, _takenTracks);
+
+                // If we can't even move the required ammount, we have hit an edge case
+                //  we should deal with it here! Maybe call stop?
+
+                // Claim behind us & set our parent as the dummy 
+                //  to abuse the fact no one can pause it
+                MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
+
+                // Clone our train for look-ahead purposes
+                dummyTrain = train.Clone();
+
+                // Move our lookahead train clone, claiming the tracks we cover
+                if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, _takenTracks))
+                {
+                    train.Resume();
+                }
+                else
+                {
+                    train.Pause();
+                }
+            }
         }
 
         private bool MoveTrain(Train train, Train parentTrain, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks)
@@ -210,7 +216,7 @@ namespace Trains.NET.Engine
 
         public List<TrainPosition> GetNextSteps(Train train, float distanceToMove)
         {
-            List<TrainPosition> result = new List<TrainPosition>();
+            var result = new List<TrainPosition>();
 
             float distance = distanceToMove;
             while (distance > 0.0f)

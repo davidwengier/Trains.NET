@@ -66,14 +66,12 @@ namespace Trains.NET.Engine
                 data.Add((byte)(int)track.Direction);
             }
 
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            using (var stream = new DeflateStream(ms, System.IO.Compression.CompressionLevel.Optimal))
             {
-                using (var stream = new DeflateStream(ms, System.IO.Compression.CompressionLevel.Optimal))
-                {
-                    stream.Write(data.ToArray(), 0, data.Count);
-                }
-                return "1" + Convert.ToBase64String(ms.ToArray());
+                stream.Write(data.ToArray(), 0, data.Count);
             }
+            return "1" + Convert.ToBase64String(ms.ToArray());
         }
     }
 }

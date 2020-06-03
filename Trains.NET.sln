@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{88B2DB4E-E205-46E9-B94D-D6EA6AE7EC13}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		src\.editorconfig = src\.editorconfig
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		build\Packages.targets = build\Packages.targets
 		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
@@ -29,17 +30,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Game", "Game", "{1BB744EF-D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Rendering.Skia", "src\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj", "{C9AE2974-C1AC-4D04-9DEB-A0C77D1FF1A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trains.NET.Instrumentation", "src\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj", "{E7FE632B-2E2A-437D-B674-0507C80B4155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.Instrumentation", "src\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj", "{E7FE632B-2E2A-437D-B674-0507C80B4155}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comet", "Comet", "{EF7A1947-1852-4F43-980B-F76996F83008}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet", "comet\src\Comet\Comet.csproj", "{80BC6662-B1CE-4FD4-A566-F79A7856A409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comet.WPF", "comet\src\Comet.WPF\Comet.WPF.csproj", "{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet.WPF", "comet\src\Comet.WPF\Comet.WPF.csproj", "{F8BA5DE0-AEC0-4423-B036-5F9157E939D0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet.Skia", "comet\src\Comet.Skia\Comet.Skia.csproj", "{7F6DDA88-4D7A-4FB7-966A-C94D361F4C3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comet.Skia.WPF", "comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj", "{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comet.Skia.WPF", "comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj", "{E7FA15FC-418F-4FFE-9DC1-CF68AFA860AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -21,25 +21,21 @@ jobs:
       with:
         dotnet-version: 3.1.100
 
-    - name: Build
-      run: dotnet build -c Release
-
     - name: Run tests
       run: dotnet test
-    
+
+    - name: publish
+      run: dotnet publish -o ./publish -f netcoreapp3.1 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true src/Trains.NET.WPF/Trains.NET.WPF.csproj
+
     - name: GitVersion
       id: nbgv
       uses: aarnott/nbgv@master
       with:
         setAllVars: true
-    
+
     - run: |
         echo 'SemVer2: ${{ steps.nbgv.outputs.SemVer2 }}'
 
-    - name: Zip release
-      run: Get-ChildItem -File -Path .\src\Trains.NET.WPF\bin\Release\netcoreapp3.1\* | Compress-Archive -DestinationPath trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip   
-      shell: powershell
-    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -59,6 +55,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip  
-        asset_name: trains.net.v${{ steps.nbgv.outputs.SemVer2 }}.zip  
-        asset_content_type: application/zip
+        asset_path: ./publish/trains.net.wpf.exe
+        asset_name: trains.net.wpf.exe
+        asset_content_type: application/exe

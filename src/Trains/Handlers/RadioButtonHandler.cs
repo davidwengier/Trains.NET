@@ -2,7 +2,7 @@
 using Comet;
 using Comet.WPF.Handlers;
 
-namespace Trains.NET.WPF
+namespace Trains.Handlers
 {
     internal class RadioButtonHandler : AbstractHandler<RadioButton, ToggleButton>
     {

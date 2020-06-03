@@ -3,7 +3,7 @@ using Comet.WPF.Handlers;
 using Trains.NET.Comet;
 using WPFToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 
-namespace Trains.NET.WPF
+namespace Trains.Handlers
 {
     internal class ToggleButtonHandler : AbstractHandler<ToggleButton, WPFToggleButton>
     {

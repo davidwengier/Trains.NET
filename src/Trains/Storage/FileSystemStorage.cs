@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Trains.NET.Engine;
 
-namespace Trains.NET.WPF
+namespace Trains.Storage
 {
     internal class FileSystemStorage : IGameStorage
     {

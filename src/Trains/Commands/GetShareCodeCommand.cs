@@ -2,7 +2,7 @@
 using System.Windows;
 using Trains.NET.Engine;
 
-namespace Trains.NET.WPF
+namespace Trains.Commands
 {
     [Order(50)]
     internal class GetShareCodeCommand : ICommand

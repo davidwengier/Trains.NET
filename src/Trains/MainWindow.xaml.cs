@@ -5,10 +5,11 @@ using System.Windows;
 using Comet;
 using Comet.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Trains.Handlers;
 using Trains.NET.Comet;
 using Trains.NET.Engine;
 
-namespace Trains.NET.WPF
+namespace Trains
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

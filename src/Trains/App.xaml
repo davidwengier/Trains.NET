@@ -1,7 +1,6 @@
-﻿<Application x:Class="Trains.NET.Comet.App"
+﻿<Application x:Class="Trains.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Trains.NET.Comet"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

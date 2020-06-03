@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using Trains.NET.Engine;
 
-namespace Trains.NET.WPF
+namespace Trains.Commands
 {
     [Order(100)]
     internal class LoadShareCodeCommand : ICommand

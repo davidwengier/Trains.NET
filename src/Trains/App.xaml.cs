@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Trains.NET.Comet
+namespace Trains
 {
     /// <summary>
     /// Interaction logic for App.xaml

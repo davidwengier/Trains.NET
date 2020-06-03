@@ -21,7 +21,7 @@ namespace Trains.NET.Comet
                         OrderedList<ICommand> commands,
                         ITrainController trainControls)
         {
-            this.Title("Train.NET - " + ThisAssembly.AssemblyInformationalVersion);
+            this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);
 

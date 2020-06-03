@@ -25,7 +25,7 @@ jobs:
       run: dotnet test
 
     - name: publish
-      run: dotnet publish -o ./publish -f netcoreapp3.1 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true src/Trains.NET.WPF/Trains.NET.WPF.csproj
+      run: dotnet publish -o ./publish -f netcoreapp3.1 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true src/Trains/Trains.csproj
 
     - name: GitVersion
       id: nbgv
@@ -55,6 +55,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./publish/trains.net.wpf.exe
-        asset_name: trains.net.wpf.exe
+        asset_path: ./publish/trains.exe
+        asset_name: trains.exe
         asset_content_type: application/exe

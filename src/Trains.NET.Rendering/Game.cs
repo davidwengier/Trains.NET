@@ -11,7 +11,6 @@ namespace Trains.NET.Rendering
     {
         private int _width;
         private int _height;
-
         private readonly IGameBoard _gameBoard;
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
@@ -28,6 +27,7 @@ namespace Trains.NET.Rendering
             _pixelMapper = pixelMapper;
             _bitmapFactory = bitmapFactory;
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(x.Name.Replace(" ", "") + "DrawTime"));
+            _pixelMapper.ViewPortChanged += (s, e) => ResetBuffers();
         }
 
         public void SetSize(int width, int height)
@@ -41,6 +41,11 @@ namespace Trains.NET.Rendering
             _gameBoard.Columns = columns;
             _gameBoard.Rows = rows;
 
+            ResetBuffers();
+        }
+
+        private void ResetBuffers()
+        {
             foreach (IBitmap bitmap in _bitmapBuffer.Values)
             {
                 bitmap.Dispose();
@@ -60,7 +65,6 @@ namespace Trains.NET.Rendering
 
             canvas.Save();
             canvas.Clear(Colors.White);
-            canvas.ClipRect(new Rectangle(0, 0, _width + 2, _height + 2), ClipOperation.Intersect, false);
 
             foreach (ILayerRenderer renderer in _boardRenderers)
             {
@@ -104,5 +108,7 @@ namespace Trains.NET.Rendering
                 _renderLayerDrawTimes[renderer].Stop();
             }
         }
+
+
     }
 }

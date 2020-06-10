@@ -31,9 +31,11 @@ namespace Trains.NET.Rendering
         {
             foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
             {
-                canvas.Save();
-
                 (int x, int y) = _pixelMapper.CoordsToPixels(col, row);
+
+                if (x < -_parameters.CellSize || y < -_parameters.CellSize || x > width || y > height) continue;
+
+                canvas.Save();
 
                 canvas.Translate(x, y);
 

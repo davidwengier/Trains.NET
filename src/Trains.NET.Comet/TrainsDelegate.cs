@@ -12,6 +12,7 @@ namespace Trains.NET.Comet
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
         private (int column, int row) _lastDragCell;
+        private bool _dragging;
 
         public State<ITool> CurrentTool { get; } = new State<ITool>();
 
@@ -45,7 +46,11 @@ namespace Trains.NET.Comet
             {
                 this.CurrentTool.Value.Execute(column, row);
             }
-
+            else if (this.CurrentTool.Value is IDraggableTool tool)
+            {
+                tool.StartDrag((int)points[0].X, (int)points[0].Y);
+                _dragging = true;
+            }
             return true;
         }
 
@@ -56,22 +61,31 @@ namespace Trains.NET.Comet
                 return;
             }
 
-            (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
-            if (_lastDragCell == (column, row))
+            if (_dragging && this.CurrentTool.Value is IDraggableTool tool)
             {
-                return;
+                tool.ContinueDrag((int)points[0].X, (int)points[0].Y);
             }
-
-            _lastDragCell = (column, row);
-            if (this.CurrentTool.Value.IsValid(column, row) == true)
+            else
             {
-                this.CurrentTool.Value.Execute(column, row);
+                _dragging = false;
+                (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
+                if (_lastDragCell == (column, row))
+                {
+                    return;
+                }
+
+                _lastDragCell = (column, row);
+                if (this.CurrentTool.Value.IsValid(column, row) == true)
+                {
+                    this.CurrentTool.Value.Execute(column, row);
+                }
             }
         }
 
         public override void EndInteraction(PointF[] points)
         {
             _lastDragCell = (-1, -1);
+            _dragging = false;
         }
     }
 }

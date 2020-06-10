@@ -20,7 +20,6 @@ namespace Trains.NET.Rendering
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SkiaDrawTime");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<ILayerRenderer, IBitmap> _bitmapBuffer = new Dictionary<ILayerRenderer, IBitmap>();
-        
 
         public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IBitmapFactory bitmapFactory)
         {
@@ -34,7 +33,7 @@ namespace Trains.NET.Rendering
         public void SetSize(int width, int height)
         {
             (int columns, int rows) = _pixelMapper.PixelsToCoords(width, height);
-            columns = Math.Max(columns, 1);
+            columns = Math.Max(columns + 1, 1);
             rows = Math.Max(rows, 1);
 
             (_width, _height) = _pixelMapper.CoordsToPixels(columns, rows);

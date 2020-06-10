@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
 using Comet;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
@@ -12,6 +14,8 @@ namespace Trains.NET.Comet
         private readonly State<bool> _configurationShown = false;
 
         private readonly Timer _timer;
+
+        private Size _lastSize = Size.Empty;
 
         public MainPage(IGame game,
                         IPixelMapper pixelMapper,
@@ -58,6 +62,16 @@ namespace Trains.NET.Comet
                     controlDelegate.Invalidate();
                 });
             }, null, 0, 16);
+        }
+
+        public void Redraw(Size newSize)
+        {
+            if (Math.Abs(newSize.Width - _lastSize.Width) >= 20 ||
+                Math.Abs(newSize.Height - _lastSize.Height) >= 20)
+            {
+                _lastSize = newSize;
+                ViewPropertyChanged(ResetPropertyString, null);
+            }
         }
 
         private static View CreateCommandControls(IEnumerable<ICommand> commands)

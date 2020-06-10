@@ -10,7 +10,13 @@ namespace Trains.Storage
     {
         private const string Filename = "Trains.NET.tracks";
 
-        public readonly string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Trains.NET", Filename);
+        public readonly string FilePath = GetFilePath(Filename);
+
+        internal static string GetFilePath(string fileName)
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Trains.NET", fileName);
+        }
+
         private readonly ITrackSerializer _serializer;
 
         public FileSystemStorage(ITrackSerializer serializer)

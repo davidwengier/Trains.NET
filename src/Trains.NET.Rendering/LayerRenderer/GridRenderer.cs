@@ -1,9 +1,10 @@
 ﻿using Trains.NET.Engine;
+using Trains.NET.Rendering.LayerRenderer;
 
 namespace Trains.NET.Rendering
 {
     [Order(0)]
-    internal class GridRenderer : ILayerRenderer
+    internal class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
         private readonly ITrackParameters _parameters;
 
@@ -12,8 +13,9 @@ namespace Trains.NET.Rendering
             _parameters = parameters;
         }
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; } = false;
         public string Name => "Grid";
+        public bool IsDirty => false;
 
         public void Render(ICanvas canvas, int width, int height)
         {

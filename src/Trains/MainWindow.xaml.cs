@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using Comet;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Trains.Handlers;
 using Trains.NET.Comet;
 using Trains.NET.Engine;
+using Trains.Storage;
 
 namespace Trains
 {
@@ -16,6 +19,8 @@ namespace Trains
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly string _windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
+
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -30,11 +35,40 @@ namespace Trains
             Registrar.Handlers.Register<RadioButton, RadioButtonHandler>();
             Registrar.Handlers.Register<ToggleButton, ToggleButtonHandler>();
 
+            if (File.Exists(_windowSizeFileName))
+            {
+                string sizeString = File.ReadAllText(_windowSizeFileName);
+                string[] bits = sizeString.Split(',');
+                if (bits.Length == 2)
+                {
+                    if (double.TryParse(bits[0], out double width) && double.TryParse(bits[1], out double height))
+                    {
+                        this.Width = width;
+                        this.Height = height;
+                    }
+                }
+            }
+
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
             var page = new CometPage(MainFrame, serviceProvider.GetService<MainPage>());
             MainFrame.Content = page;
 
             this.Title = page.View.GetTitle();
+
+            SizeChanged += MainWindow_SizeChanged;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (MainFrame.Content is CometPage cometPage && cometPage.View is MainPage mainPage)
+            {
+                mainPage.Redraw(e.NewSize);
+            }
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

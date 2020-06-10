@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="600" Width="800" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/RedTrain.png">
+        WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/RedTrain.png">
     <Frame x:Name="MainFrame">
 
     </Frame>

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Comet.Skia;
 using SkiaSharp;
 using Trains.NET.Engine;
@@ -7,23 +8,27 @@ using Trains.NET.Rendering.Skia;
 
 namespace Trains.NET.Comet
 {
-    internal class MiniMapDelegate : AbstractControlDelegate
+    internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private readonly IGameBoard _gameBoard;
-        private readonly ITrackRenderer _trackRenderer;
         private readonly IPixelMapper _pixelMapper;
+        private readonly IPixelMapper _gamePixelMapper;
         private readonly ITrackParameters _trackParameters;
-        private readonly TrackLayoutRenderer _renderer;
+        private readonly SKPaint _paint = new SKPaint()
+        {
+            Style = SKPaintStyle.Fill,
+            Color = SKColors.Gray
+        };
 
-        public MiniMapDelegate(IGameBoard gameBoard, ITrackRenderer trackRenderer, ITrackParameters trackParameters)
+        public MiniMapDelegate(IGameBoard gameBoard, ITrackParameters trackParameters, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
-            _trackRenderer = trackRenderer;
             _trackParameters = trackParameters;
 
             _pixelMapper = new PixelMapper(_trackParameters);
+            _gamePixelMapper = pixelMapper;
 
-            _renderer = new TrackLayoutRenderer(_gameBoard, _trackRenderer, _pixelMapper, _trackParameters);
+            _gameBoard.TracksChanged += (s, e) => Invalidate();
         }
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
@@ -38,10 +43,35 @@ namespace Trains.NET.Comet
             int oldWidth = _trackParameters.PlankWidth;
             _trackParameters.PlankPadding = 1;
             _trackParameters.PlankWidth = 20;
-            _renderer.Render(canvasWrapper, maxGridSize, maxGridSize);
+
+            foreach (var track in _gameBoard.GetTracks())
+            {
+                (var x, var y) = _pixelMapper.CoordsToPixels(track.Item1, track.Item2);
+                tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);
+            }
+
             _trackParameters.PlankPadding = oldPadding;
             _trackParameters.PlankWidth = oldWidth;
             canvas.DrawBitmap(bitmap, new SKRect(0, 0, maxGridSize, maxGridSize), new SKRect(0, 0, 100, 100));
+        }
+
+        public override bool StartInteraction(PointF[] points)
+        {
+            DragInteraction(points);
+            return true;
+        }
+
+        public override void DragInteraction(PointF[] points)
+        {
+            var x = points[0].X * (PixelMapper.MaxGridSize / 100);
+            var y = points[0].Y * (PixelMapper.MaxGridSize / 100);
+
+            _gamePixelMapper.SetViewPort((int)x, (int)y);
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)_paint).Dispose();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Trains.NET.Comet
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);
-            var miniMapDelegate = new MiniMapDelegate(gameBoard, trackRenderer, trackParameters);
+            var miniMapDelegate = new MiniMapDelegate(gameBoard, trackParameters, pixelMapper);
 
             this.Body = () =>
             {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
 using Comet;
@@ -14,43 +13,50 @@ namespace Trains.NET.Comet
         private readonly State<bool> _configurationShown = false;
 
         private readonly Timer _timer;
-
+        private readonly IGameBoard _gameBoard;
         private Size _lastSize = Size.Empty;
 
         public MainPage(IGame game,
                         IPixelMapper pixelMapper,
-                        ITrackParameters trackParameters,
                         OrderedList<ITool> tools,
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
-                        ITrainController trainControls)
+                        ITrainController trainControls,
+                        ITrackRenderer trackRenderer,
+                        IGameBoard gameBoard,
+                        ITrackParameters trackParameters)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);
+            var miniMapDelegate = new MiniMapDelegate(gameBoard, trackRenderer, trackParameters);
 
             this.Body = () =>
             {
+                //return new ZStack()
+                //{
                 return new HStack()
-                {
-                    new VStack()
                     {
-                        new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
-                        new Spacer(),
-                        _configurationShown ?
-                             CreateConfigurationControls(trackParameters, layers) :
-                             CreateToolsControls(tools, controlDelegate),
-                        new Spacer(),
-                        _configurationShown ? null :
-                            CreateCommandControls(commands),
-                        new Spacer()
-                    }.Frame(100, alignment: Alignment.Top),
-                    new VStack()
-                    {
-                        new TrainControllerPanel(trainControls),
-                        new DrawableControl(controlDelegate).FillVertical()
-                    }
-                }.FillHorizontal();
+                        new VStack()
+                        {
+                            new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
+                            new Spacer(),
+                            _configurationShown ?
+                                 CreateConfigurationControls(layers) :
+                                 CreateToolsControls(tools, controlDelegate),
+                            new Spacer(),
+                            _configurationShown ? null :
+                                CreateCommandControls(commands),
+                            new Spacer(),
+                            new DrawableControl(miniMapDelegate).Frame(100,100)
+                        }.Frame(100, alignment: Alignment.Top),
+                        new VStack()
+                        {
+                            new TrainControllerPanel(trainControls),
+                            new DrawableControl(controlDelegate)
+                        }
+                    }.FillHorizontal();
+                //};
             };
 
             _timer = new Timer((state) =>
@@ -62,6 +68,12 @@ namespace Trains.NET.Comet
                     controlDelegate.Invalidate();
                 });
             }, null, 0, 16);
+            _gameBoard = gameBoard;
+        }
+
+        public void Save()
+        {
+            _gameBoard.SaveTracks();
         }
 
         public void Redraw(Size newSize)
@@ -96,57 +108,14 @@ namespace Trains.NET.Comet
             return controlsGroup;
         }
 
-        private static View CreateConfigurationControls(ITrackParameters trackParameters, IEnumerable<ILayerRenderer> layers)
+        private static View CreateConfigurationControls(IEnumerable<ILayerRenderer> layers)
         {
             var layersGroup = new VStack();
             foreach (ILayerRenderer layer in layers)
             {
                 layersGroup.Add(new ToggleButton(layer.Name, layer.Enabled, () => layer.Enabled = !layer.Enabled));
             }
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            layersGroup.Add(new VStack()
-                            {
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.CellSize)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.NumPlanks)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.NumCornerPlanks)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.PlankWidth)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.PlankPadding)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.TrackPadding)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.TrackWidth)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.CornerStepDegrees)),
-                                GetConfigurationControl(trackParameters, nameof(trackParameters.CornerEdgeOffsetDegrees))
-                            }.Margin(top: 50)
-#pragma warning restore CA2000 // Dispose objects before losing scope
-                        );
             return layersGroup;
-        }
-
-        private static View? GetConfigurationControl(ITrackParameters trackParameters, string parameter)
-        {
-            PropertyInfo? prop = trackParameters.GetType().GetProperty(parameter, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (prop == null)
-            {
-                return null;
-            }
-            return new VStack()
-                {
-                    new Text(parameter + ":"),
-                    new HStack()
-                    {
-                        new Button("-", () => AdjustProperty(trackParameters, prop, -1)),
-                        new Text($"{prop.GetValue(trackParameters)}"),
-                        new Button("+", () => AdjustProperty(trackParameters, prop, 1))
-                    }
-                };
-        }
-
-        private static void AdjustProperty(ITrackParameters trackParameters, PropertyInfo prop, int adjustment)
-        {
-            object? value = prop.GetValue(trackParameters);
-            if (value is int intValue)
-            {
-                prop.SetValue(trackParameters, intValue + adjustment);
-            }
         }
 
         protected override void Dispose(bool disposing)

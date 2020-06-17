@@ -5,7 +5,9 @@ namespace Trains.NET.Rendering
     public class PixelMapper : IPixelMapper
     {
         private readonly ITrackParameters _parameters;
-        private const int MaxGridSize = -10000;
+        private int _viewPortWidth;
+        private int _viewPortHeight;
+        public const int MaxGridSize = 3000;
 
         public int ViewPortX { get; private set; }
         public int ViewPortY { get; private set; }
@@ -17,10 +19,16 @@ namespace Trains.NET.Rendering
             _parameters = parameters;
         }
 
+        public void SetViewPortSize(int width, int height)
+        {
+            _viewPortWidth = width;
+            _viewPortHeight = height;
+        }
+
         public void AdjustViewPort(int x, int y)
         {
-            this.ViewPortX = Math.Max(Math.Min(this.ViewPortX + x, 0), MaxGridSize);
-            this.ViewPortY = Math.Max(Math.Min(this.ViewPortY + y, 0), MaxGridSize);
+            this.ViewPortX = Math.Max(Math.Min(this.ViewPortX + x, 0), -1 * (MaxGridSize - _viewPortWidth));
+            this.ViewPortY = Math.Max(Math.Min(this.ViewPortY + y, 0), -1 * (MaxGridSize - _viewPortHeight));
 
             ViewPortChanged?.Invoke(this, EventArgs.Empty);
         }

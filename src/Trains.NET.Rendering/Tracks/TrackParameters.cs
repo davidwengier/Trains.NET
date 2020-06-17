@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Rendering
 {
-    internal class TrackParameters : ITrackParameters
+    public class TrackParameters : ITrackParameters
     {
         public int CellSize { get; set; }
         public int PlankWidth { get; set; }

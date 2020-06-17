@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\comet\src\Comet.Skia\Comet.Skia.csproj" />
     <ProjectReference Include="..\..\comet\src\Comet.WPF\Comet.WPF.csproj" />
     <ProjectReference Include="..\..\comet\src\Comet\Comet.csproj" />
+    <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
   </ItemGroup>
   
   <ItemGroup>

@@ -38,6 +38,8 @@ namespace Trains.NET.Rendering
 
             (_width, _height) = _pixelMapper.CoordsToPixels(columns, rows);
 
+            _pixelMapper.SetViewPortSize(_width, _height);
+
             _gameBoard.Columns = columns;
             _gameBoard.Rows = rows;
 

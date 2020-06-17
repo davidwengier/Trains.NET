@@ -23,5 +23,6 @@ namespace Trains.NET.Engine
         Track? GetTrackForTrain(Train train);
         void LoadTracks(IEnumerable<Track> tracks);
         List<TrainPosition> GetNextSteps(Train train, float distanceToMove);
+        void SaveTracks();
     }
 }

@@ -54,6 +54,11 @@ namespace Trains.NET.Engine
             }
         }
 
+        public void SaveTracks()
+        {
+            _storage?.WriteTracks(_tracks.Values);
+        }
+
         public void LoadTracks(IEnumerable<Track> tracks)
         {
             ClearAll();
@@ -72,8 +77,6 @@ namespace Trains.NET.Engine
             {
                 track.ReevaluateHappiness();
             }
-
-            _storage?.WriteTracks(_tracks.Values);
 
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -306,8 +309,6 @@ namespace Trains.NET.Engine
                 track.SetBestTrackDirection(false);
             }
 
-            _storage?.WriteTracks(_tracks.Values);
-
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -318,8 +319,6 @@ namespace Trains.NET.Engine
                 _tracks.Remove((column, row));
                 track.RefreshNeighbors(true);
             }
-
-            _storage?.WriteTracks(_tracks.Values);
 
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -385,8 +384,6 @@ namespace Trains.NET.Engine
         {
             _tracks.Clear();
             _movables.Clear();
-
-            _storage?.WriteTracks(_tracks.Values);
 
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }

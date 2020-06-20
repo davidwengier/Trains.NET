@@ -20,5 +20,6 @@
         public static readonly Color VeryDarkGray = new Color("#111111");
         public static readonly Color Gray = new Color("#5d5d5d");
         public static readonly Color LightGray = new Color("#D3D3D3");
+        public static readonly Color VeryLightGray = new Color("#f3f3f3");
     }
 }

@@ -66,7 +66,7 @@ namespace Trains.NET.Rendering
             }
 
             canvas.Save();
-            canvas.Clear(Colors.White);
+            canvas.Clear(Colors.VeryLightGray);
 
             foreach (ILayerRenderer renderer in _boardRenderers)
             {

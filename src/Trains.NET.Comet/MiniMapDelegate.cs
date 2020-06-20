@@ -37,7 +37,7 @@ namespace Trains.NET.Comet
             using var bitmap = new SKBitmap(maxGridSize, maxGridSize);
 
             using var tempCanvas = new SKCanvas(bitmap);
-            tempCanvas.Clear(SKColors.White);
+            tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
             int oldPadding = _trackParameters.PlankPadding;
             int oldWidth = _trackParameters.PlankWidth;

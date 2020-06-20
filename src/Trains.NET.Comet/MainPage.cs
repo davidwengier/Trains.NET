@@ -14,6 +14,7 @@ namespace Trains.NET.Comet
 
         private readonly Timer _timer;
         private readonly IGameBoard _gameBoard;
+        private readonly MiniMapDelegate _miniMapDelegate;
         private Size _lastSize = Size.Empty;
 
         public MainPage(IGame game,
@@ -22,14 +23,13 @@ namespace Trains.NET.Comet
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
                         ITrainController trainControls,
-                        ITrackRenderer trackRenderer,
                         IGameBoard gameBoard,
                         ITrackParameters trackParameters)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);
-            var miniMapDelegate = new MiniMapDelegate(gameBoard, trackParameters, pixelMapper);
+            _miniMapDelegate = new MiniMapDelegate(gameBoard, trackParameters, pixelMapper);
 
             this.Body = () =>
             {
@@ -48,7 +48,7 @@ namespace Trains.NET.Comet
                             _configurationShown ? null :
                                 CreateCommandControls(commands),
                             new Spacer(),
-                            new DrawableControl(miniMapDelegate).Frame(100,100)
+                            new DrawableControl(_miniMapDelegate).Frame(height: 100)
                         }.Frame(100, alignment: Alignment.Top),
                         new VStack()
                         {
@@ -102,6 +102,11 @@ namespace Trains.NET.Comet
             var controlsGroup = new RadioGroup(Orientation.Vertical);
             foreach (ITool tool in tools)
             {
+                if (controlDelegate.CurrentTool.Value == null)
+                {
+                    controlDelegate.CurrentTool.Value = tool;
+                }
+
                 controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
             }
 
@@ -123,6 +128,7 @@ namespace Trains.NET.Comet
             if (disposing)
             {
                 _timer.Dispose();
+                _miniMapDelegate.Dispose();
             }
             base.Dispose(disposing);
         }

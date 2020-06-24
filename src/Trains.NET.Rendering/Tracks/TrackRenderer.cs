@@ -102,7 +102,7 @@ namespace Trains.NET.Rendering
             canvas.DrawRect(0, _parameters.TrackPadding, width, _parameters.TrackWidth, _straightTrackClear);
             canvas.DrawRect(0, width - _parameters.TrackPadding - _parameters.TrackWidth, width, _parameters.TrackWidth, _straightTrackClear);
 
-            var trackPath = _pathFactory.Create();
+            IPath? trackPath = _pathFactory.Create();
             trackPath.MoveTo(0, _parameters.TrackPadding);
             trackPath.LineTo(width, _parameters.TrackPadding);
             trackPath.MoveTo(0, _parameters.TrackPadding + _parameters.TrackWidth);
@@ -120,7 +120,7 @@ namespace Trains.NET.Rendering
         {
             _plankPaint.StrokeWidth = _parameters.PlankWidth;
 
-            var path = _pathFactory.Create();
+            IPath? path = _pathFactory.Create();
             path.MoveTo(pos, _parameters.PlankPadding);
             path.LineTo(pos, width - _parameters.PlankPadding);
             canvas.DrawPath(path, _plankPaint);
@@ -167,7 +167,7 @@ namespace Trains.NET.Rendering
             void DrawArc(ICanvas canvas, float position, PaintBrush trackPaint)
             {
                 // Offset to match other tracks 
-                var trackPath = _pathFactory.Create();
+                IPath? trackPath = _pathFactory.Create();
                 trackPath.MoveTo(0, position);
                 trackPath.ArcTo(position, position, 0, PathArcSize.Small, PathDirection.CounterClockwise, position, 0);
 

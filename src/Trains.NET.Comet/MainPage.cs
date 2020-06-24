@@ -33,30 +33,27 @@ namespace Trains.NET.Comet
 
             this.Body = () =>
             {
-                //return new ZStack()
-                //{
                 return new HStack()
+                {
+                    new VStack()
                     {
-                        new VStack()
-                        {
-                            new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
-                            new Spacer(),
-                            _configurationShown ?
-                                 CreateConfigurationControls(layers) :
-                                 CreateToolsControls(tools, controlDelegate),
-                            new Spacer(),
-                            _configurationShown ? null :
-                                CreateCommandControls(commands),
-                            new Spacer(),
-                            new DrawableControl(_miniMapDelegate).Frame(height: 100)
-                        }.Frame(100, alignment: Alignment.Top),
-                        new VStack()
-                        {
-                            new TrainControllerPanel(trainControls),
-                            new DrawableControl(controlDelegate)
-                        }
-                    }.FillHorizontal();
-                //};
+                        new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
+                        new Spacer(),
+                        _configurationShown ?
+                                CreateConfigurationControls(layers) :
+                                CreateToolsControls(tools, controlDelegate),
+                        new Spacer(),
+                        _configurationShown ? null :
+                            CreateCommandControls(commands),
+                        new Spacer(),
+                        new DrawableControl(_miniMapDelegate).Frame(height: 100)
+                    }.Frame(100, alignment: Alignment.Top),
+                    new VStack()
+                    {
+                        new TrainControllerPanel(trainControls),
+                        new DrawableControl(controlDelegate)
+                    }
+                }.FillHorizontal();
             };
 
             _timer = new Timer((state) =>

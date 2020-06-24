@@ -9,6 +9,7 @@ namespace Trains.NET.Rendering
 {
     internal class Game : IGame
     {
+        private bool _needsBufferReset;
         private int _width;
         private int _height;
         private readonly IGameBoard _gameBoard;
@@ -27,7 +28,7 @@ namespace Trains.NET.Rendering
             _pixelMapper = pixelMapper;
             _bitmapFactory = bitmapFactory;
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(x.Name.Replace(" ", "") + "DrawTime"));
-            _pixelMapper.ViewPortChanged += (s, e) => ResetBuffers();
+            _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
         }
 
         public void SetSize(int width, int height)
@@ -100,6 +101,13 @@ namespace Trains.NET.Rendering
                 canvas.Restore();
             }
             canvas.Restore();
+
+            if (_needsBufferReset)
+            {
+                ResetBuffers();
+                _needsBufferReset = false;
+            }
+
             _skiaDrawTime.Stop();
             _skiaFps.Update();
 
@@ -111,6 +119,25 @@ namespace Trains.NET.Rendering
             }
         }
 
+        public void AdjustViewPortIfNecessary()
+        {
+            foreach (IMovable? vehicle in _gameBoard.GetMovables())
+            {
+                if (vehicle.Follow)
+                {
+                    (int x, int y) = _pixelMapper.CoordsToViewPortPixels(vehicle.Column, vehicle.Row);
 
+                    double easing = 10;
+                    int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
+                    int adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
+
+                    if (adjustX != 0 || adjustY != 0)
+                    {
+                        _pixelMapper.AdjustViewPort(adjustX, adjustY);
+                    }
+                    break;
+                }
+            }
+        }
     }
 }

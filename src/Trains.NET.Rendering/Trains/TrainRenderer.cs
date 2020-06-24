@@ -9,7 +9,6 @@ namespace Trains.NET.Rendering
         private readonly ITrainParameters _trainParameters;
         private readonly ITrainPainter _trainPainter;
 
-
         public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, ITrainPainter trainPainter)
         {
             _trackParameters = trackParameters;

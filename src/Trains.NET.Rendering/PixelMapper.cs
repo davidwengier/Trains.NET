@@ -27,10 +27,15 @@ namespace Trains.NET.Rendering
 
         public void SetViewPort(int x, int y)
         {
+            int oldX = this.ViewPortX;
+            int oldY = this.ViewPortY;
             this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (MaxGridSize - this.ViewPortWidth));
             this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (MaxGridSize - this.ViewPortHeight));
 
-            ViewPortChanged?.Invoke(this, EventArgs.Empty);
+            if (this.ViewPortX != oldX || this.ViewPortY != oldY)
+            {
+                ViewPortChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void AdjustViewPort(int x, int y)

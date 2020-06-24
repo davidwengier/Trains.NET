@@ -10,6 +10,7 @@ namespace Trains.NET.Comet
 {
     internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
+        private bool _redraw = true;
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
@@ -31,12 +32,14 @@ namespace Trains.NET.Comet
             _trackParameters = trackParameters;
             _pixelMapper = pixelMapper;
 
-            _pixelMapper.ViewPortChanged += (s, e) => Invalidate();
-            _gameBoard.TracksChanged += (s, e) => Invalidate();
+            _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
+            _gameBoard.TracksChanged += (s, e) => _redraw = true;
         }
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
         {
+            if (!_redraw) return;
+
             const int maxGridSize = PixelMapper.MaxGridSize;
             using var bitmap = new SKBitmap(maxGridSize, maxGridSize);
 
@@ -53,6 +56,8 @@ namespace Trains.NET.Comet
             tempCanvas.DrawRect(new SKRect(_pixelMapper.ViewPortX * -1, _pixelMapper.ViewPortY * -1, Math.Abs(_pixelMapper.ViewPortX) + _pixelMapper.ViewPortWidth, Math.Abs(_pixelMapper.ViewPortY) + _pixelMapper.ViewPortHeight), _viewPortPaint);
 
             canvas.DrawBitmap(bitmap, new SKRect(0, 0, maxGridSize, maxGridSize), new SKRect(0, 0, 100, 100));
+
+            _redraw = false;
         }
 
         public override bool StartInteraction(PointF[] points)
@@ -70,7 +75,6 @@ namespace Trains.NET.Comet
             y -= _pixelMapper.ViewPortHeight / 2;
 
             _pixelMapper.SetViewPort((int)x, (int)y);
-            Invalidate();
         }
 
         public void Dispose()

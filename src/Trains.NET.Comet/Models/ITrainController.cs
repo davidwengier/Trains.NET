@@ -16,5 +16,6 @@ namespace Trains.NET.Comet
         void Start();
         void Stop();
         void ToggleGlobalStop();
+        void ToggleFollowMode();
     }
 }

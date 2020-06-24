@@ -94,5 +94,13 @@ namespace Trains.NET.Comet
         {
             _gameBoard.Enabled = !_gameBoard.Enabled;
         }
+
+        public void ToggleFollowMode()
+        {
+            if (this.CurrentTrain.Value != null)
+            {
+                this.CurrentTrain.Value.Follow = !this.CurrentTrain.Value.Follow;
+            }
+        }
     }
 }

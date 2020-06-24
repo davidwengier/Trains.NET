@@ -61,11 +61,14 @@ namespace Trains.NET.Comet
 
             _timer = new Timer((state) =>
             {
+                game.AdjustViewPortIfNecessary();
+
                 ThreadHelper.Run(async () =>
                 {
                     await ThreadHelper.SwitchToMainThreadAsync();
 
                     controlDelegate.Invalidate();
+                    _miniMapDelegate.Invalidate();
                 });
             }, null, 0, 16);
             _gameBoard = gameBoard;

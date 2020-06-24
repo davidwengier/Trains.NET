@@ -45,6 +45,7 @@ namespace Trains.NET.Engine
         public float DesiredSpeed { get; private set; }
         public bool Stopped { get; private set; }
         public bool CollisionAhead { get; private set; }
+        public bool Follow { get; set; }
 
         public void SetAngle(float angle)
         {

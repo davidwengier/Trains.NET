@@ -11,6 +11,8 @@ namespace Trains.NET.Engine
         float Angle { get; }
         float RelativeLeft { get; }
         float RelativeTop { get; }
+        bool Follow { get; }
+
         void SetAngle(float angle);
     }
 }

@@ -31,7 +31,7 @@ namespace Trains.NET.Rendering
         {
             foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
             {
-                (int x, int y) = _pixelMapper.CoordsToPixels(col, row);
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
                 if (x < -_parameters.CellSize || y < -_parameters.CellSize || x > width || y > height) continue;
 

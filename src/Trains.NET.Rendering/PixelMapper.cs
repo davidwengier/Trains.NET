@@ -38,14 +38,24 @@ namespace Trains.NET.Rendering
             SetViewPort(-1 * (this.ViewPortX + x), -1 * (this.ViewPortY + y));
         }
 
-        public (int, int) PixelsToCoords(int x, int y)
+        public (int, int) ViewPortPixelsToCoords(int x, int y)
         {
             return ((x - this.ViewPortX) / _parameters.CellSize, (y - this.ViewPortY) / _parameters.CellSize);
         }
 
-        public (int, int) CoordsToPixels(int column, int row)
+        public (int, int) CoordsToViewPortPixels(int column, int row)
         {
             return ((column * _parameters.CellSize) + this.ViewPortX, (row * _parameters.CellSize) + this.ViewPortY);
+        }
+
+        public (int, int) WorldPixelsToCoords(int x, int y)
+        {
+            return (x  / _parameters.CellSize, y / _parameters.CellSize);
+        }
+
+        public (int, int) CoordsToWorldPixels(int column, int row)
+        {
+            return (column * _parameters.CellSize, row * _parameters.CellSize);
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Trains.NET.Comet
     {
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
-        private readonly IPixelMapper _gamePixelMapper;
         private readonly ITrackParameters _trackParameters;
         private readonly SKPaint _paint = new SKPaint()
         {
@@ -25,8 +24,7 @@ namespace Trains.NET.Comet
             _gameBoard = gameBoard;
             _trackParameters = trackParameters;
 
-            _pixelMapper = new PixelMapper(_trackParameters);
-            _gamePixelMapper = pixelMapper;
+            _pixelMapper = pixelMapper;
 
             _gameBoard.TracksChanged += (s, e) => Invalidate();
         }
@@ -44,9 +42,9 @@ namespace Trains.NET.Comet
             _trackParameters.PlankPadding = 1;
             _trackParameters.PlankWidth = 20;
 
-            foreach (var track in _gameBoard.GetTracks())
+            foreach ((int, int, Track) track in _gameBoard.GetTracks())
             {
-                (var x, var y) = _pixelMapper.CoordsToPixels(track.Item1, track.Item2);
+                (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Item1, track.Item2);
                 tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);
             }
 
@@ -63,10 +61,10 @@ namespace Trains.NET.Comet
 
         public override void DragInteraction(PointF[] points)
         {
-            var x = points[0].X * (PixelMapper.MaxGridSize / 100);
-            var y = points[0].Y * (PixelMapper.MaxGridSize / 100);
+            float x = points[0].X * (PixelMapper.MaxGridSize / 100);
+            float y = points[0].Y * (PixelMapper.MaxGridSize / 100);
 
-            _gamePixelMapper.SetViewPort((int)x, (int)y);
+            _pixelMapper.SetViewPort((int)x, (int)y);
         }
 
         public void Dispose()

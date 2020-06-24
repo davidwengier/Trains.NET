@@ -40,7 +40,7 @@ namespace Trains.NET.Comet
                 return false;
             }
 
-            (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
+            (int column, int row) = _pixelMapper.ViewPortPixelsToCoords((int)points[0].X, (int)points[0].Y);
             _lastDragCell = (column, row);
             if (this.CurrentTool.Value.IsValid(column, row) == true)
             {
@@ -68,7 +68,7 @@ namespace Trains.NET.Comet
             else
             {
                 _dragging = false;
-                (int column, int row) = _pixelMapper.PixelsToCoords((int)points[0].X, (int)points[0].Y);
+                (int column, int row) = _pixelMapper.ViewPortPixelsToCoords((int)points[0].X, (int)points[0].Y);
                 if (_lastDragCell == (column, row))
                 {
                     return;

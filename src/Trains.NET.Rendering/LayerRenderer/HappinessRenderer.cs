@@ -38,7 +38,7 @@ namespace Trains.NET.Rendering
                     continue;
                 }
 
-                (int x, int y) = _pixelMapper.CoordsToPixels(col, row);
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
             }

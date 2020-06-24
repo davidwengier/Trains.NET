@@ -18,14 +18,20 @@ namespace Trains.NET.Comet
             Style = SKPaintStyle.Fill,
             Color = SKColors.Gray
         };
+        private readonly SKPaint _viewPortPaint = new SKPaint()
+        {
+            Style = SKPaintStyle.Stroke,
+            Color = SKColors.Green,
+            StrokeWidth = 80
+        };
 
         public MiniMapDelegate(IGameBoard gameBoard, ITrackParameters trackParameters, IPixelMapper pixelMapper)
         {
             _gameBoard = gameBoard;
             _trackParameters = trackParameters;
-
             _pixelMapper = pixelMapper;
 
+            _pixelMapper.ViewPortChanged += (s, e) => Invalidate();
             _gameBoard.TracksChanged += (s, e) => Invalidate();
         }
 
@@ -37,10 +43,6 @@ namespace Trains.NET.Comet
             using var tempCanvas = new SKCanvas(bitmap);
             tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
-            int oldPadding = _trackParameters.PlankPadding;
-            int oldWidth = _trackParameters.PlankWidth;
-            _trackParameters.PlankPadding = 1;
-            _trackParameters.PlankWidth = 20;
 
             foreach ((int, int, Track) track in _gameBoard.GetTracks())
             {
@@ -48,8 +50,8 @@ namespace Trains.NET.Comet
                 tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);
             }
 
-            _trackParameters.PlankPadding = oldPadding;
-            _trackParameters.PlankWidth = oldWidth;
+            tempCanvas.DrawRect(new SKRect(_pixelMapper.ViewPortX * -1, _pixelMapper.ViewPortY * -1, Math.Abs(_pixelMapper.ViewPortX) + _pixelMapper.ViewPortWidth, Math.Abs(_pixelMapper.ViewPortY) + _pixelMapper.ViewPortHeight), _viewPortPaint);
+
             canvas.DrawBitmap(bitmap, new SKRect(0, 0, maxGridSize, maxGridSize), new SKRect(0, 0, 100, 100));
         }
 
@@ -64,12 +66,17 @@ namespace Trains.NET.Comet
             float x = points[0].X * (PixelMapper.MaxGridSize / 100);
             float y = points[0].Y * (PixelMapper.MaxGridSize / 100);
 
+            x -= _pixelMapper.ViewPortWidth / 2;
+            y -= _pixelMapper.ViewPortHeight / 2;
+
             _pixelMapper.SetViewPort((int)x, (int)y);
+            Invalidate();
         }
 
         public void Dispose()
         {
             ((IDisposable)_paint).Dispose();
+            ((IDisposable)_viewPortPaint).Dispose();
         }
     }
 }

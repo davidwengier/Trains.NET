@@ -5,12 +5,12 @@ namespace Trains.NET.Rendering
     public class PixelMapper : IPixelMapper
     {
         private readonly ITrackParameters _parameters;
-        private int _viewPortWidth;
-        private int _viewPortHeight;
         public const int MaxGridSize = 3000;
 
         public int ViewPortX { get; private set; }
         public int ViewPortY { get; private set; }
+        public int ViewPortWidth { get; private set; }
+        public int ViewPortHeight { get; private set; }
 
         public event EventHandler? ViewPortChanged;
 
@@ -21,14 +21,14 @@ namespace Trains.NET.Rendering
 
         public void SetViewPortSize(int width, int height)
         {
-            _viewPortWidth = width;
-            _viewPortHeight = height;
+            this.ViewPortWidth = width;
+            this.ViewPortHeight = height;
         }
 
         public void SetViewPort(int x, int y)
         {
-            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (MaxGridSize - _viewPortWidth));
-            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (MaxGridSize - _viewPortHeight));
+            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (MaxGridSize - this.ViewPortWidth));
+            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (MaxGridSize - this.ViewPortHeight));
 
             ViewPortChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -50,7 +50,7 @@ namespace Trains.NET.Rendering
 
         public (int, int) WorldPixelsToCoords(int x, int y)
         {
-            return (x  / _parameters.CellSize, y / _parameters.CellSize);
+            return (x / _parameters.CellSize, y / _parameters.CellSize);
         }
 
         public (int, int) CoordsToWorldPixels(int column, int row)

@@ -33,7 +33,7 @@ namespace Trains.NET.Rendering
         public void SetSize(int width, int height)
         {
             (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
-            columns = Math.Max(columns + 1, 1);
+            columns = Math.Max(columns, 1);
             rows = Math.Max(rows, 1);
 
             (_width, _height) = _pixelMapper.CoordsToViewPortPixels(columns, rows);

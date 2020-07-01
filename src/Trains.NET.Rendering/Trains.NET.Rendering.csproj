@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
     <ProjectReference Include="..\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj" />
   </ItemGroup>

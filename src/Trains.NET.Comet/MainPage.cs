@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Windows;
 using Comet;
 using Trains.NET.Engine;
@@ -13,7 +12,7 @@ namespace Trains.NET.Comet
     {
         private readonly State<bool> _configurationShown = false;
 
-        private readonly Timer _timer;
+        private readonly ITimer _timer;
         private readonly ITrackLayout _trackLayout;
         private readonly IGameStorage _gameStorage;
         private readonly MiniMapDelegate _miniMapDelegate;
@@ -59,7 +58,9 @@ namespace Trains.NET.Comet
                 }.FillHorizontal();
             };
 
-            _timer = new Timer((state) =>
+            _timer = new GameTimer();
+            _timer.Interval = 16;
+            _timer.Elapsed += (s, e) =>
             {
                 game.AdjustViewPortIfNecessary();
 
@@ -70,7 +71,8 @@ namespace Trains.NET.Comet
                     controlDelegate.Invalidate();
                     _miniMapDelegate.Invalidate();
                 });
-            }, null, 0, 16);
+            };
+            _timer.Start();
             _trackLayout = trackLayout;
             _gameStorage = gameStorage;
         }

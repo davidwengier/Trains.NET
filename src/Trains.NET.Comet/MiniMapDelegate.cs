@@ -38,6 +38,7 @@ namespace Trains.NET.Comet
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
         {
+            if (dirtyRect.IsEmpty) return;
             if (!_redraw) return;
 
             const int maxGridSize = PixelMapper.MaxGridSize;

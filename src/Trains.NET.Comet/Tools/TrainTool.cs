@@ -1,4 +1,5 @@
 ﻿using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -6,13 +7,15 @@ namespace Trains.NET.Comet
     internal class TrainTool : ITool
     {
         private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
         private readonly ITrainController _gameState;
 
         public string Name => "Train";
 
-        public TrainTool(IGameBoard gameBoard, ITrainController gameState)
+        public TrainTool(IGameBoard gameBoard, ITrackLayout trackLayout, ITrainController gameState)
         {
             _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
             _gameState = gameState;
         }
 
@@ -24,7 +27,7 @@ namespace Trains.NET.Comet
             }
         }
 
-        public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null &&
+        public bool IsValid(int column, int row) => _trackLayout.TryGet(column, row, out _) &&
             _gameBoard.GetMovableAt(column, row) == null;
     }
 }

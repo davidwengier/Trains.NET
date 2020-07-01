@@ -1,5 +1,4 @@
-﻿using Trains.NET.Engine;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace Trains.NET.Tests
@@ -15,11 +14,11 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingLeft, 2, 2, 1, 1)]
         public void RightUpDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            GameBoard.AddTrack(1, 1);
-            GameBoard.AddTrack(1, 2);
-            GameBoard.AddTrack(1, 3);
-            GameBoard.AddTrack(2, 2);
-            GameBoard.AddTrack(1, 2);
+            TrackLayout.AddTrack(1, 1);
+            TrackLayout.AddTrack(1, 2);
+            TrackLayout.AddTrack(1, 3);
+            TrackLayout.AddTrack(2, 2);
+            TrackLayout.AddTrack(1, 2);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -30,11 +29,11 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingRight, 1, 2, 2, 3)]
         public void LeftUpDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            GameBoard.AddTrack(2, 1);
-            GameBoard.AddTrack(2, 2);
-            GameBoard.AddTrack(2, 3);
-            GameBoard.AddTrack(1, 2);
-            GameBoard.AddTrack(2, 2);
+            TrackLayout.AddTrack(2, 1);
+            TrackLayout.AddTrack(2, 2);
+            TrackLayout.AddTrack(2, 3);
+            TrackLayout.AddTrack(1, 2);
+            TrackLayout.AddTrack(2, 2);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -45,11 +44,11 @@ namespace Trains.NET.Tests
         [InlineData(270, 2, 2, 3, 1)]
         public void LeftRightDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            GameBoard.AddTrack(1, 1);
-            GameBoard.AddTrack(2, 1);
-            GameBoard.AddTrack(3, 1);
-            GameBoard.AddTrack(2, 2);
-            GameBoard.AddTrack(2, 1);
+            TrackLayout.AddTrack(1, 1);
+            TrackLayout.AddTrack(2, 1);
+            TrackLayout.AddTrack(3, 1);
+            TrackLayout.AddTrack(2, 2);
+            TrackLayout.AddTrack(2, 1);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -60,11 +59,11 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingDown, 2, 1, 1, 2)]
         public void LeftRightUp_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            GameBoard.AddTrack(1, 2);
-            GameBoard.AddTrack(2, 2);
-            GameBoard.AddTrack(3, 2);
-            GameBoard.AddTrack(2, 1);
-            GameBoard.AddTrack(2, 2);
+            TrackLayout.AddTrack(1, 2);
+            TrackLayout.AddTrack(2, 2);
+            TrackLayout.AddTrack(3, 2);
+            TrackLayout.AddTrack(2, 1);
+            TrackLayout.AddTrack(2, 2);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }

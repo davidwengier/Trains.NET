@@ -1,18 +1,19 @@
 ﻿using System.Linq;
 using System.Windows;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 
 namespace Trains.Commands
 {
     [Order(50)]
     internal class GetShareCodeCommand : ICommand
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public GetShareCodeCommand(IGameBoard gameBoard, ITrackCodec trackCodec)
+        public GetShareCodeCommand(ITrackLayout trackLayout, ITrackCodec trackCodec)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
             _trackCodec = trackCodec;
         }
 
@@ -20,9 +21,7 @@ namespace Trains.Commands
 
         public void Execute()
         {
-            var tracks = _gameBoard.GetTracks().ToList();
-
-            string code = _trackCodec.Encode(_gameBoard.GetTracks().Select(t => t.Item3));
+            string code = _trackCodec.Encode(_trackLayout.Select(t => t.Item3));
 
             Clipboard.SetText(code);
             MessageBox.Show("Your share code is:\n\n" + code + "\n\nIt has been copied to the clipboard.");

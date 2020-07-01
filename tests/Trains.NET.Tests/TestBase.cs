@@ -1,5 +1,6 @@
 ﻿using System;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,12 +12,14 @@ namespace Trains.NET.Tests
         internal readonly IGameStorage Storage;
         internal readonly TestTimer Timer;
         internal readonly GameBoard GameBoard;
+        internal readonly ITrackLayout TrackLayout;
 
         protected TestBase(ITestOutputHelper output)
         {
             Storage = new NullStorage();
             Timer = new TestTimer();
-            GameBoard = new GameBoard(Storage, Timer);
+            TrackLayout = new TrackLayout();
+            GameBoard = new GameBoard(TrackLayout, Storage, Timer);
             _output = output;
         }
 

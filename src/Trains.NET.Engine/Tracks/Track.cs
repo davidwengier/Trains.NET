@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Engine
 {
     [DebuggerDisplay("{Direction,nq}")]
     public class Track
     {
-        private readonly IGameBoard? _gameBoard;
+        private readonly ITrackLayout? _trackLayout;
 
-        public Track(IGameBoard? gameBoard)
+        public Track(ITrackLayout? trackLayout)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
         }
 
         public int Column { get; set; }
@@ -41,11 +42,11 @@ namespace Trains.NET.Engine
         {
             // Check single track extremes, as there are 2 places where the
             //  train angle could be at 0 degrees
-            if(position.RelativeLeft < 0.4f)
+            if (position.RelativeLeft < 0.4f)
             {
                 TrainMovement.MoveLeftDown(position);
-            } 
-            else if (position.RelativeLeft > 0.6f) 
+            }
+            else if (position.RelativeLeft > 0.6f)
             {
                 TrainMovement.MoveRightDown(position);
             }
@@ -272,31 +273,26 @@ namespace Trains.NET.Engine
 
         public TrackNeighbors GetNeighbors()
         {
-            _ = _gameBoard ?? throw new InvalidOperationException("Game board can't be null");
-
-            Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
-            Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
-            Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
-            Track? down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
+            _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
             return new TrackNeighbors(
-                left?.CanConnectRight() == true ? left : null,
-                up?.CanConnectDown() == true ? up : null,
-                right?.CanConnectLeft() == true ? right : null,
-                down?.CanConnectUp() == true ? down : null
+                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && left.CanConnectRight() ? left : null,
+                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && up.CanConnectDown() == true ? up : null,
+                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && right.CanConnectLeft() == true ? right : null,
+                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && down.CanConnectUp() == true ? down : null
                 );
         }
 
         private TrackNeighbors GetAllNeighbors()
         {
-            _ = _gameBoard ?? throw new InvalidOperationException("Game board can't be null");
+            _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
-            Track? left = _gameBoard.GetTrackAt(this.Column - 1, this.Row);
-            Track? up = _gameBoard.GetTrackAt(this.Column, this.Row - 1);
-            Track? right = _gameBoard.GetTrackAt(this.Column + 1, this.Row);
-            Track? down = _gameBoard.GetTrackAt(this.Column, this.Row + 1);
-
-            return new TrackNeighbors(left, up, right, down);
+            return new TrackNeighbors(
+                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) ? left : null,
+                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) ? up : null,
+                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) ? right : null,
+                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) ? down : null
+                );
         }
     }
 }

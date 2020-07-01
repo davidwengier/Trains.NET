@@ -30,14 +30,7 @@ namespace Trains.NET.Rendering
 
         public override int GetHashCode()
         {
-            int hashCode = 1787383562;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Color?>.Default.GetHashCode(this.Color);
-            hashCode = hashCode * -1521134295 + this.Style.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.TextSize.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.TextAlign.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.StrokeWidth.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.IsAntialias.GetHashCode();
-            return hashCode;
+            return HashCode.Combine(this.Color, this.Style, this.TextSize, this.TextAlign, this.StrokeWidth, this.IsAntialias);
         }
     }
 }

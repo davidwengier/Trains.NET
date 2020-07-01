@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Windows;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 
 namespace Trains.Commands
 {
     [Order(100)]
     internal class LoadShareCodeCommand : ICommand
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public LoadShareCodeCommand(IGameBoard gameBoard, ITrackCodec trackCodec)
+        public LoadShareCodeCommand(ITrackLayout trackLayout, ITrackCodec trackCodec)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
             _trackCodec = trackCodec;
         }
 
@@ -27,7 +28,7 @@ namespace Trains.Commands
             {
                 IEnumerable<Track> tracks = _trackCodec.Decode(code);
 
-                _gameBoard.LoadTracks(tracks);
+                _trackLayout.SetTracks(tracks);
             }
             catch (FormatException ex)
             {

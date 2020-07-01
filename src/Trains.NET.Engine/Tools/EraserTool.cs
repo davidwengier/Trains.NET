@@ -1,22 +1,24 @@
-﻿namespace Trains.NET.Engine
+﻿using Trains.NET.Engine.Tracks;
+
+namespace Trains.NET.Engine
 {
     [Order(20)]
     internal class EraserTool : ITool
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
 
         public string Name => "Eraser";
 
-        public EraserTool(IGameBoard gameBoard)
+        public EraserTool(ITrackLayout trackLayout)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
         }
 
         public void Execute(int column, int row)
         {
-            _gameBoard.RemoveTrack(column, row);
+            _trackLayout.RemoveTrack(column, row);
         }
 
-        public bool IsValid(int column, int row) => _gameBoard.GetTrackAt(column, row) != null;
+        public bool IsValid(int column, int row) => _trackLayout.TryGet(column, row, out _);
     }
 }

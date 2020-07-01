@@ -1,20 +1,22 @@
-﻿namespace Trains.NET.Engine
+﻿using Trains.NET.Engine.Tracks;
+
+namespace Trains.NET.Engine
 {
     [Order(10)]
     internal class TrackTool : ITool
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
 
         public string Name => "Track";
 
-        public TrackTool(IGameBoard gameBoard)
+        public TrackTool(ITrackLayout trackLayout)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
         }
 
         public void Execute(int column, int row)
         {
-            _gameBoard.AddTrack(column, row);
+            _trackLayout.AddTrack(column, row);
         }
 
         public bool IsValid(int column, int row) => true;

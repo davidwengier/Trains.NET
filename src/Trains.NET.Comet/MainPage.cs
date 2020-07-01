@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using Comet;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
 
 namespace Trains.NET.Comet
@@ -13,7 +15,8 @@ namespace Trains.NET.Comet
         private readonly State<bool> _configurationShown = false;
 
         private readonly Timer _timer;
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
+        private readonly IGameStorage _gameStorage;
         private readonly MiniMapDelegate _miniMapDelegate;
         private Size _lastSize = Size.Empty;
 
@@ -23,13 +26,14 @@ namespace Trains.NET.Comet
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
                         ITrainController trainControls,
-                        IGameBoard gameBoard,
-                        ITrackParameters trackParameters)
+                        ITrackParameters trackParameters,
+                        ITrackLayout trackLayout,
+                        IGameStorage gameStorage)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             var controlDelegate = new TrainsDelegate(game, pixelMapper);
-            _miniMapDelegate = new MiniMapDelegate(gameBoard, trackParameters, pixelMapper);
+            _miniMapDelegate = new MiniMapDelegate(trackLayout, trackParameters, pixelMapper);
 
             this.Body = () =>
             {
@@ -68,12 +72,13 @@ namespace Trains.NET.Comet
                     _miniMapDelegate.Invalidate();
                 });
             }, null, 0, 16);
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
+            _gameStorage = gameStorage;
         }
 
         public void Save()
         {
-            _gameBoard.SaveTracks();
+            _gameStorage.WriteTracks(_trackLayout.Select(t=>t.Item3));
         }
 
         public void Redraw(Size newSize)

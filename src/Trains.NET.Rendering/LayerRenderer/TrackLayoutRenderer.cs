@@ -1,4 +1,5 @@
 ﻿using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering.LayerRenderer;
 
 namespace Trains.NET.Rendering
@@ -6,7 +7,7 @@ namespace Trains.NET.Rendering
     [Order(450)]
     internal class TrackLayoutRenderer : ILayerRenderer, ICachableLayerRenderer
     {
-        private readonly IGameBoard _gameBoard;
+        private readonly ITrackLayout _trackLayout;
         private readonly ITrackRenderer _trackRenderer;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
@@ -17,19 +18,19 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(IGameBoard gameBoard, ITrackRenderer trackRenderer, IPixelMapper pixelMapper, ITrackParameters parameters)
+        public TrackLayoutRenderer(ITrackLayout trackLayout, ITrackRenderer trackRenderer, IPixelMapper pixelMapper, ITrackParameters parameters)
         {
-            _gameBoard = gameBoard;
+            _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;
             _pixelMapper = pixelMapper;
             _parameters = parameters;
 
-            _gameBoard.TracksChanged += (s, e) => _dirty = true;
+            _trackLayout.TracksChanged += (s, e) => _dirty = true;
         }
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            foreach ((int col, int row, Track track) in _gameBoard.GetTracks())
+            foreach ((int col, int row, Track track) in _trackLayout)
             {
                 (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
 

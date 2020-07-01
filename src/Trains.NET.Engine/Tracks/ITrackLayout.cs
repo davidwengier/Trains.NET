@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
-    public interface ITrackLayout : IEnumerable<(int, int, Track)>
+    public interface ITrackLayout : IEnumerable<Track>
     {
         event EventHandler TracksChanged;
 

@@ -27,14 +27,14 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            foreach ((int col, int row, Track track) in _trackLayout)
+            foreach (Track track in _trackLayout)
             {
                 if (!track.Happy)
                 {
                     continue;
                 }
 
-                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
             }

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 
@@ -21,7 +20,7 @@ namespace Trains.Commands
 
         public void Execute()
         {
-            string code = _trackCodec.Encode(_trackLayout.Select(t => t.Item3));
+            string code = _trackCodec.Encode(_trackLayout);
 
             Clipboard.SetText(code);
             MessageBox.Show("Your share code is:\n\n" + code + "\n\nIt has been copied to the clipboard.");

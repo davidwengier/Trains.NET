@@ -49,9 +49,9 @@ namespace Trains.NET.Comet
             tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
 
-            foreach ((int, int, Track) track in _trackLayout)
+            foreach (Track track in _trackLayout)
             {
-                (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Item1, track.Item2);
+                (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Column, track.Row);
                 tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);
             }
 

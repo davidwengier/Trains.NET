@@ -30,9 +30,9 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            foreach ((int col, int row, Track track) in _trackLayout)
+            foreach (Track track in _trackLayout)
             {
-                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
                 if (x < -_parameters.CellSize || y < -_parameters.CellSize || x > width || y > height) continue;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using Comet;
@@ -78,7 +77,7 @@ namespace Trains.NET.Comet
 
         public void Save()
         {
-            _gameStorage.WriteTracks(_trackLayout.Select(t=>t.Item3));
+            _gameStorage.WriteTracks(_trackLayout);
         }
 
         public void Redraw(Size newSize)

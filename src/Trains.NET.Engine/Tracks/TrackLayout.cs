@@ -77,11 +77,11 @@ namespace Trains.NET.Engine.Tracks
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public IEnumerator<(int, int, Track)> GetEnumerator()
+        public IEnumerator<Track> GetEnumerator()
         {
-            foreach ((int col, int row, Track track) in _tracks)
+            foreach ((_, _, Track track) in _tracks)
             {
-                yield return (col, row, track);
+                yield return track;
             }
         }
 

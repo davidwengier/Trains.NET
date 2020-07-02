@@ -6,7 +6,7 @@
 
 Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twitch.tv/davidwengier) at 9pm Wednesdays from [Melbourne, Australia](https://www.timeanddate.com/worldclock/australia/melbourne).
 
-Videos available on YouTube at [https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N](https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N).
+Videos available on YouTube at [http://bit.ly/trains-net-videos](http://bit.ly/trains-net-videos).
 
 Join the Discord at [https://discord.gg/Z2WvKkq](https://discord.gg/Z2WvKkq)
 

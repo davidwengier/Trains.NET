@@ -8,6 +8,8 @@ Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twi
 
 Videos available on YouTube at [https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N](https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N).
 
+Join the Discord at [https://discord.gg/Z2WvKkq](https://discord.gg/Z2WvKkq)
+
 ### Background
 
 Trains.NET is based on Trains originally created by James Formica, Scott Holden and David Wengier.

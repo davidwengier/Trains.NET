@@ -58,7 +58,7 @@ namespace Trains.NET.Comet
                 }.FillHorizontal();
             };
 
-            _timer = new GameTimer();
+            _timer = new GameThreadTimer();
             _timer.Interval = 16;
             _timer.Elapsed += (s, e) =>
             {

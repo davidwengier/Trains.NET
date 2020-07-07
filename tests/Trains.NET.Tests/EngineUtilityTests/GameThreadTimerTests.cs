@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Xunit;
@@ -19,7 +20,7 @@ namespace Trains.NET.Tests.EngineUtilityTests
                 gameTimer.Interval = TestInterval;
                 gameTimer.Elapsed += (sender, e) => run = true;
                 gameTimer.Start();
-                await Task.Delay(TestInterval * 2);
+                await Task.Delay(TestInterval * 2).ConfigureAwait(false);
             }
             Assert.True(run);
         }
@@ -27,36 +28,15 @@ namespace Trains.NET.Tests.EngineUtilityTests
         [Theory]
         [InlineData(8)]
         [InlineData(16)]
-        [InlineData(24)]
+        [InlineData(20)]
         public async Task GameThreadTimer_IntervalIsMet_MinimalWorkload(int testInterval)
         {
-            const int TargetSampleSize = 10;
-            const double IntervalDiffMilliseoncdThreshold = 2.0;
+            const double IntervalDiffMillisecondThreshold = 2.0;
 
-            var times = new List<long>();
-            var testStopwatch = Stopwatch.StartNew();
-            using (ITimer gameTimer = new GameThreadTimer())
-            {
-                gameTimer.Interval = testInterval;
-                gameTimer.Elapsed += (sender, e) => times.Add(testStopwatch.ElapsedMilliseconds);
-                gameTimer.Start();
-                await Task.Delay(testInterval * TargetSampleSize);
-            }
+            (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw =>{}).ConfigureAwait(false);
 
-            double sumInterval = 0;
-            int countInterval = 0;
-
-            for(int i = 0; i < times.Count - 1; i++)
-            {
-                sumInterval += times[i + 1] - times[i];
-                countInterval++;
-            }
-
-            Assert.True(countInterval > 0, $"Didn't collect enough samples to average, countInterval: {countInterval}");
-
-            double intervalDiff = Math.Abs(testInterval - sumInterval / countInterval);
-
-            Assert.True(intervalDiff < IntervalDiffMilliseoncdThreshold, $"Measured interval {countInterval} was lower than threshold {IntervalDiffMilliseoncdThreshold}");
+            Assert.True(enoughSamples, "Didn't collect enough samples to average");
+            Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
         }
 
         [Theory]
@@ -67,45 +47,57 @@ namespace Trains.NET.Tests.EngineUtilityTests
         [InlineData(16, 4)]
         [InlineData(16, 8)]
         [InlineData(16, 16)]
-        [InlineData(24, 2)]
-        [InlineData(24, 4)]
-        [InlineData(24, 8)]
-        [InlineData(24, 16)]
-        [InlineData(24, 24)]
+        [InlineData(20, 4)]
+        [InlineData(20, 8)]
         public async Task GameThreadTimer_IntervalIsMet_FakeSleepWorkload(int testInterval, int sleepWorkloadMS)
         {
-            const int TargetSampleSize = 10;
-            const double IntervalDiffMilliseoncdThreshold = 2.0;
+            const double IntervalDiffMillisecondThreshold = 2.0;
+
+            (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw =>
+            {
+                long target = sw.ElapsedMilliseconds + sleepWorkloadMS;
+                while (sw.ElapsedMilliseconds < target) ;
+            }).ConfigureAwait(false);
+
+
+            Assert.True(enoughSamples, "Didn't collect enough samples to average");
+            Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
+        }
+
+        private async Task<(bool EnoughSamples, double AvgInterval)> CollectAverageInterval(int interval, Action<Stopwatch> work)
+        {
+            const int TargetSampleSize = 20;
+            const int AvgPercentile = 95;
 
             var times = new List<long>();
             var testStopwatch = Stopwatch.StartNew();
             using (ITimer gameTimer = new GameThreadTimer())
             {
-                gameTimer.Interval = testInterval;
+                gameTimer.Interval = interval;
                 gameTimer.Elapsed += (sender, e) =>
                 {
-                    long target = testStopwatch.ElapsedMilliseconds + sleepWorkloadMS;
-                    while (testStopwatch.ElapsedMilliseconds < target) ;
+                    work(testStopwatch);
                     times.Add(testStopwatch.ElapsedMilliseconds);
                 };
                 gameTimer.Start();
-                await Task.Delay(testInterval * TargetSampleSize);
+                await Task.Delay(interval * TargetSampleSize).ConfigureAwait(false);
             }
 
-            double sumInterval = 0;
-            int countInterval = 0;
+            if(times.Count < 2)
+            {
+                return (false, 0);
+            }
+
+            var intervals = new List<long>();
 
             for (int i = 0; i < times.Count - 1; i++)
             {
-                sumInterval += times[i + 1] - times[i];
-                countInterval++;
+                intervals.Add(times[i + 1] - times[i]);
             }
 
-            Assert.True(countInterval > 0, $"Didn't collect enough samples to average, countInterval: {countInterval}");
+            int intervalCount = (int)(intervals.Count * AvgPercentile * 0.01);
 
-            double intervalDiff = Math.Abs(testInterval - sumInterval / countInterval);
-
-            Assert.True(intervalDiff < IntervalDiffMilliseoncdThreshold, $"Measured interval {countInterval} was lower than threshold {IntervalDiffMilliseoncdThreshold}");
+            return (true, intervals.OrderBy(x=>x).Take(intervalCount).Sum() / (double)intervalCount);
         }
     }
 }

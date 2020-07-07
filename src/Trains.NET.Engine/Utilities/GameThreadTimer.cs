@@ -12,8 +12,8 @@ namespace Trains.NET.Engine
         public event EventHandler? Elapsed;
 
         // Milliseconds before invocation that we should switch from a slow waiting timer, to fast yeilds
-        //  On faster PC's, this can be set WAY down, but 10ms seems like a good balance.
-        private const int CoarseSleepThreshold = 10;
+        //  On faster PC's, this can be set WAY down, but 12ms seems like a good balance. Below this the GitHub executions engine started to fail!
+        private const int CoarseSleepThreshold = 12;
 
         private bool _elapsedEventEnabled = false;
         private long _lastTick = 0;

@@ -12,7 +12,6 @@ namespace Trains.NET.Comet
     {
         private readonly State<bool> _configurationShown = false;
 
-        private readonly ITimer _timer;
         private readonly ITrackLayout _trackLayout;
         private readonly IGameStorage _gameStorage;
         private readonly MiniMapDelegate _miniMapDelegate;
@@ -26,7 +25,8 @@ namespace Trains.NET.Comet
                         ITrainController trainControls,
                         ITrackParameters trackParameters,
                         ITrackLayout trackLayout,
-                        IGameStorage gameStorage)
+                        IGameStorage gameStorage,
+                        ITimer gameTimer)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
@@ -58,9 +58,7 @@ namespace Trains.NET.Comet
                 }.FillHorizontal();
             };
 
-            _timer = new GameThreadTimer();
-            _timer.Interval = 16;
-            _timer.Elapsed += (s, e) =>
+            gameTimer.Elapsed += (s, e) =>
             {
                 game.AdjustViewPortIfNecessary();
 
@@ -72,7 +70,6 @@ namespace Trains.NET.Comet
                     _miniMapDelegate.Invalidate();
                 });
             };
-            _timer.Start();
             _trackLayout = trackLayout;
             _gameStorage = gameStorage;
         }
@@ -133,7 +130,6 @@ namespace Trains.NET.Comet
         {
             if (disposing)
             {
-                _timer.Dispose();
                 _miniMapDelegate.Dispose();
             }
             base.Dispose(disposing);

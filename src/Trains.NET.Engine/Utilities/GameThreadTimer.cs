@@ -11,10 +11,14 @@ namespace Trains.NET.Engine
 
         public event EventHandler? Elapsed;
 
+        // Milliseconds before invocation that we should switch from a slow waiting timer, to fast yeilds
+        //  On faster PC's, this can be set WAY down, but 10ms seems like a good balance.
+        private const int CoarseSleepThreshold = 10;
+
         private bool _elapsedEventEnabled = false;
         private long _lastTick = 0;
         private bool _threadLoopEnabled = true;
-        private long _nextFire = 0;
+        private long _nextInvoke = 0;
 
         private readonly Thread _gameThread;
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
@@ -29,11 +33,15 @@ namespace Trains.NET.Engine
         {
             while(_threadLoopEnabled)
             {
-                while (_threadLoopEnabled && !_elapsedEventEnabled)
+                // If we are not enabled, or we have more than the CoarseSleepThreshold ms left until we need to invoke, sleep for 1 ms
+                while (_threadLoopEnabled && 
+                    (!_elapsedEventEnabled ||
+                    _stopwatch.ElapsedMilliseconds + CoarseSleepThreshold < _nextInvoke))
                 {
                     Thread.Sleep(1);
                 }
-                while (_threadLoopEnabled && _stopwatch.ElapsedMilliseconds < _nextFire)
+                // If we are not yet ready to invoke, then be kind to other threads & let them have some pie, but don't sleep as we are close
+                while (_threadLoopEnabled && _stopwatch.ElapsedMilliseconds < _nextInvoke)
                 {
                     Thread.Sleep(0);
                 }
@@ -44,7 +52,7 @@ namespace Trains.NET.Engine
                     _lastTick = time;
                     Elapsed?.Invoke(null, null);
 
-                    _nextFire = time + (int)this.Interval;
+                    _nextInvoke = time + (int)this.Interval;
                 }
             }
         }

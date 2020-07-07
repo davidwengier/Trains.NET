@@ -6,8 +6,6 @@ namespace Trains.NET.Engine
 {
     public class GameThreadTimer : ITimer
     {
-        private const int MinimumSleepTime = 1;
-
         public double Interval { get; set; }
         public long TimeSinceLastTick { get; private set; }
 
@@ -15,8 +13,8 @@ namespace Trains.NET.Engine
 
         private bool _elapsedEventEnabled = false;
         private long _lastTick = 0;
-        private int _sleepTime = 16;
         private bool _threadLoopEnabled = true;
+        private long _nextFire = 0;
 
         private readonly Thread _gameThread;
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
@@ -31,20 +29,22 @@ namespace Trains.NET.Engine
         {
             while(_threadLoopEnabled)
             {
-                Thread.Sleep(_sleepTime);
-                if (_elapsedEventEnabled)
+                while (_threadLoopEnabled && !_elapsedEventEnabled)
+                {
+                    Thread.Sleep(1);
+                }
+                while (_threadLoopEnabled && _stopwatch.ElapsedMilliseconds < _nextFire)
+                {
+                    Thread.Sleep(0);
+                }
+                if (_threadLoopEnabled && _elapsedEventEnabled)
                 {
                     long time = _stopwatch.ElapsedMilliseconds;
                     this.TimeSinceLastTick = time - _lastTick;
                     _lastTick = time;
                     Elapsed?.Invoke(null, null);
-                    
 
-                   _sleepTime = Math.Max(MinimumSleepTime, (int)this.Interval - (int)(_stopwatch.ElapsedMilliseconds - time));
-                }
-                else
-                {
-                    _sleepTime = Math.Max(MinimumSleepTime, (int)this.Interval);
+                    _nextFire = time + (int)this.Interval;
                 }
             }
         }

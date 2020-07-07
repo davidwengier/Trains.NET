@@ -5,11 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Trains.NET.Tests.EngineUtilityTests
 {
     public class GameThreadTimerTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public GameThreadTimerTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public async Task GameThreadTimer_DisposeWorks()
         {
@@ -66,7 +74,7 @@ namespace Trains.NET.Tests.EngineUtilityTests
 
         private async Task<(bool EnoughSamples, double AvgInterval)> CollectAverageInterval(int interval, Action<Stopwatch> work)
         {
-            const int TargetSampleSize = 20;
+            const int TargetSampleSize = 175;
             const int AvgPercentile = 95;
 
             var times = new List<long>();
@@ -96,8 +104,13 @@ namespace Trains.NET.Tests.EngineUtilityTests
             }
 
             int intervalCount = (int)(intervals.Count * AvgPercentile * 0.01);
+            var intervalCutList = intervals.OrderBy(x => x).Take(intervalCount).ToList();
+            double intervalAvg = intervalCutList.Average();
 
-            return (true, intervals.OrderBy(x=>x).Take(intervalCount).Sum() / (double)intervalCount);
+            _output.WriteLine($"Raw interval (count, min, avg, max): ({intervals.Count}, {intervals.Min()}, {intervals.Average()}, {intervals.Max()})");
+            _output.WriteLine($"{AvgPercentile} percentile (count, min, avg, max): ({intervalCutList.Count}, {intervalCutList.Min()}, {intervalAvg}, {intervalCutList.Max()})");
+
+            return (true, intervalAvg);
         }
     }
 }

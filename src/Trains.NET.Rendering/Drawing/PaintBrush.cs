@@ -5,12 +5,12 @@ namespace Trains.NET.Rendering
 {
     public class PaintBrush : IEquatable<PaintBrush?>
     {
-        public Color? Color { get; internal set; }
-        public PaintStyle? Style { get; internal set; }
-        public int? TextSize { get; internal set; }
-        public TextAlign? TextAlign { get; internal set; }
-        public int? StrokeWidth { get; internal set; }
-        public bool? IsAntialias { get; internal set; }
+        public Color? Color { get; set; }
+        public PaintStyle? Style { get; set; }
+        public int? TextSize { get; set; }
+        public TextAlign? TextAlign { get; set; }
+        public int? StrokeWidth { get; set; }
+        public bool? IsAntialias { get; set; }
 
         public override bool Equals(object? obj)
         {

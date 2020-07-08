@@ -4,7 +4,7 @@ using Trains.NET.Rendering;
 namespace Trains.NET.Comet
 {
     [Order(1)]
-    internal class PointerTool : ITool, IDraggableTool
+    internal class PointerTool : ITool, IDraggableTool, ICustomCursor
     {
         private readonly ITrainController _gameState;
         private readonly IGameBoard _gameBoard;
@@ -43,5 +43,15 @@ namespace Trains.NET.Comet
         }
 
         public bool IsValid(int column, int row) => _gameBoard.GetMovableAt(column, row) is Train;
+
+        public void Render(ICanvas canvas)
+        {
+            var paint = new PaintBrush
+            {
+                Style = PaintStyle.Fill,
+                Color = Colors.LightPurple
+            };
+            canvas.DrawCircle(0, 0, 10, paint);
+        }
     }
 }

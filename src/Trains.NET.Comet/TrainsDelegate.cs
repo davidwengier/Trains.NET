@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using System.Windows;
+using System.Windows.Input;
 using Comet;
 using Comet.Skia;
 using Trains.NET.Engine;
@@ -13,6 +15,8 @@ namespace Trains.NET.Comet
         private readonly IPixelMapper _pixelMapper;
         private (int column, int row) _lastDragCell;
         private bool _dragging;
+        private float _mouseX;
+        private float _mouseY;
 
         public State<ITool> CurrentTool { get; } = new State<ITool>();
 
@@ -31,10 +35,43 @@ namespace Trains.NET.Comet
         public override void Draw(SkiaSharp.SKCanvas canvas, RectangleF dirtyRect)
         {
             _game.Render(new SKCanvasWrapper(canvas));
+
+            if (this.CurrentTool.Value is ICustomCursor cursor)
+            {
+                if (this.NativeDrawableControl is FrameworkElement element)
+                {
+                    element.Cursor = Cursors.None;
+                }
+
+                canvas.Save();
+                canvas.Translate(_mouseX, _mouseY);
+                cursor.Render(new SKCanvasWrapper(canvas));
+                canvas.Restore();
+            }
+            else
+            {
+                if (this.NativeDrawableControl is FrameworkElement element)
+                {
+                    element.Cursor = Cursors.Arrow;
+                }
+            }
+        }
+
+        public override void HoverInteraction(PointF[] points)
+        {
+            SetMousePosition(points);
+        }
+
+        private void SetMousePosition(PointF[] points)
+        {
+            _mouseX = points[0].X;
+            _mouseY = points[0].Y;
         }
 
         public override bool StartInteraction(PointF[] points)
         {
+            SetMousePosition(points);
+
             if (this.CurrentTool.Value == null)
             {
                 return false;
@@ -56,6 +93,8 @@ namespace Trains.NET.Comet
 
         public override void DragInteraction(PointF[] points)
         {
+            SetMousePosition(points);
+
             if (this.CurrentTool.Value == null)
             {
                 return;
@@ -84,6 +123,8 @@ namespace Trains.NET.Comet
 
         public override void EndInteraction(PointF[] points)
         {
+            SetMousePosition(points);
+
             _lastDragCell = (-1, -1);
             _dragging = false;
         }

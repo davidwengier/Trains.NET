@@ -51,8 +51,10 @@ namespace Trains.NET.Rendering
             };
         }
 
-        public void Render(ICanvas canvas, Track track, int width)
+        public void Render(ICanvas canvas, Track track)
         {
+            int width = _parameters.CellSize;
+
             if (track.Direction == TrackDirection.Cross)
             {
                 RenderStraightTrack(canvas, width);

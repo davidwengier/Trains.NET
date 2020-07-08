@@ -44,7 +44,7 @@ namespace Trains.NET.Comet
 
         public bool IsValid(int column, int row) => _gameBoard.GetMovableAt(column, row) is Train;
 
-        public void Render(ICanvas canvas)
+        public void RenderCursor(ICanvas canvas)
         {
             var paint = new PaintBrush
             {

@@ -44,8 +44,8 @@ namespace Trains.NET.Comet
                 }
 
                 canvas.Save();
-                canvas.Translate(_mouseX, _mouseY);
-                cursor.Render(new SKCanvasWrapper(canvas));
+                canvas.Translate((int)_mouseX, (int)_mouseY);
+                cursor.RenderCursor(new SKCanvasWrapper(canvas));
                 canvas.Restore();
             }
             else
@@ -54,6 +54,16 @@ namespace Trains.NET.Comet
                 {
                     element.Cursor = Cursors.Arrow;
                 }
+            }
+
+            if (this.CurrentTool.Value is IPreviewableTool preview)
+            {
+                canvas.Save();
+                (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
+                canvas.Translate(x, y);
+                preview.RenderPreview(new SKCanvasWrapper(canvas), col, row);
+                canvas.Restore();
             }
         }
 

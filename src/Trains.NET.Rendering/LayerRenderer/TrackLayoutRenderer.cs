@@ -42,7 +42,7 @@ namespace Trains.NET.Rendering
 
                 canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize), ClipOperation.Intersect, false);
 
-                _trackRenderer.Render(canvas, track, _parameters.CellSize);
+                _trackRenderer.Render(canvas, track);
 
                 canvas.Restore();
             }

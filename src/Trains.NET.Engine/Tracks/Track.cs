@@ -189,6 +189,19 @@ namespace Trains.NET.Engine
 
         public void SetBestTrackDirection(bool ignoreHappyness)
         {
+            TrackDirection newDirection = GetBestTrackDirection(ignoreHappyness);
+
+            if (this.Direction != newDirection)
+            {
+                this.Direction = newDirection;
+                RefreshNeighbors(false);
+            }
+
+            ReevaluateHappiness();
+        }
+
+        public TrackDirection GetBestTrackDirection(bool ignoreHappyness)
+        {
             TrackNeighbors neighbors = GetNeighbors();
             TrackDirection newDirection = this.Direction;
 
@@ -248,13 +261,7 @@ namespace Trains.NET.Engine
                 }
             }
 
-            if (this.Direction != newDirection)
-            {
-                this.Direction = newDirection;
-                RefreshNeighbors(false);
-            }
-
-            ReevaluateHappiness();
+            return newDirection;
         }
 
         public void ReevaluateHappiness()

@@ -2,6 +2,6 @@
 {
     public interface ICustomCursor
     {
-        void Render(ICanvas canvas);
+        void RenderCursor(ICanvas canvas);
     }
 }

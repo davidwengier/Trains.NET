@@ -4,7 +4,8 @@ using System.Timers;
 
 namespace Trains.NET.Engine
 {
-    public class GameTimer : ITimer
+    // Disable GameTimer :)
+    public class GameTimer// : ITimer 
     {
         private readonly Timer _timer;
         private bool _invoking = false;

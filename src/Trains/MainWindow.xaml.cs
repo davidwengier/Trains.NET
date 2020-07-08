@@ -63,6 +63,7 @@ namespace Trains
             if (MainFrame.Content is CometPage cometPage && cometPage.View is MainPage mainPage)
             {
                 mainPage.Save();
+                mainPage.Dispose();
             }
             File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
         }

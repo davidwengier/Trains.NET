@@ -15,6 +15,7 @@ namespace Trains.NET.Comet
         private readonly ITrackLayout _trackLayout;
         private readonly IGameStorage _gameStorage;
         private readonly MiniMapDelegate _miniMapDelegate;
+        private readonly ITimer _gameTimer;
         private Size _lastSize = Size.Empty;
 
         public MainPage(IGame game,
@@ -58,7 +59,8 @@ namespace Trains.NET.Comet
                 }.FillHorizontal();
             };
 
-            gameTimer.Elapsed += (s, e) =>
+            _gameTimer = gameTimer;
+            _gameTimer.Elapsed += (s, e) =>
             {
                 game.AdjustViewPortIfNecessary();
 
@@ -130,6 +132,7 @@ namespace Trains.NET.Comet
         {
             if (disposing)
             {
+                _gameTimer.Dispose();
                 _miniMapDelegate.Dispose();
             }
             base.Dispose(disposing);

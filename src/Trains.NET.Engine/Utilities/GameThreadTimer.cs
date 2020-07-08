@@ -60,7 +60,6 @@ namespace Trains.NET.Engine
         public void Dispose()
         {
             _threadLoopEnabled = false;
-            _gameThread.Join();
         }
 
         public void Start() => _elapsedEventEnabled = true;

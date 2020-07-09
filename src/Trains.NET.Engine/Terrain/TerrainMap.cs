@@ -25,22 +25,22 @@ namespace Trains.NET.Engine.Tracks
 
         public Terrain GetAdjacentTerrainUp(Terrain terrain)
         {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row-1);
+            return GetTerrainOrDefault(terrain.Column, terrain.Row - 1);
         }
 
          public Terrain GetAdjacentTerrainDown(Terrain terrain)
         {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row+1);
+            return GetTerrainOrDefault(terrain.Column, terrain.Row + 1);
         }
 
         public Terrain GetAdjacentTerrainLeft(Terrain terrain)
         {
-            return GetTerrainOrDefault(terrain.Column-1, terrain.Row);
+            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row);
         }
 
         public Terrain GetAdjacentTerrainRight(Terrain terrain)
         {
-            return GetTerrainOrDefault(terrain.Column+1, terrain.Row);
+            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row);
         }
 
         private Terrain GetTerrainOrDefault(int column, int row)

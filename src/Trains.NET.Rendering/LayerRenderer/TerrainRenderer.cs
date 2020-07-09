@@ -14,10 +14,19 @@ namespace Trains.NET.Rendering
         private readonly ITerrainMap _terrainLayout;
         private readonly IPixelMapper _pixelMapper;
 
-        public TerrainRenderer( ITerrainMap terrainLayout, IPixelMapper pixelMapper)
+        private readonly PaintBrush _paintBrush;
+
+        public TerrainRenderer(ITerrainMap terrainLayout, IPixelMapper pixelMapper)
         {
             _terrainLayout = terrainLayout;
             _pixelMapper = pixelMapper;
+
+            _paintBrush = new PaintBrush
+            {
+                Color = Colors.LightGray,
+                StrokeWidth = 1,
+                Style = PaintStyle.Stroke
+            };
         }
 
         public bool Enabled { get; set; } = false;
@@ -49,17 +58,10 @@ namespace Trains.NET.Rendering
 
         private void DrawContourLineInViewport(ICanvas canvas, ContourPoint contourPoint1, ContourPoint contourPoint2)
         {
-            var grid = new PaintBrush
-            {
-                Color = Colors.LightGray,
-                StrokeWidth = 1,
-                Style = PaintStyle.Stroke
-            };
-
             var (col1, row1) = _pixelMapper.CoordsToViewPortPixels(contourPoint1.Column, contourPoint1.Row);
             var (col2, row2) = _pixelMapper.CoordsToViewPortPixels(contourPoint2.Column, contourPoint2.Row);
 
-            canvas.DrawLine(col1, row1, col2, row2, grid);
+            canvas.DrawLine(col1, row1, col2, row2, _paintBrush);
         }
 
         private Dictionary<int, List<ContourPoint>> GenerateListOfContourPointsForEachContourLevel()
@@ -82,7 +84,9 @@ namespace Trains.NET.Rendering
                 {
                     var adjacentContourPoint = CalculateBorderingContourPointIfAdjacentTerrainIsLower(adjacentTerrainLookup, terrain, contourLevel);
                     if (adjacentContourPoint != null && !contourPoints.Contains(adjacentContourPoint.Value))
+                    {
                         contourPoints.Add(adjacentContourPoint.Value);
+                    }
                 }
 
                 topography[contourLevel] = contourPoints;
@@ -102,7 +106,7 @@ namespace Trains.NET.Rendering
            return FindContourPointBetweenAdjacentTerrain(terrain, adjacentTerrain);
         }
 
-        private ContourPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
+        private static ContourPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
         {
             var columnDelta = sourceTerrain.Column - adjacentTerrain.Column;
             var rowDelta = sourceTerrain.Row - adjacentTerrain.Row;

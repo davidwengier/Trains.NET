@@ -17,9 +17,9 @@ namespace Trains.NET.Rendering
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainLayout, IPixelMapper pixelMapper, ITrackParameters trackParameters)
+        public TerrainRenderer(ITerrainMap terrainMap, IPixelMapper pixelMapper, ITrackParameters trackParameters)
         {
-            _terrainMap = terrainLayout;
+            _terrainMap = terrainMap;
             _pixelMapper = pixelMapper;
             _trackParameters = trackParameters;
 

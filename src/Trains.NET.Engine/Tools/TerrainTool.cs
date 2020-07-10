@@ -6,18 +6,18 @@ namespace Trains.NET.Engine
     internal class TerrainTool : ITool
     {
 
-        private readonly ITerrainMap _terrainLayout;
+        private readonly ITerrainMap _terrainMap;
 
-        public TerrainTool(ITerrainMap terrainLayout)
+        public TerrainTool(ITerrainMap terrainMap)
         {
-            _terrainLayout = terrainLayout;
+            _terrainMap = terrainMap;
         }
 
         public string Name => "Terrain";
 
         public void Execute(int column, int row)
         {
-            _terrainLayout.AddTerrain(new Terrain { Column = column, Row = row, Altitude = 55 });
+            _terrainMap.AddTerrain(new Terrain { Column = column, Row = row, Altitude = 55 });
         }
 
         public bool IsValid(int column, int row) => true;

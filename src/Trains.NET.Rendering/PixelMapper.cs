@@ -53,11 +53,6 @@ namespace Trains.NET.Rendering
             return ((column * _parameters.CellSize) + this.ViewPortX, (row * _parameters.CellSize) + this.ViewPortY);
         }
 
-        public (float, float) CoordsToViewPortPixels(float column, float row)
-        {
-            return ((column * _parameters.CellSize) + this.ViewPortX, (row * _parameters.CellSize) + this.ViewPortY);
-        }
-
         public (int, int) WorldPixelsToCoords(int x, int y)
         {
             return (x / _parameters.CellSize, y / _parameters.CellSize);

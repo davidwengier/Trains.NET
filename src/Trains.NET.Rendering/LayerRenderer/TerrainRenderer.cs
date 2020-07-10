@@ -11,15 +11,17 @@ namespace Trains.NET.Rendering
     internal class TerrainRenderer : ILayerRenderer
     {
         private const int ContourHeight = 40;
-        private readonly ITerrainMap _terrainLayout;
+        private readonly ITerrainMap _terrainMap;
         private readonly IPixelMapper _pixelMapper;
+        private readonly ITrackParameters _trackParameters;
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainLayout, IPixelMapper pixelMapper)
+        public TerrainRenderer(ITerrainMap terrainLayout, IPixelMapper pixelMapper, ITrackParameters trackParameters)
         {
-            _terrainLayout = terrainLayout;
+            _terrainMap = terrainLayout;
             _pixelMapper = pixelMapper;
+            _trackParameters = trackParameters;
 
             _paintBrush = new PaintBrush
             {
@@ -43,7 +45,7 @@ namespace Trains.NET.Rendering
             }
         }
 
-        private void DrawContourLine(ICanvas canvas, List<ContourPoint> contourPoints)
+        private void DrawContourLine(ICanvas canvas, List<ViewportPoint> contourPoints)
         {
             foreach (var contourPoint in contourPoints)
             {
@@ -56,28 +58,25 @@ namespace Trains.NET.Rendering
             }
         }
 
-        private void DrawContourLineInViewport(ICanvas canvas, ContourPoint contourPoint1, ContourPoint contourPoint2)
+        private void DrawContourLineInViewport(ICanvas canvas, ViewportPoint contourPoint1, ViewportPoint contourPoint2)
         {
-            var (col1, row1) = _pixelMapper.CoordsToViewPortPixels(contourPoint1.Column, contourPoint1.Row);
-            var (col2, row2) = _pixelMapper.CoordsToViewPortPixels(contourPoint2.Column, contourPoint2.Row);
-
-            canvas.DrawLine(col1, row1, col2, row2, _paintBrush);
+            canvas.DrawLine(contourPoint1.PixelX, contourPoint1.PixelY, contourPoint2.PixelX, contourPoint2.PixelY, _paintBrush);
         }
 
-        private Dictionary<int, List<ContourPoint>> GenerateListOfContourPointsForEachContourLevel()
+        private Dictionary<int, List<ViewportPoint>> GenerateListOfContourPointsForEachContourLevel()
         {
-            var topography = new Dictionary<int, List<ContourPoint>>();
-            foreach (var terrain in _terrainLayout)
+            var topography = new Dictionary<int, List<ViewportPoint>>();
+            foreach (var terrain in _terrainMap)
             {
                 var contourLevel = CalculateContourLevel(terrain.Altitude);
-                var contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ContourPoint>();
+                var contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
 
                 var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
                 {
-                    _terrainLayout.GetAdjacentTerrainUp,
-                    _terrainLayout.GetAdjacentTerrainDown,
-                    _terrainLayout.GetAdjacentTerrainLeft,
-                    _terrainLayout.GetAdjacentTerrainRight,
+                    _terrainMap.GetAdjacentTerrainUp,
+                    _terrainMap.GetAdjacentTerrainDown,
+                    _terrainMap.GetAdjacentTerrainLeft,
+                    _terrainMap.GetAdjacentTerrainRight,
                 };
 
                 foreach (var adjacentTerrainLookup in adjacentTerrainLookups)
@@ -95,7 +94,7 @@ namespace Trains.NET.Rendering
             return topography;
         }
 
-        private ContourPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(Func<Terrain, Terrain> getAdjacentTerrain, Terrain terrain, int contourLevel)
+        private ViewportPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(Func<Terrain, Terrain> getAdjacentTerrain, Terrain terrain, int contourLevel)
         {
             var adjacentTerrain = getAdjacentTerrain(terrain);
 
@@ -106,7 +105,7 @@ namespace Trains.NET.Rendering
            return FindContourPointBetweenAdjacentTerrain(terrain, adjacentTerrain);
         }
 
-        private static ContourPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
+        private ViewportPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
         {
             var columnDelta = sourceTerrain.Column - adjacentTerrain.Column;
             var rowDelta = sourceTerrain.Row - adjacentTerrain.Row;
@@ -115,34 +114,40 @@ namespace Trains.NET.Rendering
             if ((Math.Abs(columnDelta) + Math.Abs(rowDelta)) != 1)
                 throw new ArgumentException("Trying to find contour point between terrain that is not adjacent");
 
+            // Different columns, must be same row
             if (columnDelta != 0)
             {
-                // Different columns, must be same row
-                return new ContourPoint
+                // columnDelta gt zero means we have source on right, adjacent on left so centre point is between them.. which means source edge (since cell edges are on left)
+                // columnDelta lt zero means we have source on left, adjacent on right so centre point is again between them.. which means adjacent edge 
+
+                var selectedColumn = (columnDelta > 0 ? sourceTerrain.Column : adjacentTerrain.Column);
+                var (pixX, pixY) = _pixelMapper.CoordsToViewPortPixels(selectedColumn, sourceTerrain.Row);
+
+                return new ViewportPoint
                 {
-                    // columnDelta gt zero means we have source on right, adjacent on left so centre point is between them.. which means source edge (since cell edges are on left)
-                    // columnDelta lt zero means we have source on left, adjacent on right so centre point is again between them.. which means adjacent edge 
-                    Column = (columnDelta > 0 ? sourceTerrain.Column : adjacentTerrain.Column),
-                    Row = (sourceTerrain.Row + 0.5f),
+                    PixelX = pixX,
+                    PixelY = pixY + 0.5f * _trackParameters.CellSize,
                 };
             }
 
-            return new ContourPoint
+            var selectedRow = (rowDelta > 0 ? sourceTerrain.Row : adjacentTerrain.Row);
+            var (pixelX, pixelY) = _pixelMapper.CoordsToViewPortPixels(sourceTerrain.Column, selectedRow);
+            return new ViewportPoint
             {
-                Column = (sourceTerrain.Column + 0.5f),
-                Row = (rowDelta > 0 ? sourceTerrain.Row : adjacentTerrain.Row)
+                PixelX = pixelX + 0.5f * _trackParameters.CellSize,
+                PixelY = pixelY
             };
         }
 
-        private List<ContourPoint> OrderListByDistanceFromPoint(ContourPoint point, List<ContourPoint> pointsList)
+        private List<ViewportPoint> OrderListByDistanceFromPoint(ViewportPoint point, List<ViewportPoint> pointsList)
         {
             return pointsList.OrderBy(p => CalculateDistanceBetweenTwoPoints(point, p)).ToList();
         }
 
-        private static float CalculateDistanceBetweenTwoPoints(ContourPoint firstPoint, ContourPoint secondPoint)
+        private static float CalculateDistanceBetweenTwoPoints(ViewportPoint firstPoint, ViewportPoint secondPoint)
         {
-            return (float)Math.Sqrt((firstPoint.Column - secondPoint.Column) * (firstPoint.Column - secondPoint.Column) + 
-                                    (firstPoint.Row - secondPoint.Row) * (firstPoint.Row - secondPoint.Row));
+            return (float)Math.Sqrt((firstPoint.PixelX - secondPoint.PixelX) * (firstPoint.PixelX - secondPoint.PixelX) + 
+                                    (firstPoint.PixelY - secondPoint.PixelY) * (firstPoint.PixelY - secondPoint.PixelY));
         }
 
         private static int CalculateContourLevel(int altitude)
@@ -152,10 +157,10 @@ namespace Trains.NET.Rendering
 
     }
 
-    internal struct ContourPoint
+    internal struct ViewportPoint
     {
-        public float Column { get; set; }
-        public float Row { get; set; }
+        public float PixelX { get; set; }
+        public float PixelY { get; set; }
     }
 
 }

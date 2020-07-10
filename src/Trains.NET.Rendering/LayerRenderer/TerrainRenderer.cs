@@ -50,8 +50,10 @@ namespace Trains.NET.Rendering
             foreach (var contourPoint in contourPoints)
             {
                 var orderedList = OrderListByDistanceFromPoint(contourPoint, contourPoints);
-                var firstNearest = orderedList.Skip(1).First(); // The first element will be the original element since that will have distance zero
-                var secondNearest = orderedList.Skip(2).First();
+                if (orderedList.Count < 3) continue;
+
+                var firstNearest = orderedList.Skip(1).FirstOrDefault(); // The first element will be the original element since that will have distance zero
+                var secondNearest = orderedList.Skip(2).FirstOrDefault();
 
                 DrawContourLineInViewport(canvas, contourPoint, firstNearest);
                 DrawContourLineInViewport(canvas, contourPoint, secondNearest);

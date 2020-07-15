@@ -5,6 +5,7 @@ using Comet;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
+using Trains.NET.Rendering.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -27,11 +28,12 @@ namespace Trains.NET.Comet
                         ITrackParameters trackParameters,
                         ITrackLayout trackLayout,
                         IGameStorage gameStorage,
-                        ITimer gameTimer)
+                        ITimer gameTimer,
+                        Factory<IToolPreviewer> previewerFactory)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
-            var controlDelegate = new TrainsDelegate(game, pixelMapper);
+            var controlDelegate = new TrainsDelegate(game, pixelMapper, previewerFactory);
             _miniMapDelegate = new MiniMapDelegate(trackLayout, trackParameters, pixelMapper);
 
             this.Body = () =>

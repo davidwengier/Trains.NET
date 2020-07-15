@@ -16,7 +16,7 @@ namespace Trains.NET.Engine
         public OrderedList(IEnumerable<object?> services)
         {
             _list = new List<T>(from svc in services
-                                let order = svc.GetType().GetCustomAttribute<OrderAttribute>(true)?.Order ?? 0
+                                let order = svc.GetType().GetCustomAttribute<OrderAttribute>(true)?.Order ?? 9999
                                 orderby order
                                 select (T)svc);
         }

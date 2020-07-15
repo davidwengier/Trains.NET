@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine
 {
     public class Terrain
     {

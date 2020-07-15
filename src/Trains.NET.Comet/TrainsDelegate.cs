@@ -6,6 +6,7 @@ using Comet.Skia;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
+using Trains.NET.Rendering.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -13,6 +14,7 @@ namespace Trains.NET.Comet
     {
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
+        private readonly Factory<IToolPreviewer> _previewerFactory;
         private (int column, int row) _lastDragCell;
         private bool _dragging;
         private float _mouseX;
@@ -20,10 +22,11 @@ namespace Trains.NET.Comet
 
         public State<ITool> CurrentTool { get; } = new State<ITool>();
 
-        public TrainsDelegate(IGame game, IPixelMapper pixelMapper)
+        public TrainsDelegate(IGame game, IPixelMapper pixelMapper, Factory<IToolPreviewer> previewerFactory)
         {
             _game = game;
             _pixelMapper = pixelMapper;
+            _previewerFactory = previewerFactory;
         }
 
         public override void Resized(RectangleF bounds)
@@ -56,13 +59,14 @@ namespace Trains.NET.Comet
                 }
             }
 
-            if (this.CurrentTool.Value is IPreviewableTool preview)
+            var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
+            if (previewer is not null)
             {
                 canvas.Save();
                 (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
                 (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
                 canvas.Translate(x, y);
-                preview.RenderPreview(new SKCanvasWrapper(canvas), col, row);
+                previewer.RenderPreview(new SKCanvasWrapper(canvas), col, row);
                 canvas.Restore();
             }
         }

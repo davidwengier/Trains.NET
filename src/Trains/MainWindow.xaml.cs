@@ -90,8 +90,8 @@ namespace Trains
                 {
                     if (t.IsInterface)
                     {
-                        Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
-                        col.AddSingleton(orderedListOfT, sp => Activator.CreateInstance(orderedListOfT, sp.GetServices(t)));
+                        WireUpOrderedList(col, t);
+                        WireUpFunc(col, t);
                     }
                     else
                     {
@@ -117,6 +117,19 @@ namespace Trains
                 yield return typeof(Trains.NET.Rendering.Skia.SKCanvasWrapper).Assembly;
                 yield return typeof(MainWindow).Assembly;
                 yield return typeof(MainPage).Assembly;
+            }
+
+            static void WireUpOrderedList(ServiceCollection col, Type t)
+            {
+                Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
+                col.AddSingleton(orderedListOfT, sp => Activator.CreateInstance(orderedListOfT, sp.GetServices(t)));
+            }
+
+            static void WireUpFunc(ServiceCollection col, Type t)
+            {
+                Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
+                Type factoryType = typeof(Factory<>).MakeGenericType(t);
+                col.AddSingleton(factoryType, sp => Activator.CreateInstance(factoryType, sp.GetService(orderedListOfT)));
             }
         }
     }

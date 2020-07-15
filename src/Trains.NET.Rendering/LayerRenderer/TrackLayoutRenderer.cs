@@ -5,7 +5,7 @@ using Trains.NET.Rendering.LayerRenderer;
 namespace Trains.NET.Rendering
 {
     [Order(450)]
-    internal class TrackLayoutRenderer : ILayerRenderer, ICachableLayerRenderer
+    internal class TrackLayoutRenderer : ICachableLayerRenderer
     {
         private readonly ITrackLayout _trackLayout;
         private readonly ITrackRenderer _trackRenderer;

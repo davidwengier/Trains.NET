@@ -1,6 +1,6 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering.Tracks
 {
-    public interface IPreviewableTool
+    public interface IToolPreviewer
     {
         void RenderPreview(ICanvas canvas, int column, int row);
     }

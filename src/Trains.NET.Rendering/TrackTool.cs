@@ -4,17 +4,15 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering
 {
     [Order(10)]
-    internal class TrackTool : ITool, IPreviewableTool
+    internal class TrackTool : ITool
     {
         private readonly ITrackLayout _trackLayout;
-        private readonly ITrackRenderer _trackRenderer;
 
         public string Name => "Track";
 
-        public TrackTool(ITrackLayout trackLayout, ITrackRenderer trackRenderer)
+        public TrackTool(ITrackLayout trackLayout)
         {
             _trackLayout = trackLayout;
-            _trackRenderer = trackRenderer;
         }
 
         public void Execute(int column, int row)
@@ -23,16 +21,5 @@ namespace Trains.NET.Rendering
         }
 
         public bool IsValid(int column, int row) => true;
-
-        public void RenderPreview(ICanvas canvas, int column, int row)
-        {
-            var track = new Track(_trackLayout)
-            {
-                Column = column,
-                Row = row
-            };
-            track.Direction = track.GetBestTrackDirection(true);
-            _trackRenderer.Render(canvas, track);
-        }
     }
 }

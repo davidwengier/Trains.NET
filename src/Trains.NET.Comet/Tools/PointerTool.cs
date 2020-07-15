@@ -12,6 +12,7 @@ namespace Trains.NET.Comet
         private int _lastX;
         private int _lastY;
 
+        public ToolMode Mode => ToolMode.All;
         public PointerTool(ITrainController gameState, IGameBoard gameBoard, IPixelMapper pixelMapper)
         {
             _gameState = gameState;

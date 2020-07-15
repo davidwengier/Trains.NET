@@ -13,6 +13,7 @@ namespace Trains.NET.Engine
             _terrainMap = terrainMap;
         }
 
+        public ToolMode Mode => ToolMode.Build;
         public string Name => "Terrain";
 
         public void Execute(int column, int row)

@@ -7,6 +7,7 @@ namespace Trains.NET.Engine
     {
         private readonly ITrackLayout _trackLayout;
 
+        public ToolMode Mode => ToolMode.Build;
         public string Name => "Eraser";
 
         public EraserTool(ITrackLayout trackLayout)

@@ -10,6 +10,7 @@ namespace Trains.NET.Comet
         private readonly ITrackLayout _trackLayout;
         private readonly ITrainController _gameState;
 
+        public ToolMode Mode => ToolMode.Play;
         public string Name => "Train";
 
         public TrainTool(IGameBoard gameBoard, ITrackLayout trackLayout, ITrainController gameState)

@@ -8,6 +8,7 @@ namespace Trains.NET.Rendering
     {
         private readonly ITrackLayout _trackLayout;
 
+        public ToolMode Mode => ToolMode.Build;
         public string Name => "Track";
 
         public TrackTool(ITrackLayout trackLayout)

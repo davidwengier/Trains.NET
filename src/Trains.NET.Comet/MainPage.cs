@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using Comet;
 using Trains.NET.Engine;
@@ -12,6 +13,7 @@ namespace Trains.NET.Comet
     public class MainPage : View
     {
         private readonly State<bool> _configurationShown = false;
+        private readonly State<bool> _buildMode = true;
 
         private readonly ITrackLayout _trackLayout;
         private readonly IGameStorage _gameStorage;
@@ -42,15 +44,17 @@ namespace Trains.NET.Comet
                 {
                     new VStack()
                     {
-                        new ToggleButton("Configuration", _configurationShown, ()=> _configurationShown.Value = !_configurationShown.Value),
+                        _configurationShown ? null :
+                            new Button(_buildMode ? "Build" : "Play", ()=> SwitchGameMode()),
                         new Spacer(),
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
-                                CreateToolsControls(tools, controlDelegate),
+                                CreateToolsControls(tools, controlDelegate, _buildMode.Value),
                         new Spacer(),
-                        _configurationShown ? null :
+                        _configurationShown || !_buildMode ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
+                        new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
                         new DrawableControl(_miniMapDelegate).Frame(height: 100)
                     }.Frame(100, alignment: Alignment.Top),
                     new VStack()
@@ -76,6 +80,15 @@ namespace Trains.NET.Comet
             };
             _trackLayout = trackLayout;
             _gameStorage = gameStorage;
+
+            void SwitchGameMode()
+            {
+                _buildMode.Value = !_buildMode.Value;
+
+                if (controlDelegate == null) return;
+
+                controlDelegate.CurrentTool.Value = tools.FirstOrDefault(t => ShouldShowTool(_buildMode.Value, t));
+            }
         }
 
         public void Save()
@@ -104,21 +117,33 @@ namespace Trains.NET.Comet
             return controlsGroup;
         }
 
-        private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate)
+        private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate, bool buildMode)
         {
             var controlsGroup = new RadioGroup(Orientation.Vertical);
             foreach (ITool tool in tools)
             {
-                if (controlDelegate.CurrentTool.Value == null)
+                if (ShouldShowTool(buildMode, tool))
                 {
-                    controlDelegate.CurrentTool.Value = tool;
-                }
+                    if (controlDelegate.CurrentTool.Value == null)
+                    {
+                        controlDelegate.CurrentTool.Value = tool;
+                    }
 
-                controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
+                    controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
+                }
             }
 
             return controlsGroup;
         }
+
+        private static bool ShouldShowTool(bool buildMode, ITool tool)
+            => (buildMode, tool.Mode) switch
+            {
+                (true, ToolMode.Build) => true,
+                (false, ToolMode.Play) => true,
+                (_, ToolMode.All) => true,
+                _ => false
+            };
 
         private static View CreateConfigurationControls(IEnumerable<ILayerRenderer> layers)
         {

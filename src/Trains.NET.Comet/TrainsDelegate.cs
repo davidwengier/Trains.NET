@@ -20,7 +20,7 @@ namespace Trains.NET.Comet
         private float _mouseX;
         private float _mouseY;
 
-        public State<ITool> CurrentTool { get; } = new State<ITool>();
+        public State<ITool?> CurrentTool { get; } = new State<ITool?>();
 
         public TrainsDelegate(IGame game, IPixelMapper pixelMapper, Factory<IToolPreviewer> previewerFactory)
         {
@@ -59,15 +59,18 @@ namespace Trains.NET.Comet
                 }
             }
 
-            var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
-            if (previewer is not null)
+            if (this.CurrentTool.Value != null)
             {
-                canvas.Save();
-                (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
-                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
-                canvas.Translate(x, y);
-                previewer.RenderPreview(new SKCanvasWrapper(canvas), col, row);
-                canvas.Restore();
+                var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
+                if (previewer is not null)
+                {
+                    canvas.Save();
+                    (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
+                    (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
+                    canvas.Translate(x, y);
+                    previewer.RenderPreview(new SKCanvasWrapper(canvas), col, row);
+                    canvas.Restore();
+                }
             }
         }
 

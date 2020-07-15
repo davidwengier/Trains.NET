@@ -62,7 +62,7 @@ namespace Trains.NET.Comet
             if (this.CurrentTool.Value != null)
             {
                 var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
-                if (previewer is not null)
+                if (previewer != null)
                 {
                     canvas.Save();
                     (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);

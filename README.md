@@ -8,7 +8,7 @@ Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twi
 
 Videos available on YouTube at [http://bit.ly/trains-net-videos](http://bit.ly/trains-net-videos).
 
-Join the Discord at [https://discord.gg/Z2WvKkq](https://discord.gg/Z2WvKkq)
+Join the Discord at [https://discord.gg/Yt5B58b](https://discord.gg/Yt5B58b)
 
 ### Background
 

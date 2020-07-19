@@ -18,7 +18,7 @@
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.1" />
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.1" />
     
-    <!-- Nerdbank GitVresioning - Should be in all projects -->
+    <!-- Nerdbank GitVersioning - Should be in all projects -->
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.27-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

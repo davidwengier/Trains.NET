@@ -8,6 +8,7 @@ namespace Trains.NET.Comet
         State<Train?> CurrentTrain { get; }
         State<string> Display { get; }
         State<string> SpeedDisplay { get; }
+        State<bool> BuildMode { get; }
 
         void Delete();
         void Faster();
@@ -15,7 +16,7 @@ namespace Trains.NET.Comet
         void Slower();
         void Start();
         void Stop();
-        void ToggleGlobalStop();
         void ToggleFollowMode();
+        void ToggleBuildMode();
     }
 }

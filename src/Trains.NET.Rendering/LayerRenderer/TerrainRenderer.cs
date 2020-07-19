@@ -36,12 +36,41 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height)
         {
+            DrawTerrainTypes(canvas);
+            DrawContourLines(canvas);
+        }
+
+        private void DrawContourLines(ICanvas canvas)
+        {
             var contourLevels = GenerateListOfContourPointsForEachContourLevel();
 
             foreach (var contourLevel in contourLevels.Keys)
             {
                 var contourPoints = contourLevels[contourLevel];
                 DrawContourLine(canvas, contourPoints);
+            }
+        }
+
+        private void DrawTerrainTypes(ICanvas canvas)
+        {
+            foreach (var terrain in _terrainMap)
+            {
+                var color = terrain.TerrainType switch
+                {
+                    TerrainType.Grass => Colors.LightGreen,
+                    TerrainType.Sand => Colors.LightYellow,
+                    TerrainType.Water => Colors.LightBlue,
+                    _ => Colors.Empty,
+                };
+
+                var paintBrush = new PaintBrush
+                {
+                    Color = color,
+                    Style = PaintStyle.Fill
+                };
+
+                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
+                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, paintBrush);
             }
         }
 
@@ -70,7 +99,7 @@ namespace Trains.NET.Rendering
             var topography = new Dictionary<int, List<ViewportPoint>>();
             foreach (var terrain in _terrainMap)
             {
-                var contourLevel = CalculateContourLevel(terrain.Altitude);
+                var contourLevel = CalculateContourLevel(terrain.Height);
                 var contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
 
                 var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
@@ -100,7 +129,7 @@ namespace Trains.NET.Rendering
         {
             var adjacentTerrain = getAdjacentTerrain(terrain);
 
-            var adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Altitude);
+            var adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Height);
 
             if (adjacentContourLevel >= contourLevel) return null;
 

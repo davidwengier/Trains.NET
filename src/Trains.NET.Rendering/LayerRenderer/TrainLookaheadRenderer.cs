@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.LayerRenderer
             _gameTimer = gameTimer;
         }
 
-        public bool Enabled { get; set; } = false;
+        public bool Enabled { get; set; }
 
         public string Name => "Hitbox";
 
@@ -29,7 +29,7 @@ namespace Trains.NET.Rendering.LayerRenderer
         {
             foreach (Train train in _gameBoard.GetMovables())
             {
-                PaintBrush _paint = new PaintBrush
+                var _paint = new PaintBrush
                 {
                     Color = _painter.GetPalette(train).FrontSectionEndColor,
                     Style = PaintStyle.Fill
@@ -40,7 +40,7 @@ namespace Trains.NET.Rendering.LayerRenderer
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
 
                 float speedModifier = 0.005f * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
-                foreach (var position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
+                foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
                 {
                     (x, y) = _pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
 

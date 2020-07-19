@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering
     [Order(0)]
     internal class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
-        private bool _dirty = false;
+        private bool _dirty;
         private readonly ITrackParameters _parameters;
         private readonly IPixelMapper _pixelMapper;
 
@@ -17,7 +17,7 @@ namespace Trains.NET.Rendering
             _pixelMapper.ViewPortChanged += (s, e) => _dirty = true;
         }
 
-        public bool Enabled { get; set; } = false;
+        public bool Enabled { get; set; }
         public string Name => "Grid";
         public bool IsDirty => _dirty;
 

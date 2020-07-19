@@ -84,7 +84,7 @@ namespace Trains.NET.Rendering
             {
                 float angle = angleOffset + (float)(Math.PI * 2.0 * i / circleCount);
                 float offset = r.NextFloat(_minTreeSize, _maxTreeSize);
-                float radius = r.NextFloat(2, 4);
+                float radius = r.NextFloat(_cellSize / 20, _cellSize / 10);
                 float x = (float)(scale * offset * Math.Cos(angle));
                 float y = (float)(scale * offset * Math.Sin(angle));
 

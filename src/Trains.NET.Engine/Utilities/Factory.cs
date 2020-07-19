@@ -10,7 +10,7 @@ namespace Trains.NET.Engine
 
         public Factory(OrderedList<T> services)
         {
-            _services = new Dictionary<Type, T>();
+            _services = new();
             foreach (T? service in services)
             {
                 if (service == null) continue;

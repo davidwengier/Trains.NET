@@ -9,7 +9,7 @@ namespace Trains.NET.Engine.Tracks
     {
         public event EventHandler? TracksChanged;
 
-        private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
+        private readonly Dictionary<(int, int), Track> _tracks = new();
 
         public void AddTrack(int column, int row)
         {

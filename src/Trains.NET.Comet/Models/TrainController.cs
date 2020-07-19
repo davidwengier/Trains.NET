@@ -20,12 +20,12 @@ namespace Trains.NET.Comet
 
         public void SetCurrentTrain(Train? train)
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.PropertyChanged -= Train_PropertyChanged;
             }
             this.CurrentTrain.Value = train;
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.PropertyChanged += Train_PropertyChanged;
             }
@@ -51,7 +51,7 @@ namespace Trains.NET.Comet
 
         public void Slower()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Slower();
             }
@@ -60,7 +60,7 @@ namespace Trains.NET.Comet
 
         public void Faster()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Faster();
             }
@@ -69,7 +69,7 @@ namespace Trains.NET.Comet
 
         public void Delete()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 _gameBoard.RemoveMovable(this.CurrentTrain.Value);
                 SetCurrentTrain(null);
@@ -97,7 +97,7 @@ namespace Trains.NET.Comet
 
         public void ToggleFollowMode()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Follow = !this.CurrentTrain.Value.Follow;
             }

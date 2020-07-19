@@ -7,8 +7,8 @@ using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
 {
-    [Order(0)]
-    internal class TerrainRenderer : ILayerRenderer
+    [Order(1)]
+    internal class ContourRenderer : ILayerRenderer
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;
@@ -16,7 +16,7 @@ namespace Trains.NET.Rendering
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainMap, ITrackParameters trackParameters)
+        public ContourRenderer(ITerrainMap terrainMap, ITrackParameters trackParameters)
         {
             _terrainMap = terrainMap;
             _trackParameters = trackParameters;
@@ -30,11 +30,10 @@ namespace Trains.NET.Rendering
         }
 
         public bool Enabled { get; set; }
-        public string Name => "Terrain";
+        public string Name => "Contours";
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            DrawTerrainTypes(canvas, pixelMapper);
             DrawContourLines(canvas, pixelMapper);
         }
 
@@ -48,30 +47,6 @@ namespace Trains.NET.Rendering
                 DrawContourLine(canvas, contourPoints);
             }
         }
-
-        private void DrawTerrainTypes(ICanvas canvas, IPixelMapper pixelMapper)
-        {
-            foreach (var terrain in _terrainMap)
-            {
-                var color = terrain.TerrainType switch
-                {
-                    TerrainType.Grass => Colors.LightGreen,
-                    TerrainType.Sand => Colors.LightYellow,
-                    TerrainType.Water => Colors.LightBlue,
-                    _ => Colors.Empty,
-                };
-
-                var paintBrush = new PaintBrush
-                {
-                    Color = color,
-                    Style = PaintStyle.Fill
-                };
-
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
-                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, paintBrush);
-            }
-        }
-
         private void DrawContourLine(ICanvas canvas, List<ViewportPoint> contourPoints)
         {
             foreach (ViewportPoint contourPoint in contourPoints)
@@ -182,13 +157,5 @@ namespace Trains.NET.Rendering
         {
             return altitude / ContourHeight; // Integer divide
         }
-
     }
-
-    internal struct ViewportPoint
-    {
-        public float PixelX { get; set; }
-        public float PixelY { get; set; }
-    }
-
 }

@@ -34,12 +34,41 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
+            DrawTerrainTypes(canvas, pixelMapper);
+            DrawContourLines(canvas, pixelMapper);
+        }
+
+        private void DrawContourLines(ICanvas canvas, IPixelMapper pixelMapper)
+        {
+             Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
 
             foreach (int contourLevel in contourLevels.Keys)
             {
                 List<ViewportPoint>? contourPoints = contourLevels[contourLevel];
                 DrawContourLine(canvas, contourPoints);
+            }
+        }
+
+        private void DrawTerrainTypes(ICanvas canvas, IPixelMapper pixelMapper)
+        {
+            foreach (var terrain in _terrainMap)
+            {
+                var color = terrain.TerrainType switch
+                {
+                    TerrainType.Grass => Colors.LightGreen,
+                    TerrainType.Sand => Colors.LightYellow,
+                    TerrainType.Water => Colors.LightBlue,
+                    _ => Colors.Empty,
+                };
+
+                var paintBrush = new PaintBrush
+                {
+                    Color = color,
+                    Style = PaintStyle.Fill
+                };
+
+                (int x, int y) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
+                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, paintBrush);
             }
         }
 
@@ -68,9 +97,8 @@ namespace Trains.NET.Rendering
             var topography = new Dictionary<int, List<ViewportPoint>>();
             foreach (Terrain? terrain in _terrainMap)
             {
-                int contourLevel = CalculateContourLevel(terrain.Altitude);
+                int contourLevel = CalculateContourLevel(terrain.Height);
                 List<ViewportPoint>? contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
-
                 var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
                 {
                     _terrainMap.GetAdjacentTerrainUp,
@@ -98,7 +126,7 @@ namespace Trains.NET.Rendering
         {
             Terrain? adjacentTerrain = getAdjacentTerrain(terrain);
 
-            int adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Altitude);
+            int adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Height);
 
             if (adjacentContourLevel >= contourLevel) return null;
 

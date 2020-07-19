@@ -7,6 +7,8 @@
   </PropertyGroup>
   
   <ItemGroup>
+
+    <!-- Updates - Opt-in per project -->
     
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" />
 
@@ -23,8 +25,16 @@
               <PackageReference Update="Clancey.Comet.Skia"           Version="0.2.328-beta" />
     -->
 
-    <!-- Nerdbank GitVresioning - Should be in all projects -->
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
+    <!-- Includes - for all projects -->
+    
+    <!-- Latest C# compiler -->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.7.0-4.final">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  
+    <!-- Nerdbank GitVresioning -->
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.27-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

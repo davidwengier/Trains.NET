@@ -88,13 +88,11 @@ namespace Trains.NET.Comet
             {
                 this.Display.Value = "< No train selected >";
                 this.SpeedDisplay.Value = "--";
-                this.ShowControls.Value = false;
             }
             else
             {
                 this.Display.Value = this.CurrentTrain.Value.Name;
                 this.SpeedDisplay.Value = $"{this.CurrentTrain.Value.CurrentSpeed} km/h";
-                this.ShowControls.Value = true;
             }
         }
 

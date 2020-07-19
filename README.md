@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/github/license/davidwengier/Trains.NET?color=blue "License: MIT")](https://choosealicense.com/licenses/mit/)
 [![Master build status](https://github.com/davidwengier/Trains.NET/workflows/Master/badge.svg "Master build status")](https://github.com/davidwengier/Trains.NET/actions?query=workflow%3AMaster)
-[![Join the Discord](https://discordapp.com/api/guilds/709643112636612658/widget.png "Join the Discord")](https://discord.gg/Yt5B58b)
+[![Join the Discord](https://img.shields.io/discord/709643112636612658 "Join the Discord")](https://discord.gg/Yt5B58b)
 
 ### Info
 

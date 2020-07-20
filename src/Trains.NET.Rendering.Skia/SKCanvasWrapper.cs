@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia
@@ -67,6 +68,47 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
+        public void GradientRectLeftRight(float x, float y, float width, float height, Color[] colours)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
+                                                       new SKPoint(x + width, y),
+                                                       colours.Select(c => c.ToSkia()).ToArray(),
+                                                       SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
+        public void GradientRectUpDown(float x, float y, float width, float height, Color[] colours)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
+                                                       new SKPoint(x, y + height),
+                                                       colours.Select(c => c.ToSkia()).ToArray(),
+                                                       SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
+        public void CircularGradient(float x, float y, float width, float height, float circleCentreX, float circleCentreY, float circleRadius, Color[] colours)
+        {
+            var shader = SKShader.CreateRadialGradient(new SKPoint(circleCentreX, circleCentreY),
+                                                       circleRadius,
+                                                       colours.Select(c => c.ToSkia()).ToArray(),
+                                                       SKShaderTileMode.Clamp); ;
+
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
         public void Restore()
             => _canvas.Restore();
 
@@ -81,5 +123,32 @@ namespace Trains.NET.Rendering.Skia
 
         public void Translate(float x, float y)
             => _canvas.Translate(x, y);
+
+        public void GradientRectTopLeftBottomtRight(float x, float y, float width, float height, Color[] colours)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
+                                                        new SKPoint(x + width, y + height),
+                                                        colours.Select(c => c.ToSkia()).ToArray(),
+                                                        SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
+        public void GradientRectTopRightBottomLeft(float x, float y, float width, float height, Color[] colours)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x + width, y),
+                                                        new SKPoint(x, y + height),
+                                                        colours.Select(c => c.ToSkia()).ToArray(),
+                                                        SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
     }
 }

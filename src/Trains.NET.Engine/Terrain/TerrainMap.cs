@@ -82,5 +82,25 @@ namespace Trains.NET.Engine.Tracks
                 Height = 0
             };
         }
+
+        public Terrain GetAdjacentTerrainUpLeft(Terrain terrain)
+        {
+            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row - 1);
+        }
+
+        public Terrain GetAdjacentTerrainUpRight(Terrain terrain)
+        {
+            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row - 1);
+        }
+
+        public Terrain GetAdjacentTerrainDownLeft(Terrain terrain)
+        {
+            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row + 1);
+        }
+
+        public Terrain GetAdjacentTerrainDownRight(Terrain terrain)
+        {
+            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row + 1);
+        }
     }
 }

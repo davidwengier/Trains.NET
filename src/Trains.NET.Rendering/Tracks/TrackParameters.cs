@@ -21,8 +21,8 @@
             this.NumPlanks = 3;
             this.NumCornerPlanks = this.NumPlanks + 1;
             this.TrackWidth = 12;
-            this.RailWidth = 5f;
-            this.RailTopWidth = 4.25f;
+            this.RailWidth = 4f;
+            this.RailTopWidth = 2.75f;
         }
     }
 }

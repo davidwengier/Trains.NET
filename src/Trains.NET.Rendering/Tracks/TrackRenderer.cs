@@ -37,7 +37,8 @@ namespace Trains.NET.Rendering
             {
                 Color = Colors.Black,
                 Style = PaintStyle.Stroke,
-                StrokeWidth = _parameters.PlankWidth
+                StrokeWidth = _parameters.PlankWidth,
+                IsAntialias = true
             };
             _trackClear = new PaintBrush
             {
@@ -139,6 +140,8 @@ namespace Trains.NET.Rendering
                 canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
+                DrawCornerPlanks(canvas, 0);
+
                 DrawCornerTrack(canvas);
 
                 canvas.Restore();
@@ -162,13 +165,15 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(trackPath, _trackClear);
         }
 
-        private void DrawCornerPlanks(ICanvas canvas)
+        private void DrawCornerPlanks(ICanvas canvas) => DrawCornerPlanks(canvas, _parameters.NumPlanks);
+
+        private void DrawCornerPlanks(ICanvas canvas, int plankCount)
         {
             IPath? path = _pathFactory.Create();
 
             double step = Math.PI / 2.0 / (_parameters.NumPlanks + 1.0);
 
-            for (int i = 0; i <= _parameters.NumPlanks; i++)
+            for (int i = 0; i <= plankCount; i++)
             {
                 double angle = step * (i + 0.5f);
 
@@ -186,8 +191,6 @@ namespace Trains.NET.Rendering
 
         private void DrawHorizontalTracks(ICanvas canvas)
         {
-            // Draw under's
-
             IPath? trackPath = _pathFactory.Create();
 
             trackPath.MoveTo(0, _innerTrackOffset);

@@ -55,7 +55,7 @@ namespace Trains.NET.Rendering
                 _cachedStyles.Add(index, cachedBitmap);
             }
 
-            canvas.DrawBitmap(cachedBitmap, _cellSize, _cellSize);
+            canvas.DrawBitmap(cachedBitmap, 0, 0);
         }
 
         private void DrawTree(ICanvas canvas, int treeSeed)

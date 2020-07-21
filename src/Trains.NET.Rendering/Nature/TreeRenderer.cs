@@ -26,8 +26,8 @@ namespace Trains.NET.Rendering
             _cellSize = trackParameters.CellSize;
             _centerOffset = _cellSize / 2.0f;
             _baseRadius = _cellSize / 4.0f;
-            _minTreeSize = _baseRadius * 0.60f;
-            _maxTreeSize = _baseRadius * 0.95f;
+            _minTreeSize = _baseRadius;
+            _maxTreeSize = _baseRadius * 1.25f;
             _baseTreeBrush = new PaintBrush
             {
                 Color = new Color("#1B633A"),
@@ -84,7 +84,7 @@ namespace Trains.NET.Rendering
             {
                 float angle = angleOffset + (float)(Math.PI * 2.0 * i / circleCount);
                 float offset = r.NextFloat(_minTreeSize, _maxTreeSize);
-                float radius = r.NextFloat(_cellSize / 20, _cellSize / 10);
+                float radius = r.NextFloat(_cellSize / 10, 3 * _cellSize / 20);
                 float x = (float)(scale * offset * Math.Cos(angle));
                 float y = (float)(scale * offset * Math.Sin(angle));
 

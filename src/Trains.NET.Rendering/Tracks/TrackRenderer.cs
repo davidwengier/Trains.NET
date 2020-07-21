@@ -140,7 +140,7 @@ namespace Trains.NET.Rendering
                 canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-                DrawCornerPlanks(canvas, 0);
+                DrawCornerPlanks(canvas, 1);
 
                 DrawCornerTrack(canvas);
 
@@ -165,15 +165,15 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(trackPath, _trackClear);
         }
 
-        private void DrawCornerPlanks(ICanvas canvas) => DrawCornerPlanks(canvas, _parameters.NumPlanks);
+        private void DrawCornerPlanks(ICanvas canvas) => DrawCornerPlanks(canvas, _parameters.NumCornerPlanks);
 
         private void DrawCornerPlanks(ICanvas canvas, int plankCount)
         {
             IPath? path = _pathFactory.Create();
 
-            double step = Math.PI / 2.0 / (_parameters.NumPlanks + 1.0);
+            double step = Math.PI / 2.0 / (_parameters.NumCornerPlanks);
 
-            for (int i = 0; i <= plankCount; i++)
+            for (int i = 0; i < plankCount; i++)
             {
                 double angle = step * (i + 0.5f);
 

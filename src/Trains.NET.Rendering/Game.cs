@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering.LayerRenderer;
@@ -16,8 +17,8 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
         private readonly IBitmapFactory _bitmapFactory;
-        private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaFPS");
-        private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SkiaDrawTime");
+        private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("Draw-FPS-Skia");
+        private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-AllUp-Skia");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<ILayerRenderer, IBitmap> _bitmapBuffer = new Dictionary<ILayerRenderer, IBitmap>();
 
@@ -27,8 +28,19 @@ namespace Trains.NET.Rendering
             _boardRenderers = boardRenderers;
             _pixelMapper = pixelMapper;
             _bitmapFactory = bitmapFactory;
-            _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(x.Name.Replace(" ", "") + "DrawTime"));
+            _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
+        }
+
+        private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)
+        {
+            var sb = new StringBuilder("Draw-Layer-");
+            sb.Append(layerRenderer.Name.Replace(" ", ""));
+            if(layerRenderer is ICachableLayerRenderer)
+            {
+                sb.Append("[Cachable]");
+            }
+            return sb.ToString();
         }
 
         public void SetSize(int width, int height)

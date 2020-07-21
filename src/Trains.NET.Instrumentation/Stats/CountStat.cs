@@ -11,5 +11,6 @@
         public void Add() => this.Value++;
         public void Set(int value) => this.Value = value;
         public string GetDescription() => this.Value + ' ' + _thing;
+        public bool ShouldShow() => true;
     }
 }

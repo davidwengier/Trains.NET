@@ -3,5 +3,7 @@
     public interface IStat
     {
         string GetDescription();
+
+        bool ShouldShow();
     }
 }

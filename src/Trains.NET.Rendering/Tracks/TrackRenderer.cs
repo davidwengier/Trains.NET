@@ -142,6 +142,8 @@ namespace Trains.NET.Rendering
 
                 DrawCornerPlanks(canvas, 1);
 
+                canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize / 2), ClipOperation.Intersect, false);
+
                 DrawCornerTrack(canvas);
 
                 canvas.Restore();

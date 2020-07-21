@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrackRenderer : ITrackRenderer
+    public class TrackRenderer : ITrackRenderer
     {
         private readonly ITrackParameters _parameters;
         private readonly IBitmapFactory _bitmapFactory;
-        private readonly IPathFactory _pathFactory;
 
         private readonly PaintBrush _trackEdge;
         private readonly PaintBrush _trackClear;
@@ -16,22 +14,22 @@ namespace Trains.NET.Rendering
 
         private readonly Dictionary<TrackDirection, IBitmap> _cachedTracks = new Dictionary<TrackDirection, IBitmap>();
 
-        private readonly float _innerTrackOffset;
-        private readonly float _outerTrackOffset;
-        private readonly float _innerPlankOffset;
-        private readonly float _outerPlankOffset;
+        private readonly IPath _cornerTrackPath;
+        private readonly IPath _cornerPlankPath;
+        private readonly IPath _cornerSinglePlankPath;
+        private readonly IPath _horizontalTrackPath;
+        private readonly IPath _horizontalPlankPath;
 
-
-        public TrackRenderer(ITrackParameters parameters, IBitmapFactory bitmapFactory, IPathFactory pathFactory)
+        public TrackRenderer(ITrackParameters parameters, IBitmapFactory bitmapFactory, ITrackPathBuilder trackPathBuilder)
         {
             _parameters = parameters;
             _bitmapFactory = bitmapFactory;
-            _pathFactory = pathFactory;
 
-            _innerTrackOffset = _parameters.CellSize / 2.0f - _parameters.TrackWidth / 2.0f;
-            _outerTrackOffset = _parameters.CellSize / 2.0f + _parameters.TrackWidth / 2.0f;
-            _innerPlankOffset = _parameters.CellSize / 2.0f - _parameters.PlankLength / 2.0f;
-            _outerPlankOffset = _parameters.CellSize / 2.0f + _parameters.PlankLength / 2.0f;
+            _cornerTrackPath = trackPathBuilder.BuildCornerTrackPath();
+            _cornerPlankPath = trackPathBuilder.BuildCornerPlankPath();
+            _cornerSinglePlankPath = trackPathBuilder.BuildCornerPlankPath(1);
+            _horizontalTrackPath = trackPathBuilder.BuildHorizontalTrackPath();
+            _horizontalPlankPath = trackPathBuilder.BuildHorizontalPlankPath();
 
             _plankPaint = new PaintBrush
             {
@@ -99,7 +97,7 @@ namespace Trains.NET.Rendering
 
         private void DrawHorizontal(ICanvas canvas)
         {
-            DrawHorizontalPlanks(canvas);
+            canvas.DrawPath(_horizontalPlankPath, _plankPaint);
             DrawHorizontalTracks(canvas);
         }
 
@@ -114,7 +112,7 @@ namespace Trains.NET.Rendering
         }
         private void DrawCross(ICanvas canvas)
         {
-            DrawHorizontalPlanks(canvas);
+            canvas.DrawPath(_horizontalPlankPath, _plankPaint);
 
             canvas.Save();
             canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
@@ -128,19 +126,17 @@ namespace Trains.NET.Rendering
 
         private void DrawCorner(ICanvas canvas, TrackDirection direction)
         {
-            float rotation = TrackAngle(direction);
-
             canvas.Save();
-            canvas.RotateDegrees(rotation, _parameters.CellSize / 2, _parameters.CellSize / 2);
-            
-            DrawCornerPlanks(canvas);
+            canvas.RotateDegrees(direction.TrackRotationAngle(), _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-            if(IsTrackThreeWay(direction))
+            canvas.DrawPath(_cornerPlankPath, _plankPaint);
+
+            if (direction.IsThreeWay())
             {
                 canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-                DrawCornerPlanks(canvas, 1);
+                canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
 
                 canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize / 2), ClipOperation.Intersect, false);
 
@@ -156,91 +152,14 @@ namespace Trains.NET.Rendering
 
         private void DrawCornerTrack(ICanvas canvas)
         {
-            IPath? trackPath = _pathFactory.Create();
-
-            trackPath.MoveTo(0, _innerTrackOffset);
-            trackPath.QuadTo(_innerTrackOffset, _innerTrackOffset, _innerTrackOffset, 0);
-            trackPath.MoveTo(0, _outerTrackOffset);
-            trackPath.QuadTo(_outerTrackOffset, _outerTrackOffset, _outerTrackOffset, 0);
-
-            canvas.DrawPath(trackPath, _trackEdge);
-            canvas.DrawPath(trackPath, _trackClear);
-        }
-
-        private void DrawCornerPlanks(ICanvas canvas) => DrawCornerPlanks(canvas, _parameters.NumCornerPlanks);
-
-        private void DrawCornerPlanks(ICanvas canvas, int plankCount)
-        {
-            IPath? path = _pathFactory.Create();
-
-            double step = Math.PI / 2.0 / (_parameters.NumCornerPlanks);
-
-            for (int i = 0; i < plankCount; i++)
-            {
-                double angle = step * (i + 0.5f);
-
-                float innerX = (float)(_innerPlankOffset * Math.Cos(angle));
-                float innerY = (float)(_innerPlankOffset * Math.Sin(angle));
-                float outerX = (float)(_outerPlankOffset * Math.Cos(angle));
-                float outerY = (float)(_outerPlankOffset * Math.Sin(angle));
-
-                path.MoveTo(innerX, innerY);
-                path.LineTo(outerX, outerY);
-            }
-
-            canvas.DrawPath(path, _plankPaint);
+            canvas.DrawPath(_cornerTrackPath, _trackEdge);
+            canvas.DrawPath(_cornerTrackPath, _trackClear);
         }
 
         private void DrawHorizontalTracks(ICanvas canvas)
         {
-            IPath? trackPath = _pathFactory.Create();
-
-            trackPath.MoveTo(0, _innerTrackOffset);
-            trackPath.LineTo(_parameters.CellSize, _innerTrackOffset);
-            trackPath.MoveTo(0, _outerTrackOffset);
-            trackPath.LineTo(_parameters.CellSize, _outerTrackOffset);
-
-            canvas.DrawPath(trackPath, _trackEdge);
-            canvas.DrawPath(trackPath, _trackClear);
+            canvas.DrawPath(_horizontalTrackPath, _trackEdge);
+            canvas.DrawPath(_horizontalTrackPath, _trackClear);
         }
-
-        private void DrawHorizontalPlanks(ICanvas canvas)
-        {
-            float plankGap = _parameters.CellSize / _parameters.NumPlanks;
-
-            IPath? path = _pathFactory.Create();
-
-            for (int i = 1; i < _parameters.NumPlanks + 1; i++)
-            {
-                float pos = (i * plankGap) - (plankGap / 2);
-
-                path.MoveTo(pos, _innerPlankOffset);
-                path.LineTo(pos, _outerPlankOffset);
-            }
-
-            canvas.DrawPath(path, _plankPaint);
-        }
-
-        private static bool IsTrackThreeWay(TrackDirection direction) => direction == TrackDirection.RightUpDown ||
-                                                            direction == TrackDirection.LeftRightDown ||
-                                                            direction == TrackDirection.LeftUpDown ||
-                                                            direction == TrackDirection.LeftRightUp;
-
-        private static float TrackAngle(TrackDirection direction) => direction switch
-        {
-            TrackDirection.LeftUp => 0,
-            TrackDirection.LeftRightUp => 0,
-
-            TrackDirection.RightUp => 90,
-            TrackDirection.RightUpDown => 90,
-
-            TrackDirection.RightDown => 180,
-            TrackDirection.LeftRightDown => 180,
-
-            TrackDirection.LeftDown => 270,
-            TrackDirection.LeftUpDown => 270,
-
-            _ => 0
-        };
     }
 }

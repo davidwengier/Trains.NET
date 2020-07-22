@@ -223,6 +223,7 @@ namespace Trains.NET.Engine
             if (this.Direction != newDirection)
             {
                 this.Direction = newDirection;
+                this.AlternateState = false;
                 RefreshNeighbors(false);
             }
 

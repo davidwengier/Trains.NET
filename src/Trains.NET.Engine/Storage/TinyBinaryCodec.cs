@@ -245,7 +245,7 @@ namespace Trains.NET.Engine
         private class BitReader
         {
             private const int BitIndexReset = 7;
-            private int _byteIndex = 0;
+            private int _byteIndex;
             private int _bitIndex = BitIndexReset;
             private readonly byte[] _bytes;
 
@@ -271,8 +271,8 @@ namespace Trains.NET.Engine
         private class BitWriter
         {
             private readonly List<byte> _bytes = new List<byte>();
-            private byte _currentByte = 0;
-            private int _bitIndex = 0;
+            private byte _currentByte;
+            private int _bitIndex;
 
             public void Write3BitInt(int x) => Write(BitFromRight(x, 2), BitFromRight(x, 1), BitFromRight(x, 0));
             public void Write4BitInt(int x) => Write(BitFromRight(x, 3), BitFromRight(x, 2), BitFromRight(x, 1), BitFromRight(x, 0));

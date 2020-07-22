@@ -81,7 +81,7 @@ namespace Trains
             MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
         }
 
-        private ServiceProvider BuildServiceProvider()
+        private static ServiceProvider BuildServiceProvider()
         {
             var col = new ServiceCollection();
             foreach (Assembly a in GetAssemblies())

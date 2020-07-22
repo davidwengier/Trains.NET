@@ -29,8 +29,8 @@ Because all coding happens on stream I'm unlikely to be able to accept large pul
 
 Comments, suggestions, questions, feature requests, stream requests etc. however are all very _very_ welcome, simple file an issue on this repository.
 
-#### Quick Start Guide
+#### Development Quick Start Guide
 - Clone the [Trains.NET](https://github.com/davidwengier/Trains.NET) repository
 - Initialize the Comet submodule with `git submodule update --init`
 - Open the project in Visual Studio 2019 (or similar IDE)
-- Set the debug project to Trains and press run
+- Start debugging to confirm it works

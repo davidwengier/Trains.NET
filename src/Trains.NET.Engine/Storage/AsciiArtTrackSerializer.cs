@@ -6,7 +6,7 @@ namespace Trains.NET.Engine
 {
     internal class AsciiArtTrackSerializer : ITrackSerializer
     {
-        private static readonly Dictionary<TrackDirection, char> s_trackMapping = new Dictionary<TrackDirection, char>()
+        private static readonly Dictionary<TrackDirection, char> s_trackMapping = new()
         {
             { TrackDirection.Horizontal,   '═' },
             { TrackDirection.Vertical,     '║' },

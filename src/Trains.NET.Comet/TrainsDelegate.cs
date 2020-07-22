@@ -17,6 +17,7 @@ namespace Trains.NET.Comet
         private readonly Factory<IToolPreviewer> _previewerFactory;
         private (int column, int row) _lastDragCell;
         private bool _dragging;
+        private bool _shouldDraw = false;
         private float _mouseX;
         private float _mouseY;
 
@@ -34,9 +35,14 @@ namespace Trains.NET.Comet
             _game.SetSize((int)bounds.Width, (int)bounds.Height);
         }
 
+        public void FlagDraw() => _shouldDraw = true;
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public override void Draw(SkiaSharp.SKCanvas canvas, RectangleF dirtyRect)
         {
+            if (!_shouldDraw) return;
+            _shouldDraw = false;
+
             _game.Render(new SKCanvasWrapper(canvas));
 
             if (this.CurrentTool.Value is ICustomCursor cursor)
@@ -59,10 +65,10 @@ namespace Trains.NET.Comet
                 }
             }
 
-            if (this.CurrentTool.Value != null)
+            if (this.CurrentTool.Value is not null)
             {
                 var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
-                if (previewer != null)
+                if (previewer is not null)
                 {
                     canvas.Save();
                     (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);

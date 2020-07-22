@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering.Trains
 {
     internal class TrainPainter : ITrainPainter
     {
-        private readonly Dictionary<Train, ITrainPalette> _paletteMap = new Dictionary<Train, ITrainPalette>();
+        private readonly Dictionary<Train, ITrainPalette> _paletteMap = new();
         private readonly OrderedList<ITrainPalette> _trainPalettes;
         private readonly Random _random = new Random();
 

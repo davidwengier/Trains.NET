@@ -17,6 +17,6 @@ namespace Trains.NET.Rendering
         public void RotateDegrees(float degrees);
         void Clear(Color color);
         void GradientRect(float x, float y, float width, float height, Color start, Color end);
-        void DrawBitmap(IBitmap bitmap, int v1, int v2);
+        void DrawBitmap(IBitmap bitmap, int x, int y);
     }
 }

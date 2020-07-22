@@ -5,7 +5,7 @@ namespace Trains.NET.Engine.Tracks
 {
     internal class TerrainMap : ITerrainMap
     {
-        private readonly Dictionary<(int, int), Terrain> _terrainMap = new Dictionary<(int, int), Terrain>();
+        private readonly Dictionary<(int, int), Terrain> _terrainMap = new();
 
         public void AddTerrain(Terrain terrain)
         {

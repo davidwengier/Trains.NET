@@ -26,10 +26,10 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         DISCORD_AVATAR: https://s3.amazonaws.com/kinlane-productions/openapi/github-logo.png
       uses: Ilshidur/action-discord@master
-      with:
-        args: 'Something happened on GitHub, come quick!'
-    - name: Discord notification
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        DISCORD_AVATAR: https://s3.amazonaws.com/kinlane-productions/openapi/github-logo.png
-      uses: Ilshidur/action-discord@master
+#      with:
+#        args: 'Something happened on GitHub, come quick!'
+#    - name: Discord notification
+#      env:
+#        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#        DISCORD_AVATAR: https://s3.amazonaws.com/kinlane-productions/openapi/github-logo.png
+#      uses: Ilshidur/action-discord@master

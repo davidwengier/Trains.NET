@@ -1,5 +1,7 @@
-﻿using Comet;
+﻿using System.Linq;
+using Comet;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -7,9 +9,11 @@ namespace Trains.NET.Comet
     {
         private readonly IGameBoard _gameBoard;
 
-        public TrainController(IGameBoard gameBoard)
+        public TrainController(IGameBoard gameBoard, ITrackLayout layout)
         {
             _gameBoard = gameBoard;
+
+            this.BuildMode = !layout.Any();
         }
 
         public State<Train?> CurrentTrain { get; } = new State<Train?>();
@@ -18,14 +22,16 @@ namespace Trains.NET.Comet
 
         public State<string> SpeedDisplay { get; } = new State<string>("--");
 
+        public State<bool> BuildMode { get; } = new State<bool>(true);
+
         public void SetCurrentTrain(Train? train)
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.PropertyChanged -= Train_PropertyChanged;
             }
             this.CurrentTrain.Value = train;
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.PropertyChanged += Train_PropertyChanged;
             }
@@ -51,7 +57,7 @@ namespace Trains.NET.Comet
 
         public void Slower()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Slower();
             }
@@ -60,7 +66,7 @@ namespace Trains.NET.Comet
 
         public void Faster()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Faster();
             }
@@ -69,7 +75,7 @@ namespace Trains.NET.Comet
 
         public void Delete()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 _gameBoard.RemoveMovable(this.CurrentTrain.Value);
                 SetCurrentTrain(null);
@@ -90,17 +96,19 @@ namespace Trains.NET.Comet
             }
         }
 
-        public void ToggleGlobalStop()
-        {
-            _gameBoard.Enabled = !_gameBoard.Enabled;
-        }
-
         public void ToggleFollowMode()
         {
-            if (this.CurrentTrain.Value != null)
+            if (this.CurrentTrain.Value is not null)
             {
                 this.CurrentTrain.Value.Follow = !this.CurrentTrain.Value.Follow;
             }
+        }
+
+        public void ToggleBuildMode()
+        {
+            this.BuildMode.Value = !this.BuildMode.Value;
+
+            _gameBoard.Enabled = !this.BuildMode.Value;
         }
     }
 }

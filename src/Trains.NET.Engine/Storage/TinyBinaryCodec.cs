@@ -210,7 +210,7 @@ namespace Trains.NET.Engine
             }
         }
 
-        private static readonly Dictionary<TrackEncoding, TrackDirection> s_directionMap = new Dictionary<TrackEncoding, TrackDirection>
+        private static readonly Dictionary<TrackEncoding, TrackDirection> s_directionMap = new()
         {
             {TrackEncoding.Blank, TrackDirection.Undefined},
             {TrackEncoding.Horizontal, TrackDirection.Horizontal},

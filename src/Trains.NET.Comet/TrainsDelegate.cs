@@ -65,10 +65,10 @@ namespace Trains.NET.Comet
                 }
             }
 
-            if (this.CurrentTool.Value != null)
+            if (this.CurrentTool.Value is not null)
             {
                 var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
-                if (previewer != null)
+                if (previewer is not null)
                 {
                     canvas.Save();
                     (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);

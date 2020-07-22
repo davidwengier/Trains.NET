@@ -7,6 +7,8 @@
   </PropertyGroup>
   
   <ItemGroup>
+
+    <!-- Updates - Opt-in per project -->
     
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0-beta2.final" />
 
@@ -18,7 +20,15 @@
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.1" />
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.1" />
     
-    <!-- Nerdbank GitVersioning - Should be in all projects -->
+    <!-- Includes - for all projects -->
+    
+    <!-- Latest C# compiler -->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.7.0-4.final">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  
+    <!-- Nerdbank GitVersioning -->
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.27-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

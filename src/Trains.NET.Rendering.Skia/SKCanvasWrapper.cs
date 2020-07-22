@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering.Skia
 {
     public class SKCanvasWrapper : ICanvas
     {
-        private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new Dictionary<PaintBrush, SKPaint>();
+        private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
 
         private readonly SkiaSharp.SKCanvas _canvas;
 

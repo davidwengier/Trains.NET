@@ -19,7 +19,7 @@ namespace Trains.NET.Rendering
         private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaFPS");
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SkiaDrawTime");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
-        private readonly Dictionary<ILayerRenderer, IBitmap> _bitmapBuffer = new Dictionary<ILayerRenderer, IBitmap>();
+        private readonly Dictionary<ILayerRenderer, IBitmap> _bitmapBuffer = new();
 
         public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IBitmapFactory bitmapFactory)
         {

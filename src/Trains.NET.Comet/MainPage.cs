@@ -13,7 +13,6 @@ namespace Trains.NET.Comet
     public class MainPage : View
     {
         private readonly State<bool> _configurationShown = false;
-        private readonly State<bool> _buildMode = true;
 
         private readonly ITrackLayout _trackLayout;
         private readonly IGameStorage _gameStorage;
@@ -45,13 +44,13 @@ namespace Trains.NET.Comet
                     new VStack()
                     {
                         _configurationShown ? null :
-                            new Button(_buildMode ? "Build" : "Play", ()=> SwitchGameMode()),
+                            new Button(trainControls.BuildMode ? "Building" : "Playing", ()=> SwitchGameMode()),
                         new Spacer(),
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
-                                CreateToolsControls(tools, controlDelegate, _buildMode.Value),
+                                CreateToolsControls(tools, controlDelegate, trainControls.BuildMode.Value),
                         new Spacer(),
-                        _configurationShown || !_buildMode ? null :
+                        _configurationShown || !trainControls.BuildMode ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
                         new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
@@ -70,6 +69,9 @@ namespace Trains.NET.Comet
             {
                 game.AdjustViewPortIfNecessary();
 
+                controlDelegate.FlagDraw();
+                _miniMapDelegate.FlagDraw();
+
                 ThreadHelper.Run(async () =>
                 {
                     await ThreadHelper.SwitchToMainThreadAsync();
@@ -83,11 +85,11 @@ namespace Trains.NET.Comet
 
             void SwitchGameMode()
             {
-                _buildMode.Value = !_buildMode.Value;
+                trainControls.ToggleBuildMode();
 
                 if (controlDelegate == null) return;
 
-                controlDelegate.CurrentTool.Value = tools.FirstOrDefault(t => ShouldShowTool(_buildMode.Value, t));
+                controlDelegate.CurrentTool.Value = tools.FirstOrDefault(t => ShouldShowTool(trainControls.BuildMode, t));
             }
         }
 

@@ -8,12 +8,12 @@ namespace Trains.NET.Engine
 {
     internal class GameBoard : IGameBoard, IDisposable
     {
-        private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameLoopStepTime");
+        private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 
         private const int GameLoopInterval = 16;
 
-        private readonly Dictionary<Track, (Train, float)> _takenTracks = new Dictionary<Track, (Train, float)>();
-        private readonly List<IMovable> _movables = new List<IMovable>();
+        private readonly Dictionary<Track, (Train, float)> _takenTracks = new();
+        private readonly List<IMovable> _movables = new();
         private readonly ITrackLayout _trackLayout;
         private readonly ITimer? _gameLoopTimer;
 
@@ -306,6 +306,6 @@ namespace Trains.NET.Engine
             _gameLoopTimer?.Dispose();
         }
 
-        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t != null && t.Column == column && t.Row == row);
+        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t is not null && t.Column == column && t.Row == row);
     }
 }

@@ -9,7 +9,7 @@ namespace Trains.NET.Engine.Tracks
     {
         public event EventHandler? TracksChanged;
 
-        private readonly Dictionary<(int, int), Track> _tracks = new Dictionary<(int, int), Track>();
+        private readonly Dictionary<(int, int), Track> _tracks = new();
 
         public void AddTrack(int column, int row)
         {
@@ -54,6 +54,7 @@ namespace Trains.NET.Engine.Tracks
                     Column = track.Column,
                     Row = track.Row,
                     Direction = track.Direction,
+                    AlternateState = track.AlternateState
                 };
             }
 
@@ -63,6 +64,16 @@ namespace Trains.NET.Engine.Tracks
             }
 
             TracksChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ToggleTrack(int column, int row)
+        {
+            if (TryGet(column, row, out var track))
+            {
+                track.AlternateState = !track.AlternateState;
+
+                TracksChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public bool TryGet(int column, int row, [NotNullWhen(true)] out Track? track)

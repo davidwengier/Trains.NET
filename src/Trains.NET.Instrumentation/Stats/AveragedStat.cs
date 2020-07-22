@@ -20,5 +20,7 @@
             }
         }
         public abstract string GetDescription();
+
+        public bool ShouldShow() => this.Value.HasValue;
     }
 }

@@ -15,10 +15,10 @@ namespace Trains.NET.Engine
         //  On faster PC's, this can be set WAY down, but 12ms seems like a good balance. Below this the GitHub executions engine started to fail!
         private const int CoarseSleepThreshold = 12;
 
-        private bool _elapsedEventEnabled = false;
-        private long _lastTick = 0;
+        private bool _elapsedEventEnabled;
+        private long _lastTick;
         private bool _threadLoopEnabled = true;
-        private long _nextInvoke = 0;
+        private long _nextInvoke;
 
         private const int MaxTimeSinceLastTickIntervalMultiplier = 2;
 

@@ -13,5 +13,6 @@ namespace Trains.NET.Engine.Tracks
         void Clear();
         void AddTrack(int column, int row);
         void RemoveTrack(int column, int row);
+        void ToggleTrack(int column, int row);
     }
 }

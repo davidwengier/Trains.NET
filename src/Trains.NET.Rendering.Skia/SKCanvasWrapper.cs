@@ -70,6 +70,9 @@ namespace Trains.NET.Rendering.Skia
         public void Restore()
             => _canvas.Restore();
 
+        public void Scale(float scaleX, float scaleY)
+            => _canvas.Scale(scaleX, scaleY);
+
         public void RotateDegrees(float degrees, float x, float y)
             => _canvas.RotateDegrees(degrees, x, y);
 

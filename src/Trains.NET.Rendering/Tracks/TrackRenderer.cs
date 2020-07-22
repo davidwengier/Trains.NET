@@ -65,17 +65,17 @@ namespace Trains.NET.Rendering
                     cachedBitmap = _bitmapFactory.CreateBitmap(_parameters.CellSize, _parameters.CellSize);
                     ICanvas cachedCanvas = _bitmapFactory.CreateCanvas(cachedBitmap);
 
-                    DrawTrack(cachedCanvas, track.Direction);
+                    DrawTrack(cachedCanvas, track.Direction, track);
                 }
                 canvas.DrawBitmap(cachedBitmap, 0, 0);
             }
             else
             {
-                DrawTrack(canvas, track.Direction);
+                DrawTrack(canvas, track.Direction, track);
             }
         }
 
-        private void DrawTrack(ICanvas canvas, TrackDirection direction)
+        private void DrawTrack(ICanvas canvas, TrackDirection direction, Track track)
         {
             switch (direction)
             {
@@ -96,7 +96,7 @@ namespace Trains.NET.Rendering
                 case TrackDirection.LeftRightDown:
                 case TrackDirection.LeftUpDown:
                 case TrackDirection.LeftRightUp:
-                    DrawCorner(canvas, direction);
+                    DrawCorner(canvas, direction, track);
                     break;
                 case TrackDirection.Undefined:
                 default:
@@ -134,10 +134,16 @@ namespace Trains.NET.Rendering
             DrawHorizontalTracks(canvas);
         }
 
-        private void DrawCorner(ICanvas canvas, TrackDirection direction)
+        private void DrawCorner(ICanvas canvas, TrackDirection direction, Track track)
         {
             canvas.Save();
             canvas.RotateDegrees(direction.TrackRotationAngle(), _parameters.CellSize / 2, _parameters.CellSize / 2);
+
+            if (direction.IsThreeWay() && track.AlternateState)
+            {
+                canvas.Scale(-1, 1);
+                canvas.Translate(-_parameters.CellSize, 0);
+            }
 
             canvas.DrawPath(_cornerPlankPath, _plankPaint);
 

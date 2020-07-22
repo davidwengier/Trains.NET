@@ -65,6 +65,16 @@ namespace Trains.NET.Engine.Tracks
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        public void ToggleTrack(int column, int row)
+        {
+            if (TryGet(column, row, out var track))
+            {
+                track.AlternateState = !track.AlternateState;
+
+                TracksChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         public bool TryGet(int column, int row, [NotNullWhen(true)] out Track? track)
         {
             return _tracks.TryGetValue((column, row), out track);

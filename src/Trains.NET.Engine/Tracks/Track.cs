@@ -18,6 +18,7 @@ namespace Trains.NET.Engine
         public int Row { get; set; }
         public TrackDirection Direction { get; set; }
         public bool Happy { get; set; }
+        public bool AlternateState { get; set; }
 
         internal void Move(TrainPosition position)
         {
@@ -38,7 +39,7 @@ namespace Trains.NET.Engine
             }
         }
 
-        private static void MoveLeftRightDown(TrainPosition position)
+        private void MoveLeftRightDown(TrainPosition position)
         {
             // Check single track extremes, as there are 2 places where the
             //  train angle could be at 0 degrees
@@ -56,11 +57,18 @@ namespace Trains.NET.Engine
             }
             else
             {
-                TrainMovement.MoveRightDown(position);
+                if (this.AlternateState)
+                {
+                    TrainMovement.MoveLeftDown(position);
+                }
+                else
+                {
+                    TrainMovement.MoveRightDown(position);
+                }
             }
         }
 
-        private static void MoveLeftUpDown(TrainPosition position)
+        private void MoveLeftUpDown(TrainPosition position)
         {
             if (position.RelativeTop < 0.4f)
             {
@@ -76,11 +84,18 @@ namespace Trains.NET.Engine
             }
             else
             {
-                TrainMovement.MoveLeftDown(position);
+                if (this.AlternateState)
+                {
+                    TrainMovement.MoveLeftUp(position);
+                }
+                else
+                {
+                    TrainMovement.MoveLeftDown(position);
+                }
             }
         }
 
-        private static void MoveLeftRightUp(TrainPosition position)
+        private void MoveLeftRightUp(TrainPosition position)
         {
             if (position.RelativeLeft < 0.4f)
             {
@@ -96,11 +111,18 @@ namespace Trains.NET.Engine
             }
             else
             {
-                TrainMovement.MoveLeftUp(position);
+                if (this.AlternateState)
+                {
+                    TrainMovement.MoveRightUp(position);
+                }
+                else
+                {
+                    TrainMovement.MoveLeftUp(position);
+                }
             }
         }
 
-        private static void MoveRightUpDown(TrainPosition position)
+        private void MoveRightUpDown(TrainPosition position)
         {
             // Right -> Up, Enters 180, Leaves 270
             // Up -> Right, Enters 90, Leaves 0
@@ -119,7 +141,14 @@ namespace Trains.NET.Engine
             }
             else
             {
-                TrainMovement.MoveRightUp(position);
+                if (this.AlternateState)
+                {
+                    TrainMovement.MoveRightDown(position);
+                }
+                else
+                {
+                    TrainMovement.MoveRightUp(position);
+                }
             }
         }
 

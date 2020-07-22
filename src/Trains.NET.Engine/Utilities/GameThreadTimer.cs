@@ -20,6 +20,8 @@ namespace Trains.NET.Engine
         private bool _threadLoopEnabled = true;
         private long _nextInvoke = 0;
 
+        private const int MaxTimeSinceLastTickIntervalMultiplier = 2;
+
         private readonly Thread _gameThread;
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -48,7 +50,15 @@ namespace Trains.NET.Engine
                 if (_threadLoopEnabled && _elapsedEventEnabled)
                 {
                     long time = _stopwatch.ElapsedMilliseconds;
+
                     this.TimeSinceLastTick = time - _lastTick;
+
+                    long maximumTimeSinceLastTick = (long)(MaxTimeSinceLastTickIntervalMultiplier * this.Interval);
+                    if (this.TimeSinceLastTick > maximumTimeSinceLastTick)
+                    {
+                        this.TimeSinceLastTick = maximumTimeSinceLastTick;
+                    }
+
                     _lastTick = time;
                     Elapsed?.Invoke(null, null);
 

@@ -31,7 +31,7 @@ namespace Trains.NET.Rendering
             };
         }
 
-        public bool Enabled { get; set; } = false;
+        public bool Enabled { get; set; }
         public string Name => "Terrain";
 
         public void Render(ICanvas canvas, int width, int height)

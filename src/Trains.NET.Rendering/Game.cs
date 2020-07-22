@@ -114,7 +114,7 @@ namespace Trains.NET.Rendering
                     }
 
                     _renderLayerDrawTimes[renderer].Start();
-                    canvas.DrawBitmap(_bitmapBuffer[renderer], 0, 0); canvas.DrawBitmap(_bitmapBuffer[renderer], 0, 0);
+                    canvas.DrawBitmap(_bitmapBuffer[renderer], 0, 0);
                     _renderLayerDrawTimes[renderer].Stop();
                 }
                 else

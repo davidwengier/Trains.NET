@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Trains.NET.Instrumentation
 {
@@ -16,6 +17,17 @@ namespace Trains.NET.Instrumentation
             _sw.Stop();
             SetValue(_sw.ElapsedMilliseconds);
         }
-        public override string GetDescription() => (this.Value?.ToString("G4") ?? string.Empty) + "ms";
+        public override string GetDescription()
+        {
+            if(this.Value == null)
+            {
+                return "null";
+            }
+            if (this.Value < 0.01)
+            {
+                return "< 0.01ms";
+            }
+            return Math.Round(this.Value ?? 0, 2).ToString() + "ms";
+        }
     }
 }

@@ -27,7 +27,10 @@ namespace Trains.NET.Rendering
 
             foreach((string name, IStat stat) in InstrumentationBag.Stats)
             {
-                canvas.DrawText(name + ": " + stat.GetDescription(), 0, i++ * 25, _paint);
+                if (stat.ShouldShow())
+                {
+                    canvas.DrawText(name + ": " + stat.GetDescription(), 0, i++ * 25, _paint);
+                }
             }
         }
     }

@@ -44,7 +44,7 @@ namespace Trains.NET.Comet
                     new VStack()
                     {
                         _configurationShown ? null :
-                            new Button(trainControls.BuildMode ? "Build" : "Play", ()=> SwitchGameMode()),
+                            new Button(trainControls.BuildMode ? "Building" : "Playing", ()=> SwitchGameMode()),
                         new Spacer(),
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :

@@ -20,7 +20,7 @@ namespace Trains.NET.Engine
         private bool _threadLoopEnabled = true;
         private long _nextInvoke;
 
-        private const int MaxTimeSinceLastTickIntervalMultiplier = 2;
+        private const int MaxTimeSinceLastTickIntervalMultiplier = 4;
 
         private readonly Thread _gameThread;
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();

@@ -35,8 +35,8 @@ namespace Trains.NET.Rendering.Skia
             ((IDisposable)_canvas).Dispose();
         }
 
-        public void DrawBitmap(IBitmap bitmap, int width, int height)
-            => _canvas.DrawBitmap(bitmap.ToSkia(), width, height);
+        public void DrawBitmap(IBitmap bitmap, int x, int y)
+            => _canvas.DrawBitmap(bitmap.ToSkia(), x, y);
 
 
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)

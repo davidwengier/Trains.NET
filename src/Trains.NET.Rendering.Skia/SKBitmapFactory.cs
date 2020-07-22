@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering.Skia
 {
-    internal class SKBitmapFactory : IBitmapFactory
+    public class SKBitmapFactory : IBitmapFactory
     {
         public IBitmap CreateBitmap(int width, int height) => new SKBitmapWrapper(width, height);
 

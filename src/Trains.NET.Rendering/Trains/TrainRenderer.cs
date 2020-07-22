@@ -3,7 +3,7 @@ using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrainRenderer : ITrainRenderer
+    public class TrainRenderer : ITrainRenderer
     {
         private readonly ITrackParameters _trackParameters;
         private readonly ITrainParameters _trainParameters;

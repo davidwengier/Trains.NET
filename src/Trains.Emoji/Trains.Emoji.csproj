@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>$(NoWarn);MSB3245</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
+    <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+  </ItemGroup>
+
+</Project>

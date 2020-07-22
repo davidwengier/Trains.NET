@@ -1,189 +1,165 @@
-﻿using Trains.NET.Engine;
+﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class TrackRenderer : ITrackRenderer //, IDisposable
+    public class TrackRenderer : ITrackRenderer
     {
         private readonly ITrackParameters _parameters;
-        private readonly IPathFactory _pathFactory;
+        private readonly IBitmapFactory _bitmapFactory;
 
-        private readonly PaintBrush _straightTrackClear;
-        private readonly PaintBrush _straightTrackPaint;
-        private readonly PaintBrush _arcTrackPaint;
-        private readonly PaintBrush _arcTrackClear;
+        private readonly PaintBrush _trackEdge;
+        private readonly PaintBrush _trackClear;
         private readonly PaintBrush _plankPaint;
-        
-        public TrackRenderer(ITrackParameters parameters, IPathFactory pathFactory)
+
+        private readonly Dictionary<TrackDirection, IBitmap> _cachedTracks = new Dictionary<TrackDirection, IBitmap>();
+
+        private readonly IPath _cornerTrackPath;
+        private readonly IPath _cornerPlankPath;
+        private readonly IPath _cornerSinglePlankPath;
+        private readonly IPath _horizontalTrackPath;
+        private readonly IPath _horizontalPlankPath;
+
+        public TrackRenderer(ITrackParameters parameters, IBitmapFactory bitmapFactory, ITrackPathBuilder trackPathBuilder)
         {
             _parameters = parameters;
-            _pathFactory = pathFactory;
+            _bitmapFactory = bitmapFactory;
+
+            _cornerTrackPath = trackPathBuilder.BuildCornerTrackPath();
+            _cornerPlankPath = trackPathBuilder.BuildCornerPlankPath();
+            _cornerSinglePlankPath = trackPathBuilder.BuildCornerPlankPath(1);
+            _horizontalTrackPath = trackPathBuilder.BuildHorizontalTrackPath();
+            _horizontalPlankPath = trackPathBuilder.BuildHorizontalPlankPath();
+
             _plankPaint = new PaintBrush
             {
                 Color = Colors.Black,
                 Style = PaintStyle.Stroke,
+                StrokeWidth = _parameters.PlankWidth,
                 IsAntialias = true
             };
-            _arcTrackClear = new PaintBrush()
+            _trackClear = new PaintBrush
             {
-                Style = PaintStyle.Stroke,
                 Color = Colors.White,
-                IsAntialias = true
-            };
-            _arcTrackPaint = new PaintBrush()
-            {
                 Style = PaintStyle.Stroke,
-                StrokeWidth = 1,
-                Color = Colors.Black,
+                StrokeWidth = _parameters.RailTopWidth,
                 IsAntialias = true
             };
-            _straightTrackPaint = new PaintBrush
+            _trackEdge = new PaintBrush
             {
                 Color = Colors.Black,
                 Style = PaintStyle.Stroke,
-                StrokeWidth = 1,
-                IsAntialias = false
-            };
-            _straightTrackClear = new PaintBrush
-            {
-                Color = Colors.White,
-                Style = PaintStyle.Fill,
-                StrokeWidth = 0
+                StrokeWidth = _parameters.RailWidth,
+                IsAntialias = true
             };
         }
 
         public void Render(ICanvas canvas, Track track)
         {
-            int width = _parameters.CellSize;
+            if(!_cachedTracks.TryGetValue(track.Direction, out IBitmap cachedBitmap))
+            {
+                cachedBitmap = _bitmapFactory.CreateBitmap(_parameters.CellSize, _parameters.CellSize);
+                ICanvas cachedCanvas = _bitmapFactory.CreateCanvas(cachedBitmap);
 
-            if (track.Direction == TrackDirection.Cross)
-            {
-                RenderStraightTrack(canvas, width);
-                canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
-                RenderStraightTrack(canvas, width);
+                DrawTrack(cachedCanvas, track.Direction);
             }
-            else if (track.Direction == TrackDirection.Vertical || track.Direction == TrackDirection.Horizontal)
-            {
-                if (track.Direction == TrackDirection.Vertical)
-                {
-                    canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
-                }
-                RenderStraightTrack(canvas, width);
-            }
-            else
-            {
-                if (track.Direction == TrackDirection.RightUp || track.Direction == TrackDirection.RightUpDown)
-                {
-                    canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
-                }
-                else if (track.Direction == TrackDirection.RightDown || track.Direction == TrackDirection.LeftRightDown)
-                {
-                    canvas.RotateDegrees(180, _parameters.CellSize / 2, _parameters.CellSize / 2);
-                }
-                else if (track.Direction == TrackDirection.LeftDown || track.Direction == TrackDirection.LeftUpDown)
-                {
-                    canvas.RotateDegrees(270, _parameters.CellSize / 2, _parameters.CellSize / 2);
-                }
-                bool drawExtra = track.Direction == TrackDirection.RightUpDown ||
-                    track.Direction == TrackDirection.LeftRightDown ||
-                    track.Direction == TrackDirection.LeftUpDown ||
-                    track.Direction == TrackDirection.LeftRightUp;
-
-                RenderCornerTrack(canvas, width, drawExtra);
-            }
+            canvas.DrawBitmap(cachedBitmap, 0, 0);
         }
 
-        public void RenderStraightTrack(ICanvas canvas, int width)
+        private void DrawTrack(ICanvas canvas, TrackDirection direction)
         {
-            float plankGap = width / _parameters.NumPlanks;
-            for (int i = 1; i < _parameters.NumPlanks + 1; i++)
+            switch (direction)
             {
-                float pos = (i * plankGap) - (plankGap / 2);
-                DrawPlank(canvas, width, pos);
+                case TrackDirection.Horizontal:
+                    DrawHorizontal(canvas);
+                    break;
+                case TrackDirection.Vertical:
+                    DrawVertical(canvas);
+                    break;
+                case TrackDirection.Cross:
+                    DrawCross(canvas);
+                    break;
+                case TrackDirection.LeftUp:
+                case TrackDirection.RightUp:
+                case TrackDirection.RightDown:
+                case TrackDirection.LeftDown:
+                case TrackDirection.RightUpDown:
+                case TrackDirection.LeftRightDown:
+                case TrackDirection.LeftUpDown:
+                case TrackDirection.LeftRightUp:
+                    DrawCorner(canvas, direction);
+                    break;
+                case TrackDirection.Undefined:
+                default:
+                    break;
             }
-
-            canvas.DrawRect(0, _parameters.TrackPadding, width, _parameters.TrackWidth, _straightTrackClear);
-            canvas.DrawRect(0, width - _parameters.TrackPadding - _parameters.TrackWidth, width, _parameters.TrackWidth, _straightTrackClear);
-
-            IPath? trackPath = _pathFactory.Create();
-            trackPath.MoveTo(0, _parameters.TrackPadding);
-            trackPath.LineTo(width, _parameters.TrackPadding);
-            trackPath.MoveTo(0, _parameters.TrackPadding + _parameters.TrackWidth);
-            trackPath.LineTo(width, _parameters.TrackPadding + _parameters.TrackWidth);
-
-            trackPath.MoveTo(0, width - _parameters.TrackPadding - _parameters.TrackWidth);
-            trackPath.LineTo(width, width - _parameters.TrackPadding - _parameters.TrackWidth);
-            trackPath.MoveTo(0, width - _parameters.TrackPadding);
-            trackPath.LineTo(width, width - _parameters.TrackPadding);
-
-            canvas.DrawPath(trackPath, _straightTrackPaint);
         }
 
-        private void DrawPlank(ICanvas canvas, int width, float pos)
+        private void DrawHorizontal(ICanvas canvas)
         {
-            _plankPaint.StrokeWidth = _parameters.PlankWidth;
-
-            IPath? path = _pathFactory.Create();
-            path.MoveTo(pos, _parameters.PlankPadding);
-            path.LineTo(pos, width - _parameters.PlankPadding);
-            canvas.DrawPath(path, _plankPaint);
+            canvas.DrawPath(_horizontalPlankPath, _plankPaint);
+            DrawHorizontalTracks(canvas);
         }
 
-        public void RenderCornerTrack(ICanvas canvas, int width, bool drawExtra)
+        private void DrawVertical(ICanvas canvas)
         {
             canvas.Save();
+            canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-            // Rotate to initial angle
-            canvas.RotateDegrees(-_parameters.CornerEdgeOffsetDegrees);
+            DrawHorizontal(canvas);
 
-            for (int i = 0; i < _parameters.NumCornerPlanks; i++)
-            {
-                DrawPlank(canvas, width, 0);
-                canvas.RotateDegrees(-_parameters.CornerStepDegrees);
-            }
+            canvas.Restore();
+        }
+        private void DrawCross(ICanvas canvas)
+        {
+            canvas.DrawPath(_horizontalPlankPath, _plankPaint);
+
+            canvas.Save();
+            canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
+
+            DrawHorizontal(canvas);
+
             canvas.Restore();
 
-            if (drawExtra)
+            DrawHorizontalTracks(canvas);
+        }
+
+        private void DrawCorner(ICanvas canvas, TrackDirection direction)
+        {
+            canvas.Save();
+            canvas.RotateDegrees(direction.TrackRotationAngle(), _parameters.CellSize / 2, _parameters.CellSize / 2);
+
+            canvas.DrawPath(_cornerPlankPath, _plankPaint);
+
+            if (direction.IsThreeWay())
             {
                 canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-                DrawTracks(canvas, width);
+                canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
+
+                canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize / 2), ClipOperation.Intersect, false);
+
+                DrawCornerTrack(canvas);
+
                 canvas.Restore();
             }
 
-            DrawTracks(canvas, width);
+            DrawCornerTrack(canvas);
 
-            void DrawTracks(ICanvas canvas, int width)
-            {
-                _arcTrackClear.StrokeWidth = _parameters.TrackWidth;
-
-                DrawArc(canvas, _parameters.TrackPadding + (_parameters.TrackWidth / 2), _arcTrackClear);
-                DrawArc(canvas, _parameters.TrackPadding, _arcTrackPaint);
-                DrawArc(canvas, _parameters.TrackPadding + _parameters.TrackWidth, _arcTrackPaint);
-
-                DrawArc(canvas, width - _parameters.TrackPadding - (_parameters.TrackWidth / 2), _arcTrackClear);
-                DrawArc(canvas, width - _parameters.TrackPadding, _arcTrackPaint);
-                DrawArc(canvas, width - _parameters.TrackPadding - _parameters.TrackWidth, _arcTrackPaint);
-            }
-
-            void DrawArc(ICanvas canvas, float position, PaintBrush trackPaint)
-            {
-                // Offset to match other tracks 
-                IPath? trackPath = _pathFactory.Create();
-                trackPath.MoveTo(0, position);
-                trackPath.ArcTo(position, position, 0, PathArcSize.Small, PathDirection.CounterClockwise, position, 0);
-
-                canvas.DrawPath(trackPath, trackPaint);
-            }
+            canvas.Restore();
         }
 
-        //public void Dispose()
-        //{
-        //    _straightTrackClear.Dispose();
-        //    _straightTrackPaint.Dispose();
-        //    _arcTrackPaint.Dispose();
-        //    _arcTrackClear.Dispose();
-        //    _plankPaint.Dispose();
-        //}
+        private void DrawCornerTrack(ICanvas canvas)
+        {
+            canvas.DrawPath(_cornerTrackPath, _trackEdge);
+            canvas.DrawPath(_cornerTrackPath, _trackClear);
+        }
+
+        private void DrawHorizontalTracks(ICanvas canvas)
+        {
+            canvas.DrawPath(_horizontalTrackPath, _trackEdge);
+            canvas.DrawPath(_horizontalTrackPath, _trackClear);
+        }
     }
 }

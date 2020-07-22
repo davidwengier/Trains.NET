@@ -70,6 +70,9 @@ namespace Trains.NET.Comet
             {
                 game.AdjustViewPortIfNecessary();
 
+                controlDelegate.FlagDraw();
+                _miniMapDelegate.FlagDraw();
+
                 ThreadHelper.Run(async () =>
                 {
                     await ThreadHelper.SwitchToMainThreadAsync();

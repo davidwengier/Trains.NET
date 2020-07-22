@@ -18,7 +18,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, Train train)
         {
-            var palette = _trainPainter.GetPalette(train);
+            ITrainPalette? palette = _trainPainter.GetPalette(train);
 
             SetupCanvasToDrawTrain(canvas, train, _trackParameters);
 

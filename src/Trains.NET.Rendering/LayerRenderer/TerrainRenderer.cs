@@ -141,7 +141,7 @@ namespace Trains.NET.Rendering
             };
         }
 
-        private List<ViewportPoint> OrderListByDistanceFromPoint(ViewportPoint point, List<ViewportPoint> pointsList)
+        private static List<ViewportPoint> OrderListByDistanceFromPoint(ViewportPoint point, List<ViewportPoint> pointsList)
         {
             return pointsList.OrderBy(p => CalculateDistanceBetweenTwoPoints(point, p)).ToList();
         }

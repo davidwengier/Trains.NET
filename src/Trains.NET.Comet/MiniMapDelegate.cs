@@ -12,7 +12,7 @@ namespace Trains.NET.Comet
     internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private bool _redraw = true;
-        private bool _shouldDraw = false;
+        private bool _shouldDraw;
         private readonly ITrackLayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;

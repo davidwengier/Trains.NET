@@ -17,7 +17,7 @@ namespace Trains.NET.Comet
         private readonly Factory<IToolPreviewer> _previewerFactory;
         private (int column, int row) _lastDragCell;
         private bool _dragging;
-        private bool _shouldDraw = false;
+        private bool _shouldDraw;
         private float _mouseX;
         private float _mouseY;
 
@@ -67,7 +67,7 @@ namespace Trains.NET.Comet
 
             if (this.CurrentTool.Value is not null)
             {
-                var previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
+                IToolPreviewer? previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
                 if (previewer is not null)
                 {
                     canvas.Save();

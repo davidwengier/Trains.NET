@@ -54,6 +54,7 @@ namespace Trains.NET.Engine.Tracks
                     Column = track.Column,
                     Row = track.Row,
                     Direction = track.Direction,
+                    AlternateState = track.AlternateState
                 };
             }
 

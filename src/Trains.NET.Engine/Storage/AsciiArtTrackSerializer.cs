@@ -23,6 +23,16 @@ namespace Trains.NET.Engine
             { TrackDirection.Undefined,    '?' }
         };
 
+        private static readonly Dictionary<TrackDirection, char> s_alternateTrackMappings = new()
+        {
+            { TrackDirection.RightUpDown, '├' },
+            { TrackDirection.LeftRightDown, '┬' },
+            { TrackDirection.LeftUpDown, '┤' },
+            { TrackDirection.LeftRightUp, '┴' }
+        };
+
+
+
         public IEnumerable<Track> Deserialize(string[] lines)
         {
             var tracks = new List<Track>();
@@ -32,7 +42,14 @@ namespace Trains.NET.Engine
                 for (int c = 0; c < lines[r].Length; c++)
                 {
                     char current = lines[r][c];
+
+                    bool alternate = false;
                     KeyValuePair<TrackDirection, char> pair = s_trackMapping.FirstOrDefault(kvp => kvp.Value == current);
+                    if (pair.Value == '\0')
+                    {
+                        pair = s_alternateTrackMappings.FirstOrDefault(kvp => kvp.Value == current);
+                        alternate = true;
+                    }
 
                     if (pair.Value != default)
                     {
@@ -40,7 +57,8 @@ namespace Trains.NET.Engine
                         {
                             Column = c,
                             Row = r,
-                            Direction = pair.Key
+                            Direction = pair.Key,
+                            AlternateState = alternate
                         };
                         tracks.Add(track);
                     }
@@ -70,7 +88,8 @@ namespace Trains.NET.Engine
                     }
                     else
                     {
-                        sb.Append(s_trackMapping[track.Direction]);
+                        var mapping = track.AlternateState ? s_alternateTrackMappings : s_trackMapping;
+                        sb.Append(mapping[track.Direction]);
                     }
                 }
                 sb.AppendLine();

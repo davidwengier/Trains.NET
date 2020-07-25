@@ -68,7 +68,7 @@ namespace Trains.NET.Engine.Tracks
 
         public void ToggleTrack(int column, int row)
         {
-            if (TryGet(column, row, out var track))
+            if (TryGet(column, row, out var track) && track.HasAlternateState())
             {
                 track.AlternateState = !track.AlternateState;
 

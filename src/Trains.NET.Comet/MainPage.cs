@@ -92,7 +92,7 @@ namespace Trains.NET.Comet
                 _controlDelegate.Invalidate();
                 _miniMapDelegate.Invalidate();
 
-                await Task.Delay(TimeSpan.FromSeconds(1.0 / 30)).ConfigureAwait(true);
+                await Task.Delay(TimeSpan.FromSeconds(1.0 / 60)).ConfigureAwait(true);
             }
         }
 

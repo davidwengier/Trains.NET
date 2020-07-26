@@ -70,7 +70,7 @@ namespace Trains.NET.Engine
         private void DoGameLoopStep()
         {
             _takenTracks.Clear();
-            foreach (Train train in _movables)
+            foreach (Train train in _movables.ToArray())
             {
                 // Claim the track we are currently on, distance of 0
                 if (_trackLayout.TryGet(train.Column, train.Row, out Track? myTrack))
@@ -281,7 +281,7 @@ namespace Trains.NET.Engine
 
         public IEnumerable<IMovable> GetMovables()
         {
-            foreach (IMovable movable in _movables)
+            foreach (IMovable movable in _movables.ToArray())
             {
                 yield return movable;
             }
@@ -289,7 +289,7 @@ namespace Trains.NET.Engine
 
         public IEnumerable<T> GetMovables<T>() where T : IMovable
         {
-            foreach (T movable in _movables.OfType<T>())
+            foreach (T movable in _movables.OfType<T>().ToArray())
             {
                 yield return movable;
             }

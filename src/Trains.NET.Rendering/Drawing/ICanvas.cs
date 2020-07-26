@@ -19,5 +19,6 @@ namespace Trains.NET.Rendering
         void GradientRect(float x, float y, float width, float height, Color start, Color end);
         void Scale(float scaleX, float scaleY);
         void DrawImage(IImage cachedImage, int x, int y);
+        float MeasureText(string text, PaintBrush paint);
     }
 }

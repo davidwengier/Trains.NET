@@ -91,8 +91,6 @@ namespace Trains.NET.Comet
             while (_presenting)
             {
                 _drawTime.Start();
-                _controlDelegate.FlagDraw();
-                _miniMapDelegate.FlagDraw();
 
                 _controlDelegate.Invalidate();
                 _miniMapDelegate.Invalidate();

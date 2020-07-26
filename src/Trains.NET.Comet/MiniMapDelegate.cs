@@ -12,7 +12,6 @@ namespace Trains.NET.Comet
     internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private bool _redraw = true;
-        private bool _shouldDraw;
         private readonly ITrackLayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
@@ -38,13 +37,8 @@ namespace Trains.NET.Comet
             _trackLayout.TracksChanged += (s, e) => _redraw = true;
         }
 
-        public void FlagDraw() => _shouldDraw = true;
-
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
         {
-            if (!_shouldDraw) return;
-            _shouldDraw = false;
-
             if (dirtyRect.IsEmpty) return;
             if (!_redraw) return;
 

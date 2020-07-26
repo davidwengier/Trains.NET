@@ -71,16 +71,7 @@ namespace Trains.NET.Rendering
             _gameBoard.Columns = columns;
             _gameBoard.Rows = rows;
 
-            ResetBuffers();
-        }
-
-        private void ResetBuffers()
-        {
-            foreach (IImage image in _imageBuffer.Values)
-            {
-                image.Dispose();
-            }
-            _imageBuffer.Clear();
+            _needsBufferReset = true;
         }
 
         public void Render(ICanvas canvas)
@@ -111,6 +102,20 @@ namespace Trains.NET.Rendering
                 _backBuffer = imageCanvas.Render();
             }
             oldBuffer?.Dispose();
+
+            if (_needsBufferReset)
+            {
+                _gameBufferReset.Start();
+                
+                foreach (IImage image in _imageBuffer.Values)
+                {
+                    image.Dispose();
+                }
+                _imageBuffer.Clear();
+                
+                _needsBufferReset = false;
+                _gameBufferReset.Stop();
+            }
         }
 
         private void RenderFrame(ICanvas? canvas)
@@ -161,14 +166,6 @@ namespace Trains.NET.Rendering
                 canvas.Restore();
             }
             canvas.Restore();
-
-            if (_needsBufferReset)
-            {
-                _gameBufferReset.Start();
-                ResetBuffers();
-                _needsBufferReset = false;
-                _gameBufferReset.Stop();
-            }
 
             _skiaDrawTime.Stop();
             _skiaFps.Update();

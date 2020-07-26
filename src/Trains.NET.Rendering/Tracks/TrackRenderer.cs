@@ -8,13 +8,13 @@ namespace Trains.NET.Rendering
         private bool _cacheBitmaps = false;
 
         private readonly ITrackParameters _parameters;
-        private readonly IBitmapFactory _bitmapFactory;
+        private readonly IImageFactory _imageFactory;
 
         private readonly PaintBrush _trackEdge;
         private readonly PaintBrush _trackClear;
         private readonly PaintBrush _plankPaint;
 
-        private readonly Dictionary<TrackDirection, IBitmap> _cachedTracks = new Dictionary<TrackDirection, IBitmap>();
+        private readonly Dictionary<TrackDirection, IImage> _cachedTracks = new Dictionary<TrackDirection, IImage>();
 
         private readonly IPath _cornerTrackPath;
         private readonly IPath _cornerPlankPath;
@@ -22,10 +22,10 @@ namespace Trains.NET.Rendering
         private readonly IPath _horizontalTrackPath;
         private readonly IPath _horizontalPlankPath;
 
-        public TrackRenderer(ITrackParameters parameters, IBitmapFactory bitmapFactory, ITrackPathBuilder trackPathBuilder)
+        public TrackRenderer(ITrackParameters parameters, IImageFactory imageFactory, ITrackPathBuilder trackPathBuilder)
         {
             _parameters = parameters;
-            _bitmapFactory = bitmapFactory;
+            _imageFactory = imageFactory;
 
             _cornerTrackPath = trackPathBuilder.BuildCornerTrackPath();
             _cornerPlankPath = trackPathBuilder.BuildCornerPlankPath();
@@ -60,14 +60,16 @@ namespace Trains.NET.Rendering
         {
             if (_cacheBitmaps)
             {
-                if (!_cachedTracks.TryGetValue(track.Direction, out IBitmap cachedBitmap))
+                if (!_cachedTracks.TryGetValue(track.Direction, out IImage cachedImage))
                 {
-                    cachedBitmap = _bitmapFactory.CreateBitmap(_parameters.CellSize, _parameters.CellSize);
-                    ICanvas cachedCanvas = _bitmapFactory.CreateCanvas(cachedBitmap);
+                    using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_parameters.CellSize, _parameters.CellSize);
 
-                    DrawTrack(cachedCanvas, track.Direction, track);
+                    DrawTrack(imageCanvas.Canvas, track.Direction, track);
+
+                    cachedImage = imageCanvas.Render();
+                    _cachedTracks[track.Direction] = cachedImage;
                 }
-                canvas.DrawBitmap(cachedBitmap, 0, 0);
+                canvas.DrawImage(cachedImage, 0, 0);
             }
             else
             {
@@ -106,7 +108,7 @@ namespace Trains.NET.Rendering
 
         private void DrawHorizontal(ICanvas canvas)
         {
-            
+
             canvas.DrawPath(_horizontalPlankPath, _plankPaint);
             DrawHorizontalTracks(canvas);
         }

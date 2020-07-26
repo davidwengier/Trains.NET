@@ -16,21 +16,21 @@ namespace Trains.NET.Rendering
         private readonly IGameBoard _gameBoard;
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
-        private readonly IBitmapFactory _bitmapFactory;
+        private readonly IImageFactory _imageFactory;
         private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("Draw-FPS-Skia");
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-AllUp");
         private readonly ElapsedMillisecondsTimedStat _skiaClearTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-Clear");
         private readonly ElapsedMillisecondsTimedStat _gameBufferReset = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Game-BufferReset");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
-        private readonly Dictionary<ILayerRenderer, IBitmap> _bitmapBuffer = new();
+        private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
 
-        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IBitmapFactory bitmapFactory)
+        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
             _pixelMapper = pixelMapper;
-            _bitmapFactory = bitmapFactory;
+            _imageFactory = imageFactory;
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
@@ -65,11 +65,11 @@ namespace Trains.NET.Rendering
 
         private void ResetBuffers()
         {
-            foreach (IBitmap bitmap in _bitmapBuffer.Values)
+            foreach (IImage image in _imageBuffer.Values)
             {
-                bitmap.Dispose();
+                image.Dispose();
             }
-            _bitmapBuffer.Clear();
+            _imageBuffer.Clear();
         }
 
         public void Render(ICanvas canvas)
@@ -98,23 +98,18 @@ namespace Trains.NET.Rendering
 
                 if (renderer is ICachableLayerRenderer cachable)
                 {
-                    if (cachable.IsDirty || !_bitmapBuffer.ContainsKey(renderer))
+                    if (cachable.IsDirty || !_imageBuffer.ContainsKey(renderer))
                     {
                         _renderCacheDrawTimes[renderer].Start();
-                        if (!_bitmapBuffer.TryGetValue(renderer, out IBitmap bitmap))
-                        {
-                            bitmap = _bitmapFactory.CreateBitmap(_width, _height);
-                        }
-                        ICanvas layerCanvas = _bitmapFactory.CreateCanvas(bitmap);
-                        layerCanvas.Clear(Colors.Empty);
-                        renderer.Render(layerCanvas, _width, _height);
-                        _bitmapBuffer[renderer] = bitmap;
-                        layerCanvas.Dispose();
+
+                        using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                        renderer.Render(imageCanvas.Canvas, _width, _height);
+                        _imageBuffer[renderer] = imageCanvas.Render();
                         _renderCacheDrawTimes[renderer].Stop();
                     }
 
                     _renderLayerDrawTimes[renderer].Start();
-                    canvas.DrawBitmap(_bitmapBuffer[renderer], 0, 0);
+                    canvas.DrawImage(_imageBuffer[renderer], 0, 0);
                     _renderLayerDrawTimes[renderer].Stop();
                 }
                 else

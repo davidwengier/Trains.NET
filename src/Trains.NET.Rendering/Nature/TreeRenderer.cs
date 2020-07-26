@@ -12,8 +12,8 @@ namespace Trains.NET.Rendering
         private readonly float _baseRadius;
         private readonly PaintBrush _baseTreeBrush;
         private readonly PaintBrush _topTreeBrush;
-        private readonly Dictionary<int, IBitmap> _cachedStyles = new Dictionary<int, IBitmap>();
-        private readonly IBitmapFactory _bitmapFactory;
+        private readonly Dictionary<int, IImage> _cachedStyles = new Dictionary<int, IImage>();
+        private readonly IImageFactory _imageFactory;
 
         // Change this if you don't like the majority of tree styles
         private const int SeedOffset = 1337;
@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering
         // Change this if you want more variance/styles
         private const int MaxStyles = 100;
 
-        public TreeRenderer(IBitmapFactory bitmapFactory, ITrackParameters trackParameters)
+        public TreeRenderer(IImageFactory imageFactory, ITrackParameters trackParameters)
         {
             _cellSize = trackParameters.CellSize;
             _centerOffset = _cellSize / 2.0f;
@@ -39,23 +39,24 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Fill,
                 IsAntialias = true
             };
-            _bitmapFactory = bitmapFactory;
+            _imageFactory = imageFactory;
         }
 
         public void Render(ICanvas canvas, int treeSeed)
         {
             int index = treeSeed % MaxStyles;
-            if (!_cachedStyles.TryGetValue(index, out IBitmap cachedBitmap))
+            if (!_cachedStyles.TryGetValue(index, out IImage cachedImage))
             {
-                cachedBitmap = _bitmapFactory.CreateBitmap(_cellSize, _cellSize);
-                ICanvas cachedCanvas = _bitmapFactory.CreateCanvas(cachedBitmap);
+                using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_cellSize, _cellSize);
 
-                DrawTree(cachedCanvas, index);
+                DrawTree(imageCanvas.Canvas, index);
 
-                _cachedStyles.Add(index, cachedBitmap);
+                cachedImage = imageCanvas.Render();
+                _cachedStyles.Add(index, cachedImage);
+
             }
 
-            canvas.DrawBitmap(cachedBitmap, 0, 0);
+            canvas.DrawImage(cachedImage, 0, 0);
         }
 
         private void DrawTree(ICanvas canvas, int treeSeed)

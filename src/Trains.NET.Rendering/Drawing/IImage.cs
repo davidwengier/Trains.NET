@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
-    public interface IBitmap : IDisposable
+    public interface IImage : IDisposable
     {
     }
 }

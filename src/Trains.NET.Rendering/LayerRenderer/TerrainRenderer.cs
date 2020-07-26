@@ -12,15 +12,13 @@ namespace Trains.NET.Rendering
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;
-        private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainMap, IPixelMapper pixelMapper, ITrackParameters trackParameters)
+        public TerrainRenderer(ITerrainMap terrainMap, ITrackParameters trackParameters)
         {
             _terrainMap = terrainMap;
-            _pixelMapper = pixelMapper;
             _trackParameters = trackParameters;
 
             _paintBrush = new PaintBrush
@@ -34,26 +32,26 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; }
         public string Name => "Terrain";
 
-        public void Render(ICanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            var contourLevels = GenerateListOfContourPointsForEachContourLevel();
+            Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
 
-            foreach (var contourLevel in contourLevels.Keys)
+            foreach (int contourLevel in contourLevels.Keys)
             {
-                var contourPoints = contourLevels[contourLevel];
+                List<ViewportPoint>? contourPoints = contourLevels[contourLevel];
                 DrawContourLine(canvas, contourPoints);
             }
         }
 
         private void DrawContourLine(ICanvas canvas, List<ViewportPoint> contourPoints)
         {
-            foreach (var contourPoint in contourPoints)
+            foreach (ViewportPoint contourPoint in contourPoints)
             {
-                var orderedList = OrderListByDistanceFromPoint(contourPoint, contourPoints);
+                List<ViewportPoint>? orderedList = OrderListByDistanceFromPoint(contourPoint, contourPoints);
                 if (orderedList.Count < 3) continue;
 
-                var firstNearest = orderedList.Skip(1).FirstOrDefault(); // The first element will be the original element since that will have distance zero
-                var secondNearest = orderedList.Skip(2).FirstOrDefault();
+                ViewportPoint firstNearest = orderedList.Skip(1).FirstOrDefault(); // The first element will be the original element since that will have distance zero
+                ViewportPoint secondNearest = orderedList.Skip(2).FirstOrDefault();
 
                 DrawContourLineInViewport(canvas, contourPoint, firstNearest);
                 DrawContourLineInViewport(canvas, contourPoint, secondNearest);
@@ -65,13 +63,13 @@ namespace Trains.NET.Rendering
             canvas.DrawLine(contourPoint1.PixelX, contourPoint1.PixelY, contourPoint2.PixelX, contourPoint2.PixelY, _paintBrush);
         }
 
-        private Dictionary<int, List<ViewportPoint>> GenerateListOfContourPointsForEachContourLevel()
+        private Dictionary<int, List<ViewportPoint>> GenerateListOfContourPointsForEachContourLevel(IPixelMapper pixelMapper)
         {
             var topography = new Dictionary<int, List<ViewportPoint>>();
-            foreach (var terrain in _terrainMap)
+            foreach (Terrain? terrain in _terrainMap)
             {
-                var contourLevel = CalculateContourLevel(terrain.Altitude);
-                var contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
+                int contourLevel = CalculateContourLevel(terrain.Altitude);
+                List<ViewportPoint>? contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
 
                 var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
                 {
@@ -81,9 +79,9 @@ namespace Trains.NET.Rendering
                     _terrainMap.GetAdjacentTerrainRight,
                 };
 
-                foreach (var adjacentTerrainLookup in adjacentTerrainLookups)
+                foreach (Func<Terrain, Terrain>? adjacentTerrainLookup in adjacentTerrainLookups)
                 {
-                    var adjacentContourPoint = CalculateBorderingContourPointIfAdjacentTerrainIsLower(adjacentTerrainLookup, terrain, contourLevel);
+                    ViewportPoint? adjacentContourPoint = CalculateBorderingContourPointIfAdjacentTerrainIsLower(adjacentTerrainLookup, terrain, contourLevel, pixelMapper);
                     if (adjacentContourPoint != null && !contourPoints.Contains(adjacentContourPoint.Value))
                     {
                         contourPoints.Add(adjacentContourPoint.Value);
@@ -96,21 +94,21 @@ namespace Trains.NET.Rendering
             return topography;
         }
 
-        private ViewportPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(Func<Terrain, Terrain> getAdjacentTerrain, Terrain terrain, int contourLevel)
+        private ViewportPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(Func<Terrain, Terrain> getAdjacentTerrain, Terrain terrain, int contourLevel, IPixelMapper pixelMapper)
         {
-            var adjacentTerrain = getAdjacentTerrain(terrain);
+            Terrain? adjacentTerrain = getAdjacentTerrain(terrain);
 
-            var adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Altitude);
+            int adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Altitude);
 
             if (adjacentContourLevel >= contourLevel) return null;
 
-           return FindContourPointBetweenAdjacentTerrain(terrain, adjacentTerrain);
+           return FindContourPointBetweenAdjacentTerrain(terrain, adjacentTerrain, pixelMapper);
         }
 
-        private ViewportPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
+        private ViewportPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain, IPixelMapper pixelMapper)
         {
-            var columnDelta = sourceTerrain.Column - adjacentTerrain.Column;
-            var rowDelta = sourceTerrain.Row - adjacentTerrain.Row;
+            int columnDelta = sourceTerrain.Column - adjacentTerrain.Column;
+            int rowDelta = sourceTerrain.Row - adjacentTerrain.Row;
 
             // Adjacent means that there should only be exactly one difference between either Columns or Rows (And the other should have no difference)
             if ((Math.Abs(columnDelta) + Math.Abs(rowDelta)) != 1)
@@ -122,8 +120,8 @@ namespace Trains.NET.Rendering
                 // columnDelta gt zero means we have source on right, adjacent on left so centre point is between them.. which means source edge (since cell edges are on left)
                 // columnDelta lt zero means we have source on left, adjacent on right so centre point is again between them.. which means adjacent edge 
 
-                var selectedColumn = (columnDelta > 0 ? sourceTerrain.Column : adjacentTerrain.Column);
-                var (pixX, pixY) = _pixelMapper.CoordsToViewPortPixels(selectedColumn, sourceTerrain.Row);
+                int selectedColumn = (columnDelta > 0 ? sourceTerrain.Column : adjacentTerrain.Column);
+                (int pixX, int pixY) = pixelMapper.CoordsToViewPortPixels(selectedColumn, sourceTerrain.Row);
 
                 return new ViewportPoint
                 {
@@ -132,8 +130,8 @@ namespace Trains.NET.Rendering
                 };
             }
 
-            var selectedRow = (rowDelta > 0 ? sourceTerrain.Row : adjacentTerrain.Row);
-            var (pixelX, pixelY) = _pixelMapper.CoordsToViewPortPixels(sourceTerrain.Column, selectedRow);
+            int selectedRow = (rowDelta > 0 ? sourceTerrain.Row : adjacentTerrain.Row);
+            (int pixelX, int pixelY) = pixelMapper.CoordsToViewPortPixels(sourceTerrain.Column, selectedRow);
             return new ViewportPoint
             {
                 PixelX = pixelX + 0.5f * _trackParameters.CellSize,

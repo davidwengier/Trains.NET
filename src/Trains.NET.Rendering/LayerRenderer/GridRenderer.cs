@@ -6,22 +6,18 @@ namespace Trains.NET.Rendering
     [Order(0)]
     internal class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
-        private bool _dirty;
         private readonly ITrackParameters _parameters;
-        private readonly IPixelMapper _pixelMapper;
 
-        public GridRenderer(ITrackParameters parameters, IPixelMapper pixelMapper)
+        public GridRenderer(ITrackParameters parameters)
         {
             _parameters = parameters;
-            _pixelMapper = pixelMapper;
-            _pixelMapper.ViewPortChanged += (s, e) => _dirty = true;
         }
 
         public bool Enabled { get; set; }
         public string Name => "Grid";
-        public bool IsDirty => _dirty;
+        public bool IsDirty => false;
 
-        public void Render(ICanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
             var grid = new PaintBrush
             {
@@ -30,12 +26,12 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Stroke
             };
 
-            for (int x = _pixelMapper.ViewPortX; x < _pixelMapper.ViewPortWidth + 1; x += _parameters.CellSize)
+            for (int x = pixelMapper.ViewPortX; x < pixelMapper.ViewPortWidth + 1; x += _parameters.CellSize)
             {
                 canvas.DrawLine(x, 0, x, height, grid);
             }
 
-            for (int y = _pixelMapper.ViewPortY; y < _pixelMapper.ViewPortHeight + 1; y += _parameters.CellSize)
+            for (int y = pixelMapper.ViewPortY; y < pixelMapper.ViewPortHeight + 1; y += _parameters.CellSize)
             {
                 canvas.DrawLine(0, y, width, y, grid);
             }

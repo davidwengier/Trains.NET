@@ -28,7 +28,7 @@ namespace Trains.NET.Rendering
         {
         }
 
-        public void Render(ICanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
             int i = 1;
 
@@ -46,7 +46,7 @@ namespace Trains.NET.Rendering
             }
 
             canvas.DrawRect(0, 0, maxWidth, strings.Count * 26, _backgroundPaint);
-            foreach (var line in strings)
+            foreach (string? line in strings)
             {
                 canvas.DrawText(line, 0, i++ * 25, _paint);
             }

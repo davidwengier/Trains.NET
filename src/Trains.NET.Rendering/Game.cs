@@ -96,12 +96,14 @@ namespace Trains.NET.Rendering
 
             AdjustViewPortIfNecessary();
 
+            IPixelMapper? pixelMapper = _pixelMapper.Snapshot();
+
             using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
-            var canvas = imageCanvas.Canvas;
-            RenderFrame(canvas);
+            ICanvas? canvas = imageCanvas.Canvas;
+            RenderFrame(canvas, pixelMapper);
 
-            var oldBuffer = _backBuffer;
+            IImage? oldBuffer = _backBuffer;
             lock (_bufferLock)
             {
                 _backBuffer = imageCanvas.Render();
@@ -123,7 +125,7 @@ namespace Trains.NET.Rendering
             }
         }
 
-        private void RenderFrame(ICanvas? canvas)
+        private void RenderFrame(ICanvas? canvas, IPixelMapper pixelMapper)
         {
             if (canvas is null)
             {
@@ -153,7 +155,7 @@ namespace Trains.NET.Rendering
                         _renderCacheDrawTimes[renderer].Start();
 
                         using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
-                        renderer.Render(imageCanvas.Canvas, _width, _height);
+                        renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
                         _imageBuffer[renderer] = imageCanvas.Render();
                         _renderCacheDrawTimes[renderer].Stop();
                     }
@@ -165,7 +167,7 @@ namespace Trains.NET.Rendering
                 else
                 {
                     _renderLayerDrawTimes[renderer].Start();
-                    renderer.Render(canvas, _width, _height);
+                    renderer.Render(canvas, _width, _height, pixelMapper);
                     _renderLayerDrawTimes[renderer].Stop();
                 }
                 canvas.Restore();

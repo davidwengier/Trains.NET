@@ -7,14 +7,12 @@ namespace Trains.NET.Rendering.LayerRenderer
     internal class TrainLookaheadRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;
-        private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
         private readonly ITrainPainter _painter;
 
-        public TrainLookaheadRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters, ITrainPainter painter)
+        public TrainLookaheadRenderer(IGameBoard gameBoard, ITrackParameters parameters, ITrainPainter painter)
         {
             _gameBoard = gameBoard;
-            _pixelMapper = pixelMapper;
             _parameters = parameters;
             _painter = painter;
         }
@@ -23,7 +21,7 @@ namespace Trains.NET.Rendering.LayerRenderer
 
         public string Name => "Hitbox";
 
-        public void Render(ICanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
             foreach (Train train in _gameBoard.GetMovables())
             {
@@ -33,14 +31,14 @@ namespace Trains.NET.Rendering.LayerRenderer
                     Style = PaintStyle.Fill
                 };
 
-                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                (int x, int y) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
 
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
 
                 float speedModifier = 0.005f; // * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
                 foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
                 {
-                    (x, y) = _pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
+                    (x, y) = pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
 
                     canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
                 }

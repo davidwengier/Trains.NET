@@ -9,7 +9,6 @@ namespace Trains.NET.Rendering
     {
         private readonly ITrackLayout _trackLayout;
         private readonly ITrackRenderer _trackRenderer;
-        private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
         private bool _dirty;
 
@@ -18,21 +17,20 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(ITrackLayout trackLayout, ITrackRenderer trackRenderer, IPixelMapper pixelMapper, ITrackParameters parameters)
+        public TrackLayoutRenderer(ITrackLayout trackLayout, ITrackRenderer trackRenderer, ITrackParameters parameters)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;
-            _pixelMapper = pixelMapper;
             _parameters = parameters;
 
             _trackLayout.TracksChanged += (s, e) => _dirty = true;
         }
 
-        public void Render(ICanvas canvas, int width, int height)
+        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
             foreach (Track track in _trackLayout)
             {
-                (int x, int y) = _pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+                (int x, int y) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
                 if (x < -_parameters.CellSize || y < -_parameters.CellSize || x > width || y > height) continue;
 

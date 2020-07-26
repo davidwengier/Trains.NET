@@ -18,5 +18,6 @@ namespace Trains.NET.Rendering
         void AdjustViewPort(int x, int y);
         void SetViewPortSize(int width, int height);
         void SetViewPort(int x, int y);
+        IPixelMapper Snapshot();
     }
 }

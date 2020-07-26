@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace Trains.NET.Engine.Tracks
 {
@@ -10,7 +10,7 @@ namespace Trains.NET.Engine.Tracks
     {
         public event EventHandler? TracksChanged;
 
-        private readonly Dictionary<(int, int), Track> _tracks = new();
+        private ImmutableDictionary<(int, int), Track> _tracks = ImmutableDictionary<(int, int), Track>.Empty;
 
         public void AddTrack(int column, int row)
         {
@@ -25,7 +25,7 @@ namespace Trains.NET.Engine.Tracks
                     Column = column,
                     Row = row
                 };
-                _tracks.Add((column, row), track);
+                _tracks = _tracks.Add((column, row), track);
 
                 track.SetBestTrackDirection(false);
             }
@@ -37,7 +37,7 @@ namespace Trains.NET.Engine.Tracks
         {
             if (_tracks.TryGetValue((column, row), out Track track))
             {
-                _tracks.Remove((column, row));
+                _tracks = _tracks.Remove((column, row));
                 track.RefreshNeighbors(true);
             }
 
@@ -50,16 +50,16 @@ namespace Trains.NET.Engine.Tracks
 
             foreach (Track track in tracks)
             {
-                _tracks[(track.Column, track.Row)] = new Track(this)
+                _tracks = _tracks.SetItem((track.Column, track.Row), new Track(this)
                 {
                     Column = track.Column,
                     Row = track.Row,
                     Direction = track.Direction,
                     AlternateState = track.AlternateState
-                };
+                });
             }
 
-            foreach (Track track in _tracks.Values.ToArray())
+            foreach (Track track in _tracks.Values)
             {
                 track.ReevaluateHappiness();
             }
@@ -69,7 +69,7 @@ namespace Trains.NET.Engine.Tracks
 
         public void ToggleTrack(int column, int row)
         {
-            if (TryGet(column, row, out var track) && track.HasAlternateState())
+            if (TryGet(column, row, out Track? track) && track.HasAlternateState())
             {
                 track.AlternateState = !track.AlternateState;
 
@@ -84,14 +84,14 @@ namespace Trains.NET.Engine.Tracks
 
         public void Clear()
         {
-            _tracks.Clear();
+            _tracks = _tracks.Clear();
 
             TracksChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public IEnumerator<Track> GetEnumerator()
         {
-            foreach ((_, _, Track track) in _tracks.ToArray())
+            foreach ((_, _, Track track) in _tracks)
             {
                 yield return track;
             }

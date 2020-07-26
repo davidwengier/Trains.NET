@@ -62,5 +62,16 @@ namespace Trains.NET.Rendering
         {
             return (column * _parameters.CellSize, row * _parameters.CellSize);
         }
+
+        public IPixelMapper Snapshot()
+        {
+            return new PixelMapper(_parameters)
+            {
+                 ViewPortX = this.ViewPortX,
+                 ViewPortY = this.ViewPortY,
+                 ViewPortHeight = this.ViewPortHeight,
+                 ViewPortWidth = this.ViewPortWidth
+            };
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Trains.NET.Engine.Tracks
 
         public void AddTerrain(Terrain terrain)
         {
-            var key = (terrain.Column, terrain.Row);
+            (int Column, int Row) key = (terrain.Column, terrain.Row);
             _terrainMap[key] = terrain;
         }
 
@@ -45,7 +45,7 @@ namespace Trains.NET.Engine.Tracks
 
         private Terrain GetTerrainOrDefault(int column, int row)
         {
-            if (_terrainMap.TryGetValue((column, row), out var adjacentTerrain))
+            if (_terrainMap.TryGetValue((column, row), out Terrain? adjacentTerrain))
             {
                 return adjacentTerrain;
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Instrumentation;
@@ -12,8 +13,7 @@ namespace Trains.NET.Engine
 
         private const int GameLoopInterval = 16;
 
-        private readonly Dictionary<Track, (Train, float)> _takenTracks = new();
-        private readonly List<IMovable> _movables = new();
+        private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
         private readonly ITrackLayout _trackLayout;
         private readonly ITimer? _gameLoopTimer;
 
@@ -69,13 +69,13 @@ namespace Trains.NET.Engine
 
         private void DoGameLoopStep()
         {
-            _takenTracks.Clear();
-            foreach (Train train in _movables.ToArray())
+            Dictionary<Track, (Train, float)> takenTracks = new();
+            foreach (Train train in _movables)
             {
                 // Claim the track we are currently on, distance of 0
                 if (_trackLayout.TryGet(train.Column, train.Row, out Track? myTrack))
                 {
-                    _takenTracks.Add(myTrack, (train, 0));
+                    takenTracks.Add(myTrack, (train, 0));
                 }
 
                 // If we are stopped, nothing more for this train to do
@@ -94,20 +94,20 @@ namespace Trains.NET.Engine
                 dummyTrain.SetAngle(dummyTrain.Angle - 180);
 
                 // Move the actual train by the required distance
-                MoveTrain(train, train, train.CurrentSpeed, _takenTracks);
+                MoveTrain(train, train, train.CurrentSpeed, takenTracks);
 
                 // If we can't even move the required ammount, we have hit an edge case
                 //  we should deal with it here! Maybe call stop?
 
                 // Claim behind us & set our parent as the dummy 
                 //  to abuse the fact no one can pause it
-                MoveTrain(dummyTrain, dummyTrain, 1.0f, _takenTracks);
+                MoveTrain(dummyTrain, dummyTrain, 1.0f, takenTracks);
 
                 // Clone our train for look-ahead purposes
                 dummyTrain = train.Clone();
 
                 // Move our lookahead train clone, claiming the tracks we cover
-                if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, _takenTracks))
+                if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, takenTracks))
                 {
                     train.Resume();
                 }
@@ -269,19 +269,19 @@ namespace Trains.NET.Engine
                 return null;
             }
 
-            _movables.Add(train);
+            _movables = _movables.Add(train);
 
             return train;
         }
 
         public void RemoveMovable(IMovable movable)
         {
-            _movables.Remove(movable);
+            _movables = _movables.Remove(movable);
         }
 
         public IEnumerable<IMovable> GetMovables()
         {
-            foreach (IMovable movable in _movables.ToArray())
+            foreach (IMovable movable in _movables)
             {
                 yield return movable;
             }
@@ -289,7 +289,7 @@ namespace Trains.NET.Engine
 
         public IEnumerable<T> GetMovables<T>() where T : IMovable
         {
-            foreach (T movable in _movables.OfType<T>().ToArray())
+            foreach (T movable in _movables.OfType<T>())
             {
                 yield return movable;
             }
@@ -297,7 +297,7 @@ namespace Trains.NET.Engine
 
         public void ClearAll()
         {
-            _movables.Clear();
+            _movables = _movables.Clear();
             _trackLayout.Clear();
         }
 

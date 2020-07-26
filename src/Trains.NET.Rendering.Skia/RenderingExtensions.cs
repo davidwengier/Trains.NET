@@ -48,7 +48,7 @@ namespace Trains.NET.Rendering.Skia
 
         public static SKPaint ToSkia(this PaintBrush brush)
         {
-            SKPaint paint = new SKPaint();
+            var paint = new SKPaint();
 
             if (brush.Color != null)
             {

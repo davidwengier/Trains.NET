@@ -10,6 +10,8 @@
 
     <!-- Updates - Opt-in per project -->
     
+    <PackageReference Update="System.Collections.Immutable" Version="1.7.1" />
+
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0-beta2.final" />
 
     <!-- DI -->

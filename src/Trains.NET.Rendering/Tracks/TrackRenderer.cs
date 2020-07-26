@@ -139,7 +139,7 @@ namespace Trains.NET.Rendering
             canvas.Save();
             canvas.RotateDegrees(direction.TrackRotationAngle(), _parameters.CellSize / 2, _parameters.CellSize / 2);
 
-            if (direction.IsThreeWay() && track.AlternateState)
+            if (track.HasAlternateState() && track.AlternateState)
             {
                 canvas.Scale(-1, 1);
                 canvas.Translate(-_parameters.CellSize, 0);
@@ -147,7 +147,7 @@ namespace Trains.NET.Rendering
 
             canvas.DrawPath(_cornerPlankPath, _plankPaint);
 
-            if (direction.IsThreeWay())
+            if (track.HasAlternateState())
             {
                 canvas.Save();
                 canvas.RotateDegrees(90, _parameters.CellSize / 2, _parameters.CellSize / 2);

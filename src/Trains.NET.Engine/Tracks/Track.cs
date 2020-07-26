@@ -39,6 +39,16 @@ namespace Trains.NET.Engine
             }
         }
 
+        public bool HasAlternateState()
+            => this.Direction switch
+            {
+                TrackDirection.RightUpDown => true,
+                TrackDirection.LeftRightDown => true,
+                TrackDirection.LeftUpDown => true,
+                TrackDirection.LeftRightUp => true,
+                _ => false
+            };
+
         private void MoveLeftRightDown(TrainPosition position)
         {
             // Check single track extremes, as there are 2 places where the

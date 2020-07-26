@@ -52,6 +52,6 @@ namespace Trains.NET.Comet
 
         public bool IsValid(int column, int row)
             => _gameBoard.GetMovableAt(column, row) is Train
-                || _trackLayout.TryGet(column, row, out _);
+                || (_trackLayout.TryGet(column, row, out Track? track) && track.HasAlternateState());
     }
 }

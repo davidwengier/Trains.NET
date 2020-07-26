@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Engine
 {
-    public interface IGameBoard
+    public interface IGameBoard : IDisposable
     {
         int Columns { get; set; }
         int Rows { get; set; }

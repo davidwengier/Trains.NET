@@ -2,6 +2,7 @@
 
 namespace Trains.NET.Engine
 {
+    [Transient]
     public interface ITimer : IDisposable
     {
         double Interval { get; set; }

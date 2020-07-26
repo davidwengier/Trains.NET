@@ -99,7 +99,14 @@ namespace Trains
                         {
                             if (inter.Namespace?.StartsWith("Trains.NET", StringComparison.OrdinalIgnoreCase) == true)
                             {
-                                col.AddSingleton(inter, t);
+                                if (inter.GetCustomAttribute<TransientAttribute>(true) != null)
+                                {
+                                    col.AddTransient(inter, t);
+                                }
+                                else
+                                {
+                                    col.AddSingleton(inter, t);
+                                }
                             }
                         }
                     }

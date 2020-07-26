@@ -10,15 +10,13 @@ namespace Trains.NET.Rendering.LayerRenderer
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _parameters;
         private readonly ITrainPainter _painter;
-        private readonly ITimer _gameTimer;
 
-        public TrainLookaheadRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters, ITrainPainter painter, ITimer gameTimer)
+        public TrainLookaheadRenderer(IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackParameters parameters, ITrainPainter painter)
         {
             _gameBoard = gameBoard;
             _pixelMapper = pixelMapper;
             _parameters = parameters;
             _painter = painter;
-            _gameTimer = gameTimer;
         }
 
         public bool Enabled { get; set; }
@@ -39,7 +37,7 @@ namespace Trains.NET.Rendering.LayerRenderer
 
                 canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
 
-                float speedModifier = 0.005f * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
+                float speedModifier = 0.005f; // * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
                 foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
                 {
                     (x, y) = _pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);

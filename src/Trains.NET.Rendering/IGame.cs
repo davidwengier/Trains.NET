@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace Trains.NET.Rendering
 {
-    public interface IGame
+    public interface IGame : IDisposable
     {
         void AdjustViewPortIfNecessary();
         void Render(ICanvas canvas);

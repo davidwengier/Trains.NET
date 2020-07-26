@@ -67,8 +67,6 @@ namespace Trains.NET.Comet
             _gameTimer = gameTimer;
             _gameTimer.Elapsed += (s, e) =>
             {
-                game.AdjustViewPortIfNecessary();
-
                 controlDelegate.FlagDraw();
                 _miniMapDelegate.FlagDraw();
 

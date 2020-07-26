@@ -10,6 +10,11 @@ namespace Trains.NET.Rendering
 {
     internal class Game : IGame
     {
+        private const int RenderInterval = 16;
+
+        private readonly object _bufferLock = new object();
+        private IImage? _backBuffer;
+
         private bool _needsBufferReset;
         private int _width;
         private int _height;
@@ -24,8 +29,9 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
+        private readonly ITimer _renderLoop;
 
-        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory)
+        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -34,6 +40,11 @@ namespace Trains.NET.Rendering
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
+
+            _renderLoop = renderLoop;
+            _renderLoop.Elapsed += (s, e) => DrawFrame();
+            _renderLoop.Interval = RenderInterval;
+            _renderLoop.Start();
         }
 
         private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)
@@ -74,13 +85,42 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas)
         {
+            lock (_bufferLock)
+            {
+                if (_backBuffer != null)
+                {
+                    canvas.DrawImage(_backBuffer, 0, 0);
+                }
+            }
+        }
+
+        public void DrawFrame()
+        {
             if (_width == 0 || _height == 0) return;
 
-            _skiaDrawTime.Start();
+            this.AdjustViewPortIfNecessary();
+
+            using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+
+            var canvas = imageCanvas.Canvas;
+            RenderFrame(canvas);
+
+            var oldBuffer = _backBuffer;
+            lock (_bufferLock)
+            {
+                _backBuffer = imageCanvas.Render();
+            }
+            oldBuffer?.Dispose();
+        }
+
+        private void RenderFrame(ICanvas? canvas)
+        {
             if (canvas is null)
             {
                 throw new ArgumentNullException(nameof(canvas));
             }
+
+            _skiaDrawTime.Start();
 
             canvas.Save();
 
@@ -153,6 +193,13 @@ namespace Trains.NET.Rendering
                     break;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _backBuffer?.Dispose();
+            _renderLoop.Dispose();
+            _gameBoard.Dispose();
         }
     }
 }

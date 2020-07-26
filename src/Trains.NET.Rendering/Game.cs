@@ -98,7 +98,7 @@ namespace Trains.NET.Rendering
         {
             if (_width == 0 || _height == 0) return;
 
-            this.AdjustViewPortIfNecessary();
+            AdjustViewPortIfNecessary();
 
             using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 

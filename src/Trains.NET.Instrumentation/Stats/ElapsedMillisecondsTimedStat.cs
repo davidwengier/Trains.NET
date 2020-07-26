@@ -27,7 +27,7 @@ namespace Trains.NET.Instrumentation
             {
                 return "< 0.01ms";
             }
-            return Math.Round(this.Value ?? 0, 2).ToString() + "ms";
+            return Math.Round(this.Value ?? 0, 2).ToString("0.00") + "ms";
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Windows;
 using Comet;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
+using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Tracks;
 
@@ -82,17 +83,25 @@ namespace Trains.NET.Comet
             }
         }
 
+        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("Real-FPS");
+        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Real Draw Time");
+
         private async Task PresentLoop()
         {
             while (_presenting)
             {
+                _drawTime.Start();
                 _controlDelegate.FlagDraw();
                 _miniMapDelegate.FlagDraw();
 
                 _controlDelegate.Invalidate();
                 _miniMapDelegate.Invalidate();
 
-                await Task.Delay(TimeSpan.FromSeconds(1.0 / 60)).ConfigureAwait(true);
+                _drawTime.Stop();
+
+                _fps.Update();
+
+                await Task.Delay(16).ConfigureAwait(true);
             }
         }
 

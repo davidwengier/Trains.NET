@@ -5,8 +5,6 @@ namespace Trains.NET.Rendering
 {
     public class TrackRenderer : ITrackRenderer
     {
-        private bool _cacheBitmaps = false;
-
         private readonly ITrackParameters _parameters;
         private readonly IImageFactory _imageFactory;
 
@@ -58,23 +56,16 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, Track track)
         {
-            if (_cacheBitmaps)
+            if (!_cachedTracks.TryGetValue(track.Direction, out IImage cachedImage))
             {
-                if (!_cachedTracks.TryGetValue(track.Direction, out IImage cachedImage))
-                {
-                    using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_parameters.CellSize, _parameters.CellSize);
+                using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_parameters.CellSize, _parameters.CellSize);
 
-                    DrawTrack(imageCanvas.Canvas, track.Direction, track);
+                DrawTrack(imageCanvas.Canvas, track.Direction, track);
 
-                    cachedImage = imageCanvas.Render();
-                    _cachedTracks[track.Direction] = cachedImage;
-                }
-                canvas.DrawImage(cachedImage, 0, 0);
+                cachedImage = imageCanvas.Render();
+                _cachedTracks[track.Direction] = cachedImage;
             }
-            else
-            {
-                DrawTrack(canvas, track.Direction, track);
-            }
+            canvas.DrawImage(cachedImage, 0, 0);
         }
 
         private void DrawTrack(ICanvas canvas, TrackDirection direction, Track track)

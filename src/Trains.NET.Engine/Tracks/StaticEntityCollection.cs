@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine
 {
     internal class StaticEntityCollection : IStaticEntityCollection
     {

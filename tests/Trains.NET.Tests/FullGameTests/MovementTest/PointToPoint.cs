@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 using Xunit;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
@@ -41,7 +40,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         public PointToPoint(int movementSteps)
         {
             _movementSteps = movementSteps;
-            _trackLayout = new TrackLayout();
+            _trackLayout = new StaticEntityCollection();
             _gameBoard = new GameBoard(_trackLayout, null, null);
         }
 

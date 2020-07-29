@@ -1,6 +1,5 @@
 ﻿using System;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Trains.NET.Tests
         {
             Storage = new NullStorage();
             Timer = new TestTimer();
-            TrackLayout = new TrackLayout();
+            TrackLayout = new StaticEntityCollection();
             GameBoard = new GameBoard(TrackLayout, Storage, Timer);
             _output = output;
         }

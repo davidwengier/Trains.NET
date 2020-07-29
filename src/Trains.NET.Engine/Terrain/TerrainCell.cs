@@ -1,6 +1,6 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine.Terrain
 {
-    public class Terrain
+    public class TerrainCell
     {
         public int Column { get; set; }
         public int Row { get; set; }

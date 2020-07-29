@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Rendering
 {
@@ -18,14 +19,14 @@ namespace Trains.NET.Rendering
         void Clear(Color color);
         void GradientRect(float x, float y, float width, float height, Color start, Color end);
 
-        void GradientRectLeftRight(float x, float y, float width, float height, Color[] colours);
+        void GradientRectLeftRight(float x, float y, float width, float height, IEnumerable<Color> colours);
 
-        void GradientRectTopLeftBottomtRight(float x, float y, float width, float height, Color[] colours);
-        void GradientRectTopRightBottomLeft(float x, float y, float width, float height, Color[] colours);
+        void GradientRectTopLeftBottomtRight(float x, float y, float width, float height, IEnumerable<Color> colours);
+        void GradientRectTopRightBottomLeft(float x, float y, float width, float height, IEnumerable<Color> colours);
 
-        void GradientRectUpDown(float x, float y, float width, float height, Color[] colours);
+        void GradientRectUpDown(float x, float y, float width, float height, IEnumerable<Color> colours);
 
-        void CircularGradient(float x, float y, float width, float height, float circleCentreX, float circleCentreY, float circleRadius, Color[] colours);
+        void CircularGradient(float x, float y, float width, float height, float circleCentreX, float circleCentreY, float circleRadius, IEnumerable<Color> colours);
 
         void DrawBitmap(IBitmap bitmap, int v1, int v2);
     }

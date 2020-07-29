@@ -68,7 +68,7 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
-        public void GradientRectLeftRight(float x, float y, float width, float height, Color[] colours)
+        public void GradientRectLeftRight(float x, float y, float width, float height, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
                                                        new SKPoint(x + width, y),
@@ -81,7 +81,7 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
-        public void GradientRectUpDown(float x, float y, float width, float height, Color[] colours)
+        public void GradientRectUpDown(float x, float y, float width, float height, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
                                                        new SKPoint(x, y + height),
@@ -94,7 +94,7 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
-        public void CircularGradient(float x, float y, float width, float height, float circleCentreX, float circleCentreY, float circleRadius, Color[] colours)
+        public void CircularGradient(float x, float y, float width, float height, float circleCentreX, float circleCentreY, float circleRadius, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateRadialGradient(new SKPoint(circleCentreX, circleCentreY),
                                                        circleRadius,
@@ -124,7 +124,7 @@ namespace Trains.NET.Rendering.Skia
         public void Translate(float x, float y)
             => _canvas.Translate(x, y);
 
-        public void GradientRectTopLeftBottomtRight(float x, float y, float width, float height, Color[] colours)
+        public void GradientRectTopLeftBottomtRight(float x, float y, float width, float height, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
                                                         new SKPoint(x + width, y + height),
@@ -137,7 +137,7 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
-        public void GradientRectTopRightBottomLeft(float x, float y, float width, float height, Color[] colours)
+        public void GradientRectTopRightBottomLeft(float x, float y, float width, float height, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x + width, y),
                                                         new SKPoint(x, y + height),

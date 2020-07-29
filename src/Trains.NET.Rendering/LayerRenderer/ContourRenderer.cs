@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
+using Trains.NET.Engine.Terrain;
 
 namespace Trains.NET.Rendering
 {
@@ -78,17 +78,9 @@ namespace Trains.NET.Rendering
                 var contourLevel = CalculateContourLevel(terrain.Height);
                 var contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
 
-                var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
+                foreach (var adjacency in AdjacencyTypes.OrthogonalAdjacents)
                 {
-                    _terrainMap.GetAdjacentTerrainUp,
-                    _terrainMap.GetAdjacentTerrainDown,
-                    _terrainMap.GetAdjacentTerrainLeft,
-                    _terrainMap.GetAdjacentTerrainRight,
-                };
-
-                foreach (var adjacentTerrainLookup in adjacentTerrainLookups)
-                {
-                    var adjacentContourPoint = CalculateBorderingContourPointIfAdjacentTerrainIsLower(adjacentTerrainLookup, terrain, contourLevel);
+                    var adjacentContourPoint = CalculateBorderingContourPointIfAdjacentTerrainIsLower(adjacency, terrain, contourLevel);
                     if (adjacentContourPoint != null && !contourPoints.Contains(adjacentContourPoint.Value))
                     {
                         contourPoints.Add(adjacentContourPoint.Value);
@@ -101,9 +93,9 @@ namespace Trains.NET.Rendering
             return topography;
         }
 
-        private ViewportPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(Func<Terrain, Terrain> getAdjacentTerrain, Terrain terrain, int contourLevel)
+        private ViewportPoint? CalculateBorderingContourPointIfAdjacentTerrainIsLower(TerrainAdjacency adjacency, TerrainCell terrain, int contourLevel)
         {
-            var adjacentTerrain = getAdjacentTerrain(terrain);
+            var adjacentTerrain = _terrainMap.GetAdjacentTerrain(terrain, adjacency);
 
             var adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Height);
 
@@ -112,7 +104,7 @@ namespace Trains.NET.Rendering
            return FindContourPointBetweenAdjacentTerrain(terrain, adjacentTerrain);
         }
 
-        private ViewportPoint FindContourPointBetweenAdjacentTerrain(Terrain sourceTerrain, Terrain adjacentTerrain)
+        private ViewportPoint FindContourPointBetweenAdjacentTerrain(TerrainCell sourceTerrain, TerrainCell adjacentTerrain)
         {
             var columnDelta = sourceTerrain.Column - adjacentTerrain.Column;
             var rowDelta = sourceTerrain.Row - adjacentTerrain.Row;

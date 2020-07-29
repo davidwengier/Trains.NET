@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine.Terrain
 {
     internal class TerrainMap : ITerrainMap
     {
-        private readonly Dictionary<(int, int), Terrain> _terrainMap = new Dictionary<(int, int), Terrain>();
+        private readonly Dictionary<(int, int), TerrainCell> _terrainMap = new Dictionary<(int, int), TerrainCell>();
 
         public void SetTerrainHeight(int column, int row, int height)
         {
-            Func<Terrain, Terrain> transform = terrain => {
+            Func<TerrainCell, TerrainCell> transform = terrain => {
                 terrain.Height = height;
                 return terrain;
             };
@@ -20,7 +20,7 @@ namespace Trains.NET.Engine.Tracks
 
         public void SetTerrainType(int column, int row, TerrainType type)
         {
-            Func<Terrain, Terrain> transform = terrain => {
+            Func<TerrainCell, TerrainCell> transform = terrain => {
                 terrain.TerrainType = type;
                 return terrain;
             };
@@ -28,17 +28,17 @@ namespace Trains.NET.Engine.Tracks
             AddOrOverwrite(column, row, transform);
         }
 
-        private void AddOrOverwrite(int column, int row, Func<Terrain, Terrain> transform)
+        private void AddOrOverwrite(int column, int row, Func<TerrainCell, TerrainCell> transform)
         {
             var key = (column, row);
             var terrain = _terrainMap.ContainsKey(key)
                 ? _terrainMap[key]
-                : new Terrain { Column = column, Row = row };
+                : new TerrainCell { Column = column, Row = row };
 
             _terrainMap[key] = transform(terrain);
         }
 
-        public IEnumerator<Terrain> GetEnumerator()
+        public IEnumerator<TerrainCell> GetEnumerator()
         {
             return _terrainMap.Values.GetEnumerator();
         }
@@ -48,34 +48,31 @@ namespace Trains.NET.Engine.Tracks
             return GetEnumerator();
         }
 
-        public Terrain GetAdjacentTerrainUp(Terrain terrain)
+
+        public TerrainCell GetAdjacentTerrain(TerrainCell terrain, TerrainAdjacency adjacency)
         {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row - 1);
+            return adjacency switch
+            {
+                TerrainAdjacency.Up => GetTerrainOrDefault(terrain.Column, terrain.Row - 1),
+                TerrainAdjacency.Down => GetTerrainOrDefault(terrain.Column, terrain.Row + 1),
+                TerrainAdjacency.Left => GetTerrainOrDefault(terrain.Column - 1, terrain.Row),
+                TerrainAdjacency.Right => GetTerrainOrDefault(terrain.Column + 1, terrain.Row),
+                TerrainAdjacency.UpLeft => GetTerrainOrDefault(terrain.Column - 1, terrain.Row - 1),
+                TerrainAdjacency.UpRight => GetTerrainOrDefault(terrain.Column + 1, terrain.Row - 1),
+                TerrainAdjacency.DownLeft => GetTerrainOrDefault(terrain.Column - 1, terrain.Row + 1),
+                TerrainAdjacency.DownRight => GetTerrainOrDefault(terrain.Column + 1, terrain.Row + 1),
+                _ => throw new NotImplementedException()
+            };
         }
 
-         public Terrain GetAdjacentTerrainDown(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row + 1);
-        }
-
-        public Terrain GetAdjacentTerrainLeft(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row);
-        }
-
-        public Terrain GetAdjacentTerrainRight(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row);
-        }
-
-        private Terrain GetTerrainOrDefault(int column, int row)
+        private TerrainCell GetTerrainOrDefault(int column, int row)
         {
             if (_terrainMap.TryGetValue((column, row), out var adjacentTerrain))
             {
                 return adjacentTerrain;
             }
 
-            return new Terrain
+            return new TerrainCell
             {
                 Row = row,
                 Column = column,
@@ -83,24 +80,5 @@ namespace Trains.NET.Engine.Tracks
             };
         }
 
-        public Terrain GetAdjacentTerrainUpLeft(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row - 1);
-        }
-
-        public Terrain GetAdjacentTerrainUpRight(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row - 1);
-        }
-
-        public Terrain GetAdjacentTerrainDownLeft(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row + 1);
-        }
-
-        public Terrain GetAdjacentTerrainDownRight(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row + 1);
-        }
     }
 }

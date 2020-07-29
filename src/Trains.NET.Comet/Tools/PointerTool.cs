@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
 
 namespace Trains.NET.Comet
@@ -10,12 +9,12 @@ namespace Trains.NET.Comet
         private readonly ITrainController _gameState;
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private int _lastX;
         private int _lastY;
 
         public ToolMode Mode => ToolMode.All;
-        public PointerTool(ITrainController gameState, IGameBoard gameBoard, IPixelMapper pixelMapper, ITrackLayout trackLayout)
+        public PointerTool(ITrainController gameState, IGameBoard gameBoard, IPixelMapper pixelMapper, IStaticEntityCollection trackLayout)
         {
             _gameState = gameState;
             _gameBoard = gameBoard;
@@ -44,9 +43,12 @@ namespace Trains.NET.Comet
             {
                 _gameState.SetCurrentTrain(train);
             }
-            else 
+            else
             {
-                _trackLayout.ToggleTrack(column, row);
+                if (_trackLayout.TryGet<Track>(column, row, out var track))
+                {
+                    track.TryToggle();
+                }
             }
         }
 

@@ -4,8 +4,8 @@ namespace Trains.NET.Engine
 {
     public interface ITrackCodec
     {
-        string Encode(IEnumerable<Track> tracks);
+        string Encode(IEnumerable<IStaticEntity> entities);
 
-        IEnumerable<Track> Decode(string input);
+        IEnumerable<IStaticEntity> Decode(string input);
     }
 }

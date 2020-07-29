@@ -4,8 +4,8 @@ namespace Trains.NET.Engine
 {
     public interface IGameStorage
     {
-        IEnumerable<Track> ReadTracks();
+        IEnumerable<IStaticEntity> Read();
 
-        void WriteTracks(IEnumerable<Track> tracks);
+        void Write(IEnumerable<IStaticEntity> entities);
     }
 }

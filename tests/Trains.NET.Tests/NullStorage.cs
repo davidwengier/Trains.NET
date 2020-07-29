@@ -6,12 +6,12 @@ namespace Trains.NET.Tests
 {
     internal class NullStorage : IGameStorage
     {
-        public IEnumerable<Track> ReadTracks()
+        public IEnumerable<IStaticEntity> Read()
         {
-            return Enumerable.Empty<Track>();
+            return Enumerable.Empty<IStaticEntity>();
         }
 
-        public void WriteTracks(IEnumerable<Track> tracks)
+        public void Write(IEnumerable<IStaticEntity> entities)
         {
         }
     }

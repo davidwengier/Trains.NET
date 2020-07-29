@@ -24,17 +24,17 @@ namespace Trains.Storage
             _serializer = serializer;
         }
 
-        public IEnumerable<Track> ReadTracks()
+        public IEnumerable<IStaticEntity> Read()
         {
             if (!File.Exists(FilePath))
             {
-                return Enumerable.Empty<Track>();
+                return Enumerable.Empty<IStaticEntity>();
             }
 
             return _serializer.Deserialize(File.ReadAllLines(FilePath));
         }
 
-        public void WriteTracks(IEnumerable<Track> tracks)
+        public void Write(IEnumerable<IStaticEntity> tracks)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
             File.WriteAllText(FilePath, _serializer.Serialize(tracks));

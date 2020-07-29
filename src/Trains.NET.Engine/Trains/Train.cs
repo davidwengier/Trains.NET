@@ -34,12 +34,12 @@ namespace Trains.NET.Engine
 
         public float DistanceToMove => this.CurrentSpeed;
 
-        public Guid UniqueID { get; internal set; } = Guid.NewGuid();
-        public int Column { get; internal set; }
-        public int Row { get; internal set; }
-        public float Angle { get; internal set; }
-        public float RelativeLeft { get; internal set; } = 0.5f;
-        public float RelativeTop { get; internal set; } = 0.5f;
+        public Guid UniqueID { get; set; } = Guid.NewGuid();
+        public int Column { get; set; }
+        public int Row { get; set; }
+        public float Angle { get; set; }
+        public float RelativeLeft { get; set; } = 0.5f;
+        public float RelativeTop { get; set; } = 0.5f;
         public string Name { get; set; }
         public float CurrentSpeed { get; private set; }
         public float DesiredSpeed { get; private set; }

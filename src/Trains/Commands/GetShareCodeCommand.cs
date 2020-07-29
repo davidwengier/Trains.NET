@@ -1,16 +1,15 @@
 ﻿using System.Windows;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.Commands
 {
     [Order(50)]
     internal class GetShareCodeCommand : ICommand
     {
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public GetShareCodeCommand(ITrackLayout trackLayout, ITrackCodec trackCodec)
+        public GetShareCodeCommand(IStaticEntityCollection trackLayout, ITrackCodec trackCodec)
         {
             _trackLayout = trackLayout;
             _trackCodec = trackCodec;

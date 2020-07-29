@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Trains.NET.Engine.Tracks;
 using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine
@@ -14,7 +13,7 @@ namespace Trains.NET.Engine
         private const int GameLoopInterval = 16;
 
         private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITimer? _gameLoopTimer;
 
         public int Columns { get; set; }
@@ -22,7 +21,7 @@ namespace Trains.NET.Engine
         public bool Enabled { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public GameBoard(ITrackLayout trackLayout, IGameStorage? storage, ITimer? timer)
+        public GameBoard(IStaticEntityCollection trackLayout, IGameStorage? storage, ITimer? timer)
         {
             _trackLayout = trackLayout;
             _gameLoopTimer = timer;
@@ -38,16 +37,16 @@ namespace Trains.NET.Engine
                 return;
             }
 
-            IEnumerable<Track>? tracks = null;
+            IEnumerable<IStaticEntity>? tracks = null;
             try
             {
-                tracks = storage.ReadTracks();
+                tracks = storage.Read();
             }
             catch { }
 
             if (tracks != null)
             {
-                _trackLayout.SetTracks(tracks);
+                _trackLayout.Set(tracks);
             }
         }
 

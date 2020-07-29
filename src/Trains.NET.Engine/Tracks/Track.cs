@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Engine
 {
     [DebuggerDisplay("{Direction,nq}")]
-    public class Track
+    public class Track : IStaticEntity
     {
-        private readonly ITrackLayout? _trackLayout;
+        private IStaticEntityCollection? _trackLayout;
 
-        public Track(ITrackLayout? trackLayout)
+        public Track()
         {
-            _trackLayout = trackLayout;
         }
 
         public int Column { get; set; }
@@ -37,6 +35,16 @@ namespace Trains.NET.Engine
                 case TrackDirection.Cross: MoveCross(position); break;
                 default: throw new InvalidOperationException("I don't know what that track is!");
             }
+        }
+
+        public void TryToggle()
+        {
+            if (HasAlternateState())
+            {
+                this.AlternateState = !this.AlternateState;
+            }
+
+            _trackLayout?.RaiseCollectionChanged();
         }
 
         public bool HasAlternateState()
@@ -340,6 +348,22 @@ namespace Trains.NET.Engine
                 _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) ? right : null,
                 _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) ? down : null
                 );
+        }
+
+        public void SetOwner(IStaticEntityCollection? collection)
+        {
+            // We need to assume that we've already been removed from our parent, but before we go,
+            // tell the neighbours we won't be back in the morning
+            if (_trackLayout != null)
+            {
+                RefreshNeighbors(true);
+            }
+            _trackLayout = collection;
+        }
+
+        public void Refresh(bool justAdded)
+        {
+            SetBestTrackDirection(!justAdded);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
-using Trains.NET.Rendering.LayerRenderer;
 
 namespace Trains.NET.Rendering
 {

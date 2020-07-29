@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Comet;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -9,7 +8,7 @@ namespace Trains.NET.Comet
     {
         private readonly IGameBoard _gameBoard;
 
-        public TrainController(IGameBoard gameBoard, ITrackLayout layout)
+        public TrainController(IGameBoard gameBoard, IStaticEntityCollection layout)
         {
             _gameBoard = gameBoard;
 

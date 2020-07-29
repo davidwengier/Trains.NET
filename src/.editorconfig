@@ -228,3 +228,6 @@ dotnet_style_prefer_compound_assignment = false:suggestion
 
 # CA1307: Specify StringComparison
 dotnet_diagnostic.CA1307.severity = none
+
+# CA1030: Use events where appropriate
+dotnet_diagnostic.CA1030.severity = none

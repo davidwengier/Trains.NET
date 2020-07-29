@@ -1,13 +1,12 @@
-﻿using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
-using Trains.NET.Rendering.LayerRenderer;
+﻿using System.Linq;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     [Order(450)]
     internal class TrackLayoutRenderer : ICachableLayerRenderer
     {
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITrackRenderer _trackRenderer;
         private readonly ITrackParameters _parameters;
         private bool _dirty;
@@ -17,18 +16,18 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(ITrackLayout trackLayout, ITrackRenderer trackRenderer, ITrackParameters parameters)
+        public TrackLayoutRenderer(IStaticEntityCollection trackLayout, ITrackRenderer trackRenderer, ITrackParameters parameters)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;
             _parameters = parameters;
 
-            _trackLayout.TracksChanged += (s, e) => _dirty = true;
+            _trackLayout.CollectionChanged += (s, e) => _dirty = true;
         }
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (Track track in _trackLayout)
+            foreach (Track track in _trackLayout.OfType<Track>())
             {
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 

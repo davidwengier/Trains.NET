@@ -35,7 +35,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
     {
         private readonly int _movementSteps;
         private const int MovementPrecision = 4;
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly GameBoard _gameBoard;
 
         public PointToPoint(int movementSteps)

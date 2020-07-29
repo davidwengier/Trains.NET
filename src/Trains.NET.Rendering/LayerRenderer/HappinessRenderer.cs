@@ -1,12 +1,11 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
 {
     [Order(400)]
     internal class HappinessRenderer : ILayerRenderer
     {
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITrackParameters _parameters;
         private readonly PaintBrush _paint = new PaintBrush
         {
@@ -17,7 +16,7 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; }
         public string Name => "Happiness";
 
-        public HappinessRenderer(ITrackLayout trackLayout, ITrackParameters parameters)
+        public HappinessRenderer(IStaticEntityCollection trackLayout, ITrackParameters parameters)
         {
             _trackLayout = trackLayout;
             _parameters = parameters;

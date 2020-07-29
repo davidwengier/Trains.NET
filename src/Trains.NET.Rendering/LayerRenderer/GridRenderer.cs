@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Rendering.LayerRenderer;
 
 namespace Trains.NET.Rendering
 {

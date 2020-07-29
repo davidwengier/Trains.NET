@@ -48,14 +48,14 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             var trackLayout = new TrackLayout();
             var board = new GameBoard(trackLayout, null, null);
 
-            trackLayout.AddTrack(1, 1);
-            trackLayout.AddTrack(2, 1);
-            trackLayout.AddTrack(3, 1);
-            trackLayout.AddTrack(3, 2);
-            trackLayout.AddTrack(3, 3);
-            trackLayout.AddTrack(2, 3);
-            trackLayout.AddTrack(1, 3);
-            trackLayout.AddTrack(1, 2);
+            trackLayout.Add(1, 1, new Track(trackLayout));
+            trackLayout.Add(2, 1, new Track(trackLayout));
+            trackLayout.Add(3, 1, new Track(trackLayout));
+            trackLayout.Add(3, 2, new Track(trackLayout));
+            trackLayout.Add(3, 3, new Track(trackLayout));
+            trackLayout.Add(2, 3, new Track(trackLayout));
+            trackLayout.Add(1, 3, new Track(trackLayout));
+            trackLayout.Add(1, 2, new Track(trackLayout));
 
             board.AddTrain(2, 1);
 
@@ -93,28 +93,28 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             var trackLayout = new TrackLayout();
             var board = new GameBoard(trackLayout, null, null);
 
-            trackLayout.AddTrack(3, 2);
-            trackLayout.AddTrack(4, 2);
-            trackLayout.AddTrack(5, 2);
-            trackLayout.AddTrack(5, 1);
-            trackLayout.AddTrack(4, 1);
-            trackLayout.AddTrack(4, 3);
-            trackLayout.AddTrack(4, 4);
-            trackLayout.AddTrack(4, 5);
-            trackLayout.AddTrack(5, 5);
-            trackLayout.AddTrack(5, 4);
-            trackLayout.AddTrack(3, 4);
-            trackLayout.AddTrack(2, 4);
-            trackLayout.AddTrack(1, 4);
-            trackLayout.AddTrack(1, 5);
-            trackLayout.AddTrack(2, 5);
-            trackLayout.AddTrack(2, 3);
+            trackLayout.Add(3, 2, new Track(trackLayout));
+            trackLayout.Add(4, 2, new Track(trackLayout));
+            trackLayout.Add(5, 2, new Track(trackLayout));
+            trackLayout.Add(5, 1, new Track(trackLayout));
+            trackLayout.Add(4, 1, new Track(trackLayout));
+            trackLayout.Add(4, 3, new Track(trackLayout));
+            trackLayout.Add(4, 4, new Track(trackLayout));
+            trackLayout.Add(4, 5, new Track(trackLayout));
+            trackLayout.Add(5, 5, new Track(trackLayout));
+            trackLayout.Add(5, 4, new Track(trackLayout));
+            trackLayout.Add(3, 4, new Track(trackLayout));
+            trackLayout.Add(2, 4, new Track(trackLayout));
+            trackLayout.Add(1, 4, new Track(trackLayout));
+            trackLayout.Add(1, 5, new Track(trackLayout));
+            trackLayout.Add(2, 5, new Track(trackLayout));
+            trackLayout.Add(2, 3, new Track(trackLayout));
             // Skip until end!
-            trackLayout.AddTrack(2, 1);
-            trackLayout.AddTrack(1, 1);
-            trackLayout.AddTrack(1, 2);
+            trackLayout.Add(2, 1, new Track(trackLayout));
+            trackLayout.Add(1, 1, new Track(trackLayout));
+            trackLayout.Add(1, 2, new Track(trackLayout));
             // Finish it off
-            trackLayout.AddTrack(2, 2);
+            trackLayout.Add(2, 2, new Track(trackLayout));
 
             board.AddTrain(3, 2);
 

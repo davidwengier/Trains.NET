@@ -1,15 +1,14 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering.Tracks
 {
     [Context(typeof(TrackTool))]
     internal class TrackPreviewer : IToolPreviewer
     {
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITrackRenderer _trackRenderer;
 
-        public TrackPreviewer(ITrackLayout trackLayout, ITrackRenderer trackRenderer)
+        public TrackPreviewer(IStaticEntityCollection trackLayout, ITrackRenderer trackRenderer)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;
@@ -17,11 +16,12 @@ namespace Trains.NET.Rendering.Tracks
 
         public void RenderPreview(ICanvas canvas, int column, int row)
         {
-            var track = new Track(_trackLayout)
+            var track = new Track()
             {
                 Column = column,
                 Row = row
             };
+            track.SetOwner(_trackLayout);
             track.Direction = track.GetBestTrackDirection(true);
             _trackRenderer.Render(canvas, track);
         }

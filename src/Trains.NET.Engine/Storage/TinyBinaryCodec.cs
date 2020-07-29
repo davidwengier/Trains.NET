@@ -25,7 +25,7 @@ namespace Trains.NET.Engine
         */
         private const int MaxRepeat = 7;
 
-        public IEnumerable<Track> Decode(string input)
+        public IEnumerable<IStaticEntity> Decode(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<Track>();
 
@@ -57,7 +57,7 @@ namespace Trains.NET.Engine
 
                         for (int i=0; i<count; i++)
                         {
-                            tracks.Add(new Track(null)
+                            tracks.Add(new Track()
                             {
                                 Column = col++,
                                 Row = row,
@@ -96,7 +96,7 @@ namespace Trains.NET.Engine
             return tracks;
         }
 
-        public string Encode(IEnumerable<Track> tracks)
+        public string Encode(IEnumerable<IStaticEntity> tracks)
         {
             if (!tracks.Any()) return string.Empty;
 
@@ -132,10 +132,10 @@ namespace Trains.NET.Engine
             return Convert.ToBase64String(bw.ToArray());
         }
 
-        private static void EncodeRow(BitWriter bw, IEnumerable<Track> rowTracks)
+        private static void EncodeRow(BitWriter bw, IEnumerable<IStaticEntity> rowTracks)
         {
             // Go through this row
-            var row = rowTracks.ToDictionary(x => x.Column, x => x.Direction);
+            var row = rowTracks.OfType<Track>().ToDictionary(x => x.Column, x => x.Direction);
             int lastCol = row.Keys.Max();
 
             TrackEncoding lastDir = TrackEncoding.Blank;

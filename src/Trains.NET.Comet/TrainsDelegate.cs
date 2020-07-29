@@ -61,11 +61,11 @@ namespace Trains.NET.Comet
 
             if (this.CurrentTool.Value is not null)
             {
+                (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
                 IToolPreviewer? previewer = _previewerFactory.Get(this.CurrentTool.Value.GetType());
-                if (previewer is not null)
+                if (previewer is not null && this.CurrentTool.Value.IsValid(col, row))
                 {
                     canvas.Save();
-                    (int col, int row) = _pixelMapper.ViewPortPixelsToCoords((int)_mouseX, (int)_mouseY);
                     (int x, int y) = _pixelMapper.CoordsToViewPortPixels(col, row);
                     canvas.Translate(x, y);
                     previewer.RenderPreview(new SKCanvasWrapper(canvas), col, row);

@@ -12,7 +12,7 @@ namespace Trains.NET.Tests
         internal readonly IGameStorage Storage;
         internal readonly TestTimer Timer;
         internal readonly GameBoard GameBoard;
-        internal readonly ITrackLayout TrackLayout;
+        internal readonly IStaticEntityCollection TrackLayout;
 
         protected TestBase(ITestOutputHelper output)
         {

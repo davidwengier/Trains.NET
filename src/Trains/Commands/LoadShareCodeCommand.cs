@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Windows;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.Commands
 {
     [Order(100)]
     internal class LoadShareCodeCommand : ICommand
     {
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public LoadShareCodeCommand(ITrackLayout trackLayout, ITrackCodec trackCodec)
+        public LoadShareCodeCommand(IStaticEntityCollection trackLayout, ITrackCodec trackCodec)
         {
             _trackLayout = trackLayout;
             _trackCodec = trackCodec;
@@ -26,9 +25,9 @@ namespace Trains.Commands
 
             try
             {
-                IEnumerable<Track> tracks = _trackCodec.Decode(code);
+                IEnumerable<IStaticEntity> tracks = _trackCodec.Decode(code);
 
-                _trackLayout.SetTracks(tracks);
+                _trackLayout.Set(tracks);
             }
             catch (FormatException ex)
             {

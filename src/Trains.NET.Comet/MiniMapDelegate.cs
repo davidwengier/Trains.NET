@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using Comet.Skia;
 using SkiaSharp;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 
@@ -12,7 +12,7 @@ namespace Trains.NET.Comet
     internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private bool _redraw = true;
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
         private readonly SKPaint _paint = new SKPaint()
@@ -27,14 +27,14 @@ namespace Trains.NET.Comet
             StrokeWidth = 80
         };
 
-        public MiniMapDelegate(ITrackLayout trackLayout, ITrackParameters trackParameters, IPixelMapper pixelMapper)
+        public MiniMapDelegate(IStaticEntityCollection trackLayout, ITrackParameters trackParameters, IPixelMapper pixelMapper)
         {
             _trackLayout = trackLayout;
             _trackParameters = trackParameters;
             _pixelMapper = pixelMapper;
 
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
-            _trackLayout.TracksChanged += (s, e) => _redraw = true;
+            _trackLayout.CollectionChanged += (s, e) => _redraw = true;
         }
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
@@ -49,7 +49,7 @@ namespace Trains.NET.Comet
             tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
 
-            foreach (Track track in _trackLayout)
+            foreach (Track track in _trackLayout.OfType<Track>())
             {
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Column, track.Row);
                 tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);

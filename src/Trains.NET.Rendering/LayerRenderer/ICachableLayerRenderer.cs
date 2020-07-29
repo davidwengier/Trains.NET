@@ -1,4 +1,4 @@
-﻿namespace Trains.NET.Rendering.LayerRenderer
+﻿namespace Trains.NET.Rendering
 {
     public interface ICachableLayerRenderer : ILayerRenderer
     {

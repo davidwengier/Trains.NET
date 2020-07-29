@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Comet;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Tracks;
@@ -16,7 +15,7 @@ namespace Trains.NET.Comet
     {
         private readonly State<bool> _configurationShown = false;
 
-        private readonly ITrackLayout _trackLayout;
+        private readonly IStaticEntityCollection _trackLayout;
         private readonly IGameStorage _gameStorage;
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
@@ -31,7 +30,7 @@ namespace Trains.NET.Comet
                         OrderedList<ICommand> commands,
                         ITrainController trainControls,
                         ITrackParameters trackParameters,
-                        ITrackLayout trackLayout,
+                        IStaticEntityCollection trackLayout,
                         IGameStorage gameStorage,
                         Factory<IToolPreviewer> previewerFactory)
         {
@@ -105,7 +104,7 @@ namespace Trains.NET.Comet
 
         public void Save()
         {
-            _gameStorage.WriteTracks(_trackLayout);
+            _gameStorage.Write(_trackLayout);
         }
 
         public void Redraw(Size newSize)

@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System.Linq;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -24,7 +25,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (Track track in _trackLayout)
+            foreach (Track track in _trackLayout.OfType<Track>())
             {
                 if (!track.Happy)
                 {

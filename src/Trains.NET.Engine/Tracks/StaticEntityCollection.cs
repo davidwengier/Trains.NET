@@ -49,12 +49,11 @@ namespace Trains.NET.Engine
 
         public void Set(IEnumerable<IStaticEntity> tracks)
         {
-            _entities.Clear();
+            _entities = _entities.Clear();
 
             foreach (IStaticEntity track in tracks)
             {
                 StoreEntity(track.Column, track.Row, track);
-                _entities = _entities.SetItem((track.Column, track.Row), track);
             }
 
             CollectionChanged?.Invoke(this, EventArgs.Empty);

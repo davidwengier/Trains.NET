@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Rendering
 {
-    internal class TrainParameters : ITrainParameters
+    public class TrainParameters : ITrainParameters
     {
         public float RearHeight { get; set; } = 22;
 

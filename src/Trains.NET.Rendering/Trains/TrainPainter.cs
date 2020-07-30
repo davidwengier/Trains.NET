@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.Trains
 {
-    internal class TrainPainter : ITrainPainter
+    public class TrainPainter : ITrainPainter
     {
         private readonly Dictionary<Train, ITrainPalette> _paletteMap = new();
         private readonly OrderedList<ITrainPalette> _trainPalettes;

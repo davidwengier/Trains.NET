@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Rendering.Skia
 {
-    internal class SKPathFactory : IPathFactory
+    public class SKPathFactory : IPathFactory
     {
         public IPath Create()
         {

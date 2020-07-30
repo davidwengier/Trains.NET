@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Rendering.Skia
 {
-    internal class SKImageFactory : IImageFactory
+    public class SKImageFactory : IImageFactory
     {
         public IImageCanvas CreateImageCanvas(int width, int height)
         {

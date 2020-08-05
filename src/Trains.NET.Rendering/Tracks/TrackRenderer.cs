@@ -12,7 +12,7 @@ namespace Trains.NET.Rendering
         private readonly PaintBrush _trackClear;
         private readonly PaintBrush _plankPaint;
 
-        private readonly Dictionary<TrackDirection, IImage> _cachedTracks = new Dictionary<TrackDirection, IImage>();
+        private readonly Dictionary<string, IImage> _cachedTracks = new Dictionary<string, IImage>();
 
         private readonly IPath _cornerTrackPath;
         private readonly IPath _cornerPlankPath;
@@ -56,14 +56,14 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, Track track)
         {
-            if (!_cachedTracks.TryGetValue(track.Direction, out IImage cachedImage))
+            if (!_cachedTracks.TryGetValue(track.Identifier, out IImage cachedImage))
             {
                 using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_parameters.CellSize, _parameters.CellSize);
 
                 DrawTrack(imageCanvas.Canvas, track.Direction, track);
 
                 cachedImage = imageCanvas.Render();
-                _cachedTracks[track.Direction] = cachedImage;
+                _cachedTracks[track.Identifier] = cachedImage;
             }
             canvas.DrawImage(cachedImage, 0, 0);
         }

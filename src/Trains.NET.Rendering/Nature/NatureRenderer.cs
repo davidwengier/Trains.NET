@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering
     internal class NatureRenderer : ICachableLayerRenderer
     {
         private readonly ITreeRenderer _treeRenderer;
-        private readonly IStaticEntityCollection _collection;
+        private readonly ILayout _collection;
         private readonly ITrackParameters _parameters;
 
         public bool IsDirty => true;
@@ -15,7 +15,7 @@ namespace Trains.NET.Rendering
 
         public string Name => "Nature";
 
-        public NatureRenderer(ITreeRenderer treeRenderer, IStaticEntityCollection collection, ITrackParameters parameters)
+        public NatureRenderer(ITreeRenderer treeRenderer, ILayout collection, ITrackParameters parameters)
         {
             _treeRenderer = treeRenderer;
             _collection = collection;

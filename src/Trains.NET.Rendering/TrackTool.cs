@@ -5,12 +5,12 @@ namespace Trains.NET.Rendering
     [Order(10)]
     internal class TrackTool : ITool
     {
-        private readonly IStaticEntityCollection _entityCollection;
+        private readonly ILayout<Track> _entityCollection;
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Track";
 
-        public TrackTool(IStaticEntityCollection trackLayout)
+        public TrackTool(ILayout<Track> trackLayout)
         {
             _entityCollection = trackLayout;
         }
@@ -20,6 +20,6 @@ namespace Trains.NET.Rendering
             _entityCollection.Add(column, row, new Track());
         }
 
-        public bool IsValid(int column, int row) => _entityCollection.IsEmptyOrT<Track>(column, row);
+        public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row);
     }
 }

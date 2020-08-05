@@ -8,10 +8,10 @@ namespace Trains.Commands
     [Order(100)]
     internal class LoadShareCodeCommand : ICommand
     {
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public LoadShareCodeCommand(IStaticEntityCollection trackLayout, ITrackCodec trackCodec)
+        public LoadShareCodeCommand(ILayout trackLayout, ITrackCodec trackCodec)
         {
             _trackLayout = trackLayout;
             _trackCodec = trackCodec;

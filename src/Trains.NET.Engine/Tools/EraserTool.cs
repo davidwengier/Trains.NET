@@ -3,12 +3,12 @@
     [Order(20)]
     internal class EraserTool : ITool
     {
-        private readonly IStaticEntityCollection _collection;
+        private readonly ILayout _collection;
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Eraser";
 
-        public EraserTool(IStaticEntityCollection trackLayout)
+        public EraserTool(ILayout trackLayout)
         {
             _collection = trackLayout;
         }

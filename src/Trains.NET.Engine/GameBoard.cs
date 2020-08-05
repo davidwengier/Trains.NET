@@ -13,7 +13,7 @@ namespace Trains.NET.Engine
         private const int GameLoopInterval = 16;
 
         private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout _layout;
         private readonly ITimer? _gameLoopTimer;
 
         public int Columns { get; set; }
@@ -21,9 +21,9 @@ namespace Trains.NET.Engine
         public bool Enabled { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public GameBoard(IStaticEntityCollection trackLayout, IGameStorage? storage, ITimer? timer)
+        public GameBoard(ILayout trackLayout, IGameStorage? storage, ITimer? timer)
         {
-            _trackLayout = trackLayout;
+            _layout = trackLayout;
             _gameLoopTimer = timer;
             if (_gameLoopTimer != null)
             {
@@ -46,7 +46,7 @@ namespace Trains.NET.Engine
 
             if (tracks != null)
             {
-                _trackLayout.Set(tracks);
+                _layout.Set(tracks);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Trains.NET.Engine
             foreach (Train train in _movables)
             {
                 // Claim the track we are currently on, distance of 0
-                if (_trackLayout.TryGet(train.Column, train.Row, out Track? myTrack))
+                if (_layout.TryGet(train.Column, train.Row, out Track? myTrack))
                 {
                     takenTracks.Add(myTrack, (train, 0));
                 }
@@ -135,14 +135,14 @@ namespace Trains.NET.Engine
 
                 float timeAway = numSteps / train.DesiredSpeed;
 
-                if (!_trackLayout.TryGet(train.Column, train.Row, out Track? track))
+                if (!_layout.TryGet(train.Column, train.Row, out Track? track))
                 {
                     return false;
                 }
 
                 IMovable? otherTrain = GetMovableAt(newPosition.Column, newPosition.Row);
 
-                if (!_trackLayout.TryGet(newPosition.Column, newPosition.Row, out Track? nextTrack))
+                if (!_layout.TryGet(newPosition.Column, newPosition.Row, out Track? nextTrack))
                 {
                     break;
                 }
@@ -221,7 +221,7 @@ namespace Trains.NET.Engine
 
         private TrainPosition? GetNextPosition(TrainPosition currentPosition, float distance)
         {
-            if (!_trackLayout.TryGet(currentPosition.Column, currentPosition.Row, out Track? track))
+            if (!_layout.TryGet(currentPosition.Column, currentPosition.Row, out Track? track))
             {
                 return null;
             }
@@ -263,7 +263,7 @@ namespace Trains.NET.Engine
                 Row = row
             };
 
-            if (!_trackLayout.TryGet(train.Column, train.Row, out _))
+            if (!_layout.TryGet(train.Column, train.Row, out _))
             {
                 return null;
             }
@@ -297,7 +297,7 @@ namespace Trains.NET.Engine
         public void ClearAll()
         {
             _movables = _movables.Clear();
-            _trackLayout.Clear();
+            _layout.Clear();
         }
 
         public void Dispose()

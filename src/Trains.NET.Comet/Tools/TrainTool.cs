@@ -6,13 +6,13 @@ namespace Trains.NET.Comet
     internal class TrainTool : ITool
     {
         private readonly IGameBoard _gameBoard;
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout<Track> _trackLayout;
         private readonly ITrainController _gameState;
 
         public ToolMode Mode => ToolMode.Play;
         public string Name => "Train";
 
-        public TrainTool(IGameBoard gameBoard, IStaticEntityCollection trackLayout, ITrainController gameState)
+        public TrainTool(IGameBoard gameBoard, ILayout<Track> trackLayout, ITrainController gameState)
         {
             _gameBoard = gameBoard;
             _trackLayout = trackLayout;
@@ -27,7 +27,7 @@ namespace Trains.NET.Comet
             }
         }
 
-        public bool IsValid(int column, int row) => _trackLayout.TryGet<Track>(column, row, out _) &&
+        public bool IsValid(int column, int row) => _trackLayout.TryGet(column, row, out _) &&
             _gameBoard.GetMovableAt(column, row) == null;
     }
 }

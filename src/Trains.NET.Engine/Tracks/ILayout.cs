@@ -4,11 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine
 {
-    public interface IStaticEntityCollection : IEnumerable<IStaticEntity>
+    public interface ILayout : IEnumerable<IStaticEntity>
     {
         event EventHandler CollectionChanged;
 
-        bool IsEmptyOrT<T>(int column, int row) where T : class, IStaticEntity;
         bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity? entity);
         bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity) where T : class, IStaticEntity;
         void Set(IEnumerable<IStaticEntity> entities);

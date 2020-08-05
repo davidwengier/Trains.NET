@@ -15,7 +15,7 @@ namespace Trains.NET.Comet
     {
         private readonly State<bool> _configurationShown = false;
 
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout _trackLayout;
         private readonly IGameStorage _gameStorage;
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
@@ -30,7 +30,7 @@ namespace Trains.NET.Comet
                         OrderedList<ICommand> commands,
                         ITrainController trainControls,
                         ITrackParameters trackParameters,
-                        IStaticEntityCollection trackLayout,
+                        ILayout trackLayout,
                         IGameStorage gameStorage,
                         Factory<IToolPreviewer> previewerFactory)
         {

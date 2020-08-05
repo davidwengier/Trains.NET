@@ -5,10 +5,10 @@ namespace Trains.NET.Rendering.Tracks
     [Context(typeof(TrackTool))]
     internal class TrackPreviewer : IToolPreviewer
     {
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout _trackLayout;
         private readonly ITrackRenderer _trackRenderer;
 
-        public TrackPreviewer(IStaticEntityCollection trackLayout, ITrackRenderer trackRenderer)
+        public TrackPreviewer(ILayout trackLayout, ITrackRenderer trackRenderer)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;

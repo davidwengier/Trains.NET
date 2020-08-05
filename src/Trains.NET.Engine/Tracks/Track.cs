@@ -6,7 +6,7 @@ namespace Trains.NET.Engine
     [DebuggerDisplay("{Direction,nq}")]
     public class Track : IStaticEntity
     {
-        private IStaticEntityCollection? _trackLayout;
+        private ILayout? _trackLayout;
 
         public Track()
         {
@@ -350,7 +350,7 @@ namespace Trains.NET.Engine
                 );
         }
 
-        public void SetOwner(IStaticEntityCollection? collection)
+        public void SetOwner(ILayout? collection)
         {
             // We need to assume that we've already been removed from our parent, but before we go,
             // tell the neighbours we won't be back in the morning

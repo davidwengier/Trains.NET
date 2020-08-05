@@ -2,7 +2,7 @@
 {
     public interface IStaticEntity : IEntity
     {
-        void SetOwner(IStaticEntityCollection? collection);
+        void SetOwner(ILayout? collection);
         void Refresh(bool justAdded);
     }
 }

@@ -8,7 +8,7 @@ namespace Trains.NET.Comet
     {
         private readonly IGameBoard _gameBoard;
 
-        public TrainController(IGameBoard gameBoard, IStaticEntityCollection layout)
+        public TrainController(IGameBoard gameBoard, ILayout layout)
         {
             _gameBoard = gameBoard;
 

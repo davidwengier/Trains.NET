@@ -44,7 +44,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(180.0f)]
         public void MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
         {
-            var trackLayout = new StaticEntityCollection();
+            var trackLayout = new Layout();
             var board = new GameBoard(trackLayout, null, null);
 
             trackLayout.AddTrack(1, 1);
@@ -89,7 +89,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(180.0f)]
         public void MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
         {
-            var trackLayout = new StaticEntityCollection();
+            var trackLayout = new Layout();
             var board = new GameBoard(trackLayout, null, null);
 
             trackLayout.AddTrack(3, 2);

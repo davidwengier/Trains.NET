@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine
 {
-    internal class StaticEntityCollection : IStaticEntityCollection
+    internal class Layout : ILayout
     {
         public event EventHandler? CollectionChanged;
 

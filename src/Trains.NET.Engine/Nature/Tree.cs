@@ -21,7 +21,7 @@ namespace Trains.NET.Engine
             this.Seed = s_random.Next(1, 1000);
         }
 
-        public void SetOwner(IStaticEntityCollection? collection)
+        public void SetOwner(ILayout? collection)
         {
         }
     }

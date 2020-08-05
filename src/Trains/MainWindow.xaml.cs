@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using Comet;
 using Comet.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using Trains.Handlers;
 using Trains.NET.Comet;
-using Trains.NET.Engine;
 using Trains.Storage;
 
 namespace Trains
@@ -25,7 +22,7 @@ namespace Trains
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            ServiceProvider serviceProvider = BuildServiceProvider();
+            ServiceProvider serviceProvider = Services.GetServiceProvider();
 
             InitializeComponent();
 
@@ -79,65 +76,6 @@ namespace Trains
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
-        }
-
-        private static ServiceProvider BuildServiceProvider()
-        {
-            var col = new ServiceCollection();
-            foreach (Assembly a in GetAssemblies())
-            {
-                foreach (Type t in a.GetTypes())
-                {
-                    if (t.IsInterface)
-                    {
-                        WireUpOrderedList(col, t);
-                        WireUpFunc(col, t);
-                    }
-                    else
-                    {
-                        foreach (Type inter in t.GetInterfaces())
-                        {
-                            if (inter.Namespace?.StartsWith("Trains.NET", StringComparison.OrdinalIgnoreCase) == true)
-                            {
-                                if (inter.GetCustomAttribute<TransientAttribute>(true) != null)
-                                {
-                                    col.AddTransient(inter, t);
-                                }
-                                else
-                                {
-                                    col.AddSingleton(inter, t);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            col.AddSingleton<MainPage, MainPage>();
-
-            return col.BuildServiceProvider();
-
-            static IEnumerable<Assembly> GetAssemblies()
-            {
-                yield return typeof(Trains.NET.Engine.IGameBoard).Assembly;
-                yield return typeof(Trains.NET.Rendering.IGame).Assembly;
-                yield return typeof(Trains.NET.Rendering.Skia.SKCanvasWrapper).Assembly;
-                yield return typeof(MainWindow).Assembly;
-                yield return typeof(MainPage).Assembly;
-            }
-
-            static void WireUpOrderedList(ServiceCollection col, Type t)
-            {
-                Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
-                col.AddSingleton(orderedListOfT, sp => Activator.CreateInstance(orderedListOfT, sp.GetServices(t)));
-            }
-
-            static void WireUpFunc(ServiceCollection col, Type t)
-            {
-                Type orderedListOfT = typeof(OrderedList<>).MakeGenericType(t);
-                Type factoryType = typeof(Factory<>).MakeGenericType(t);
-                col.AddSingleton(factoryType, sp => Activator.CreateInstance(factoryType, sp.GetService(orderedListOfT)));
-            }
         }
     }
 }

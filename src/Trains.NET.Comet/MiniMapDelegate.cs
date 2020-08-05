@@ -12,7 +12,7 @@ namespace Trains.NET.Comet
     internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private bool _redraw = true;
-        private readonly IStaticEntityCollection _trackLayout;
+        private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITrackParameters _trackParameters;
         private readonly SKPaint _paint = new SKPaint()
@@ -27,7 +27,7 @@ namespace Trains.NET.Comet
             StrokeWidth = 80
         };
 
-        public MiniMapDelegate(IStaticEntityCollection trackLayout, ITrackParameters trackParameters, IPixelMapper pixelMapper)
+        public MiniMapDelegate(ILayout trackLayout, ITrackParameters trackParameters, IPixelMapper pixelMapper)
         {
             _trackLayout = trackLayout;
             _trackParameters = trackParameters;

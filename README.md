@@ -23,6 +23,10 @@ Trains2 is a fork of Trains that I started in order to clean up some things and 
 
 Trains.NET is a complete re-write, from scratch, in .NET Core and C#, using SkiaSharp for drawing, because I like .NET Core and C# more than I like TypeScript. Every line of code is written (or reviewed) live on stream because I have an itch to live stream for some unknown reason.
 
+### Testimonials
+
+![https://twitter.com/sparkie108](assets/testimonial-sparkie108.png)
+
 ### Get Involved
 
 Because all coding happens on stream I'm unlikely to be able to accept large pull requests but small ones might be considered if I feel like they can be reviewed in a stream and I can fully explain them so nothing changes without the community being aware.

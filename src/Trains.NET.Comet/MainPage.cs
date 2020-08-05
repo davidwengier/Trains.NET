@@ -8,9 +8,11 @@ using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Tracks;
+using Trains.NET.SourceGenerator;
 
 namespace Trains.NET.Comet
 {
+    [EntryPoint]
     public class MainPage : View
     {
         private readonly State<bool> _configurationShown = false;

@@ -11,10 +11,15 @@
     <ProjectReference Include="..\..\comet\src\Comet\Comet.csproj" />
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj"
+                      OutputItemType="Analyzer" />
   </ItemGroup>
 
   <!-- Because Comet is a project reference -->

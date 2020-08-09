@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Trains.NET.Engine.Tracks
 {
     internal class TerrainMap : ITerrainMap
     {
-        private readonly Dictionary<(int, int), Terrain> _terrainMap = new();
+        private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
 
         public void SetTerrainHeight(int column, int row, int height)
         {
@@ -35,7 +36,7 @@ namespace Trains.NET.Engine.Tracks
                 ? _terrainMap[key]
                 : new Terrain { Column = column, Row = row };
 
-            _terrainMap[key] = transform(terrain);
+            _terrainMap = _terrainMap.Add(key, transform(terrain));
         }
 
         public IEnumerator<Terrain> GetEnumerator()

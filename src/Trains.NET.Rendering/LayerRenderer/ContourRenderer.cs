@@ -34,11 +34,6 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            DrawContourLines(canvas, pixelMapper);
-        }
-
-        private void DrawContourLines(ICanvas canvas, IPixelMapper pixelMapper)
-        {
              Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
 
             foreach (int contourLevel in contourLevels.Keys)
@@ -47,6 +42,7 @@ namespace Trains.NET.Rendering
                 DrawContourLine(canvas, contourPoints);
             }
         }
+
         private void DrawContourLine(ICanvas canvas, List<ViewportPoint> contourPoints)
         {
             foreach (ViewportPoint contourPoint in contourPoints)

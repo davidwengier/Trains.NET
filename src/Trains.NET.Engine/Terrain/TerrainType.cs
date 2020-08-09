@@ -2,7 +2,6 @@
 {
     public enum TerrainType
     {
-        Empty,
         Water,
         Sand,
         Grass

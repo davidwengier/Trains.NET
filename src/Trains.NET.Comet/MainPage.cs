@@ -137,7 +137,7 @@ namespace Trains.NET.Comet
                 .Where(t => ShouldShowTool(buildMode, t))
                 .GroupBy(t => t.Category))
             {
-                var category = toolGroup.Key;
+                string category = toolGroup.Key;
 
                 if (toolGroup.Any())
                 {

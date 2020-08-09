@@ -27,24 +27,24 @@ namespace Trains.NET.Rendering
 
         private void DrawTerrainTypes(ICanvas canvas)
         {
+            var backgroundColour = Colors.LightGreen;
+            // Draw grass background for viewport
+            canvas.DrawRect(0, 0, _pixelMapper.ViewPortWidth, _pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = backgroundColour});
+
+            // Draw any non-grass cells
             foreach (var terrain in _terrainMap)
             {
-                var color = terrain.TerrainType switch
+                var colour = terrain.TerrainType switch
                 {
-                    TerrainType.Grass => Colors.LightGreen,
                     TerrainType.Sand => Colors.LightYellow,
                     TerrainType.Water => Colors.LightBlue,
-                    _ => Colors.Empty,
+                    _ => backgroundColour,
                 };
 
-                var paintBrush = new PaintBrush
-                {
-                    Color = color,
-                    Style = PaintStyle.Fill
-                };
+                if (colour == backgroundColour) continue;
 
                 (int x, int y) = _pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
-                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, paintBrush);
+                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
             }
         }
 

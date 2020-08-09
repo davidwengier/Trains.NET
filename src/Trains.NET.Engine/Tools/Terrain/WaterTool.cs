@@ -5,18 +5,16 @@ namespace Trains.NET.Engine
     [Order(20)]
     internal class WaterTool : ITool
     {
-
         private readonly ITerrainMap _terrainMap;
+
+        public ToolMode Mode => ToolMode.Build;
+        public string Name => "Water";
+        public string Category => "Terrain";
 
         public WaterTool(ITerrainMap terrainMap)
         {
             _terrainMap = terrainMap;
         }
-
-        public ToolMode Mode => ToolMode.Build;
-        public string Name => "Water";
-
-        public string Category => "Terrain";
 
         public void Execute(int column, int row)
         {

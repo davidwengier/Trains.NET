@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
@@ -8,12 +7,12 @@ namespace Trains.NET.Rendering
     internal class TerrainTypeRenderer : ILayerRenderer
     {
         private readonly ITerrainMap _terrainMap;
-        private readonly ITrackParameters _trackParameters;
+        private readonly IGameParameters _gameParameters;
 
-        public TerrainTypeRenderer(ITerrainMap terrainMap, ITrackParameters trackParameters)
+        public TerrainTypeRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
         {
             _terrainMap = terrainMap;
-            _trackParameters = trackParameters;
+            _gameParameters = gameParameters;
         }
 
         public bool Enabled { get; set; } = true;
@@ -39,7 +38,7 @@ namespace Trains.NET.Rendering
                 if (colour == backgroundColour) continue;
 
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
-                canvas.DrawRect(x, y, _trackParameters.CellSize, _trackParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
+                canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
             }
         }
 

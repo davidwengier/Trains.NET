@@ -157,10 +157,10 @@ namespace Trains.NET.Comet
             {
                 string category = toolGroup.Key;
 
-                if (toolGroup.Any())
-                {
-                    controlsGroup.Add(new Text(() => category));
-                }
+                //if (toolGroup.Any())
+                //{
+                //    controlsGroup.Add(new Text(() => category));
+                //}
 
                 foreach (ITool tool in toolGroup)
                 {

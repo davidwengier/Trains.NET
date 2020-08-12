@@ -16,7 +16,7 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(ILayout<Track> trackLayout, IRenderer<Track> trackRenderer, IGameParameters parameters)
+        public TrackLayoutRenderer(ILayout<Track> trackLayout, IRenderer<Track> trackRenderer, IGameParameters gameParameters)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;

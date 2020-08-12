@@ -29,6 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="RedTrain.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

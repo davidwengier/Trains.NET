@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -18,50 +19,106 @@ namespace Trains.NET.SourceGenerator
         {
             var compilation = context.Compilation;
 
+            string sourceBuilder = Generate(compilation);
+
+            //System.IO.File.WriteAllText(@"C:\Users\dawengie\Desktop\SourceGenerator.txt", sourceBuilder, Encoding.UTF8);
+
+            context.AddSource("digenerator.cs", SourceText.From(sourceBuilder, Encoding.UTF8));
+        }
+
+        public static string Generate(Compilation compilation)
+        {
+            string stub = @"
+namespace DI
+{ 
+    public static class ServiceLocator
+    {
+        public static T GetService<T>()
+        {
+            return default;
+        }
+    }
+}
+";
+
+            var sourceText = SourceText.From(stub, Encoding.UTF8);
+            var syntaxTree = CSharpSyntaxTree.ParseText(sourceText, ((CSharpSyntaxTree)compilation.SyntaxTrees.First()).Options);
+            compilation = compilation.AddSyntaxTrees(syntaxTree);
+
+            var diags = compilation.GetDiagnostics();
+
             var sourceBuilder = new StringBuilder();
 
             foreach (var tree in compilation.SyntaxTrees)
             {
-                var root = tree.GetRoot();
-                var attributes = root.DescendantNodesAndSelf().OfType<AttributeSyntax>();
+                var semanticModel = compilation.GetSemanticModel(tree);
 
-                foreach (var att in attributes)
+                var invocations = tree.GetRoot().DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>();
+
+                foreach (var methodCall in invocations)
                 {
-                    if (att.Name.ToString() == "EntryPoint")
+                    var symbol = semanticModel.GetSymbolInfo(methodCall).Symbol;
+
+                    if (symbol?.ContainingType.Name == "ServiceLocator")
                     {
-                        var model = compilation.GetSemanticModel(tree);
-
-                        ClassDeclarationSyntax? classSyntax = att.FirstAncestorOrSelf<ClassDeclarationSyntax>();
-                        if (classSyntax == null)
+                        if (symbol is IMethodSymbol methodSymbol &&
+                            methodSymbol.ReturnType.OriginalDefinition is INamedTypeSymbol typeToCreate)
                         {
-                            continue;
+                            Generate(sourceBuilder, typeToCreate, compilation);
                         }
+                    }
+                }
 
-                        if (!(model.GetDeclaredSymbol(classSyntax) is INamedTypeSymbol classDecl))
-                        {
-                            continue;
-                        }
+            }
+            //return sourceBuilder.ToString();
+            return stub;
+        }
 
-                        sourceBuilder.AppendLine($@"
-namespace {classDecl.ContainingNamespace}
-{{
-    public static class Services
-    {{
-        public static {classDecl.Name} GetEntryPoint()
-        {{
-            return null;
-        }}
-    }}
-}}
-");
+        private static void Generate(StringBuilder sourceBuilder, INamedTypeSymbol typeToCreate, Compilation compilation)
+        {
+            var realType = typeToCreate.IsAbstract ? FindImplementation(typeToCreate, compilation) : typeToCreate;
 
+            sourceBuilder.AppendLine("// Generating: " + realType);
+
+            var constructor = realType?.Constructors.FirstOrDefault();
+            if (constructor != null)
+            {
+                foreach (var parametr in constructor.Parameters)
+                {
+                    if (parametr.Type is INamedTypeSymbol paramType)
+                    {
+                        Generate(sourceBuilder, paramType, compilation);
                     }
                 }
             }
+        }
 
-            //File.WriteAllText(@"C:\Users\dawengie\Desktop\SourceGenerator.txt", sourceBuilder.ToString(), Encoding.UTF8);
+        private static INamedTypeSymbol? FindImplementation(INamedTypeSymbol typeToCreate, Compilation compilation)
+        {
+            foreach (var x in GetAllTypes(compilation.GlobalNamespace.GetNamespaceMembers()))
+            {
+                if (x.Interfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToCreate)))
+                {
+                    return x;
+                }
+            }
+            return null;
 
-            context.AddSource("digenerator.cs", SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
+            IEnumerable<INamedTypeSymbol> GetAllTypes(IEnumerable<INamespaceSymbol> namespaces)
+            {
+                foreach (var ns in namespaces)
+                {
+                    foreach (var t in ns.GetTypeMembers())
+                    {
+                        yield return t;
+                    }
+
+                    foreach (var subType in GetAllTypes(ns.GetNamespaceMembers()))
+                    {
+                        yield return subType;
+                    }
+                }
+            }
         }
     }
 }

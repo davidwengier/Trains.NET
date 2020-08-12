@@ -17,10 +17,7 @@
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj"
-                      OutputItemType="Analyzer" />
-  </ItemGroup>
+
 
   <!-- Because Comet is a project reference -->
   <ItemGroup>

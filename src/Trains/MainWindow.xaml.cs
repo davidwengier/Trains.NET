@@ -47,7 +47,7 @@ namespace Trains
             }
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainPage mainPage = Trains.NET.Comet.Services.GetEntryPoint();
+            MainPage mainPage = DI.ServiceLocator.GetService<MainPage>();
 
             if (mainPage == null)
             {

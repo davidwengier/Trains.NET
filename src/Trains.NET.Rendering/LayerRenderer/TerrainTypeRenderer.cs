@@ -15,8 +15,8 @@ namespace Trains.NET.Rendering
             _gameParameters = gameParameters;
         }
 
-        public bool Enabled { get; set; } = true;
-        public string Name => "TerrainType";
+        public bool Enabled { get; set; }
+        public string Name => "Terrain";
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {

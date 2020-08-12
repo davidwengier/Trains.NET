@@ -13,7 +13,7 @@ namespace Trains.Emoji
     {
         private readonly int _size;
         private readonly ITreeRenderer _tree;
-        private readonly ITrackRenderer _track;
+        private readonly IRenderer<Track> _track;
         private readonly (string color, ITrainRenderer renderer)[] _trains;
         private const string FolderName = "EmojiOutput";
 

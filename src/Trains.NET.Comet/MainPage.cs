@@ -151,9 +151,18 @@ namespace Trains.NET.Comet
         private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate, bool buildMode)
         {
             var controlsGroup = new RadioGroup(Orientation.Vertical);
-            foreach (ITool tool in tools)
+            foreach (IGrouping<string, ITool> toolGroup in tools
+                .Where(t => ShouldShowTool(buildMode, t))
+                .GroupBy(t => t.Category))
             {
-                if (ShouldShowTool(buildMode, tool))
+                string category = toolGroup.Key;
+
+                if (toolGroup.Any())
+                {
+                    controlsGroup.Add(new Text(() => category));
+                }
+
+                foreach (ITool tool in toolGroup)
                 {
                     if (controlDelegate.CurrentTool.Value == null)
                     {

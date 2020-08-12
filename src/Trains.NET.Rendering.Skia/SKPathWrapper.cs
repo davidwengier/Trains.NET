@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.Skia
             _path.Dispose();
         }
 
-        public void QuadTo(float controlX, float controlY, float x, float y) => 
-                        _path.QuadTo(controlX, controlY, x, y);
+        public void ConicTo(float controlX, float controlY, float x, float y, float w) =>
+                        _path.ConicTo(controlX, controlY, x, y, w);
     }
 }

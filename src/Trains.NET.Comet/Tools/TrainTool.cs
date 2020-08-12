@@ -11,6 +11,7 @@ namespace Trains.NET.Comet
 
         public ToolMode Mode => ToolMode.Play;
         public string Name => "Train";
+        public string Category => "Train";
 
         public TrainTool(IGameBoard gameBoard, ILayout<Track> trackLayout, ITrainController gameState)
         {

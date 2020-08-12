@@ -7,6 +7,7 @@
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Eraser";
+        public string Category => "General";
 
         public EraserTool(ILayout trackLayout)
         {

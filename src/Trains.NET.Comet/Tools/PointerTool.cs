@@ -24,6 +24,8 @@ namespace Trains.NET.Comet
 
         public string Name => "Pointer";
 
+        public string Category => "General";
+
         public void StartDrag(int x, int y)
         {
             _lastX = x;

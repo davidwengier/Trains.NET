@@ -7,8 +7,8 @@ using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
 {
-    [Order(0)]
-    internal class TerrainRenderer : ILayerRenderer
+    [Order(1)]
+    internal class ContourRenderer : ILayerRenderer
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;
@@ -16,7 +16,7 @@ namespace Trains.NET.Rendering
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
+        public ContourRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
         {
             _terrainMap = terrainMap;
             _gameParameters = gameParameters;
@@ -30,11 +30,11 @@ namespace Trains.NET.Rendering
         }
 
         public bool Enabled { get; set; }
-        public string Name => "Terrain";
+        public string Name => "Contours";
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
+             Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
 
             foreach (int contourLevel in contourLevels.Keys)
             {
@@ -68,9 +68,8 @@ namespace Trains.NET.Rendering
             var topography = new Dictionary<int, List<ViewportPoint>>();
             foreach (Terrain? terrain in _terrainMap)
             {
-                int contourLevel = CalculateContourLevel(terrain.Altitude);
+                int contourLevel = CalculateContourLevel(terrain.Height);
                 List<ViewportPoint>? contourPoints = topography.ContainsKey(contourLevel) ? topography[contourLevel] : new List<ViewportPoint>();
-
                 var adjacentTerrainLookups = new List<Func<Terrain, Terrain>>
                 {
                     _terrainMap.GetAdjacentTerrainUp,
@@ -98,7 +97,7 @@ namespace Trains.NET.Rendering
         {
             Terrain? adjacentTerrain = getAdjacentTerrain(terrain);
 
-            int adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Altitude);
+            int adjacentContourLevel = CalculateContourLevel(adjacentTerrain.Height);
 
             if (adjacentContourLevel >= contourLevel) return null;
 
@@ -154,13 +153,5 @@ namespace Trains.NET.Rendering
         {
             return altitude / ContourHeight; // Integer divide
         }
-
     }
-
-    internal struct ViewportPoint
-    {
-        public float PixelX { get; set; }
-        public float PixelY { get; set; }
-    }
-
 }

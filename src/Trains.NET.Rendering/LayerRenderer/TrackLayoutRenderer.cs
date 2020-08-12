@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering
     internal class TrackLayoutRenderer : ICachableLayerRenderer
     {
         private readonly ILayout<Track> _trackLayout;
-        private readonly ITrackRenderer _trackRenderer;
+        private readonly IRenderer<Track> _trackRenderer;
         private readonly ITrackParameters _parameters;
         private bool _dirty;
 
@@ -16,7 +16,7 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(ILayout<Track> trackLayout, ITrackRenderer trackRenderer, ITrackParameters parameters)
+        public TrackLayoutRenderer(ILayout<Track> trackLayout, IRenderer<Track> trackRenderer, ITrackParameters parameters)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;

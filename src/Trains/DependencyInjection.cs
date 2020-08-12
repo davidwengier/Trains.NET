@@ -30,7 +30,8 @@ namespace Trains
                             {
                                 continue;
                             }
-                            if (inter.IsGenericType)
+                            if (inter.IsGenericType &&
+                                t.IsGenericType)
                             {
                                 continue;
                             }

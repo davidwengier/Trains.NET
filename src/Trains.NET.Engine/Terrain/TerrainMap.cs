@@ -34,7 +34,7 @@ namespace Trains.NET.Engine.Tracks
             (int, int) key = (column, row);
             Terrain terrain = _terrainMap.ContainsKey(key)
                 ? _terrainMap[key]
-                : new Terrain { Column = column, Row = row };
+                : new Terrain { Column = column, Row = row, TerrainType = TerrainType.Grass };
 
             _terrainMap = _terrainMap.Add(key, transform(terrain));
         }

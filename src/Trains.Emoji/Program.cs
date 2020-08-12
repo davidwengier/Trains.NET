@@ -12,7 +12,7 @@ namespace Trains.Emoji
     public class EmojiDrawer
     {
         private readonly int _size;
-        private readonly ITreeRenderer _tree;
+        private readonly IRenderer<Tree> _tree;
         private readonly IRenderer<Track> _track;
         private readonly (string color, IRenderer<Train> renderer)[] _trains;
         private const string FolderName = "EmojiOutput";
@@ -47,7 +47,7 @@ namespace Trains.Emoji
             }
             for (int i = 0; i < 3; i++)
             {
-                Draw("tree" + i, x => _tree.Render(x, i));
+                Draw("tree" + i, x => _tree.Render(x, new Tree()));
             }
             foreach (TrackDirection direction in (TrackDirection[])Enum.GetValues(typeof(TrackDirection)))
             {

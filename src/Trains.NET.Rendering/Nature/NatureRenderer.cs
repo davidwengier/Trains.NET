@@ -5,7 +5,7 @@ namespace Trains.NET.Rendering
 {
     internal class NatureRenderer : ICachableLayerRenderer
     {
-        private readonly ITreeRenderer _treeRenderer;
+        private readonly IRenderer<Tree> _treeRenderer;
         private readonly ILayout<Tree> _collection;
         private readonly ITrackParameters _parameters;
         private bool _dirty;
@@ -16,7 +16,7 @@ namespace Trains.NET.Rendering
 
         public string Name => "Nature";
 
-        public NatureRenderer(ITreeRenderer treeRenderer, ILayout<Tree> collection, ITrackParameters parameters)
+        public NatureRenderer(IRenderer<Tree> treeRenderer, ILayout<Tree> collection, ITrackParameters parameters)
         {
             _treeRenderer = treeRenderer;
             _collection = collection;
@@ -27,7 +27,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (var tree in _collection.OfType<Tree>())
+            foreach (Tree? tree in _collection.OfType<Tree>())
             {
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(tree.Column, tree.Row);
 
@@ -39,7 +39,7 @@ namespace Trains.NET.Rendering
 
                 canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize), ClipOperation.Intersect, false);
 
-                _treeRenderer.Render(canvas, tree.Seed);
+                _treeRenderer.Render(canvas, tree);
 
                 canvas.Restore();
             }

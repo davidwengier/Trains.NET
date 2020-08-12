@@ -14,7 +14,7 @@ namespace Trains.NET.Comet
         private bool _redraw = true;
         private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
-        private readonly ITrackParameters _trackParameters;
+        private readonly IGameParameters _gameParameters;
         private readonly SKPaint _paint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
@@ -27,10 +27,10 @@ namespace Trains.NET.Comet
             StrokeWidth = 80
         };
 
-        public MiniMapDelegate(ILayout trackLayout, ITrackParameters trackParameters, IPixelMapper pixelMapper)
+        public MiniMapDelegate(ILayout trackLayout, IGameParameters gameParameters, IPixelMapper pixelMapper)
         {
             _trackLayout = trackLayout;
-            _trackParameters = trackParameters;
+            _gameParameters = gameParameters;
             _pixelMapper = pixelMapper;
 
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
@@ -52,7 +52,7 @@ namespace Trains.NET.Comet
             foreach (Track track in _trackLayout.OfType<Track>())
             {
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Column, track.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _trackParameters.CellSize + x, _trackParameters.CellSize + y), _paint);
+                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), _paint);
             }
 
             tempCanvas.DrawRect(new SKRect(_pixelMapper.ViewPortX * -1, _pixelMapper.ViewPortY * -1, Math.Abs(_pixelMapper.ViewPortX) + _pixelMapper.ViewPortWidth, Math.Abs(_pixelMapper.ViewPortY) + _pixelMapper.ViewPortHeight), _viewPortPaint);

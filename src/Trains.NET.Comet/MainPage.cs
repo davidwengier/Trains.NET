@@ -34,7 +34,7 @@ namespace Trains.NET.Comet
                         OrderedList<ILayerRenderer> layers,
                         OrderedList<ICommand> commands,
                         ITrainController trainControls,
-                        ITrackParameters trackParameters,
+                        IGameParameters gameParameters,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
                         Factory<IToolPreviewer> previewerFactory)
@@ -43,7 +43,7 @@ namespace Trains.NET.Comet
 
             _game = game;
             _controlDelegate = new TrainsDelegate(game, pixelMapper, previewerFactory);
-            _miniMapDelegate = new MiniMapDelegate(trackLayout, trackParameters, pixelMapper);
+            _miniMapDelegate = new MiniMapDelegate(trackLayout, gameParameters, pixelMapper);
 
             this.Body = () =>
             {

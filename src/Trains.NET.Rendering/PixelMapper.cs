@@ -4,7 +4,7 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        private readonly ITrackParameters _parameters;
+        private readonly IGameParameters _gameParameters;
         public const int MaxGridSize = 3000;
 
         public int ViewPortX { get; private set; }
@@ -14,9 +14,9 @@ namespace Trains.NET.Rendering
 
         public event EventHandler? ViewPortChanged;
 
-        public PixelMapper(ITrackParameters parameters)
+        public PixelMapper(IGameParameters gameParameters)
         {
-            _parameters = parameters;
+            _gameParameters = gameParameters;
         }
 
         public void SetViewPortSize(int width, int height)
@@ -45,27 +45,27 @@ namespace Trains.NET.Rendering
 
         public (int, int) ViewPortPixelsToCoords(int x, int y)
         {
-            return ((x - this.ViewPortX) / _parameters.CellSize, (y - this.ViewPortY) / _parameters.CellSize);
+            return ((x - this.ViewPortX) / _gameParameters.CellSize, (y - this.ViewPortY) / _gameParameters.CellSize);
         }
 
         public (int, int) CoordsToViewPortPixels(int column, int row)
         {
-            return ((column * _parameters.CellSize) + this.ViewPortX, (row * _parameters.CellSize) + this.ViewPortY);
+            return ((column * _gameParameters.CellSize) + this.ViewPortX, (row * _gameParameters.CellSize) + this.ViewPortY);
         }
 
         public (int, int) WorldPixelsToCoords(int x, int y)
         {
-            return (x / _parameters.CellSize, y / _parameters.CellSize);
+            return (x / _gameParameters.CellSize, y / _gameParameters.CellSize);
         }
 
         public (int, int) CoordsToWorldPixels(int column, int row)
         {
-            return (column * _parameters.CellSize, row * _parameters.CellSize);
+            return (column * _gameParameters.CellSize, row * _gameParameters.CellSize);
         }
 
         public IPixelMapper Snapshot()
         {
-            return new PixelMapper(_parameters)
+            return new PixelMapper(_gameParameters)
             {
                  ViewPortX = this.ViewPortX,
                  ViewPortY = this.ViewPortY,

@@ -8,7 +8,7 @@ namespace Trains.NET.Rendering
     {
         private readonly ILayout<Track> _trackLayout;
         private readonly IRenderer<Track> _trackRenderer;
-        private readonly ITrackParameters _parameters;
+        private readonly IGameParameters _gameParameters;
         private bool _dirty;
 
         public bool Enabled { get; set; } = true;
@@ -16,11 +16,11 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public TrackLayoutRenderer(ILayout<Track> trackLayout, IRenderer<Track> trackRenderer, ITrackParameters parameters)
+        public TrackLayoutRenderer(ILayout<Track> trackLayout, IRenderer<Track> trackRenderer, IGameParameters parameters)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;
-            _parameters = parameters;
+            _gameParameters = gameParameters;
 
             _trackLayout.CollectionChanged += (s, e) => _dirty = true;
         }
@@ -31,13 +31,13 @@ namespace Trains.NET.Rendering
             {
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
-                if (x < -_parameters.CellSize || y < -_parameters.CellSize || x > width || y > height) continue;
+                if (x < -_gameParameters.CellSize || y < -_gameParameters.CellSize || x > width || y > height) continue;
 
                 canvas.Save();
 
                 canvas.Translate(x, y);
 
-                canvas.ClipRect(new Rectangle(0, 0, _parameters.CellSize, _parameters.CellSize), ClipOperation.Intersect, false);
+                canvas.ClipRect(new Rectangle(0, 0, _gameParameters.CellSize, _gameParameters.CellSize), ClipOperation.Intersect, false);
 
                 _trackRenderer.Render(canvas, track);
 

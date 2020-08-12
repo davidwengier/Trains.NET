@@ -21,14 +21,15 @@ namespace Trains.Emoji
 
         public EmojiDrawer()
         {
+            IGameParameters gameParameters = new GameParameters();
             ITrackParameters trackParameters = new TrackParameters();
             ITrainParameters trainParameters = new TrainParameters();
             IImageFactory imageFactory = new SKImageFactory();
             IPathFactory pathFactory = new SKPathFactory();
-            ITrackPathBuilder trackPathBuilder = new TrackPathBuilder(trackParameters, pathFactory);
+            ITrackPathBuilder trackPathBuilder = new TrackPathBuilder(gameParameters, trackParameters, pathFactory);
 
-            _tree = new TreeRenderer(imageFactory, trackParameters);
-            _track = new TrackRenderer(trackParameters, imageFactory, trackPathBuilder);
+            _tree = new TreeRenderer(imageFactory, gameParameters);
+            _track = new TrackRenderer(trackParameters, gameParameters, imageFactory, trackPathBuilder);
 
             _trains = typeof(ITrainPalette).Assembly.GetTypes()
                         .Where(x => !x.IsInterface && !x.IsAbstract && typeof(ITrainPalette).IsAssignableFrom(x) && x.GetConstructor(Type.EmptyTypes) != null)
@@ -36,7 +37,7 @@ namespace Trains.Emoji
                         .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(trackParameters, trainParameters, new TrainPainter(new OrderedList<ITrainPalette>(new object[] { x })))))
                         .ToArray();
 
-            _size = trackParameters.CellSize;
+            _size = gameParameters.CellSize;
         }
 
         public void Save()

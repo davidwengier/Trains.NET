@@ -2,11 +2,8 @@
 {
     public class TrackParameters : ITrackParameters
     {
-        public int CellSize { get; set; }
-        
         public int NumPlanks { get; set; }
         public int NumCornerPlanks { get; set; }
-
         public float PlankLength { get; set; }
         public float PlankWidth { get; set; }
         public int TrackWidth { get; set; }
@@ -15,7 +12,6 @@
 
         public TrackParameters()
         {
-            this.CellSize = 40;
             this.PlankLength = 26;
             this.PlankWidth = 4.0f;
             this.NumPlanks = 3;

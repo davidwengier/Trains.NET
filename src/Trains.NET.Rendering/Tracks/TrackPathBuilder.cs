@@ -8,18 +8,20 @@ namespace Trains.NET.Rendering
         private readonly float _outerTrackOffset;
         private readonly float _innerPlankOffset;
         private readonly float _outerPlankOffset;
-        private readonly ITrackParameters _parameters;
+        private readonly IGameParameters _gameParameters;
+        private readonly ITrackParameters _trackParameters;
         private readonly IPathFactory _pathFactory;
 
-        public TrackPathBuilder(ITrackParameters parameters, IPathFactory pathFactory)
+        public TrackPathBuilder(IGameParameters gameParameters, ITrackParameters trackParameters, IPathFactory pathFactory)
         {
-            _parameters = parameters;
+            _gameParameters = gameParameters;
+            _trackParameters = trackParameters;
             _pathFactory = pathFactory;
 
-            _innerTrackOffset = _parameters.CellSize / 2.0f - _parameters.TrackWidth / 2.0f;
-            _outerTrackOffset = _parameters.CellSize / 2.0f + _parameters.TrackWidth / 2.0f;
-            _innerPlankOffset = _parameters.CellSize / 2.0f - _parameters.PlankLength / 2.0f;
-            _outerPlankOffset = _parameters.CellSize / 2.0f + _parameters.PlankLength / 2.0f;
+            _innerTrackOffset = _gameParameters.CellSize / 2.0f - _trackParameters.TrackWidth / 2.0f;
+            _outerTrackOffset = _gameParameters.CellSize / 2.0f + _trackParameters.TrackWidth / 2.0f;
+            _innerPlankOffset = _gameParameters.CellSize / 2.0f - _trackParameters.PlankLength / 2.0f;
+            _outerPlankOffset = _gameParameters.CellSize / 2.0f + _trackParameters.PlankLength / 2.0f;
         }
         public IPath BuildCornerTrackPath()
         {
@@ -38,20 +40,20 @@ namespace Trains.NET.Rendering
             IPath trackPath = _pathFactory.Create();
 
             trackPath.MoveTo(0, _innerTrackOffset);
-            trackPath.LineTo(_parameters.CellSize, _innerTrackOffset);
+            trackPath.LineTo(_gameParameters.CellSize, _innerTrackOffset);
             trackPath.MoveTo(0, _outerTrackOffset);
-            trackPath.LineTo(_parameters.CellSize, _outerTrackOffset);
+            trackPath.LineTo(_gameParameters.CellSize, _outerTrackOffset);
 
             return trackPath;
         }
 
         public IPath BuildHorizontalPlankPath()
         {
-            float plankGap = _parameters.CellSize / _parameters.NumPlanks;
+            float plankGap = _gameParameters.CellSize / _trackParameters.NumPlanks;
 
             IPath path = _pathFactory.Create();
 
-            for (int i = 1; i < _parameters.NumPlanks + 1; i++)
+            for (int i = 1; i < _trackParameters.NumPlanks + 1; i++)
             {
                 float pos = (i * plankGap) - (plankGap / 2);
 
@@ -62,13 +64,13 @@ namespace Trains.NET.Rendering
             return path;
         }
 
-        public IPath BuildCornerPlankPath() => BuildCornerPlankPath(_parameters.NumCornerPlanks);
+        public IPath BuildCornerPlankPath() => BuildCornerPlankPath(_trackParameters.NumCornerPlanks);
 
         public IPath BuildCornerPlankPath(int plankCount)
         {
             IPath path = _pathFactory.Create();
 
-            double step = Math.PI / 2.0 / _parameters.NumCornerPlanks;
+            double step = Math.PI / 2.0 / _trackParameters.NumCornerPlanks;
 
             for (int i = 0; i < plankCount; i++)
             {

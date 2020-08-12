@@ -6,20 +6,23 @@ namespace Trains.NET.Rendering
     internal class NatureRenderer : ICachableLayerRenderer
     {
         private readonly ITreeRenderer _treeRenderer;
-        private readonly ILayout _collection;
+        private readonly ILayout<Tree> _collection;
         private readonly ITrackParameters _parameters;
+        private bool _dirty;
 
-        public bool IsDirty => true;
+        public bool IsDirty => _dirty;
 
         public bool Enabled { get; set; } = true;
 
         public string Name => "Nature";
 
-        public NatureRenderer(ITreeRenderer treeRenderer, ILayout collection, ITrackParameters parameters)
+        public NatureRenderer(ITreeRenderer treeRenderer, ILayout<Tree> collection, ITrackParameters parameters)
         {
             _treeRenderer = treeRenderer;
             _collection = collection;
             _parameters = parameters;
+
+            _collection.CollectionChanged += (s, e) => _dirty = true;
         }
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
@@ -40,6 +43,7 @@ namespace Trains.NET.Rendering
 
                 canvas.Restore();
             }
+            _dirty = false;
         }
     }
 }

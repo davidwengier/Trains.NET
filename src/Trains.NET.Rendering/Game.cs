@@ -78,6 +78,8 @@ namespace Trains.NET.Rendering
             }
         }
 
+        public (int Width, int Height) GetSize() => (_width, _height);
+
         public void Render(ICanvas canvas)
         {
             lock (_bufferLock)

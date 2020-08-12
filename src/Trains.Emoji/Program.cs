@@ -12,9 +12,9 @@ namespace Trains.Emoji
     public class EmojiDrawer
     {
         private readonly int _size;
-        private readonly ITreeRenderer _tree;
-        private readonly ITrackRenderer _track;
-        private readonly (string color, ITrainRenderer renderer)[] _trains;
+        private readonly IRenderer<Tree> _tree;
+        private readonly IRenderer<Track> _track;
+        private readonly (string color, IRenderer<Train> renderer)[] _trains;
         private const string FolderName = "EmojiOutput";
 
         public static void Main() => new EmojiDrawer().Save();
@@ -34,7 +34,7 @@ namespace Trains.Emoji
             _trains = typeof(ITrainPalette).Assembly.GetTypes()
                         .Where(x => !x.IsInterface && !x.IsAbstract && typeof(ITrainPalette).IsAssignableFrom(x) && x.GetConstructor(Type.EmptyTypes) != null)
                         .Select(x => (ITrainPalette)Activator.CreateInstance(x)!)
-                        .Select(x => (x.GetType().Name, (ITrainRenderer)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new OrderedList<ITrainPalette>(new object[] { x })))))
+                        .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(trackParameters, trainParameters, new TrainPainter(new OrderedList<ITrainPalette>(new object[] { x })))))
                         .ToArray();
 
             _size = gameParameters.CellSize;
@@ -48,7 +48,7 @@ namespace Trains.Emoji
             }
             for (int i = 0; i < 3; i++)
             {
-                Draw("tree" + i, x => _tree.Render(x, i));
+                Draw("tree" + i, x => _tree.Render(x, new Tree()));
             }
             foreach (TrackDirection direction in (TrackDirection[])Enum.GetValues(typeof(TrackDirection)))
             {
@@ -60,7 +60,7 @@ namespace Trains.Emoji
             {
                 Draw("trackAlt" + direction, x => _track.Render(x, track));
             }
-            foreach ((string color, ITrainRenderer trainRenderer) in _trains)
+            foreach ((string color, IRenderer<Train> trainRenderer) in _trains)
             {
                 DrawTrain($"train{color}Up", TrackDirection.Vertical, 270, trainRenderer);
                 DrawTrain($"train{color}Down", TrackDirection.Vertical, 90, trainRenderer);
@@ -83,7 +83,7 @@ namespace Trains.Emoji
             bitmap.Encode(s, SKEncodedImageFormat.Png, 100);
         }
 
-        public void DrawTrain(string name, TrackDirection trackDirection, float angle, ITrainRenderer trainRenderer) =>
+        public void DrawTrain(string name, TrackDirection trackDirection, float angle, IRenderer<Train> trainRenderer) =>
             Draw(name, x =>
             {
                 x.Save();

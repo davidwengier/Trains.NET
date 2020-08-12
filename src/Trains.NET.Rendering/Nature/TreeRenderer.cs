@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class TreeRenderer : ITreeRenderer
+    public class TreeRenderer : IRenderer<Tree>
     {
         private readonly float _maxTreeSize;
         private readonly float _minTreeSize;
@@ -42,9 +43,9 @@ namespace Trains.NET.Rendering
             _imageFactory = imageFactory;
         }
 
-        public void Render(ICanvas canvas, int treeSeed)
+        public void Render(ICanvas canvas, Tree tree)
         {
-            int index = treeSeed % MaxStyles;
+            int index = tree.Seed % MaxStyles;
             if (!_cachedStyles.TryGetValue(index, out IImage cachedImage))
             {
                 using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_cellSize, _cellSize);

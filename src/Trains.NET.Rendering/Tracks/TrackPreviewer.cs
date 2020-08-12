@@ -6,9 +6,9 @@ namespace Trains.NET.Rendering.Tracks
     internal class TrackPreviewer : IToolPreviewer
     {
         private readonly ILayout _trackLayout;
-        private readonly ITrackRenderer _trackRenderer;
+        private readonly IRenderer<Track> _trackRenderer;
 
-        public TrackPreviewer(ILayout trackLayout, ITrackRenderer trackRenderer)
+        public TrackPreviewer(ILayout trackLayout, IRenderer<Track> trackRenderer)
         {
             _trackLayout = trackLayout;
             _trackRenderer = trackRenderer;

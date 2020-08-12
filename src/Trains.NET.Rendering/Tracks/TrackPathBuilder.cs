@@ -28,9 +28,9 @@ namespace Trains.NET.Rendering
             IPath trackPath = _pathFactory.Create();
 
             trackPath.MoveTo(0, _innerTrackOffset);
-            trackPath.QuadTo(_innerTrackOffset, _innerTrackOffset, _innerTrackOffset, 0);
+            trackPath.ConicTo(_innerTrackOffset, _innerTrackOffset, _innerTrackOffset, 0, 0.75f);
             trackPath.MoveTo(0, _outerTrackOffset);
-            trackPath.QuadTo(_outerTrackOffset, _outerTrackOffset, _outerTrackOffset, 0);
+            trackPath.ConicTo(_outerTrackOffset, _outerTrackOffset, _outerTrackOffset, 0, 0.75f);
 
             return trackPath;
         }

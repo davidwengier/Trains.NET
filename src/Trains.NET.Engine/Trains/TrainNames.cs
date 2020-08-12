@@ -17,7 +17,8 @@
             "The Tolkien Express",
             "The Dirty Nullable",
             "The Diagnostics Session",
-            "The Mountain Mort"
+            "The Mountain Mort",
+            "Blue Train, South Africa"
         };
     }
 }

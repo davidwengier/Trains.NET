@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering
     internal class HappinessRenderer : ILayerRenderer
     {
         private readonly ILayout<Track> _trackLayout;
-        private readonly ITrackParameters _parameters;
+        private readonly IGameParameters _gameParameters;
         private readonly PaintBrush _paint = new PaintBrush
         {
             Color = Colors.Cyan,
@@ -16,10 +16,10 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; }
         public string Name => "Happiness";
 
-        public HappinessRenderer(ILayout<Track> trackLayout, ITrackParameters parameters)
+        public HappinessRenderer(ILayout<Track> trackLayout, IGameParameters gameParameters)
         {
             _trackLayout = trackLayout;
-            _parameters = parameters;
+            _gameParameters = gameParameters;
         }
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
@@ -33,7 +33,7 @@ namespace Trains.NET.Rendering
 
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
-                canvas.DrawRect(x, y, _parameters.CellSize, _parameters.CellSize, _paint);
+                canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, _paint);
             }
         }
     }

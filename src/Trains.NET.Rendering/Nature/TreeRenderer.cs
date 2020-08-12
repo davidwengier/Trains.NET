@@ -21,9 +21,9 @@ namespace Trains.NET.Rendering
         // Change this if you want more variance/styles
         private const int MaxStyles = 100;
 
-        public TreeRenderer(IImageFactory imageFactory, ITrackParameters trackParameters)
+        public TreeRenderer(IImageFactory imageFactory, IGameParameters gameParameters)
         {
-            _cellSize = trackParameters.CellSize;
+            _cellSize = gameParameters.CellSize;
             _centerOffset = _cellSize / 2.0f;
             _baseRadius = _cellSize / 4.0f;
             _minTreeSize = _baseRadius;

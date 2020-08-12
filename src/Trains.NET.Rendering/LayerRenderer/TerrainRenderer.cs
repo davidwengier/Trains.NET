@@ -12,14 +12,14 @@ namespace Trains.NET.Rendering
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;
-        private readonly ITrackParameters _trackParameters;
+        private readonly IGameParameters _gameParameters;
 
         private readonly PaintBrush _paintBrush;
 
-        public TerrainRenderer(ITerrainMap terrainMap, ITrackParameters trackParameters)
+        public TerrainRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
         {
             _terrainMap = terrainMap;
-            _trackParameters = trackParameters;
+            _gameParameters = gameParameters;
 
             _paintBrush = new PaintBrush
             {
@@ -126,7 +126,7 @@ namespace Trains.NET.Rendering
                 return new ViewportPoint
                 {
                     PixelX = pixX,
-                    PixelY = pixY + 0.5f * _trackParameters.CellSize,
+                    PixelY = pixY + 0.5f * _gameParameters.CellSize,
                 };
             }
 
@@ -134,7 +134,7 @@ namespace Trains.NET.Rendering
             (int pixelX, int pixelY) = pixelMapper.CoordsToViewPortPixels(sourceTerrain.Column, selectedRow);
             return new ViewportPoint
             {
-                PixelX = pixelX + 0.5f * _trackParameters.CellSize,
+                PixelX = pixelX + 0.5f * _gameParameters.CellSize,
                 PixelY = pixelY
             };
         }

@@ -2,7 +2,6 @@
 {
     public interface ITrackParameters
     {
-        int CellSize { get; set; }
         float PlankLength { get; set; }
         float PlankWidth { get; set; }
         int NumPlanks { get; set; }

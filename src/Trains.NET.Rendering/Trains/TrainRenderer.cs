@@ -5,13 +5,13 @@ namespace Trains.NET.Rendering
 {
     public class TrainRenderer : ITrainRenderer
     {
-        private readonly ITrackParameters _trackParameters;
+        private readonly IGameParameters _gameParameters;
         private readonly ITrainParameters _trainParameters;
         private readonly ITrainPainter _trainPainter;
 
-        public TrainRenderer(ITrackParameters trackParameters, ITrainParameters trainParameters, ITrainPainter trainPainter)
+        public TrainRenderer(IGameParameters gameParameters, ITrainParameters trainParameters, ITrainPainter trainPainter)
         {
-            _trackParameters = trackParameters;
+            _gameParameters = gameParameters;
             _trainParameters = trainParameters;
             _trainPainter = trainPainter;
         }
@@ -20,7 +20,7 @@ namespace Trains.NET.Rendering
         {
             ITrainPalette? palette = _trainPainter.GetPalette(train);
 
-            SetupCanvasToDrawTrain(canvas, train, _trackParameters);
+            SetupCanvasToDrawTrain(canvas, train, _gameParameters);
 
             var outline = new PaintBrush
             {
@@ -68,10 +68,10 @@ namespace Trains.NET.Rendering
 
         }
 
-        public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train, ITrackParameters trackParameters)
+        public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train, IGameParameters gameParameters)
         {
-            float x = trackParameters.CellSize * train.RelativeLeft;
-            float y = trackParameters.CellSize * train.RelativeTop;
+            float x = gameParameters.CellSize * train.RelativeLeft;
+            float y = gameParameters.CellSize * train.RelativeTop;
             canvas.Translate(x, y);
             canvas.RotateDegrees(train.Angle);
         }

@@ -4,7 +4,7 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        private readonly ITrackParameters _gameParameters;
+        private readonly IGameParameters _gameParameters;
         public const int MaxGridSize = 3000;
 
         public int ViewPortX { get; private set; }
@@ -14,9 +14,9 @@ namespace Trains.NET.Rendering
 
         public event EventHandler? ViewPortChanged;
 
-        public PixelMapper(ITrackParameters parameters)
+        public PixelMapper(IGameParameters gameParameters)
         {
-            _gameParameters = parameters;
+            _gameParameters = gameParameters;
         }
 
         public void SetViewPortSize(int width, int height)

@@ -7,7 +7,7 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Rendering
 {
-    internal class Game : IGame
+    public class Game : IGame
     {
         private const int RenderInterval = 16;
 

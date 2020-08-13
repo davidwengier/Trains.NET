@@ -3,7 +3,7 @@ using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia
 {
-    internal class SKPathWrapper : IPath, IDisposable
+    public class SKPathWrapper : IPath, IDisposable
     {
         private readonly SKPath _path = new SKPath();
 

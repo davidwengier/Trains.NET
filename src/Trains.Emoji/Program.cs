@@ -34,7 +34,7 @@ namespace Trains.Emoji
             _trains = typeof(ITrainPalette).Assembly.GetTypes()
                         .Where(x => !x.IsInterface && !x.IsAbstract && typeof(ITrainPalette).IsAssignableFrom(x) && x.GetConstructor(Type.EmptyTypes) != null)
                         .Select(x => (ITrainPalette)Activator.CreateInstance(x)!)
-                        .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new OrderedList<ITrainPalette>(new object[] { x })))))
+                        .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new OrderedList<ITrainPalette>(new ITrainPalette[] { x })))))
                         .ToArray();
 
             _size = gameParameters.CellSize;

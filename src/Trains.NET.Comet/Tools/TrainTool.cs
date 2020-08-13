@@ -3,7 +3,7 @@
 namespace Trains.NET.Comet
 {
     [Order(50)]
-    internal class TrainTool : ITool
+    public class TrainTool : ITool
     {
         private readonly IGameBoard _gameBoard;
         private readonly ILayout<Track> _trackLayout;

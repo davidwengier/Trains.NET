@@ -6,7 +6,7 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine
 {
-    internal class GameBoard : IGameBoard
+    public class GameBoard : IGameBoard
     {
         private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 

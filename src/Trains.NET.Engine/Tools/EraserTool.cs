@@ -1,7 +1,7 @@
 ﻿namespace Trains.NET.Engine
 {
     [Order(20)]
-    internal class EraserTool : ITool
+    public class EraserTool : ITool
     {
         private readonly ILayout _collection;
 

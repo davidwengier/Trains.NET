@@ -4,7 +4,7 @@ using Trains.NET.Rendering.Trains;
 namespace Trains.NET.Rendering.LayerRenderer
 {
     [Order(425)]
-    internal class TrainLookaheadRenderer : ILayerRenderer
+    public class TrainLookaheadRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;
         private readonly IGameParameters _gameParameters;

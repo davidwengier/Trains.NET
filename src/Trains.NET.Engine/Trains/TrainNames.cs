@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Engine
 {
-    internal class TrainNames
+    public class TrainNames
     {
         public static string[] Names = new string[]{
             "The Flying Scott",

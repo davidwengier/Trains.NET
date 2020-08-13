@@ -47,7 +47,7 @@ namespace Trains
             }
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainPage mainPage = DI.ServiceLocator.GetService<MainPage>();
+            MainPage? mainPage = null;// DI.ServiceLocator.GetService<MainPage>();
 
             if (mainPage == null)
             {

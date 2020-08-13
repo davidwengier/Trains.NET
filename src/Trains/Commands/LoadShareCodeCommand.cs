@@ -6,7 +6,7 @@ using Trains.NET.Engine;
 namespace Trains.Commands
 {
     [Order(100)]
-    internal class LoadShareCodeCommand : ICommand
+    public class LoadShareCodeCommand : ICommand
     {
         private readonly ILayout _trackLayout;
         private readonly ITrackCodec _trackCodec;

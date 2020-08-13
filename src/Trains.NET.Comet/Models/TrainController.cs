@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Comet
 {
-    internal class TrainController : ITrainController
+    public class TrainController : ITrainController
     {
         private readonly IGameBoard _gameBoard;
 

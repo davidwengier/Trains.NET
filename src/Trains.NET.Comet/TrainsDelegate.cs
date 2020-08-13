@@ -10,7 +10,7 @@ using Trains.NET.Rendering.Tracks;
 
 namespace Trains.NET.Comet
 {
-    internal class TrainsDelegate : AbstractControlDelegate
+    public class TrainsDelegate : AbstractControlDelegate
     {
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;

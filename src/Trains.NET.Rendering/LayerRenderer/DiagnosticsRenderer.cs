@@ -6,7 +6,7 @@ using Trains.NET.Instrumentation;
 namespace Trains.NET.Rendering
 {
     [Order(1000)]
-    internal class DiagnosticsRenderer : ILayerRenderer
+    public class DiagnosticsRenderer : ILayerRenderer
     {
         private readonly PaintBrush _paint = new PaintBrush
         {

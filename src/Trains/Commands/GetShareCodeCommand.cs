@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.Commands
 {
     [Order(50)]
-    internal class GetShareCodeCommand : ICommand
+    public class GetShareCodeCommand : ICommand
     {
         private readonly ILayout _trackLayout;
         private readonly ITrackCodec _trackCodec;

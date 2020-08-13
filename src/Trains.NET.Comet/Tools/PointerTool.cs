@@ -4,7 +4,7 @@ using Trains.NET.Rendering;
 namespace Trains.NET.Comet
 {
     [Order(1)]
-    internal class PointerTool : IDraggableTool
+    public class PointerTool : IDraggableTool
     {
         private readonly ITrainController _gameState;
         private readonly IGameBoard _gameBoard;

@@ -3,7 +3,7 @@
 namespace Trains.NET.Engine
 {
     [Order(20)]
-    internal class WaterTool : ITool
+    public class WaterTool : ITool
     {
         private readonly ITerrainMap _terrainMap;
 

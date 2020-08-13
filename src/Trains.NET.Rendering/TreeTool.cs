@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(15)]
-    internal class TreeTool : ITool
+    public class TreeTool : ITool
     {
         private readonly ILayout<Tree> _entityCollection;
 

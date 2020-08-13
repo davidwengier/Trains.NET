@@ -3,7 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    internal class NatureRenderer : ICachableLayerRenderer
+    public class NatureRenderer : ICachableLayerRenderer
     {
         private readonly IRenderer<Tree> _treeRenderer;
         private readonly ILayout<Tree> _collection;

@@ -6,7 +6,7 @@ using Trains.NET.Engine;
 
 namespace Trains.Storage
 {
-    internal class FileSystemStorage : IGameStorage
+    public class FileSystemStorage : IGameStorage
     {
         private const string Filename = "Trains.NET.tracks";
 

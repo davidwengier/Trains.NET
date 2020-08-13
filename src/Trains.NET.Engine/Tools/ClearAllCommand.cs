@@ -1,7 +1,7 @@
 ﻿namespace Trains.NET.Engine
 {
     [Order(10)]
-    internal class ClearAllCommand : ICommand
+    public class ClearAllCommand : ICommand
     {
         private readonly IGameBoard _gameBoard;
 

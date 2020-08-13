@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Trains.NET.Engine.Tracks
 {
-    internal class TerrainMap : ITerrainMap
+    public class TerrainMap : ITerrainMap
     {
         private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
 

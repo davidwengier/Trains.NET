@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine
 {
-    internal class Layout : ILayout
+    public class Layout : ILayout
     {
         public event EventHandler? CollectionChanged;
 

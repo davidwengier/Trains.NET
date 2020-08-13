@@ -8,7 +8,7 @@ using Trains.NET.Engine.Tracks;
 namespace Trains.NET.Rendering
 {
     [Order(1)]
-    internal class ContourRenderer : ILayerRenderer
+    public class ContourRenderer : ILayerRenderer
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;

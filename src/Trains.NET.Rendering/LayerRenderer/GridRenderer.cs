@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(0)]
-    internal class GridRenderer : ILayerRenderer, ICachableLayerRenderer
+    public class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
         private readonly IGameParameters _gameParameters;
 

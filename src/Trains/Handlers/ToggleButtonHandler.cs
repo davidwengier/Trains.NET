@@ -5,7 +5,7 @@ using WPFToggleButton = System.Windows.Controls.Primitives.ToggleButton;
 
 namespace Trains.Handlers
 {
-    internal class ToggleButtonHandler : AbstractHandler<ToggleButton, WPFToggleButton>
+    public class ToggleButtonHandler : AbstractHandler<ToggleButton, WPFToggleButton>
     {
         public static readonly PropertyMapper<ToggleButton> Mapper = new PropertyMapper<ToggleButton>()
         {

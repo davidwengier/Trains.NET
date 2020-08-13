@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Rendering.TrainPalettes
 {
-    internal class Blue : ITrainPalette
+    public class Blue : ITrainPalette
     {
         public Color OutlineColor => Colors.Black;
 

@@ -13,7 +13,7 @@ namespace Trains.NET.Engine
 
         public T this[int index] => _list[index];
 
-        public OrderedList(IEnumerable<object?> services)
+        public OrderedList(IEnumerable<T> services)
         {
             _list = new List<T>(from svc in services
                                 let order = svc.GetType().GetCustomAttribute<OrderAttribute>(true)?.Order ?? 9999

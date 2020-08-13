@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(500)]
-    internal class TrainsRenderer : ILayerRenderer
+    public class TrainsRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;
         private readonly IRenderer<Train> _trainRenderer;

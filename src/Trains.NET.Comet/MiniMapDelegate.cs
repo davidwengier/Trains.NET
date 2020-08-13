@@ -9,7 +9,7 @@ using Trains.NET.Rendering.Skia;
 
 namespace Trains.NET.Comet
 {
-    internal class MiniMapDelegate : AbstractControlDelegate, IDisposable
+    public class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
         private bool _redraw = true;
         private readonly ILayout _trackLayout;

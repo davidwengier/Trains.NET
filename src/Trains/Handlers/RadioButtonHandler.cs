@@ -4,7 +4,7 @@ using Comet.WPF.Handlers;
 
 namespace Trains.Handlers
 {
-    internal class RadioButtonHandler : AbstractHandler<RadioButton, ToggleButton>
+    public class RadioButtonHandler : AbstractHandler<RadioButton, ToggleButton>
     {
         public static readonly PropertyMapper<RadioButton> Mapper = new PropertyMapper<RadioButton>()
         {

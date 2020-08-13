@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using SkiaSharp;
 using Trains.NET.Engine;
@@ -17,7 +18,11 @@ namespace Trains.Emoji
         private readonly (string color, IRenderer<Train> renderer)[] _trains;
         private const string FolderName = "EmojiOutput";
 
-        public static void Main() => new EmojiDrawer().Save();
+        public static void Main(string[] args) => new EmojiDrawer().Save(ShouldZip(args));
+
+        private static bool ShouldZip(string[] args) => args.Any(x =>
+                                                            x.Equals("-z", StringComparison.OrdinalIgnoreCase) ||
+                                                            x.Equals("--zip", StringComparison.OrdinalIgnoreCase));
 
         public EmojiDrawer()
         {
@@ -40,7 +45,7 @@ namespace Trains.Emoji
             _size = gameParameters.CellSize;
         }
 
-        public void Save()
+        public void Save(bool zip)
         {
             if (!Directory.Exists(FolderName))
             {
@@ -66,6 +71,15 @@ namespace Trains.Emoji
                 DrawTrain($"train{color}Down", TrackDirection.Vertical, 90, trainRenderer);
                 DrawTrain($"train{color}Left", TrackDirection.Horizontal, 180, trainRenderer);
                 DrawTrain($"train{color}Right", TrackDirection.Horizontal, 0, trainRenderer);
+            }
+            if (zip)
+            {
+                string zipFilename = FolderName + ".zip";
+                if (File.Exists(zipFilename))
+                {
+                    File.Delete(zipFilename);
+                }
+                ZipFile.CreateFromDirectory(FolderName, zipFilename);
             }
         }
 

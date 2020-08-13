@@ -30,6 +30,9 @@ jobs:
     - name: publish
       run: dotnet publish -o ./publish -f netcoreapp3.1 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true src/Trains/Trains.csproj
 
+    - name: Publish Emoji
+      run: dotnet run -f netcoreapp3.1 -r win-x64 -c Release -p src/Trains.Emoji/Trains.Emoji.csproj "--zip"
+
     - name: GitVersion
       id: nbgv
       uses: aarnott/nbgv@master
@@ -61,3 +64,14 @@ jobs:
         asset_path: ./publish/trains.exe
         asset_name: trains.exe
         asset_content_type: application/exe
+
+    - name: Upload Emoji Asset
+      id: upload-emoji-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./EmojiOutput.zip
+        asset_name: EmojiOutput.zip
+        asset_content_type: application/zip

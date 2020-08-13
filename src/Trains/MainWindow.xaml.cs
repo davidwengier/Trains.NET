@@ -22,8 +22,6 @@ namespace Trains
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            ServiceProvider serviceProvider = Services.GetServiceProvider();
-
             InitializeComponent();
 
             global::Comet.WPF.UI.Init();
@@ -47,12 +45,7 @@ namespace Trains
             }
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainPage? mainPage = null;// DI.ServiceLocator.GetService<MainPage>();
-
-            if (mainPage == null)
-            {
-                mainPage = serviceProvider.GetService<MainPage>();
-            }
+            MainPage? mainPage = DI.ServiceLocator.GetService<MainPage>();
 
             var page = new CometPage(MainFrame, mainPage);
             MainFrame.Content = page;

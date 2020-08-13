@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj" />
     <ProjectReference Include="..\..\comet\src\Comet.Skia\Comet.Skia.csproj" />
     <ProjectReference Include="..\..\comet\src\Comet.WPF\Comet.WPF.csproj" />

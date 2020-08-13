@@ -11,7 +11,7 @@ namespace Trains.NET.SourceGenerator
         }
 
         public INamedTypeSymbol Type { get; set; }
-        public INamedTypeSymbol ImplementationType { get; internal set; }
+        public INamedTypeSymbol ImplementationType { get; internal set; } = null!;
         public List<Service> ConstructorArguments { get; internal set; } = new List<Service>();
         public bool IsTransient { get; internal set; }
         public bool UseCollectionInitializer { get; internal set; }

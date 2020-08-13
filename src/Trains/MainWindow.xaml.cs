@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows;
 using Comet;
 using Comet.WPF;
-using Microsoft.Extensions.DependencyInjection;
 using Trains.Handlers;
 using Trains.NET.Comet;
 using Trains.Storage;

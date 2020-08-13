@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.Trains
@@ -7,10 +8,10 @@ namespace Trains.NET.Rendering.Trains
     public class TrainPainter : ITrainPainter
     {
         private readonly Dictionary<Train, ITrainPalette> _paletteMap = new();
-        private readonly OrderedList<ITrainPalette> _trainPalettes;
+        private readonly IEnumerable<ITrainPalette> _trainPalettes;
         private readonly Random _random = new Random();
 
-        public TrainPainter(OrderedList<ITrainPalette> trainPalettes)
+        public TrainPainter(IEnumerable<ITrainPalette> trainPalettes)
         {
             _trainPalettes = trainPalettes;
         }
@@ -27,7 +28,7 @@ namespace Trains.NET.Rendering.Trains
 
         private ITrainPalette GetRandomPalette()
         {
-            return _trainPalettes[_random.Next(0, _trainPalettes.Count)];
+            return _trainPalettes.ElementAt(_random.Next(0, _trainPalettes.Count()));
         }
     }
 }

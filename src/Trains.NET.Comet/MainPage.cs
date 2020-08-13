@@ -28,9 +28,9 @@ namespace Trains.NET.Comet
 
         public MainPage(IGame game,
                         IPixelMapper pixelMapper,
-                        OrderedList<ITool> tools,
-                        OrderedList<ILayerRenderer> layers,
-                        OrderedList<ICommand> commands,
+                        IEnumerable<ITool> tools,
+                        IEnumerable<ILayerRenderer> layers,
+                        IEnumerable<ICommand> commands,
                         ITrainController trainControls,
                         IGameParameters gameParameters,
                         ILayout trackLayout,

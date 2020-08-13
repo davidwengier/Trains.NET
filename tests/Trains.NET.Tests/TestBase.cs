@@ -12,13 +12,15 @@ namespace Trains.NET.Tests
         internal readonly TestTimer Timer;
         internal readonly GameBoard GameBoard;
         internal readonly ILayout TrackLayout;
+        internal readonly ITerrainMap TerrainMap;
 
         protected TestBase(ITestOutputHelper output)
         {
             Storage = new NullStorage();
             Timer = new TestTimer();
             TrackLayout = new Layout();
-            GameBoard = new GameBoard(TrackLayout, Storage, Timer);
+            TerrainMap = new TerrainMap();
+            GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer);
             _output = output;
         }
 

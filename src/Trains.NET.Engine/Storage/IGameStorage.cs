@@ -4,8 +4,12 @@ namespace Trains.NET.Engine
 {
     public interface IGameStorage
     {
-        IEnumerable<IStaticEntity> Read();
+        IEnumerable<IStaticEntity> ReadStaticEntities();
 
-        void Write(IEnumerable<IStaticEntity> entities);
+        void WriteStaticEntities(IEnumerable<IStaticEntity> entities);
+
+        IEnumerable<Terrain> ReadTerrain();
+
+        void WriteTerrain(IEnumerable<Terrain> terrainList);
     }
 }

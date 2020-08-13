@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine
 {
     public interface ITerrainMap : IEnumerable<Terrain>
     {
+        void Set(IEnumerable<Terrain> terrainList);
+
         void SetTerrainHeight(int column, int row, int height);
 
         Terrain GetAdjacentTerrainUp(Terrain terrain);

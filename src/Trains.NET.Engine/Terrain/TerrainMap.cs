@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine
 {
     internal class TerrainMap : ITerrainMap
     {
@@ -27,6 +27,11 @@ namespace Trains.NET.Engine.Tracks
             };
 
             AddOrOverwrite(column, row, transform);
+        }
+
+        public void Set(IEnumerable<Terrain> terrainList)
+        {
+            _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
         }
 
         private void AddOrOverwrite(int column, int row, Func<Terrain, Terrain> transform)

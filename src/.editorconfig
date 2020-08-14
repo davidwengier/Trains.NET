@@ -231,3 +231,6 @@ dotnet_diagnostic.CA1307.severity = none
 
 # CA1030: Use events where appropriate
 dotnet_diagnostic.CA1030.severity = none
+
+# CA1724: Type names should not match namespaces
+dotnet_diagnostic.CA1724.severity = none

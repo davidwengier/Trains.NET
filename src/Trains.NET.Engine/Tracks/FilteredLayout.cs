@@ -11,7 +11,7 @@ namespace Trains.NET.Engine.Tracks
     {
         private readonly ILayout _layout;
 
-        public event EventHandler CollectionChanged;
+        public event EventHandler? CollectionChanged;
 
         public FilteredLayout(ILayout layout)
         {

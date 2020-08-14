@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -11,32 +10,17 @@ namespace Trains.NET.Engine.Tracks
 
         public void SetTerrainHeight(int column, int row, int height)
         {
-            Func<Terrain, Terrain> transform = terrain => {
-                terrain.Height = height;
-                return terrain;
-            };
-
-            AddOrOverwrite(column, row, transform);
+            GetOrAdd(column, row).Height = height;
         }
 
         public void SetTerrainType(int column, int row, TerrainType type)
         {
-            Func<Terrain, Terrain> transform = terrain => {
-                terrain.TerrainType = type;
-                return terrain;
-            };
-
-            AddOrOverwrite(column, row, transform);
+            GetOrAdd(column, row).TerrainType = type;
         }
 
-        private void AddOrOverwrite(int column, int row, Func<Terrain, Terrain> transform)
+        private Terrain GetOrAdd(int column, int row)
         {
-            (int, int) key = (column, row);
-            Terrain terrain = _terrainMap.ContainsKey(key)
-                ? _terrainMap[key]
-                : new Terrain { Column = column, Row = row, TerrainType = TerrainType.Grass };
-
-            _terrainMap = _terrainMap.Add(key, transform(terrain));
+            return ImmutableInterlocked.GetOrAdd(ref _terrainMap, (column, row), key => new Terrain { Column = key.Item1, Row = key.Item2 });
         }
 
         public IEnumerator<Terrain> GetEnumerator()

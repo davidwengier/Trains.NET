@@ -10,7 +10,7 @@ namespace Trains.Storage
     {
         private const string Filename = "Trains.NET.tracks";
 
-        public readonly string FilePath = GetFilePath(Filename);
+        internal readonly string FilePath = GetFilePath(Filename);
 
         internal static string GetFilePath(string fileName)
         {

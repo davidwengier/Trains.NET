@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -65,7 +66,7 @@ namespace DI
                                     let symbol = semanticModel.GetSymbolInfo(i).Symbol as IMethodSymbol
                                     where symbol != null
                                     where SymbolEqualityComparer.Default.Equals(symbol.ContainingType, serviceLocatorClass)
-                                    select symbol.ReturnType.OriginalDefinition as INamedTypeSymbol;
+                                    select symbol.ReturnType as INamedTypeSymbol;
 
                 foreach (var typeToCreate in typesToCreate)
                 {
@@ -93,12 +94,12 @@ namespace DI
                 sourceBuilder.AppendLine("}");
             }
 
-            sourceBuilder.AppendLine("return default;");
+            sourceBuilder.AppendLine("throw new System.InvalidOperationException(\"Don't know how to initialize type: \" + typeof(T).Name);");
             sourceBuilder.AppendLine(@"
         }
     }
 }");
-
+            
             return sourceBuilder.ToString();
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SkiaSharp;
@@ -21,21 +22,16 @@ namespace Trains.Emoji
 
         public EmojiDrawer()
         {
-            IGameParameters gameParameters = new GameParameters();
-            ITrackParameters trackParameters = new TrackParameters();
-            ITrainParameters trainParameters = new TrainParameters();
-            IImageFactory imageFactory = new SKImageFactory();
-            IPathFactory pathFactory = new SKPathFactory();
-            ITrackPathBuilder trackPathBuilder = new TrackPathBuilder(gameParameters, trackParameters, pathFactory);
+            _tree = DI.ServiceLocator.GetService<TreeRenderer>();
+            _track = DI.ServiceLocator.GetService<TrackRenderer>();
 
-            _tree = new TreeRenderer(imageFactory, gameParameters);
-            _track = new TrackRenderer(trackParameters, gameParameters, imageFactory, trackPathBuilder);
+            IEnumerable<ITrainPalette>? palletes = DI.ServiceLocator.GetService<IEnumerable<ITrainPalette>>();
 
-            _trains = typeof(ITrainPalette).Assembly.GetTypes()
-                        .Where(x => !x.IsInterface && !x.IsAbstract && typeof(ITrainPalette).IsAssignableFrom(x) && x.GetConstructor(Type.EmptyTypes) != null)
-                        .Select(x => (ITrainPalette)Activator.CreateInstance(x)!)
-                        .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new ITrainPalette[] { x }))))
-                        .ToArray();
+            IGameParameters gameParameters = DI.ServiceLocator.GetService<IGameParameters>();
+            ITrainParameters trainParameters = DI.ServiceLocator.GetService<ITrainParameters>();
+            _trains = palletes
+                      .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new ITrainPalette[] { x }))))
+                      .ToArray();
 
             _size = gameParameters.CellSize;
         }
@@ -54,7 +50,7 @@ namespace Trains.Emoji
             {
                 Draw("track" + direction, x => _track.Render(x, new Track() { Direction = direction }));
             }
-            foreach ((TrackDirection direction, Track track)  in ((TrackDirection[])Enum.GetValues(typeof(TrackDirection)))
+            foreach ((TrackDirection direction, Track track) in ((TrackDirection[])Enum.GetValues(typeof(TrackDirection)))
                                                     .Select(x => (Direction: x, Track: new Track() { Direction = x, AlternateState = true }))
                                                     .Where(x => x.Track.HasAlternateState()))
             {

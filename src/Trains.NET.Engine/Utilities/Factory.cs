@@ -8,7 +8,7 @@ namespace Trains.NET.Engine
     {
         private readonly Dictionary<Type, T> _services;
 
-        public Factory(OrderedList<T> services)
+        public Factory(IEnumerable<T> services)
         {
             _services = new();
             foreach (T? service in services)

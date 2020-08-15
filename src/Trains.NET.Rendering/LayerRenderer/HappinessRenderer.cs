@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(400)]
-    internal class HappinessRenderer : ILayerRenderer
+    public class HappinessRenderer : ILayerRenderer
     {
         private readonly ILayout<Track> _trackLayout;
         private readonly IGameParameters _gameParameters;

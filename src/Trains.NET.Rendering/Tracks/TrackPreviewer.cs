@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering.Tracks
 {
     [Context(typeof(TrackTool))]
-    internal class TrackPreviewer : IToolPreviewer
+    public class TrackPreviewer : IToolPreviewer
     {
         private readonly ILayout _trackLayout;
         private readonly IRenderer<Track> _trackRenderer;

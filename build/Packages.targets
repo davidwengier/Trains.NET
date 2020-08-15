@@ -15,9 +15,6 @@
 
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0-beta2.final" />
 
-    <!-- DI -->
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.0-preview.6.20305.6" />
-
     <!-- SkiaSharp -->
     <PackageReference Update="SkiaSharp"                    Version="2.80.1" />
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.1" />

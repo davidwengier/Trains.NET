@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering.Skia
 {
-    internal class SKSurfaceWrapper : IImageCanvas
+    public class SKSurfaceWrapper : IImageCanvas
     {
         private readonly SKSurface _surface;
 

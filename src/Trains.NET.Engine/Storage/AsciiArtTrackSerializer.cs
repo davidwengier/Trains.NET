@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Trains.NET.Engine
 {
-    internal class AsciiArtTrackSerializer : ITrackSerializer
+    public class AsciiArtTrackSerializer : ITrackSerializer
     {
         private static readonly Dictionary<TrackDirection, char> s_trackMapping = new()
         {

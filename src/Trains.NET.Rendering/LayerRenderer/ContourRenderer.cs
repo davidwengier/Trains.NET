@@ -7,7 +7,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering
 {
     [Order(1)]
-    internal class ContourRenderer : ILayerRenderer
+    public class ContourRenderer : ILayerRenderer
     {
         private const int ContourHeight = 40;
         private readonly ITerrainMap _terrainMap;
@@ -46,11 +46,11 @@ namespace Trains.NET.Rendering
         {
             foreach (ViewportPoint contourPoint in contourPoints)
             {
-                List<ViewportPoint>? orderedList = OrderListByDistanceFromPoint(contourPoint, contourPoints);
-                if (orderedList.Count < 3) continue;
+                List<ViewportPoint>? IEnumerable = OrderListByDistanceFromPoint(contourPoint, contourPoints);
+                if (IEnumerable.Count < 3) continue;
 
-                ViewportPoint firstNearest = orderedList.Skip(1).FirstOrDefault(); // The first element will be the original element since that will have distance zero
-                ViewportPoint secondNearest = orderedList.Skip(2).FirstOrDefault();
+                ViewportPoint firstNearest = IEnumerable.Skip(1).FirstOrDefault(); // The first element will be the original element since that will have distance zero
+                ViewportPoint secondNearest = IEnumerable.Skip(2).FirstOrDefault();
 
                 DrawContourLineInViewport(canvas, contourPoint, firstNearest);
                 DrawContourLineInViewport(canvas, contourPoint, secondNearest);

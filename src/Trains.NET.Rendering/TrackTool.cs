@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(10)]
-    internal class TrackTool : ITool
+    public class TrackTool : ITool
     {
         private readonly ILayout<Track> _entityCollection;
 

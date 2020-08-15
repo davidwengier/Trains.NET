@@ -4,10 +4,11 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Reflection;
 using Trains.NET.SourceGenerator;
+using System.Linq;
 
 namespace SourceGeneratorTestBed
 {
-    internal class Program
+    public class Program
     {
         private static void Main()
         {
@@ -16,13 +17,9 @@ namespace Trains.NET
 {
     public class Foo
     {
-        public Foo()
-        {
-        }
-
         public void Method()
         {
-            var x = DI.ServiceLocator.GetService<Foo>();
+            var x = DI.ServiceLocator.GetService<Trains.NET.Comet.MainPage>();
         }
     }
 }
@@ -39,9 +36,43 @@ namespace Trains.NET
                 }
             }
 
+            references.Add(MetadataReference.CreateFromFile(typeof(Trains.NET.Rendering.IGame).Assembly.Location));
+            references.Add(MetadataReference.CreateFromFile(typeof(Trains.NET.Rendering.Skia.RenderingExtensions).Assembly.Location));
+            references.Add(MetadataReference.CreateFromFile(typeof(Trains.NET.Engine.ContextAttribute).Assembly.Location));
+            references.Add(MetadataReference.CreateFromFile(typeof(Trains.NET.Comet.ITrainController).Assembly.Location));
+            references.Add(MetadataReference.CreateFromFile(typeof(Trains.App).Assembly.Location));
+
             var compilation = CSharpCompilation.Create("foo", new SyntaxTree[] { syntaxTree }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            Console.WriteLine(DISourceGenerator.Generate(compilation));
+            var diagnostics = compilation.GetDiagnostics()
+                .Where(d => d.Severity == DiagnosticSeverity.Error)
+                .Where(d => d.Descriptor.Description.ToString() == "The name 'DI' does not exist in the current context");
+            if (diagnostics.Any())
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Errors:");
+                Console.ResetColor();
+                Console.WriteLine(string.Join("\n", diagnostics));
+
+                Console.WriteLine();
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Output:");
+            Console.ResetColor();
+
+            source = DISourceGenerator.Generate(compilation);
+            Console.WriteLine(source);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Compilation Results:");
+            Console.ResetColor();
+
+            syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(kind: SourceCodeKind.Regular));
+            compilation = compilation.AddSyntaxTrees(syntaxTree);
+
+            diagnostics = compilation.GetDiagnostics();
+            Console.WriteLine(string.Join("\n", diagnostics));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Engine
 {
-    internal class TrainNames
+    internal static class TrainNames
     {
         public static string[] Names = new string[]{
             "The Flying Scott",
@@ -18,7 +18,8 @@
             "The Dirty Nullable",
             "The Diagnostics Session",
             "The Mountain Mort",
-            "Blue Train, South Africa"
+            "Blue Train, South Africa",
+            "The Little Train That Could"
         };
     }
 }

@@ -4,7 +4,7 @@ using Trains.NET.Engine.Tracks;
 namespace Trains.NET.Rendering
 {
     [Order(0)]
-    internal class TerrainTypeRenderer : ILayerRenderer
+    public class TerrainTypeRenderer : ILayerRenderer
     {
         private readonly ITerrainMap _terrainMap;
         private readonly IGameParameters _gameParameters;

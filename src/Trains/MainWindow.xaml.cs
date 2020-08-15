@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows;
 using Comet;
 using Comet.WPF;
-using Microsoft.Extensions.DependencyInjection;
 using Trains.Handlers;
 using Trains.NET.Comet;
 using Trains.Storage;
@@ -21,8 +20,6 @@ namespace Trains
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-            ServiceProvider serviceProvider = Services.GetServiceProvider();
 
             InitializeComponent();
 
@@ -47,12 +44,7 @@ namespace Trains
             }
 
             MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainPage mainPage = DI.ServiceLocator.GetService<MainPage>();
-
-            if (mainPage == null)
-            {
-                mainPage = serviceProvider.GetService<MainPage>();
-            }
+            MainPage? mainPage = DI.ServiceLocator.GetService<MainPage>();
 
             var page = new CometPage(MainFrame, mainPage);
             MainFrame.Content = page;

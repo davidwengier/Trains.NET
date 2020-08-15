@@ -7,7 +7,7 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Rendering
 {
-    internal class Game : IGame
+    public class Game : IGame
     {
         private const int RenderInterval = 16;
 
@@ -30,7 +30,7 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
 
-        public Game(IGameBoard gameBoard, OrderedList<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
+        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;

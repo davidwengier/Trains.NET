@@ -6,13 +6,14 @@ using Trains.NET.Engine;
 
 namespace Trains.Storage
 {
-    internal class FileSystemStorage : IGameStorage
+    public class FileSystemStorage : IGameStorage
     {
         private const string TracksFilename = "Trains.NET.tracks";
         private const string TerrainFilename = "Trains.NET.terrain";
 
-        public readonly string TracksFilePath = GetFilePath(TracksFilename);
-        public readonly string TerrrainFilePath = GetFilePath(TerrainFilename);
+        private readonly string TracksFilePath = GetFilePath(TracksFilename);
+        private readonly string TerrrainFilePath = GetFilePath(TerrainFilename);
+        private readonly string FilePath = GetFilePath(Filename);
 
         internal static string GetFilePath(string fileName)
         {

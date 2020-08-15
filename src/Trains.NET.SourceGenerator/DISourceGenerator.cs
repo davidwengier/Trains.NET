@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -17,13 +19,10 @@ namespace Trains.NET.SourceGenerator
 
         public void Execute(SourceGeneratorContext context)
         {
-            var compilation = context.Compilation;
+            Compilation? compilation = context.Compilation;
 
             string sourceBuilder = Generate(compilation);
-
-            //System.IO.File.WriteAllText(@"C:\Users\dawengie\Desktop\SourceGenerator.txt", sourceBuilder, Encoding.UTF8);
-
-            context.AddSource("digenerator.cs", SourceText.From(sourceBuilder, Encoding.UTF8));
+            context.AddSource("ServiceLocator.cs", SourceText.From(sourceBuilder, Encoding.UTF8));
         }
 
         public static string Generate(Compilation compilation)
@@ -41,82 +40,231 @@ namespace DI
 }
 ";
 
-            var sourceText = SourceText.From(stub, Encoding.UTF8);
-            var syntaxTree = CSharpSyntaxTree.ParseText(sourceText, ((CSharpSyntaxTree)compilation.SyntaxTrees.First()).Options);
-            compilation = compilation.AddSyntaxTrees(syntaxTree);
+            var options = (compilation as CSharpCompilation)?.SyntaxTrees[0].Options as CSharpParseOptions;
+            compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(SourceText.From(stub, Encoding.UTF8), options));
 
-            var diags = compilation.GetDiagnostics();
+            ImmutableArray<Diagnostic> diags = compilation.GetDiagnostics();
 
             var sourceBuilder = new StringBuilder();
 
-            foreach (var tree in compilation.SyntaxTrees)
+            var services = new List<Service>();
+
+            INamedTypeSymbol? serviceLocatorClass = compilation.GetTypeByMetadataName("DI.ServiceLocator")!;
+            INamedTypeSymbol? transientAttribute = compilation.GetTypeByMetadataName("Trains.NET.Engine.TransientAttribute")!;
+            INamedTypeSymbol? orderAttribute = compilation.GetTypeByMetadataName("Trains.NET.Engine.OrderAttribute")!;
+            INamedTypeSymbol? layoutOfT = compilation.GetTypeByMetadataName("Trains.NET.Engine.ILayout`1")!.ConstructUnboundGenericType();
+            INamedTypeSymbol? filteredLayout = compilation.GetTypeByMetadataName("Trains.NET.Engine.Tracks.FilteredLayout`1")!;
+            INamedTypeSymbol? iEnumerableOfT = compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1")!.ConstructUnboundGenericType();
+            INamedTypeSymbol? listOfT = compilation.GetTypeByMetadataName("System.Collections.Generic.List`1")!;
+
+            var knownTypes = new KnownTypes(transientAttribute, orderAttribute, layoutOfT, filteredLayout, iEnumerableOfT, listOfT);
+
+            foreach (SyntaxTree? tree in compilation.SyntaxTrees)
             {
-                var semanticModel = compilation.GetSemanticModel(tree);
+                SemanticModel? semanticModel = compilation.GetSemanticModel(tree);
+                IEnumerable<INamedTypeSymbol>? typesToCreate = from i in tree.GetRoot().DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>()
+                                                               let symbol = semanticModel.GetSymbolInfo(i).Symbol as IMethodSymbol
+                                                               where symbol != null
+                                                               where SymbolEqualityComparer.Default.Equals(symbol.ContainingType, serviceLocatorClass)
+                                                               select symbol.ReturnType as INamedTypeSymbol;
 
-                var invocations = tree.GetRoot().DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>();
-
-                foreach (var methodCall in invocations)
+                foreach (INamedTypeSymbol? typeToCreate in typesToCreate)
                 {
-                    var symbol = semanticModel.GetSymbolInfo(methodCall).Symbol;
+                    Generate(typeToCreate, compilation, services, knownTypes);
+                }
+            }
 
-                    if (symbol?.ContainingType.Name == "ServiceLocator")
+            sourceBuilder.AppendLine(@"
+namespace DI
+{ 
+    public static class ServiceLocator
+    {");
+            var fields = new List<Service>();
+            GenerateFields(sourceBuilder, services, fields);
+
+            sourceBuilder.AppendLine(@"
+        public static T GetService<T>()
+        {");
+
+            foreach (Service? service in services)
+            {
+                sourceBuilder.AppendLine("if (typeof(T) == typeof(" + service.Type + "))");
+                sourceBuilder.AppendLine("{");
+                sourceBuilder.AppendLine($"    return (T)(object){GetTypeConstruction(service, service.IsTransient ? new List<Service>() : fields)};");
+                sourceBuilder.AppendLine("}");
+            }
+
+            sourceBuilder.AppendLine("throw new System.InvalidOperationException(\"Don't know how to initialize type: \" + typeof(T).Name);");
+            sourceBuilder.AppendLine(@"
+        }
+    }
+}");
+
+            return sourceBuilder.ToString();
+        }
+
+        private static void GenerateFields(StringBuilder sourceBuilder, List<Service> services, List<Service> fields)
+        {
+            foreach (Service? service in services)
+            {
+                GenerateFields(sourceBuilder, service.ConstructorArguments, fields);
+                if (!service.IsTransient)
+                {
+                    if (fields.Any(f => SymbolEqualityComparer.Default.Equals(f.ImplementationType, service.ImplementationType)))
                     {
-                        if (symbol is IMethodSymbol methodSymbol &&
-                            methodSymbol.ReturnType.OriginalDefinition is INamedTypeSymbol typeToCreate)
+                        continue;
+                    }
+                    service.VariableName = GetVariableName(service, fields);
+                    sourceBuilder.AppendLine($"private static {service.Type} {service.VariableName} = {GetTypeConstruction(service, fields)};");
+                    fields.Add(service);
+                }
+            }
+        }
+
+        private static string GetTypeConstruction(Service service, List<Service> fields)
+        {
+            var sb = new StringBuilder();
+
+            Service? field = fields.FirstOrDefault(f => SymbolEqualityComparer.Default.Equals(f.ImplementationType, service.ImplementationType));
+            if (field != null)
+            {
+                sb.Append(field.VariableName);
+            }
+            else
+            {
+                sb.Append("new ");
+                sb.Append(service.ImplementationType);
+                sb.Append('(');
+                if (service.UseCollectionInitializer)
+                {
+                    sb.Append(')');
+                    sb.Append('{');
+                }
+                bool first = true;
+                foreach (Service? arg in service.ConstructorArguments)
+                {
+                    if (!first)
+                    {
+                        sb.Append(',');
+                    }
+                    sb.Append(GetTypeConstruction(arg, fields));
+                    first = false;
+                }
+                if (service.UseCollectionInitializer)
+                {
+                    sb.Append('}');
+                }
+                else
+                {
+                    sb.Append(')');
+                }
+            }
+            return sb.ToString();
+        }
+
+        private static string GetVariableName(Service service, List<Service> fields)
+        {
+            string typeName = service.ImplementationType.ToString().Replace("<", "").Replace(">", "").Replace("?", "");
+
+            string[] parts = typeName.Split('.');
+            for (int i = parts.Length - 1; i >= 0; i--)
+            {
+                string? candidate = string.Join("", parts.Skip(i));
+                candidate = "_" + char.ToLowerInvariant(candidate[0]) + candidate.Substring(1);
+                if (!fields.Any(f => string.Equals(f.VariableName, candidate, StringComparison.Ordinal)))
+                {
+                    typeName = candidate;
+                    break;
+                }
+            }
+            return typeName;
+        }
+
+        private static void Generate(INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, KnownTypes knownTypes)
+        {
+            typeToCreate = (INamedTypeSymbol)typeToCreate.WithNullableAnnotation(default);
+
+            if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.IEnumerableOfT))
+            {
+                ITypeSymbol? typeToFind = typeToCreate.TypeArguments[0];
+                IOrderedEnumerable<INamedTypeSymbol>? types = FindImplementations(typeToFind, compilation).OrderBy(t => (int)(t.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, knownTypes.OrderAttribute))?.ConstructorArguments[0].Value ?? 0));
+
+                INamedTypeSymbol? list = knownTypes.ListOfT.Construct(typeToFind);
+                var listService = new Service(typeToCreate);
+                services.Add(listService);
+                listService.ImplementationType = list;
+                listService.UseCollectionInitializer = true;
+
+                foreach (INamedTypeSymbol? thingy in types)
+                {
+                    Generate(thingy, compilation, listService.ConstructorArguments, knownTypes);
+                }
+            }
+            else if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.ILayoutOfT))
+            {
+                ITypeSymbol? entityType = typeToCreate.TypeArguments[0];
+
+                INamedTypeSymbol? layout = knownTypes.FilteredLayout.Construct(entityType);
+
+                var layoutService = new Service(typeToCreate);
+                services.Add(layoutService);
+                layoutService.ImplementationType = layout;
+                Generate(layout, compilation, layoutService.ConstructorArguments, knownTypes);
+            }
+            else
+            {
+                INamedTypeSymbol? realType = typeToCreate.IsAbstract ? FindImplementation(typeToCreate, compilation) : typeToCreate;
+
+                if (realType != null)
+                {
+                    var service = new Service(typeToCreate);
+                    services.Add(service);
+                    service.ImplementationType = realType;
+                    service.IsTransient = typeToCreate.GetAttributes().Any(c => SymbolEqualityComparer.Default.Equals(c.AttributeClass, knownTypes.TransientAttribute));
+
+                    IMethodSymbol? constructor = realType?.Constructors.FirstOrDefault();
+                    if (constructor != null)
+                    {
+                        foreach (IParameterSymbol? parametr in constructor.Parameters)
                         {
-                            Generate(sourceBuilder, typeToCreate, compilation);
+                            if (parametr.Type is INamedTypeSymbol paramType)
+                            {
+                                Generate(paramType, compilation, service.ConstructorArguments, knownTypes);
+                            }
                         }
                     }
                 }
-
             }
-            //return sourceBuilder.ToString();
-            return stub;
         }
 
-        private static void Generate(StringBuilder sourceBuilder, INamedTypeSymbol typeToCreate, Compilation compilation)
+        private static INamedTypeSymbol? FindImplementation(ITypeSymbol typeToCreate, Compilation compilation)
         {
-            var realType = typeToCreate.IsAbstract ? FindImplementation(typeToCreate, compilation) : typeToCreate;
+            return FindImplementations(typeToCreate, compilation).FirstOrDefault();
+        }
 
-            sourceBuilder.AppendLine("// Generating: " + realType);
-
-            var constructor = realType?.Constructors.FirstOrDefault();
-            if (constructor != null)
+        private static IEnumerable<INamedTypeSymbol> FindImplementations(ITypeSymbol typeToFind, Compilation compilation)
+        {
+            foreach (INamedTypeSymbol? x in GetAllTypes(compilation.GlobalNamespace.GetNamespaceMembers()))
             {
-                foreach (var parametr in constructor.Parameters)
+                if (!x.IsAbstract && x.Interfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToFind)))
                 {
-                    if (parametr.Type is INamedTypeSymbol paramType)
-                    {
-                        Generate(sourceBuilder, paramType, compilation);
-                    }
+                    yield return x;
                 }
             }
         }
 
-        private static INamedTypeSymbol? FindImplementation(INamedTypeSymbol typeToCreate, Compilation compilation)
+        private static IEnumerable<INamedTypeSymbol> GetAllTypes(IEnumerable<INamespaceSymbol> namespaces)
         {
-            foreach (var x in GetAllTypes(compilation.GlobalNamespace.GetNamespaceMembers()))
+            foreach (INamespaceSymbol? ns in namespaces)
             {
-                if (x.Interfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToCreate)))
+                foreach (INamedTypeSymbol? t in ns.GetTypeMembers())
                 {
-                    return x;
+                    yield return t;
                 }
-            }
-            return null;
 
-            IEnumerable<INamedTypeSymbol> GetAllTypes(IEnumerable<INamespaceSymbol> namespaces)
-            {
-                foreach (var ns in namespaces)
+                foreach (INamedTypeSymbol? subType in GetAllTypes(ns.GetNamespaceMembers()))
                 {
-                    foreach (var t in ns.GetTypeMembers())
-                    {
-                        yield return t;
-                    }
-
-                    foreach (var subType in GetAllTypes(ns.GetNamespaceMembers()))
-                    {
-                        yield return subType;
-                    }
+                    yield return subType;
                 }
             }
         }

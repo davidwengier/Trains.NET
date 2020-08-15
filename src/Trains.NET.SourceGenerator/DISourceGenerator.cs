@@ -22,7 +22,6 @@ namespace Trains.NET.SourceGenerator
             Compilation? compilation = context.Compilation;
 
             string sourceBuilder = Generate(compilation);
-
             context.AddSource("ServiceLocator.cs", SourceText.From(sourceBuilder, Encoding.UTF8));
         }
 
@@ -171,14 +170,14 @@ namespace DI
             for (int i = parts.Length - 1; i >= 0; i--)
             {
                 string? candidate = string.Join("", parts.Skip(i));
-                candidate = char.ToLowerInvariant(candidate[0]) + candidate.Substring(1);
+                candidate = "_" + char.ToLowerInvariant(candidate[0]) + candidate.Substring(1);
                 if (!fields.Any(f => string.Equals(f.VariableName, candidate, StringComparison.Ordinal)))
                 {
                     typeName = candidate;
                     break;
                 }
             }
-            return "_" + char.ToLowerInvariant(typeName[0]) + typeName.Substring(1);
+            return typeName;
         }
 
         private static void Generate(INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, KnownTypes knownTypes)

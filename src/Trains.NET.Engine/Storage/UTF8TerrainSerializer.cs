@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Trains.NET.Engine
 {
-    internal class UTF8TerrainSerializer : ITerrainSerializer
+    public class UTF8TerrainSerializer : ITerrainSerializer
     {
         public IEnumerable<Terrain> Deserialize(string[] lines)
         {

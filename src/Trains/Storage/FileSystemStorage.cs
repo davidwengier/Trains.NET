@@ -13,7 +13,6 @@ namespace Trains.Storage
 
         private readonly string TracksFilePath = GetFilePath(TracksFilename);
         private readonly string TerrrainFilePath = GetFilePath(TerrainFilename);
-        private readonly string FilePath = GetFilePath(Filename);
 
         internal static string GetFilePath(string fileName)
         {

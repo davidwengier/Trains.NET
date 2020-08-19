@@ -14,10 +14,10 @@ namespace Trains.NET.Engine
             { TrackDirection.RightUp, '╚' },
             { TrackDirection.RightDown, '╔' },
             { TrackDirection.LeftDown, '╗' },
-            { TrackDirection.RightUpDown, '╠' },
-            { TrackDirection.LeftRightDown, '╦' },
-            { TrackDirection.LeftUpDown, '╣' },
-            { TrackDirection.LeftRightUp, '╩' },
+            { TrackDirection.RightUp_RightDown, '╠' },
+            { TrackDirection.RightDown_LeftDown, '╦' },
+            { TrackDirection.LeftDown_LeftUp, '╣' },
+            { TrackDirection.LeftUp_RightUp, '╩' },
             { TrackDirection.Cross, '╬' },
 
             { TrackDirection.Undefined, '?' }
@@ -25,10 +25,10 @@ namespace Trains.NET.Engine
 
         private static readonly Dictionary<TrackDirection, char> s_alternateTrackMappings = new()
         {
-            { TrackDirection.RightUpDown, '├' },
-            { TrackDirection.LeftRightDown, '┬' },
-            { TrackDirection.LeftUpDown, '┤' },
-            { TrackDirection.LeftRightUp, '┴' }
+            { TrackDirection.RightUp_RightDown, '├' },
+            { TrackDirection.RightDown_LeftDown, '┬' },
+            { TrackDirection.LeftDown_LeftUp, '┤' },
+            { TrackDirection.LeftUp_RightUp, '┴' }
         };
 
         public IEnumerable<IStaticEntity> Deserialize(string[] lines)

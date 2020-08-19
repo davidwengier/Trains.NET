@@ -15,6 +15,7 @@ namespace Trains.NET.Engine
         private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
         private readonly ILayout _layout;
         private readonly ITimer? _gameLoopTimer;
+        private readonly ITerrainMap _terrainMap;
 
         public int Columns { get; set; }
         public int Rows { get; set; }
@@ -25,6 +26,7 @@ namespace Trains.NET.Engine
         {
             _layout = trackLayout;
             _gameLoopTimer = timer;
+            _terrainMap = terrainMap;
             if (_gameLoopTimer != null)
             {
                 _gameLoopTimer.Interval = GameLoopInterval;
@@ -305,6 +307,7 @@ namespace Trains.NET.Engine
         {
             _movables = _movables.Clear();
             _layout.Clear();
+            _terrainMap.Clear();
         }
 
         public void Dispose()

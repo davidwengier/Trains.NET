@@ -35,6 +35,11 @@ namespace Trains.NET.Engine
         {
             var tracks = new List<IStaticEntity>();
 
+            if (lines.Length == 0)
+            {
+                return tracks;
+            }
+
             var happiness = lines[^1].ToCharArray();
             var index = 0;
 

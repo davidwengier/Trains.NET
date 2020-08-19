@@ -11,6 +11,12 @@ namespace Trains.NET.Engine
 
         public event EventHandler? CollectionChanged;
 
+        public void Clear()
+        {
+            _terrainMap = _terrainMap.Clear();
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void SetTerrainHeight(int column, int row, int height)
         {
             GetOrAdd(column, row).Height = height;

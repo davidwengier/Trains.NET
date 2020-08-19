@@ -6,12 +6,21 @@ namespace Trains.NET.Tests
 {
     internal class NullStorage : IGameStorage
     {
-        public IEnumerable<IStaticEntity> Read()
+        public IEnumerable<IStaticEntity> ReadStaticEntities()
         {
             return Enumerable.Empty<IStaticEntity>();
         }
 
-        public void Write(IEnumerable<IStaticEntity> entities)
+        public IEnumerable<Terrain> ReadTerrain()
+        {
+            return Enumerable.Empty<Terrain>();
+        }
+
+        public void WriteStaticEntities(IEnumerable<IStaticEntity> entities)
+        {
+        }
+
+        public void WriteTerrain(IEnumerable<Terrain> terrainList)
         {
         }
     }

@@ -20,6 +20,7 @@ namespace Trains.NET.Comet
 
         private readonly ILayout _trackLayout;
         private readonly IGameStorage _gameStorage;
+        private readonly ITerrainMap _terrainMap;
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
         private readonly MiniMapDelegate _miniMapDelegate;
@@ -35,7 +36,8 @@ namespace Trains.NET.Comet
                         IGameParameters gameParameters,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
-                        Factory<IToolPreviewer> previewerFactory)
+                        Factory<IToolPreviewer> previewerFactory, 
+                        ITerrainMap terrainMap)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
@@ -98,6 +100,7 @@ namespace Trains.NET.Comet
                 }
                 Clipboard.SetImage(bitmap.ToWriteableBitmap());
             }
+            _terrainMap = terrainMap;
         }
 
         private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("Real-FPS");
@@ -122,7 +125,8 @@ namespace Trains.NET.Comet
 
         public void Save()
         {
-            _gameStorage.Write(_trackLayout);
+            _gameStorage.WriteStaticEntities(_trackLayout);
+            _gameStorage.WriteTerrain(_terrainMap);
         }
 
         public void Redraw(Size newSize)

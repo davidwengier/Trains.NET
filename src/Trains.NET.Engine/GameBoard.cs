@@ -21,7 +21,7 @@ namespace Trains.NET.Engine
         public bool Enabled { get; set; } = true;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public GameBoard(ILayout trackLayout, IGameStorage? storage, ITimer? timer)
+        public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage? storage, ITimer? timer)
         {
             _layout = trackLayout;
             _gameLoopTimer = timer;
@@ -38,15 +38,22 @@ namespace Trains.NET.Engine
             }
 
             IEnumerable<IStaticEntity>? tracks = null;
+            IEnumerable<Terrain>? terrain = null;
             try
             {
-                tracks = storage.Read();
+                tracks = storage.ReadStaticEntities();
+                terrain = storage.ReadTerrain();
             }
             catch { }
 
             if (tracks != null)
             {
                 _layout.Set(tracks);
+            }
+
+            if (terrain != null)
+            {
+                terrainMap.Set(terrain);
             }
         }
 

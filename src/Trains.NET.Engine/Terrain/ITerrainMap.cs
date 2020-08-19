@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Engine
 {
     public interface ITerrainMap : IEnumerable<Terrain>
     {
+        event EventHandler CollectionChanged;
         void Set(IEnumerable<Terrain> terrainList);
 
         void SetTerrainHeight(int column, int row, int height);

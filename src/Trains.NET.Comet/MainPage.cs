@@ -10,7 +10,6 @@ using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
-using Trains.NET.Rendering.Tracks;
 
 namespace Trains.NET.Comet
 {
@@ -28,22 +27,21 @@ namespace Trains.NET.Comet
         private bool _presenting = true;
 
         public MainPage(IGame game,
-                        IPixelMapper pixelMapper,
                         IEnumerable<ITool> tools,
                         IEnumerable<ILayerRenderer> layers,
                         IEnumerable<ICommand> commands,
                         ITrainController trainControls,
-                        IGameParameters gameParameters,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
-                        Factory<IToolPreviewer> previewerFactory,
-                        ITerrainMap terrainMap)
+                        ITerrainMap terrainMap,
+                        MiniMapDelegate miniMapDelegate,
+                        TrainsDelegate trainsDelegate)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             _game = game;
-            _controlDelegate = new TrainsDelegate(game, pixelMapper, previewerFactory);
-            _miniMapDelegate = new MiniMapDelegate(trackLayout, gameParameters, pixelMapper);
+            _controlDelegate = trainsDelegate;
+            _miniMapDelegate = miniMapDelegate;
 
             this.Body = () =>
             {
@@ -153,7 +151,7 @@ namespace Trains.NET.Comet
         private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate, bool buildMode)
         {
             var controlsGroup = new RadioGroup(Orientation.Vertical);
-            foreach (var tool in tools.Where(t => ShouldShowTool(buildMode, t)))
+            foreach (ITool? tool in tools.Where(t => ShouldShowTool(buildMode, t)))
             {
                 if (controlDelegate.CurrentTool.Value == null)
                 {

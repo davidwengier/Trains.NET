@@ -19,12 +19,12 @@ namespace Trains.NET.Comet
         private readonly SKPaint _paint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
-            Color = SKColors.Gray
+            Color = SKColors.Black
         };
         private readonly SKPaint _viewPortPaint = new SKPaint()
         {
             Style = SKPaintStyle.Stroke,
-            Color = SKColors.Green,
+            Color = SKColors.White,
             StrokeWidth = 80
         };
 
@@ -36,6 +36,7 @@ namespace Trains.NET.Comet
             _terrainMap = terrainMap;
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
             _trackLayout.CollectionChanged += (s, e) => _redraw = true;
+            _terrainMap.CollectionChanged += (s, e) => _redraw = true;
         }
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
@@ -44,18 +45,23 @@ namespace Trains.NET.Comet
             if (!_redraw) return;
 
             const int maxGridSize = PixelMapper.MaxGridSize;
-            using var bitmap = new SKBitmap(maxGridSize, maxGridSize);
+            using var bitmap = new SKBitmap(maxGridSize, maxGridSize, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
             using var tempCanvas = new SKCanvas(bitmap);
-            tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
+            tempCanvas.Clear(TerrainRenderer.GetColour(TerrainType.Grass).ToSkia());
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
+
+            using var paint = new SKPaint
+            {
+                Style = SKPaintStyle.Fill,
+            };
 
             foreach (Terrain terrain in _terrainMap)
             {
+                paint.Color = TerrainRenderer.GetColour(terrain.TerrainType).ToSkia();
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(terrain.Column, terrain.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), _paint);
+                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), paint);
             }
-
 
             foreach (Track track in _trackLayout.OfType<Track>())
             {

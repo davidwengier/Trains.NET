@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -8,19 +9,24 @@ namespace Trains.NET.Engine
     {
         private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
 
+        public event EventHandler? CollectionChanged;
+
         public void SetTerrainHeight(int column, int row, int height)
         {
             GetOrAdd(column, row).Height = height;
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetTerrainType(int column, int row, TerrainType type)
         {
             GetOrAdd(column, row).TerrainType = type;
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Set(IEnumerable<Terrain> terrainList)
         {
             _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private Terrain GetOrAdd(int column, int row)

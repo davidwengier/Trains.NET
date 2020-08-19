@@ -1,7 +1,7 @@
 ﻿
 namespace Trains.NET.Engine
 {
-    [Order(20)]
+    [Order(22)]
     public class GrassTool : ITool
     {
         private readonly ITerrainMap _terrainMap;

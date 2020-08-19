@@ -219,10 +219,10 @@ namespace Trains.NET.Engine
             {TrackEncoding.RightUp, TrackDirection.RightUp},
             {TrackEncoding.RightDown, TrackDirection.RightDown},
             {TrackEncoding.LeftDown, TrackDirection.LeftDown},
-            {TrackEncoding.RightUpDown, TrackDirection.RightUpDown},
-            {TrackEncoding.LeftRightDown, TrackDirection.LeftRightDown},
-            {TrackEncoding.LeftUpDown, TrackDirection.LeftUpDown},
-            {TrackEncoding.LeftRightUp, TrackDirection.LeftRightUp},
+            {TrackEncoding.RightUpDown, TrackDirection.RightUp_RightDown},
+            {TrackEncoding.LeftRightDown, TrackDirection.RightDown_LeftDown},
+            {TrackEncoding.LeftUpDown, TrackDirection.LeftDown_LeftUp},
+            {TrackEncoding.LeftRightUp, TrackDirection.LeftUp_RightUp},
             {TrackEncoding.Cross, TrackDirection.Cross}
         };
 

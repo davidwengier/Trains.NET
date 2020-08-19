@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine
 {
     public class TerrainMap : ITerrainMap
     {
@@ -16,6 +16,11 @@ namespace Trains.NET.Engine.Tracks
         public void SetTerrainType(int column, int row, TerrainType type)
         {
             GetOrAdd(column, row).TerrainType = type;
+        }
+
+        public void Set(IEnumerable<Terrain> terrainList)
+        {
+            _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
         }
 
         private Terrain GetOrAdd(int column, int row)

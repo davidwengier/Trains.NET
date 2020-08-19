@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
 {
@@ -34,7 +33,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-             Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
+            Dictionary<int, List<ViewportPoint>>? contourLevels = GenerateListOfContourPointsForEachContourLevel(pixelMapper);
 
             foreach (int contourLevel in contourLevels.Keys)
             {

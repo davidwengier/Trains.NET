@@ -41,7 +41,8 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         {
             _movementSteps = movementSteps;
             _trackLayout = new Layout();
-            _gameBoard = new GameBoard(_trackLayout, null, null);
+            var terrainMap = new TerrainMap();
+            _gameBoard = new GameBoard(_trackLayout, terrainMap, null, null);
         }
 
         [Theory]

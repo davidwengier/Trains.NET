@@ -1,19 +1,20 @@
-﻿using Trains.NET.Engine.Tracks;
-
+﻿
 namespace Trains.NET.Engine
 {
     [Order(20)]
     public class SandTool : ITool
     {
         private readonly ITerrainMap _terrainMap;
+        private readonly ILayout<Tree> _treeLayout;
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Sand";
         public string Category => "Terrain";
 
-        public SandTool(ITerrainMap terrainMap)
+        public SandTool(ITerrainMap terrainMap, ILayout<Tree> treeLayout)
         {
             _terrainMap = terrainMap;
+            _treeLayout = treeLayout;
         }
 
         public void Execute(int column, int row)
@@ -21,6 +22,6 @@ namespace Trains.NET.Engine
             _terrainMap.SetTerrainType(column, row, TerrainType.Sand);
         }
 
-        public bool IsValid(int column, int row) => true;
+        public bool IsValid(int column, int row) => !_treeLayout.TryGet(column, row, out _);
     }
 }

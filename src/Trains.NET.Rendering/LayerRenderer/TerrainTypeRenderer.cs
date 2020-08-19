@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
 
 namespace Trains.NET.Rendering
 {
@@ -15,7 +14,7 @@ namespace Trains.NET.Rendering
             _gameParameters = gameParameters;
         }
 
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public string Name => "Terrain";
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)

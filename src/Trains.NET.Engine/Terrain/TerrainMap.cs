@@ -58,7 +58,7 @@ namespace Trains.NET.Engine
             return GetTerrainOrDefault(terrain.Column + 1, terrain.Row);
         }
 
-        private Terrain GetTerrainOrDefault(int column, int row)
+        public Terrain GetTerrainOrDefault(int column, int row)
         {
             if (_terrainMap.TryGetValue((column, row), out Terrain? adjacentTerrain))
             {
@@ -69,7 +69,8 @@ namespace Trains.NET.Engine
             {
                 Row = row,
                 Column = column,
-                Height = 0
+                Height = 0,
+                TerrainType = TerrainType.Grass
             };
         }
     }

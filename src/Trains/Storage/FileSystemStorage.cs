@@ -12,7 +12,7 @@ namespace Trains.Storage
         private const string TerrainFilename = "Trains.NET.terrain";
 
         private readonly string TracksFilePath = GetFilePath(TracksFilename);
-        private readonly string TerrrainFilePath = GetFilePath(TerrainFilename);
+        private readonly string TerrainFilePath = GetFilePath(TerrainFilename);
 
         internal static string GetFilePath(string fileName)
         {
@@ -46,18 +46,18 @@ namespace Trains.Storage
 
         public IEnumerable<Terrain> ReadTerrain()
         {
-            if (!File.Exists(TerrrainFilePath))
+            if (!File.Exists(TerrainFilePath))
             {
                 return Enumerable.Empty<Terrain>();
             }
 
-            return _terrainSerializer.Deserialize(File.ReadAllLines(TerrrainFilePath));
+            return _terrainSerializer.Deserialize(File.ReadAllLines(TerrainFilePath));
         }
 
         public void WriteTerrain(IEnumerable<Terrain> terrainList)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(TerrrainFilePath));
-            File.WriteAllText(TerrrainFilePath, _terrainSerializer.Serialize(terrainList));
+            Directory.CreateDirectory(Path.GetDirectoryName(TerrainFilePath));
+            File.WriteAllText(TerrainFilePath, _terrainSerializer.Serialize(terrainList));
         }
     }
 }

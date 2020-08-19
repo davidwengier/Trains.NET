@@ -50,8 +50,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.Emoji", "src\Trains.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trains.NET.SourceGenerator", "src\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj", "{10E5BE95-85C2-456C-A32B-A77E7EB702A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGeneratorTestBed", "src\SourceGeneratorTestBed\SourceGeneratorTestBed.csproj", "{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,10 +112,6 @@ Global
 		{10E5BE95-85C2-456C-A32B-A77E7EB702A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10E5BE95-85C2-456C-A32B-A77E7EB702A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10E5BE95-85C2-456C-A32B-A77E7EB702A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,7 +131,6 @@ Global
 		{0ADF414E-E089-4EBC-A8D8-CA556F713432} = {D3160FEF-1D7C-418F-AC54-710EED3B1143}
 		{4CE3ABF2-7F52-4F12-A007-CF49BED214AC} = {6D7A257F-24F9-43A2-870A-14DFCA32DDD2}
 		{10E5BE95-85C2-456C-A32B-A77E7EB702A1} = {6D7A257F-24F9-43A2-870A-14DFCA32DDD2}
-		{077C89E8-FBDC-4E39-9E2A-02DD0AB987F7} = {6D7A257F-24F9-43A2-870A-14DFCA32DDD2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8834C621-39E4-4AD6-85D0-97F46ADC88D6}

@@ -10,7 +10,6 @@ namespace Trains.NET.Rendering
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Tree";
 
-        public string Category => "Nature";
 
         public TreeTool(ILayout<Tree> trackLayout)
         {

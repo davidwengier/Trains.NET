@@ -8,7 +8,6 @@ namespace Trains.NET.Engine
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Grass";
-        public string Category => "Terrain";
 
         public GrassTool(ITerrainMap terrainMap)
         {

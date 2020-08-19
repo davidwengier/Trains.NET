@@ -9,7 +9,6 @@ namespace Trains.NET.Engine
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Water";
-        public string Category => "Terrain";
 
         public WaterTool(ITerrainMap terrainMap, ILayout layout)
         {

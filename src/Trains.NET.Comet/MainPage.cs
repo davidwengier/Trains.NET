@@ -36,7 +36,7 @@ namespace Trains.NET.Comet
                         IGameParameters gameParameters,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
-                        Factory<IToolPreviewer> previewerFactory, 
+                        Factory<IToolPreviewer> previewerFactory,
                         ITerrainMap terrainMap)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
@@ -153,26 +153,14 @@ namespace Trains.NET.Comet
         private static View CreateToolsControls(IEnumerable<ITool> tools, TrainsDelegate controlDelegate, bool buildMode)
         {
             var controlsGroup = new RadioGroup(Orientation.Vertical);
-            foreach (IGrouping<string, ITool> toolGroup in tools
-                .Where(t => ShouldShowTool(buildMode, t))
-                .GroupBy(t => t.Category))
+            foreach (var tool in tools.Where(t => ShouldShowTool(buildMode, t)))
             {
-                string category = toolGroup.Key;
-
-                //if (toolGroup.Any())
-                //{
-                //    controlsGroup.Add(new Text(() => category));
-                //}
-
-                foreach (ITool tool in toolGroup)
+                if (controlDelegate.CurrentTool.Value == null)
                 {
-                    if (controlDelegate.CurrentTool.Value == null)
-                    {
-                        controlDelegate.CurrentTool.Value = tool;
-                    }
-
-                    controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
+                    controlDelegate.CurrentTool.Value = tool;
                 }
+
+                controlsGroup.Add(new RadioButton(() => tool.Name, () => controlDelegate.CurrentTool.Value == tool, () => controlDelegate.CurrentTool.Value = tool));
             }
 
             return controlsGroup;

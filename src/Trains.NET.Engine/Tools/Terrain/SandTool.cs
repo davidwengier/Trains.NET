@@ -9,7 +9,6 @@ namespace Trains.NET.Engine
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Sand";
-        public string Category => "Terrain";
 
         public SandTool(ITerrainMap terrainMap, ILayout<Tree> treeLayout)
         {

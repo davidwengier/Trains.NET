@@ -10,7 +10,6 @@ namespace Trains.NET.Rendering
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Track";
-        public string Category => "Train";
 
         public TrackTool(ILayout<Track> trackLayout, ITerrainMap terrainMap)
         {

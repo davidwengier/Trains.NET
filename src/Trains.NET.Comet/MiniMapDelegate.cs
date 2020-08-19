@@ -14,6 +14,7 @@ namespace Trains.NET.Comet
         private bool _redraw = true;
         private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
+        private readonly ITerrainMap _terrainMap;
         private readonly IGameParameters _gameParameters;
         private readonly SKPaint _paint = new SKPaint()
         {
@@ -27,12 +28,12 @@ namespace Trains.NET.Comet
             StrokeWidth = 80
         };
 
-        public MiniMapDelegate(ILayout trackLayout, IGameParameters gameParameters, IPixelMapper pixelMapper)
+        public MiniMapDelegate(ILayout trackLayout, IGameParameters gameParameters, IPixelMapper pixelMapper, ITerrainMap terrainMap)
         {
             _trackLayout = trackLayout;
             _gameParameters = gameParameters;
             _pixelMapper = pixelMapper;
-
+            _terrainMap = terrainMap;
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
             _trackLayout.CollectionChanged += (s, e) => _redraw = true;
         }
@@ -48,6 +49,13 @@ namespace Trains.NET.Comet
             using var tempCanvas = new SKCanvas(bitmap);
             tempCanvas.Clear(SKColor.Parse(Colors.VeryLightGray.HexCode));
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
+
+            foreach (Terrain terrain in _terrainMap)
+            {
+                (int x, int y) = _pixelMapper.CoordsToWorldPixels(terrain.Column, terrain.Row);
+                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), _paint);
+            }
+
 
             foreach (Track track in _trackLayout.OfType<Track>())
             {

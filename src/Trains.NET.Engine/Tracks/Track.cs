@@ -39,10 +39,10 @@ namespace Trains.NET.Engine
                 case TrackDirection.RightUp: TrainMovement.MoveRightUp(position); break;
                 case TrackDirection.RightDown: TrainMovement.MoveRightDown(position); break;
                 case TrackDirection.LeftDown: TrainMovement.MoveLeftDown(position); break;
-                case TrackDirection.RightUpDown: MoveRightUpDown(position); break;
-                case TrackDirection.LeftRightDown: MoveLeftRightDown(position); break;
-                case TrackDirection.LeftUpDown: MoveLeftUpDown(position); break;
-                case TrackDirection.LeftRightUp: MoveLeftRightUp(position); break;
+                case TrackDirection.RightUp_RightDown: MoveRightUpDown(position); break;
+                case TrackDirection.RightDown_LeftDown: MoveLeftRightDown(position); break;
+                case TrackDirection.LeftDown_LeftUp: MoveLeftUpDown(position); break;
+                case TrackDirection.LeftUp_RightUp: MoveLeftRightUp(position); break;
                 case TrackDirection.Cross: MoveCross(position); break;
                 default: throw new InvalidOperationException("I don't know what that track is!");
             }
@@ -61,10 +61,10 @@ namespace Trains.NET.Engine
         public bool HasAlternateState()
             => this.Direction switch
             {
-                TrackDirection.RightUpDown => true,
-                TrackDirection.LeftRightDown => true,
-                TrackDirection.LeftUpDown => true,
-                TrackDirection.LeftRightUp => true,
+                TrackDirection.RightUp_RightDown => true,
+                TrackDirection.RightDown_LeftDown => true,
+                TrackDirection.LeftDown_LeftUp => true,
+                TrackDirection.LeftUp_RightUp => true,
                 _ => false
             };
 
@@ -200,9 +200,9 @@ namespace Trains.NET.Engine
             TrackDirection.RightUp => true,
             TrackDirection.Horizontal => true,
             TrackDirection.Cross => true,
-            TrackDirection.LeftRightDown => true,
-            TrackDirection.LeftRightUp => true,
-            TrackDirection.RightUpDown => true,
+            TrackDirection.RightDown_LeftDown => true,
+            TrackDirection.LeftUp_RightUp => true,
+            TrackDirection.RightUp_RightDown => true,
             _ => false
         };
 
@@ -213,9 +213,9 @@ namespace Trains.NET.Engine
             TrackDirection.LeftDown => true,
             TrackDirection.Vertical => true,
             TrackDirection.Cross => true,
-            TrackDirection.LeftRightDown => true,
-            TrackDirection.LeftUpDown => true,
-            TrackDirection.RightUpDown => true,
+            TrackDirection.RightDown_LeftDown => true,
+            TrackDirection.LeftDown_LeftUp => true,
+            TrackDirection.RightUp_RightDown => true,
             _ => false
         };
 
@@ -226,9 +226,9 @@ namespace Trains.NET.Engine
             TrackDirection.LeftUp => true,
             TrackDirection.Horizontal => true,
             TrackDirection.Cross => true,
-            TrackDirection.LeftRightDown => true,
-            TrackDirection.LeftRightUp => true,
-            TrackDirection.LeftUpDown => true,
+            TrackDirection.RightDown_LeftDown => true,
+            TrackDirection.LeftUp_RightUp => true,
+            TrackDirection.LeftDown_LeftUp => true,
             _ => false
         };
 
@@ -239,9 +239,9 @@ namespace Trains.NET.Engine
             TrackDirection.RightUp => true,
             TrackDirection.Vertical => true,
             TrackDirection.Cross => true,
-            TrackDirection.LeftUpDown => true,
-            TrackDirection.LeftRightUp => true,
-            TrackDirection.RightUpDown => true,
+            TrackDirection.LeftDown_LeftUp => true,
+            TrackDirection.LeftUp_RightUp => true,
+            TrackDirection.RightUp_RightDown => true,
             _ => false
         };
 
@@ -278,19 +278,19 @@ namespace Trains.NET.Engine
                 // 3-way connections
                 if (neighbors.Up != null && neighbors.Left != null && neighbors.Down != null)
                 {
-                    newDirection = TrackDirection.LeftUpDown;
+                    newDirection = TrackDirection.LeftDown_LeftUp;
                 }
                 else if (neighbors.Up != null && neighbors.Right != null && neighbors.Down != null)
                 {
-                    newDirection = TrackDirection.RightUpDown;
+                    newDirection = TrackDirection.RightUp_RightDown;
                 }
                 else if (neighbors.Up != null && neighbors.Left != null && neighbors.Right != null)
                 {
-                    newDirection = TrackDirection.LeftRightUp;
+                    newDirection = TrackDirection.LeftUp_RightUp;
                 }
                 else if (neighbors.Down != null && neighbors.Left != null && neighbors.Right != null)
                 {
-                    newDirection = TrackDirection.LeftRightDown;
+                    newDirection = TrackDirection.RightDown_LeftDown;
                 }
                 // 2-way connections
                 else if (neighbors.Up != null && neighbors.Left != null)

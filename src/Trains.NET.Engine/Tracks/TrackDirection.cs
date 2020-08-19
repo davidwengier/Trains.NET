@@ -11,10 +11,10 @@
         RightDown,
         LeftDown,
 
-        RightUpDown,
-        LeftRightDown,
-        LeftUpDown,
-        LeftRightUp,
+        RightUp_RightDown,
+        RightDown_LeftDown,
+        LeftDown_LeftUp,
+        LeftUp_RightUp,
 
         Cross
     }

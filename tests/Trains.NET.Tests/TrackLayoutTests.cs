@@ -84,7 +84,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.RightDown, TrackLayout.GetTrackAt(1, 1).Direction);
             Assert.Equal(TrackDirection.LeftDown, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.RightUp, TrackLayout.GetTrackAt(1, 2).Direction);
-            Assert.Equal(TrackDirection.LeftUpDown, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.RightDown, TrackLayout.GetTrackAt(1, 1).Direction);
             Assert.Equal(TrackDirection.LeftDown, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.LeftUp, TrackLayout.GetTrackAt(2, 2).Direction);
-            Assert.Equal(TrackDirection.RightUpDown, TrackLayout.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.RightUp_RightDown, TrackLayout.GetTrackAt(1, 2).Direction);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.LeftUpDown, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt(2, 2).Direction);
         }
 
 
@@ -290,7 +290,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.RightUpDown, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.RightUp_RightDown, TrackLayout.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]
@@ -304,7 +304,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 2).Direction);
-            Assert.Equal(TrackDirection.LeftRightUp, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.LeftUp_RightUp, TrackLayout.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]
@@ -318,7 +318,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 3).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 2).Direction);
-            Assert.Equal(TrackDirection.LeftRightDown, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.Equal(TrackDirection.RightDown_LeftDown, TrackLayout.GetTrackAt(2, 2).Direction);
         }
 
         [Fact]
@@ -373,7 +373,7 @@ namespace Trains.NET.Tests
             TrackLayout.AddTrack(1, 2);
 
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(1, 1).Direction);
-            Assert.Equal(TrackDirection.RightUpDown, TrackLayout.GetTrackAt(1, 2).Direction);
+            Assert.Equal(TrackDirection.RightUp_RightDown, TrackLayout.GetTrackAt(1, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(1, 3).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(2, 2).Direction);
         }
@@ -395,7 +395,7 @@ namespace Trains.NET.Tests
             TrackLayout.AddTrack(3, 2);
 
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(3, 1).Direction);
-            Assert.Equal(TrackDirection.LeftUpDown, TrackLayout.GetTrackAt(3, 2).Direction);
+            Assert.Equal(TrackDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt(3, 2).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(3, 3).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(2, 2).Direction);
         }
@@ -416,7 +416,7 @@ namespace Trains.NET.Tests
             TrackLayout.AddTrack(2, 1);
 
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 1).Direction);
-            Assert.Equal(TrackDirection.LeftRightDown, TrackLayout.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.RightDown_LeftDown, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 1).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 2).Direction);
         }
@@ -437,7 +437,7 @@ namespace Trains.NET.Tests
             TrackLayout.AddTrack(2, 3);
 
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 3).Direction);
-            Assert.Equal(TrackDirection.LeftRightUp, TrackLayout.GetTrackAt(2, 3).Direction);
+            Assert.Equal(TrackDirection.LeftUp_RightUp, TrackLayout.GetTrackAt(2, 3).Direction);
             Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 3).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 2).Direction);
         }
@@ -481,7 +481,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TrackDirection.LeftDown, TrackLayout.GetTrackAt(3, 1).Direction);
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 3).Direction);
 
-            Assert.Equal(TrackDirection.LeftRightDown, TrackLayout.GetTrackAt(2, 1).Direction);
+            Assert.Equal(TrackDirection.RightDown_LeftDown, TrackLayout.GetTrackAt(2, 1).Direction);
         }
     }
 }

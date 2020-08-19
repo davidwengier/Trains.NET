@@ -87,10 +87,10 @@ namespace Trains.NET.Rendering
                 case TrackDirection.RightUp:
                 case TrackDirection.RightDown:
                 case TrackDirection.LeftDown:
-                case TrackDirection.RightUpDown:
-                case TrackDirection.LeftRightDown:
-                case TrackDirection.LeftUpDown:
-                case TrackDirection.LeftRightUp:
+                case TrackDirection.RightUp_RightDown:
+                case TrackDirection.RightDown_LeftDown:
+                case TrackDirection.LeftDown_LeftUp:
+                case TrackDirection.LeftUp_RightUp:
                     DrawCorner(canvas, direction, track);
                     break;
                 case TrackDirection.Undefined:

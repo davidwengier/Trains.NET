@@ -12,24 +12,25 @@ namespace Trains.NET.Engine
 
             for (int r = 0; r < lines.Length - 1; r++)
             {
-                for (int c = 0; c < lines[r].Length; c++)
+                var line = lines[r];
+                var heights = line.Split(',');
+                for (int c = 0; c < heights.Length; c++)
                 {
-                    char current = lines[r][c];
-                    if (current == ' ') continue;
 
-                    var intValue = (int)current;
-                    var height = intValue >> 3;
-                    TerrainType terrainType = (TerrainType) (intValue - (height << 3));
+                    if (!int.TryParse(heights[c], out int height))
+                    {
+                        throw new System.Exception("Invalid height read from file");
+                    }
 
                     terrainList.Add(new Terrain
                     {
                         Row = r,
                         Column = c,
                         Height = height,
-                        TerrainType = terrainType
                     });
-
                 }
+
+                
             }
 
             return terrainList;
@@ -48,23 +49,17 @@ namespace Trains.NET.Engine
 
             for (int r = 0; r <= maxRow; r++)
             {
+                var heights = new List<int>();
                 for (int c = 0; c <= maxColumn; c++)
                 {
                     Terrain terrain = terrainList.FirstOrDefault(t => t.Column == c && t.Row == r);
-                    if (terrain == null)
-                    {
-                        sb.Append(' ');
-                        continue;
-                    }
-
                     int height = terrain.Height;
-                    int terrainType = (int) terrain.TerrainType;
-                    char terrainCode = (char)((height << 3) + terrainType);
-                    sb.Append(terrainCode);
+
+                    heights.Add(height);
                 }
-                sb.AppendLine();
+
+                sb.AppendLine(string.Join(',',heights.Select(h => h.ToString())));
             }
-            sb.AppendLine(happinessSb.ToString());
 
             return sb.ToString();
         }

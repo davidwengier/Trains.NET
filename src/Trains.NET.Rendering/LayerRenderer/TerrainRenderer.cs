@@ -10,10 +10,6 @@ namespace Trains.NET.Rendering
         private readonly ITerrainMap _terrainMap;
         private readonly IGameParameters _gameParameters;
 
-        private static readonly Color s_grassColor = new Color("#78B159");
-        private static readonly Color s_sandColor = new Color("#FDCB58");
-        private static readonly Color s_waterColor = new Color("#55ACEE");
-
         public TerrainRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
         {
             _terrainMap = terrainMap;
@@ -28,29 +24,28 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            // Draw grass background for viewport
-            canvas.DrawRect(0, 0, pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = s_grassColor });
+            if (_terrainMap.IsEmpty())
+            {
+                canvas.DrawRect(0, 0, pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = TerrainColourLookup.DefaultColour });
+                return;
+            }
 
             // Draw any non-grass cells
             foreach (Terrain terrain in _terrainMap)
             {
-                Color colour = GetColour(terrain.TerrainType);
-
-                if (colour == s_grassColor) continue;
+                Color colour = TerrainColourLookup.GetTerrainColour(terrain);
 
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
                 canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
+                // Debug, this draws coord and height onto cells
+                //canvas.DrawText($"{terrain.Column},{terrain.Row}", x + 2, y + 0.3f * _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = Colors.Black });
+                //canvas.DrawText($"{terrain.Height}", x + 2, y + 0.7f * _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = Colors.Black });
             }
 
             _dirty = false;
         }
 
-        public static Color GetColour(TerrainType terrain)
-            => terrain switch
-            {
-                TerrainType.Sand => s_sandColor,
-                TerrainType.Water => s_waterColor,
-                _ => s_grassColor,
-            };
+        
+          
     }
 }

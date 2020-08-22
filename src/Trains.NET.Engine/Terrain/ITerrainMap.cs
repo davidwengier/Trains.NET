@@ -14,8 +14,9 @@ namespace Trains.NET.Engine
         Terrain GetAdjacentTerrainDown(Terrain terrain);
         Terrain GetAdjacentTerrainLeft(Terrain terrain);
         Terrain GetAdjacentTerrainRight(Terrain terrain);
-        void SetTerrainType(int column, int row, TerrainType water);
         Terrain GetTerrainOrDefault(int column, int row);
         void Clear();
+
+        bool IsEmpty();
     }
 }

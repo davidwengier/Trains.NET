@@ -48,7 +48,7 @@ namespace Trains.NET.Comet
             using var bitmap = new SKBitmap(maxGridSize, maxGridSize, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
             using var tempCanvas = new SKCanvas(bitmap);
-            tempCanvas.Clear(TerrainRenderer.GetColour(TerrainType.Grass).ToSkia());
+            tempCanvas.Clear(TerrainColourLookup.DefaultColour.ToSkia());
             using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
 
             using var paint = new SKPaint
@@ -58,7 +58,7 @@ namespace Trains.NET.Comet
 
             foreach (Terrain terrain in _terrainMap)
             {
-                paint.Color = TerrainRenderer.GetColour(terrain.TerrainType).ToSkia();
+                paint.Color = TerrainColourLookup.GetTerrainColour(terrain).ToSkia();
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(terrain.Column, terrain.Row);
                 tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), paint);
             }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Trains.NET.Engine.Tracks
+namespace Trains.NET.Engine
 {
     public class FilteredLayout<T> : ILayout<T>
         where T : class, IStaticEntity

@@ -53,7 +53,7 @@ namespace DI
             INamedTypeSymbol? transientAttribute = compilation.GetTypeByMetadataName("Trains.NET.Engine.TransientAttribute")!;
             INamedTypeSymbol? orderAttribute = compilation.GetTypeByMetadataName("Trains.NET.Engine.OrderAttribute")!;
             INamedTypeSymbol? layoutOfT = compilation.GetTypeByMetadataName("Trains.NET.Engine.ILayout`1")!.ConstructUnboundGenericType();
-            INamedTypeSymbol? filteredLayout = compilation.GetTypeByMetadataName("Trains.NET.Engine.Tracks.FilteredLayout`1")!;
+            INamedTypeSymbol? filteredLayout = compilation.GetTypeByMetadataName("Trains.NET.Engine.FilteredLayout`1")!;
             INamedTypeSymbol? iEnumerableOfT = compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1")!.ConstructUnboundGenericType();
             INamedTypeSymbol? listOfT = compilation.GetTypeByMetadataName("System.Collections.Generic.List`1")!;
 

@@ -23,12 +23,6 @@ namespace Trains.NET.Engine
             CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SetTerrainType(int column, int row, TerrainType type)
-        {
-            GetOrAdd(column, row).TerrainType = type;
-            CollectionChanged?.Invoke(this, EventArgs.Empty);
-        }
-
         public void Set(IEnumerable<Terrain> terrainList)
         {
             _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
@@ -82,8 +76,9 @@ namespace Trains.NET.Engine
                 Row = row,
                 Column = column,
                 Height = 0,
-                TerrainType = TerrainType.Grass
             };
         }
+
+        public bool IsEmpty() => _terrainMap.IsEmpty;
     }
 }

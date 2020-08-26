@@ -24,6 +24,6 @@ namespace Trains.NET.Rendering
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row) &&
-            _terrainMap.GetTerrainOrDefault(column, row).TerrainType != TerrainType.Water;
+            _terrainMap.GetTerrainOrDefault(column, row).Height > TerrainColourLookup.GetWaterLevel();
     }
 }

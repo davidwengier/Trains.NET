@@ -27,8 +27,8 @@ namespace Trains.NET.Rendering.Skia
         public void Clear(Color color)
             => _canvas.Clear(color.ToSkia());
 
-        public void ClipRect(Rectangle rect, ClipOperation operation, bool antialias)
-            => _canvas.ClipRect(rect.ToSkia(), operation.ToSkia(), antialias);
+        public void ClipRect(Rectangle rect, bool antialias)
+            => _canvas.ClipRect(rect.ToSkia(), antialias: antialias);
 
         public void Dispose()
         {

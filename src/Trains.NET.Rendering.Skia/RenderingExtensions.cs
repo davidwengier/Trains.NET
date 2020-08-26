@@ -13,12 +13,6 @@ namespace Trains.NET.Rendering.Skia
             _ => SKColor.Parse(color.HexCode)
         };
 
-        public static SKClipOperation ToSkia(this ClipOperation operation) => operation switch
-        {
-            ClipOperation.Intersect => SKClipOperation.Intersect,
-            _ => throw new NotImplementedException(),
-        };
-
         public static SKPaintStyle ToSkia(this PaintStyle style) => style switch
         {
             PaintStyle.Fill => SKPaintStyle.Fill,

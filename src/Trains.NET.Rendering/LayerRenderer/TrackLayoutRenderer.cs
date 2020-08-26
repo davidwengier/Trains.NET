@@ -37,7 +37,7 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
-                canvas.ClipRect(new Rectangle(0, 0, _gameParameters.CellSize, _gameParameters.CellSize), ClipOperation.Intersect, false);
+                canvas.ClipRect(new Rectangle(0, 0, _gameParameters.CellSize, _gameParameters.CellSize), false);
 
                 _trackRenderer.Render(canvas, track);
 

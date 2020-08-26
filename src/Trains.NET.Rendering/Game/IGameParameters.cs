@@ -2,6 +2,8 @@
 {
     public interface IGameParameters
     {
-        int CellSize { get; set; }
+        int CellSize { get; }
+
+        float GameScale { get; set; }
     }
 }

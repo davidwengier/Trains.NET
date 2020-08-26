@@ -2,23 +2,20 @@
 {
     public class TrackParameters : ITrackParameters
     {
-        public int NumPlanks { get; set; }
-        public int NumCornerPlanks { get; set; }
-        public float PlankLength { get; set; }
-        public float PlankWidth { get; set; }
-        public int TrackWidth { get; set; }
-        public float RailWidth { get; set; }
-        public float RailTopWidth { get; set; }
+        private readonly IGameParameters _gameParameters;
 
-        public TrackParameters()
+        public int NumPlanks { get; } = 3;
+        public int NumCornerPlanks => this.NumPlanks + 1;
+
+        public float PlankLength => 26 * _gameParameters.GameScale;
+        public float PlankWidth => 4.0f * _gameParameters.GameScale;
+        public float TrackWidth => (int)(12 * _gameParameters.GameScale);
+        public float RailWidth => 4f * _gameParameters.GameScale;
+        public float RailTopWidth => 2.75f * _gameParameters.GameScale;
+
+        public TrackParameters(IGameParameters gameParameters)
         {
-            this.PlankLength = 26;
-            this.PlankWidth = 4.0f;
-            this.NumPlanks = 3;
-            this.NumCornerPlanks = this.NumPlanks + 1;
-            this.TrackWidth = 12;
-            this.RailWidth = 4f;
-            this.RailTopWidth = 2.75f;
+            _gameParameters = gameParameters;
         }
     }
 }

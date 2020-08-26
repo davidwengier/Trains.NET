@@ -2,11 +2,7 @@
 {
     public class GameParameters : IGameParameters
     {
-        public int CellSize { get; set; }
-
-        public GameParameters()
-        {
-            this.CellSize = 40;
-        }
+        public float GameScale { get; set; } = 4f;
+        public int CellSize => (int)(40 * this.GameScale);
     }
 }

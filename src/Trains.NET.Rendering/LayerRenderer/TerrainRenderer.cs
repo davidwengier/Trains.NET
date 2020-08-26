@@ -44,8 +44,5 @@ namespace Trains.NET.Rendering
 
             _dirty = false;
         }
-
-        
-          
     }
 }

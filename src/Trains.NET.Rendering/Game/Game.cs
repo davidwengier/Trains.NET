@@ -23,7 +23,6 @@ namespace Trains.NET.Rendering
         private readonly IImageFactory _imageFactory;
         private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("Draw-FPS-Skia");
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-AllUp");
-        private readonly ElapsedMillisecondsTimedStat _skiaClearTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-Clear");
         private readonly ElapsedMillisecondsTimedStat _gameBufferReset = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Game-BufferReset");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
@@ -136,10 +135,6 @@ namespace Trains.NET.Rendering
             _skiaDrawTime.Start();
 
             canvas.Save();
-
-            _skiaClearTime.Start();
-            canvas.Clear(Colors.VeryLightGray);
-            _skiaClearTime.Stop();
 
             foreach (ILayerRenderer renderer in _boardRenderers)
             {

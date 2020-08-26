@@ -11,8 +11,7 @@ namespace Trains.NET.Rendering
         private readonly PaintBrush _paint = new PaintBrush
         {
             Color = Colors.Black,
-            TextSize = 16,
-            TextAlign = TextAlign.Left,
+            TextSize = 16
         };
         private readonly PaintBrush _backgroundPaint = new PaintBrush
         {

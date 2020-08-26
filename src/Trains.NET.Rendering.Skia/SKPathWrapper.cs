@@ -9,9 +9,6 @@ namespace Trains.NET.Rendering.Skia
 
         public SKPath Path => _path;
 
-        public void ArcTo(float radiusX, float radiusY, int xAxisRotate, PathArcSize arcSize, PathDirection direction, float x, int y)
-            => _path.ArcTo(radiusX, radiusY, xAxisRotate, arcSize.ToSkia(), direction.ToSkia(), x, y);
-
         public void LineTo(float x, float y) => _path.LineTo(x, y);
 
         public void MoveTo(float x, float y) => _path.MoveTo(x, y);

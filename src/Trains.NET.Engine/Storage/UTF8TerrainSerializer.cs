@@ -12,8 +12,8 @@ namespace Trains.NET.Engine
 
             for (int r = 0; r < lines.Length - 1; r++)
             {
-                var line = lines[r];
-                var heights = line.Split(',');
+                string? line = lines[r];
+                string[]? heights = line.Split(',');
                 for (int c = 0; c < heights.Length; c++)
                 {
 

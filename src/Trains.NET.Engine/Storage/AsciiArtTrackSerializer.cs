@@ -40,8 +40,8 @@ namespace Trains.NET.Engine
                 return tracks;
             }
 
-            var happiness = lines[^1].ToCharArray();
-            var index = 0;
+            char[]? happiness = lines[^1].ToCharArray();
+            int index = 0;
 
             for (int r = 0; r < lines.Length - 1; r++)
             {

@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering
     {  
         public static Color DefaultColour => Colors.Green;
 
-        private static readonly List<Color> _heightOrderedColours = new List<Color> {
+        private static readonly List<Color> s_heightOrderedColours = new List<Color> {
                 Colors.DarkBlue,
                 Colors.LightBlue,
                 Colors.LightYellow,
@@ -20,16 +20,16 @@ namespace Trains.NET.Rendering
 
         public static int GetWaterLevel()
         {
-            var heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
-            return _heightOrderedColours.IndexOf(Colors.LightYellow) * heightPerTerrainType - 1;
+            int heightPerTerrainType = (Terrain.MaxHeight / s_heightOrderedColours.Count) + 1;
+            return s_heightOrderedColours.IndexOf(Colors.LightYellow) * heightPerTerrainType - 1;
         }
 
         public static Color GetTerrainColour(Terrain terrain)
         {
-            var heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
+            int heightPerTerrainType = (Terrain.MaxHeight / s_heightOrderedColours.Count) + 1;
 
-            var colourLookup = terrain.Height / heightPerTerrainType;
-            return _heightOrderedColours[colourLookup];
+            int colourLookup = terrain.Height / heightPerTerrainType;
+            return s_heightOrderedColours[colourLookup];
         }   
     }
 }

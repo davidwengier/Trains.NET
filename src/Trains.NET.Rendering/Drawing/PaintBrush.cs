@@ -1,36 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace Trains.NET.Rendering
 {
-    public class PaintBrush : IEquatable<PaintBrush?>
+    public record PaintBrush
     {
-        public Color? Color { get; set; }
-        public PaintStyle? Style { get; set; }
-        public int? TextSize { get; set; }
-        public TextAlign? TextAlign { get; set; }
-        public float? StrokeWidth { get; set; }
-        public bool? IsAntialias { get; set; }
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as PaintBrush);
-        }
-
-        public bool Equals(PaintBrush? other)
-        {
-            return other != null &&
-                   EqualityComparer<Color?>.Default.Equals(this.Color, other.Color) &&
-                   this.Style == other.Style &&
-                   this.TextSize == other.TextSize &&
-                   this.TextAlign == other.TextAlign &&
-                   this.StrokeWidth == other.StrokeWidth &&
-                   this.IsAntialias == other.IsAntialias;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Color, this.Style, this.TextSize, this.TextAlign, this.StrokeWidth, this.IsAntialias);
-        }
+        public Color? Color { get; init; }
+        public PaintStyle? Style { get; init; }
+        public int? TextSize { get; init; }
+        public float? StrokeWidth { get; init; }
+        public bool? IsAntialias { get; init; }
     }
+
+#pragma warning disable IDE1006 // Naming Styles
+    public record Color(string HexCode);
+
+    public record Rectangle(float Left, float Top, float Right, float Bottom);
+#pragma warning restore IDE1006 // Naming Styles
+}
+
+namespace System.Runtime.CompilerServices
+{
+    public static class IsExternalInit { }
 }

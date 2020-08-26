@@ -6,15 +6,15 @@ namespace Trains.NET.Engine
 {
     public static class Noise2d
     {
-        private static Random _random = new Random();
-        private static int[] _permutation;
+        private static readonly Random s_random = new Random();
+        private static int[] s_permutation;
 
-        private static Vector2[] _gradients;
+        private static readonly Vector2[] s_gradients;
 
         static Noise2d()
         {
-            CalculatePermutation(out _permutation);
-            CalculateGradients(out _gradients);
+            CalculatePermutation(out s_permutation);
+            CalculateGradients(out s_gradients);
         }
 
         private static void CalculatePermutation(out int[] p)
@@ -22,11 +22,11 @@ namespace Trains.NET.Engine
             p = Enumerable.Range(0, 256).ToArray();
 
             /// shuffle the array
-            for (var i = 0; i < p.Length; i++)
+            for (int i = 0; i < p.Length; i++)
             {
-                var source = _random.Next(p.Length);
+                int source = s_random.Next(p.Length);
 
-                var t = p[i];
+                int t = p[i];
                 p[i] = p[source];
                 p[source] = t;
             }
@@ -37,20 +37,20 @@ namespace Trains.NET.Engine
         /// </summary>
         public static void Reseed()
         {
-            CalculatePermutation(out _permutation);
+            CalculatePermutation(out s_permutation);
         }
 
         private static void CalculateGradients(out Vector2[] grad)
         {
             grad = new Vector2[256];
 
-            for (var i = 0; i < grad.Length; i++)
+            for (int i = 0; i < grad.Length; i++)
             {
                 Vector2 gradient;
 
                 do
                 {
-                    gradient = new Vector2((float)(_random.NextDouble() * 2 - 1), (float)(_random.NextDouble() * 2 - 1));
+                    gradient = new Vector2((float)(s_random.NextDouble() * 2 - 1), (float)(s_random.NextDouble() * 2 - 1));
                 }
                 while (gradient.LengthSquared() >= 1);
 
@@ -76,19 +76,19 @@ namespace Trains.NET.Engine
         {
             var cell = new Vector2((float)Math.Floor(x), (float)Math.Floor(y));
 
-            var total = 0f;
+            float total = 0f;
 
-            var corners = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+            Vector2[]? corners = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
 
-            foreach (var n in corners)
+            foreach (Vector2 n in corners)
             {
-                var ij = cell + n;
+                Vector2 ij = cell + n;
                 var uv = new Vector2(x - ij.X, y - ij.Y);
 
-                var index = _permutation[(int)ij.X % _permutation.Length];
-                index = _permutation[(index + (int)ij.Y) % _permutation.Length];
+                int index = s_permutation[(int)ij.X % s_permutation.Length];
+                index = s_permutation[(index + (int)ij.Y) % s_permutation.Length];
 
-                var grad = _gradients[index % _gradients.Length];
+                Vector2 grad = s_gradients[index % s_gradients.Length];
 
                 total += Q(uv.X, uv.Y) * Vector2.Dot(grad, uv);
             }

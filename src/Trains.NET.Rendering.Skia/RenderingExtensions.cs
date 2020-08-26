@@ -19,28 +19,10 @@ namespace Trains.NET.Rendering.Skia
             _ => throw new NotImplementedException(),
         };
 
-        public static SKTextAlign ToSkia(this TextAlign align) => align switch
-        {
-            TextAlign.Left => SKTextAlign.Left,
-            _ => throw new NotImplementedException(),
-        };
-
         public static SKPaintStyle ToSkia(this PaintStyle style) => style switch
         {
             PaintStyle.Fill => SKPaintStyle.Fill,
             PaintStyle.Stroke => SKPaintStyle.Stroke,
-            _ => throw new NotImplementedException(),
-        };
-
-        public static SKPathArcSize ToSkia(this PathArcSize arcSize) => arcSize switch
-        {
-            PathArcSize.Small => SKPathArcSize.Small,
-            _ => throw new NotImplementedException(),
-        };
-
-        public static SKPathDirection ToSkia(this PathDirection arcSize) => arcSize switch
-        {
-            PathDirection.CounterClockwise => SKPathDirection.CounterClockwise,
             _ => throw new NotImplementedException(),
         };
 
@@ -65,10 +47,6 @@ namespace Trains.NET.Rendering.Skia
             if (brush.StrokeWidth != null)
             {
                 paint.StrokeWidth = brush.StrokeWidth.Value;
-            }
-            if (brush.TextAlign != null)
-            {
-                paint.TextAlign = brush.TextAlign.Value.ToSkia();
             }
             if (brush.TextSize != null)
             {

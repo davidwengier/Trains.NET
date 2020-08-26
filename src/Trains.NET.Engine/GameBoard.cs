@@ -323,17 +323,17 @@ namespace Trains.NET.Engine
 
         private void GenerateStartingTerrain()
         {
-            var maxHeight = Terrain.MaxHeight;
+            int maxHeight = Terrain.MaxHeight;
 
-            var noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4);
+            Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4);
             var terrainlist = new List<Terrain>();
 
             for (int x = 0; x < _columns; x++)
             {
                 for (int y = 0; y < _rows; y++)
                 {
-                    var key = (x, y);
-                    var noise = noiseMap.ContainsKey(key) ? noiseMap[key] : 0;
+                    (int x, int y) key = (x, y);
+                    float noise = noiseMap.ContainsKey(key) ? noiseMap[key] : 0;
                     terrainlist.Add(new Terrain
                     {
                         Column = x,

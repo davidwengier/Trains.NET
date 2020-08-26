@@ -10,7 +10,7 @@ namespace Trains.NET.Engine
         {
             var terrainList = new List<Terrain>();
 
-            for (int r = 0; r < lines.Length - 1; r++)
+            for (int r = 0; r < lines.Length; r++)
             {
                 string? line = lines[r];
                 string[]? heights = line.Split(',');
@@ -30,7 +30,7 @@ namespace Trains.NET.Engine
                     });
                 }
 
-                
+
             }
 
             return terrainList;
@@ -39,6 +39,8 @@ namespace Trains.NET.Engine
         public string Serialize(IEnumerable<Terrain> terrainList)
         {
             if (!terrainList.Any()) return string.Empty;
+
+            var dict = terrainList.ToDictionary(t => (t.Column, t.Row), t => t.Height);
 
             var sb = new StringBuilder();
 
@@ -52,13 +54,14 @@ namespace Trains.NET.Engine
                 var heights = new List<int>();
                 for (int c = 0; c <= maxColumn; c++)
                 {
-                    Terrain terrain = terrainList.FirstOrDefault(t => t.Column == c && t.Row == r);
-                    int height = terrain.Height;
-
+                    if (!dict.TryGetValue((c, r), out var height))
+                    {
+                        height = 0;
+                    }
                     heights.Add(height);
                 }
 
-                sb.AppendLine(string.Join(',',heights.Select(h => h.ToString())));
+                sb.AppendLine(string.Join(',', heights.Select(h => h.ToString())));
             }
 
             return sb.ToString();

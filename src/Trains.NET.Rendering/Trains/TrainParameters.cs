@@ -2,12 +2,25 @@
 {
     public class TrainParameters : ITrainParameters
     {
-        public float RearHeight { get; set; } = 22;
+        private readonly IGameParameters _gameParameters;
 
-        public float RearWidth { get; set; } = 10;
+        public float RearHeight => 22 * _gameParameters.GameScale;
 
-        public float HeadWidth { get; set; } = 25;
+        public float RearWidth => 10 * _gameParameters.GameScale;
 
-        public float HeadHeight { get; set; } = 16;
+        public float HeadWidth => 25 * _gameParameters.GameScale;
+
+        public float HeadHeight => 16 * _gameParameters.GameScale;
+
+        public float StrokeWidth => 2 * _gameParameters.GameScale;
+
+        public float SmokeStackRadius => 2 * _gameParameters.GameScale;
+
+        public float SmokeStackOffset => 5 * _gameParameters.GameScale;
+
+        public TrainParameters(IGameParameters gameParameters)
+        {
+            _gameParameters = gameParameters;
+        }
     }
 }

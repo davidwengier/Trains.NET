@@ -26,14 +26,14 @@ namespace Trains.NET.Rendering
             {
                 Color = palette.OutlineColor,
                 Style = PaintStyle.Stroke,
-                StrokeWidth = 2
+                StrokeWidth = _trainParameters.StrokeWidth
             };
 
             var smokeStack = new PaintBrush
             {
                 Color = palette.OutlineColor,
                 Style = PaintStyle.Fill,
-                StrokeWidth = 2
+                StrokeWidth = _trainParameters.StrokeWidth
             };
 
             float startPos = -((_trainParameters.HeadWidth + _trainParameters.RearWidth) / 2);
@@ -64,7 +64,7 @@ namespace Trains.NET.Rendering
                             _trainParameters.HeadHeight,
                             outline);
 
-            canvas.DrawCircle(startPos + _trainParameters.RearWidth + _trainParameters.HeadWidth - 5, 0, 2, smokeStack);
+            canvas.DrawCircle(startPos + _trainParameters.RearWidth + _trainParameters.HeadWidth - _trainParameters.SmokeStackOffset, 0, _trainParameters.SmokeStackRadius, smokeStack);
 
         }
 

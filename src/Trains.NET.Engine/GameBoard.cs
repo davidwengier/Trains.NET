@@ -16,46 +16,55 @@ namespace Trains.NET.Engine
         private readonly ILayout _layout;
         private readonly ITimer? _gameLoopTimer;
         private readonly ITerrainMap _terrainMap;
+        private readonly IGameStorage? _storage;
 
-        public int Columns { get; set; }
-        public int Rows { get; set; }
+        private int _columns;
+        private int _rows;
+
         public bool Enabled { get; set; } = true;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage? storage, ITimer? timer)
         {
             _layout = trackLayout;
             _gameLoopTimer = timer;
             _terrainMap = terrainMap;
+            _storage = storage;
             if (_gameLoopTimer != null)
             {
                 _gameLoopTimer.Interval = GameLoopInterval;
                 _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
                 _gameLoopTimer.Start();
             }
+        }
 
-            if (storage == null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        public void Initialize(int columns, int rows)
+        {
+            if (_storage == null)
             {
                 return;
             }
+
+            _columns = columns;
+            _rows = rows;
 
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;
             try
             {
-                tracks = storage.ReadStaticEntities();
-                terrain = storage.ReadTerrain();
+                tracks = _storage.ReadStaticEntities();
+                terrain = _storage.ReadTerrain();
             }
             catch { }
 
-            if (tracks != null)
+            if (tracks is not null && terrain is not null && terrain.Any())
             {
                 _layout.Set(tracks);
+                _terrainMap.Set(terrain);
             }
-
-            if (terrain != null)
+            else
             {
-                terrainMap.Set(terrain);
+                ClearAll();
             }
         }
 
@@ -308,6 +317,32 @@ namespace Trains.NET.Engine
             _movables = _movables.Clear();
             _layout.Clear();
             _terrainMap.Clear();
+
+            GenerateStartingTerrain();
+        }
+
+        private void GenerateStartingTerrain()
+        {
+            var maxHeight = Terrain.MaxHeight;
+
+            var noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4);
+            var terrainlist = new List<Terrain>();
+
+            for (int x = 0; x < _columns; x++)
+            {
+                for (int y = 0; y < _rows; y++)
+                {
+                    var key = (x, y);
+                    var noise = noiseMap.ContainsKey(key) ? noiseMap[key] : 0;
+                    terrainlist.Add(new Terrain
+                    {
+                        Column = x,
+                        Row = y,
+                        Height = (int)(noise * maxHeight)
+                    });
+                }
+            }
+            _terrainMap.Set(terrainlist);
         }
 
         public void Dispose()

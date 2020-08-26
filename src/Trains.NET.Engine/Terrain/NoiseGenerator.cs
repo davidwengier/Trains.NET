@@ -21,8 +21,8 @@ namespace Trains.NET.Engine
             /// maintaining the same overall pattern.
             Noise2d.Reseed();
 
-            var frequency = 0.5f;
-            var amplitude = 1f;
+            var frequency = 2f;
+            var amplitude = 0.1f;
 
             for (var octave = 0; octave < octaves; octave++)
             {

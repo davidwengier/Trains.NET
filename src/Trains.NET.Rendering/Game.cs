@@ -44,13 +44,16 @@ namespace Trains.NET.Rendering
             _renderLoop.Elapsed += (s, e) => DrawFrame();
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
+
+            (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(PixelMapper.MaxGridSize, PixelMapper.MaxGridSize);
+            _gameBoard.Initialize(columns, rows);
         }
 
         private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)
         {
             var sb = new StringBuilder("Draw-Layer-");
             sb.Append(layerRenderer.Name.Replace(" ", ""));
-            if(layerRenderer is ICachableLayerRenderer)
+            if (layerRenderer is ICachableLayerRenderer)
             {
                 sb.Append("[Cached]");
             }
@@ -70,9 +73,6 @@ namespace Trains.NET.Rendering
                 _width = width;
                 _height = height;
                 _pixelMapper.SetViewPortSize(_width, _height);
-
-                _gameBoard.Columns = columns;
-                _gameBoard.Rows = rows;
 
                 _needsBufferReset = true;
             }
@@ -114,13 +114,13 @@ namespace Trains.NET.Rendering
             if (_needsBufferReset)
             {
                 _gameBufferReset.Start();
-                
+
                 foreach (IImage image in _imageBuffer.Values)
                 {
                     image.Dispose();
                 }
                 _imageBuffer.Clear();
-                
+
                 _needsBufferReset = false;
                 _gameBufferReset.Stop();
             }

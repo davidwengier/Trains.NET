@@ -8,12 +8,10 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public CachableLayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IGameParameters gameParameters, IImageFactory imageFactory)
-            : base (layout, renderer, gameParameters, imageFactory)
+        public CachableLayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory)
+            : base (layout, renderer, imageFactory)
         {
             layout.CollectionChanged += (s, e) => _dirty = true;
-            // Dirty Fix
-            gameParameters.GameScaleChanged += (s, e) => _dirty = true;
         }
 
         public new void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)

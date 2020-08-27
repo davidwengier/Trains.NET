@@ -11,11 +11,11 @@ namespace Trains.NET.Comet
 {
     public class MiniMapDelegate : AbstractControlDelegate, IDisposable
     {
+        private const int MiniMapCellSize = 40;
         private bool _redraw = true;
         private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITerrainMap _terrainMap;
-        private readonly IGameParameters _gameParameters;
         private readonly SKPaint _paint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
@@ -28,10 +28,9 @@ namespace Trains.NET.Comet
             StrokeWidth = 80
         };
 
-        public MiniMapDelegate(ILayout trackLayout, IGameParameters gameParameters, IPixelMapper pixelMapper, ITerrainMap terrainMap)
+        public MiniMapDelegate(ILayout trackLayout, IPixelMapper pixelMapper, ITerrainMap terrainMap)
         {
             _trackLayout = trackLayout;
-            _gameParameters = gameParameters;
             _pixelMapper = pixelMapper;
             _terrainMap = terrainMap;
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
@@ -60,13 +59,13 @@ namespace Trains.NET.Comet
             {
                 paint.Color = TerrainColourLookup.GetTerrainColour(terrain).ToSkia();
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(terrain.Column, terrain.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), paint);
+                tempCanvas.DrawRect(new SKRect(x, y, MiniMapCellSize + x, MiniMapCellSize + y), paint);
             }
 
             foreach (Track track in _trackLayout.OfType<Track>())
             {
                 (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Column, track.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), _paint);
+                tempCanvas.DrawRect(new SKRect(x, y, MiniMapCellSize + x, MiniMapCellSize + y), _paint);
             }
 
             tempCanvas.DrawRect(new SKRect(_pixelMapper.ViewPortX * -1, _pixelMapper.ViewPortY * -1, Math.Abs(_pixelMapper.ViewPortX) + _pixelMapper.ViewPortWidth, Math.Abs(_pixelMapper.ViewPortY) + _pixelMapper.ViewPortHeight), _viewPortPaint);

@@ -28,9 +28,8 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
-        private readonly IGameParameters _gameParameters;
 
-        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop, IGameParameters gameParameters)
+        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -41,7 +40,6 @@ namespace Trains.NET.Rendering
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
 
             _renderLoop = renderLoop;
-            _gameParameters = gameParameters;
             _renderLoop.Elapsed += (s, e) => DrawFrame();
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
@@ -204,9 +202,26 @@ namespace Trains.NET.Rendering
             _gameBoard.Dispose();
         }
 
+        private const float ZoomStep = 0.25f;
+        private const int ZoomLevels = 20;
+
         public void Zoom(float zoomDelta)
         {
-            _gameParameters.GameScale += zoomDelta * 0.1f;
+            float newScale = _pixelMapper.GameScale + zoomDelta * ZoomStep;
+
+            if(newScale < ZoomStep)
+            {
+                newScale = ZoomStep;
+            }
+
+            float maxZoomScale = ZoomStep * (ZoomLevels + 1);
+
+            if (newScale > maxZoomScale)
+            {
+                newScale = maxZoomScale;
+            }
+
+            _pixelMapper.GameScale = newScale;
         }
     }
 }

@@ -28,6 +28,10 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
+                float scale = pixelMapper.CellSize / 100.0f;
+
+                canvas.Scale(scale, scale);
+
                 _trainRenderer.Render(canvas, train);
 
                 canvas.Restore();

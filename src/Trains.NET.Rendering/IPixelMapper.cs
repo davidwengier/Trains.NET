@@ -10,6 +10,8 @@ namespace Trains.NET.Rendering
         int ViewPortY { get; }
         int ViewPortWidth { get; }
         int ViewPortHeight { get; }
+        float GameScale { get; set; }
+        int CellSize { get; }
 
         (int X, int Y) CoordsToWorldPixels(int column, int row);
         (int Column, int Row) WorldPixelsToCoords(int x, int y);

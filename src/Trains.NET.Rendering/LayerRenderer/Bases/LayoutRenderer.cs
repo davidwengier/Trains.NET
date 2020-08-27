@@ -7,48 +7,50 @@ namespace Trains.NET.Rendering
     {
         private readonly ILayout<T> _layout;
         private readonly IRenderer<T> _renderer;
-        private readonly IGameParameters _gameParameters;
         private readonly IImageFactory _imageFactory;
         private readonly Dictionary<string, IImage> _cache = new Dictionary<string, IImage>();
 
         public bool Enabled { get; set; }
         public string Name { get; internal set; } = string.Empty;
 
-        public LayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IGameParameters gameParameters, IImageFactory imageFactory)
+        private int _lastCellSize;
+
+        public LayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory)
         {
             _layout = layout;
             _renderer = renderer;
-            _gameParameters = gameParameters;
-            _gameParameters.GameScaleChanged += (s, e) =>
-            {
-                _cache.Clear();
-            };
             _imageFactory = imageFactory;
         }
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
+            if (pixelMapper.CellSize != _lastCellSize)
+            {
+                _cache.Clear();
+                _lastCellSize = pixelMapper.CellSize;
+            }
+
             foreach (T entity in _layout)
             {
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
 
-                if (x < -_gameParameters.CellSize || y < -_gameParameters.CellSize || x > width || y > height) continue;
+                if (x < -pixelMapper.CellSize || y < -pixelMapper.CellSize || x > width || y > height) continue;
 
                 canvas.Save();
 
                 canvas.Translate(x, y);
 
-                canvas.ClipRect(new Rectangle(0, 0, _gameParameters.CellSize, _gameParameters.CellSize), false);
-
                 if(_renderer is ICachableRenderer<T> cachableRenderer)
                 {
+                    canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
+
                     string key = cachableRenderer.GetCacheKey(entity);
 
                     if (!_cache.TryGetValue(key, out IImage cachedImage))
                     {
-                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_gameParameters.CellSize, _gameParameters.CellSize);
+                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
 
-                        float scale = _gameParameters.CellSize / 100.0f;
+                        float scale = pixelMapper.CellSize / 100.0f;
 
                         imageCanvas.Canvas.Scale(scale, scale);
 
@@ -63,6 +65,10 @@ namespace Trains.NET.Rendering
                 }
                 else
                 {
+                    float scale = pixelMapper.CellSize / 100.0f;
+
+                    canvas.Scale(scale, scale);
+
                     _renderer.Render(canvas, entity);
                 }
 

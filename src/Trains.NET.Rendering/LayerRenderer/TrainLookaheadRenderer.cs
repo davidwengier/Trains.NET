@@ -7,13 +7,11 @@ namespace Trains.NET.Rendering.LayerRenderer
     public class TrainLookaheadRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;
-        private readonly IGameParameters _gameParameters;
         private readonly ITrainPainter _painter;
 
-        public TrainLookaheadRenderer(IGameBoard gameBoard, IGameParameters gameParameters, ITrainPainter painter)
+        public TrainLookaheadRenderer(IGameBoard gameBoard, ITrainPainter painter)
         {
             _gameBoard = gameBoard;
-            _gameParameters = gameParameters;
             _painter = painter;
         }
 
@@ -33,14 +31,14 @@ namespace Trains.NET.Rendering.LayerRenderer
 
                 (int x, int y) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
 
-                canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, _paint);
+                canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
 
                 float speedModifier = 0.005f; // * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
                 foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
                 {
                     (x, y) = pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
 
-                    canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, _paint);
+                    canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
                 }
             }
         }

@@ -2,8 +2,6 @@
 {
     public class TrackParameters : ITrackParameters
     {
-        private readonly IGameParameters _gameParameters;
-
         public int NumPlanks { get; } = 3;
         public int NumCornerPlanks => this.NumPlanks + 1;
 
@@ -12,10 +10,5 @@
         public float TrackWidth { get; } = 30.0f;
         public float RailWidth { get; } = 10.0f;
         public float RailTopWidth { get; } = 6.875f;
-
-        public TrackParameters(IGameParameters gameParameters)
-        {
-            _gameParameters = gameParameters;
-        }
     }
 }

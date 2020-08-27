@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class TreeRenderer : IRenderer<Tree>
+    public class TreeRenderer : ICachableRenderer<Tree>
     {
         private readonly float _maxTreeSize;
         private readonly float _minTreeSize;
@@ -13,8 +12,6 @@ namespace Trains.NET.Rendering
         private readonly float _baseRadius;
         private readonly PaintBrush _baseTreeBrush;
         private readonly PaintBrush _topTreeBrush;
-        private readonly Dictionary<int, IImage> _cachedStyles = new Dictionary<int, IImage>();
-        private readonly IImageFactory _imageFactory;
 
         // Change this if you don't like the majority of tree styles
         private const int SeedOffset = 1337;
@@ -22,7 +19,7 @@ namespace Trains.NET.Rendering
         // Change this if you want more variance/styles
         private const int MaxStyles = 100;
 
-        public TreeRenderer(IImageFactory imageFactory, IGameParameters gameParameters)
+        public TreeRenderer(IGameParameters gameParameters)
         {
             _cellSize = gameParameters.CellSize;
             _centerOffset = _cellSize / 2.0f;
@@ -40,32 +37,18 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Fill,
                 IsAntialias = true
             };
-            _imageFactory = imageFactory;
         }
+
+        public string GetCacheKey(Tree item) => GetTrimmedTreeSeed(item).ToString();
+
+        private static int GetTrimmedTreeSeed(Tree tree) => tree.Seed % MaxStyles;
 
         public void Render(ICanvas canvas, Tree tree)
-        {
-            int index = tree.Seed % MaxStyles;
-            if (!_cachedStyles.TryGetValue(index, out IImage cachedImage))
-            {
-                using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_cellSize, _cellSize);
-
-                DrawTree(imageCanvas.Canvas, index);
-
-                cachedImage = imageCanvas.Render();
-                _cachedStyles.Add(index, cachedImage);
-
-            }
-
-            canvas.DrawImage(cachedImage, 0, 0);
-        }
-
-        private void DrawTree(ICanvas canvas, int treeSeed)
         {
             canvas.Translate(_centerOffset, _centerOffset);
 
             // Let's make some repeatable numbers
-            var r = new Random(SeedOffset + treeSeed);
+            var r = new Random(SeedOffset + GetTrimmedTreeSeed(tree));
             int circleCount = r.Next(10, 20);
 
             // Draw a base fill

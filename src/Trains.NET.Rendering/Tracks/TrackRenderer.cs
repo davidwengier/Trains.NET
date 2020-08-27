@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class TrackRenderer : IRenderer<Track>
+    public class TrackRenderer : ICachableRenderer<Track>
     {
         private readonly ITrackParameters _trackParameters;
         private readonly IGameParameters _gameParameters;
-        private readonly IImageFactory _imageFactory;
 
         private readonly PaintBrush _trackEdge;
         private readonly PaintBrush _trackClear;
         private readonly PaintBrush _plankPaint;
-
-        private readonly Dictionary<string, IImage> _cachedTracks = new Dictionary<string, IImage>();
 
         private readonly IPath _cornerTrackPath;
         private readonly IPath _cornerPlankPath;
@@ -21,11 +17,10 @@ namespace Trains.NET.Rendering
         private readonly IPath _horizontalTrackPath;
         private readonly IPath _horizontalPlankPath;
 
-        public TrackRenderer(ITrackParameters trackParameters, IGameParameters gameParameters, IImageFactory imageFactory, ITrackPathBuilder trackPathBuilder)
+        public TrackRenderer(ITrackParameters trackParameters, IGameParameters gameParameters, ITrackPathBuilder trackPathBuilder)
         {
             _trackParameters = trackParameters;
             _gameParameters = gameParameters;
-            _imageFactory = imageFactory;
 
             _cornerTrackPath = trackPathBuilder.BuildCornerTrackPath();
             _cornerPlankPath = trackPathBuilder.BuildCornerPlankPath();
@@ -56,23 +51,11 @@ namespace Trains.NET.Rendering
             };
         }
 
+        public string GetCacheKey(Track item) => item.Identifier;
+
         public void Render(ICanvas canvas, Track track)
         {
-            if (!_cachedTracks.TryGetValue(track.Identifier, out IImage cachedImage))
-            {
-                using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_gameParameters.CellSize, _gameParameters.CellSize);
-
-                DrawTrack(imageCanvas.Canvas, track.Direction, track);
-
-                cachedImage = imageCanvas.Render();
-                _cachedTracks[track.Identifier] = cachedImage;
-            }
-            canvas.DrawImage(cachedImage, 0, 0);
-        }
-
-        private void DrawTrack(ICanvas canvas, TrackDirection direction, Track track)
-        {
-            switch (direction)
+            switch (track.Direction)
             {
                 case TrackDirection.Horizontal:
                     DrawHorizontal(canvas);
@@ -91,7 +74,7 @@ namespace Trains.NET.Rendering
                 case TrackDirection.RightDown_LeftDown:
                 case TrackDirection.LeftDown_LeftUp:
                 case TrackDirection.LeftUp_RightUp:
-                    DrawCorner(canvas, direction, track);
+                    DrawCorner(canvas, track);
                     break;
                 case TrackDirection.Undefined:
                 default:
@@ -129,10 +112,10 @@ namespace Trains.NET.Rendering
             DrawHorizontalTracks(canvas);
         }
 
-        private void DrawCorner(ICanvas canvas, TrackDirection direction, Track track)
+        private void DrawCorner(ICanvas canvas, Track track)
         {
             canvas.Save();
-            canvas.RotateDegrees(direction.TrackRotationAngle(), _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
+            canvas.RotateDegrees(track.Direction.TrackRotationAngle(), _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
 
             if (track.HasAlternateState() && track.AlternateState)
             {

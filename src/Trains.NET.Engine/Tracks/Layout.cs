@@ -14,7 +14,7 @@ namespace Trains.NET.Engine
 
         public void Add(int column, int row, IStaticEntity entity)
         {
-            if (_entities.TryGetValue((column, row), out IStaticEntity track))
+            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
             {
                 track.Refresh(false);
             }
@@ -38,7 +38,7 @@ namespace Trains.NET.Engine
 
         public void Remove(int column, int row)
         {
-            if (_entities.TryGetValue((column, row), out IStaticEntity track))
+            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
             {
                 _entities = _entities.Remove((column, row));
                 track.SetOwner(null);

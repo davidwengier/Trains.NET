@@ -59,6 +59,12 @@ namespace Trains.NET.Comet
                         _configurationShown || !trainControls.BuildMode ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
+                        new HStack()
+                        {
+                            new Button(" - ", () => _game.Zoom(-1)),
+                            new Button(" + ", () => _game.Zoom(1)),
+                        },
+                        new Spacer(),
                         new Button("Snapshot", () => Snapshot()),
                         new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
                         new DrawableControl(_miniMapDelegate).Frame(height: 100)

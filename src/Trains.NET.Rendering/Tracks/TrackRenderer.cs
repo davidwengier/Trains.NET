@@ -5,7 +5,6 @@ namespace Trains.NET.Rendering
     public class TrackRenderer : ICachableRenderer<Track>
     {
         private readonly ITrackParameters _trackParameters;
-        private readonly IGameParameters _gameParameters;
 
         private readonly PaintBrush _trackEdge;
         private readonly PaintBrush _trackClear;
@@ -17,10 +16,9 @@ namespace Trains.NET.Rendering
         private readonly IPath _horizontalTrackPath;
         private readonly IPath _horizontalPlankPath;
 
-        public TrackRenderer(ITrackParameters trackParameters, IGameParameters gameParameters, ITrackPathBuilder trackPathBuilder)
+        public TrackRenderer(ITrackParameters trackParameters, ITrackPathBuilder trackPathBuilder)
         {
             _trackParameters = trackParameters;
-            _gameParameters = gameParameters;
 
             _cornerTrackPath = trackPathBuilder.BuildCornerTrackPath();
             _cornerPlankPath = trackPathBuilder.BuildCornerPlankPath();
@@ -92,7 +90,7 @@ namespace Trains.NET.Rendering
         private void DrawVertical(ICanvas canvas)
         {
             canvas.Save();
-            canvas.RotateDegrees(90, _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
+            canvas.RotateDegrees(90, 50.0f, 50.0f);
 
             DrawHorizontal(canvas);
 
@@ -103,7 +101,7 @@ namespace Trains.NET.Rendering
             canvas.DrawPath(_horizontalPlankPath, _plankPaint);
 
             canvas.Save();
-            canvas.RotateDegrees(90, _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
+            canvas.RotateDegrees(90, 50.0f, 50.0f);
 
             DrawHorizontal(canvas);
 
@@ -115,12 +113,12 @@ namespace Trains.NET.Rendering
         private void DrawCorner(ICanvas canvas, Track track)
         {
             canvas.Save();
-            canvas.RotateDegrees(track.Direction.TrackRotationAngle(), _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
+            canvas.RotateDegrees(track.Direction.TrackRotationAngle(), 50.0f, 50.0f);
 
             if (track.HasAlternateState() && track.AlternateState)
             {
                 canvas.Scale(-1, 1);
-                canvas.Translate(-_gameParameters.CellSize, 0);
+                canvas.Translate(-100.0f, 0);
             }
 
             canvas.DrawPath(_cornerPlankPath, _plankPaint);
@@ -128,11 +126,11 @@ namespace Trains.NET.Rendering
             if (track.HasAlternateState())
             {
                 canvas.Save();
-                canvas.RotateDegrees(90, _gameParameters.CellSize / 2, _gameParameters.CellSize / 2);
+                canvas.RotateDegrees(90, 50.0f, 50.0f);
 
                 canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
 
-                canvas.ClipRect(new Rectangle(0, 0, _gameParameters.CellSize, _gameParameters.CellSize / 2), false);
+                canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false);
 
                 DrawCornerTrack(canvas);
 

@@ -16,6 +16,8 @@ namespace Trains.NET.Rendering
             _gameParameters = gameParameters;
 
             _terrainMap.CollectionChanged += (s, e) => _dirty = true;
+            // Dirty Hack
+            gameParameters.GameScaleChanged += (s, e) => _dirty = true;
         }
 
         public bool Enabled { get; set; } = true;

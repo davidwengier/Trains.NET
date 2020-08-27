@@ -28,8 +28,9 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
+        private readonly IGameParameters _gameParameters;
 
-        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
+        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop, IGameParameters gameParameters)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -40,6 +41,7 @@ namespace Trains.NET.Rendering
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
 
             _renderLoop = renderLoop;
+            _gameParameters = gameParameters;
             _renderLoop.Elapsed += (s, e) => DrawFrame();
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
@@ -200,6 +202,11 @@ namespace Trains.NET.Rendering
             _backBuffer?.Dispose();
             _renderLoop.Dispose();
             _gameBoard.Dispose();
+        }
+
+        public void Zoom(float zoomDelta)
+        {
+            _gameParameters.GameScale += zoomDelta * 0.1f;
         }
     }
 }

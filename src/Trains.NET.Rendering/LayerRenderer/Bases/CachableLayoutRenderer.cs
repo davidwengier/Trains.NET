@@ -12,6 +12,8 @@ namespace Trains.NET.Rendering
             : base (layout, renderer, gameParameters, imageFactory)
         {
             layout.CollectionChanged += (s, e) => _dirty = true;
+            // Dirty Fix
+            gameParameters.GameScaleChanged += (s, e) => _dirty = true;
         }
 
         public new void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)

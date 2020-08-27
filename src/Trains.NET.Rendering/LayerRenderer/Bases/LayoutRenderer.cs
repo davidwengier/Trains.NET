@@ -19,6 +19,10 @@ namespace Trains.NET.Rendering
             _layout = layout;
             _renderer = renderer;
             _gameParameters = gameParameters;
+            _gameParameters.GameScaleChanged += (s, e) =>
+            {
+                _cache.Clear();
+            };
             _imageFactory = imageFactory;
         }
 
@@ -44,11 +48,15 @@ namespace Trains.NET.Rendering
                     {
                         using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_gameParameters.CellSize, _gameParameters.CellSize);
 
+                        float scale = _gameParameters.CellSize / 100.0f;
+
+                        imageCanvas.Canvas.Scale(scale, scale);
+
                         _renderer.Render(imageCanvas.Canvas, entity);
 
                         cachedImage = imageCanvas.Render();
 
-                        _cache.Add(key, cachedImage);
+                        _cache[key] = cachedImage;
                     }
 
                     canvas.DrawImage(cachedImage, 0, 0);

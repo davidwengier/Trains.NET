@@ -11,8 +11,8 @@ namespace Trains.NET.Rendering
         private readonly IImageFactory _imageFactory;
         private readonly Dictionary<string, IImage> _cache = new Dictionary<string, IImage>();
 
-        public abstract bool Enabled { get; set; }
-        public abstract string Name { get; }
+        public bool Enabled { get; set; }
+        public string Name { get; internal set; } = string.Empty;
 
         public LayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IGameParameters gameParameters, IImageFactory imageFactory)
         {

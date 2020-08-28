@@ -82,7 +82,6 @@ namespace Trains.NET.Rendering
 
         private void DrawHorizontal(ICanvas canvas)
         {
-
             canvas.DrawPath(_horizontalPlankPath, _plankPaint);
             DrawHorizontalTracks(canvas);
         }

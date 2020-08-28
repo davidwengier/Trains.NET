@@ -68,6 +68,10 @@ namespace Trains.NET.Comet
                     canvas.Save();
                     (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
                     canvas.Translate(x, y);
+
+                    float scale = _pixelMapper.CellSize / 100.0f;
+                    canvas.Scale(scale, scale);
+
                     previewer.RenderPreview(new SKCanvasWrapper(canvas), col, row);
                     canvas.Restore();
                 }

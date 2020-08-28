@@ -17,11 +17,23 @@ namespace Trains.NET.Engine
         private readonly ITimer? _gameLoopTimer;
         private readonly ITerrainMap _terrainMap;
         private readonly IGameStorage? _storage;
+        private int _terrainSeed;
 
         private int _columns;
         private int _rows;
 
         public bool Enabled { get; set; } = true;
+
+        public int TerrainSeed
+        {
+            get { return _terrainSeed; }
+            set
+            {
+                _terrainSeed = value;
+                _terrainMap.Clear();
+                GenerateStartingTerrain();
+            }
+        }
 
         public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage? storage, ITimer? timer)
         {
@@ -318,6 +330,8 @@ namespace Trains.NET.Engine
             _layout.Clear();
             _terrainMap.Clear();
 
+            _terrainSeed = new Random().Next();
+
             GenerateStartingTerrain();
         }
 
@@ -325,7 +339,7 @@ namespace Trains.NET.Engine
         {
             int maxHeight = Terrain.MaxHeight;
 
-            Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4);
+            Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4, _terrainSeed);
             var terrainlist = new List<Terrain>();
 
             for (int x = 0; x < _columns; x++)

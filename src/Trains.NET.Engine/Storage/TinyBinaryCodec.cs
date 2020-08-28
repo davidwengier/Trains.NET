@@ -6,6 +6,13 @@ namespace Trains.NET.Engine
 {
     public class TinyBinaryCodec : ITrackCodec
     {
+        private readonly IGameBoard _gameBoard;
+
+        public TinyBinaryCodec(IGameBoard gameBoard)
+        {
+            _gameBoard = gameBoard;
+        }
+
         /*
          * Firstly, I'm sorry, this is not efficient, nice, or simple <3
          *  It works, and in the best bit-banging way!
@@ -29,6 +36,18 @@ namespace Trains.NET.Engine
         {
             if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<Track>();
 
+            string[] parts = input.Split("!");
+
+            if (parts.Length == 2)
+            {
+                _gameBoard.TerrainSeed = int.Parse(parts[0]);
+                input = parts[1];
+            }
+            else if (parts.Length > 2)
+            {
+                throw new InvalidOperationException("You are using a share code from the future, and this is the past. Please stop.");
+            }
+
             var tracks = new List<Track>();
 
             var br = new BitReader(Convert.FromBase64String(input));
@@ -36,10 +55,10 @@ namespace Trains.NET.Engine
             int col = 0;
             int row = 0;
             int count = 1;
-            
-            while(!br.EndOfBytes())
+
+            while (!br.EndOfBytes())
             {
-                if(br.ReadBit() == 0)
+                if (br.ReadBit() == 0)
                 {
                     // Base64 likes to pad extra 0's, so just to be safe!
                     if (br.EndOfBytes()) break;
@@ -55,7 +74,7 @@ namespace Trains.NET.Engine
                         // Track Piece
                         var dir = (TrackEncoding)br.Read4BitInt();
 
-                        for (int i=0; i<count; i++)
+                        for (int i = 0; i < count; i++)
                         {
                             tracks.Add(new Track()
                             {
@@ -98,11 +117,13 @@ namespace Trains.NET.Engine
 
         public string Encode(IEnumerable<IStaticEntity> tracks)
         {
-            if (!tracks.Any()) return string.Empty;
+            string seedPrefix = _gameBoard.TerrainSeed.ToString() + "!";
+
+            if (!tracks.Any()) return seedPrefix;
 
             var bw = new BitWriter();
 
-            var rowGroups = tracks.GroupBy(x => x.Row).ToDictionary(x => x.Key, x => x.Select(x=>x));
+            var rowGroups = tracks.GroupBy(x => x.Row).ToDictionary(x => x.Key, x => x.Select(x => x));
             int lastRow = rowGroups.Keys.Max();
 
             int eolCounter = 0;
@@ -129,7 +150,7 @@ namespace Trains.NET.Engine
                 eolCounter++;
             }
 
-            return Convert.ToBase64String(bw.ToArray());
+            return seedPrefix + Convert.ToBase64String(bw.ToArray());
         }
 
         private static void EncodeRow(BitWriter bw, IEnumerable<IStaticEntity> rowTracks)
@@ -212,18 +233,18 @@ namespace Trains.NET.Engine
 
         private static readonly Dictionary<TrackEncoding, TrackDirection> s_directionMap = new()
         {
-            {TrackEncoding.Blank, TrackDirection.Undefined},
-            {TrackEncoding.Horizontal, TrackDirection.Horizontal},
-            {TrackEncoding.Vertical, TrackDirection.Vertical},
-            {TrackEncoding.LeftUp, TrackDirection.LeftUp},
-            {TrackEncoding.RightUp, TrackDirection.RightUp},
-            {TrackEncoding.RightDown, TrackDirection.RightDown},
-            {TrackEncoding.LeftDown, TrackDirection.LeftDown},
-            {TrackEncoding.RightUpDown, TrackDirection.RightUp_RightDown},
-            {TrackEncoding.LeftRightDown, TrackDirection.RightDown_LeftDown},
-            {TrackEncoding.LeftUpDown, TrackDirection.LeftDown_LeftUp},
-            {TrackEncoding.LeftRightUp, TrackDirection.LeftUp_RightUp},
-            {TrackEncoding.Cross, TrackDirection.Cross}
+            { TrackEncoding.Blank, TrackDirection.Undefined },
+            { TrackEncoding.Horizontal, TrackDirection.Horizontal },
+            { TrackEncoding.Vertical, TrackDirection.Vertical },
+            { TrackEncoding.LeftUp, TrackDirection.LeftUp },
+            { TrackEncoding.RightUp, TrackDirection.RightUp },
+            { TrackEncoding.RightDown, TrackDirection.RightDown },
+            { TrackEncoding.LeftDown, TrackDirection.LeftDown },
+            { TrackEncoding.RightUpDown, TrackDirection.RightUp_RightDown },
+            { TrackEncoding.LeftRightDown, TrackDirection.RightDown_LeftDown },
+            { TrackEncoding.LeftUpDown, TrackDirection.LeftDown_LeftUp },
+            { TrackEncoding.LeftRightUp, TrackDirection.LeftUp_RightUp },
+            { TrackEncoding.Cross, TrackDirection.Cross }
         };
 
         private enum TrackEncoding : ushort

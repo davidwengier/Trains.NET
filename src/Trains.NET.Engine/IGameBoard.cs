@@ -6,6 +6,7 @@ namespace Trains.NET.Engine
     public interface IGameBoard : IDisposable
     {
         bool Enabled { get; set; }
+        int TerrainSeed { get; set; }
 
         void ClearAll();
         IMovable? AddTrain(int column, int row);

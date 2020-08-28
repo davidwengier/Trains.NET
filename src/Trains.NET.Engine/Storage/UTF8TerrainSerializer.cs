@@ -54,7 +54,7 @@ namespace Trains.NET.Engine
                 var heights = new List<int>();
                 for (int c = 0; c <= maxColumn; c++)
                 {
-                    if (!dict.TryGetValue((c, r), out var height))
+                    if (!dict.TryGetValue((c, r), out int height))
                     {
                         height = 0;
                     }

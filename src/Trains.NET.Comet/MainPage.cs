@@ -132,7 +132,7 @@ namespace Trains.NET.Comet
 
         public void Save()
         {
-            _gameStorage.WriteStaticEntities(_trackLayout.OfType<IStaticEntity>());
+            _gameStorage.WriteStaticEntities(_trackLayout);
             _gameStorage.WriteTerrain(_terrainMap);
         }
 

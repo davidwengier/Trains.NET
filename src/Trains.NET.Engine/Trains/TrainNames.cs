@@ -19,7 +19,8 @@
             "The Diagnostics Session",
             "The Mountain Mort",
             "Blue Train, South Africa",
-            "The Little Train That Could"
+            "The Little Train That Could",
+            "The Little Sprite That Could"
         };
     }
 }

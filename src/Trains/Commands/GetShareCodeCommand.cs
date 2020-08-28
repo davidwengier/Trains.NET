@@ -6,10 +6,10 @@ namespace Trains.Commands
     [Order(50)]
     public class GetShareCodeCommand : ICommand
     {
-        private readonly ILayout _trackLayout;
+        private readonly ILayout<Track> _trackLayout;
         private readonly ITrackCodec _trackCodec;
 
-        public GetShareCodeCommand(ILayout trackLayout, ITrackCodec trackCodec)
+        public GetShareCodeCommand(ILayout<Track> trackLayout, ITrackCodec trackCodec)
         {
             _trackLayout = trackLayout;
             _trackCodec = trackCodec;

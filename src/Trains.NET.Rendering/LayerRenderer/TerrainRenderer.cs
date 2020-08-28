@@ -8,12 +8,10 @@ namespace Trains.NET.Rendering
         private bool _dirty;
 
         private readonly ITerrainMap _terrainMap;
-        private readonly IGameParameters _gameParameters;
 
-        public TerrainRenderer(ITerrainMap terrainMap, IGameParameters gameParameters)
+        public TerrainRenderer(ITerrainMap terrainMap)
         {
             _terrainMap = terrainMap;
-            _gameParameters = gameParameters;
 
             _terrainMap.CollectionChanged += (s, e) => _dirty = true;
         }
@@ -24,19 +22,25 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
+            canvas.DrawRect(0, 0, pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = TerrainColourLookup.DefaultColour });
+
             if (_terrainMap.IsEmpty())
             {
-                canvas.DrawRect(0, 0, pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = TerrainColourLookup.DefaultColour });
                 return;
             }
 
             // Draw any non-grass cells
             foreach (Terrain terrain in _terrainMap)
             {
+                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
+
+                if (!onScreen) continue;
+
                 Color colour = TerrainColourLookup.GetTerrainColour(terrain);
 
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
-                canvas.DrawRect(x, y, _gameParameters.CellSize, _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
+                if (colour == TerrainColourLookup.DefaultColour) continue;
+
+                canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
                 // Debug, this draws coord and height onto cells
                 //canvas.DrawText($"{terrain.Column},{terrain.Row}", x + 2, y + 0.3f * _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = Colors.Black });
                 //canvas.DrawText($"{terrain.Height}", x + 2, y + 0.7f * _gameParameters.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = Colors.Black });

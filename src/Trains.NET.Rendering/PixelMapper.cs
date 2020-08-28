@@ -4,7 +4,6 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        private readonly IGameParameters _gameParameters;
         public const int MaxGridSize = 3000;
 
         public int ViewPortX { get; private set; }
@@ -12,12 +11,20 @@ namespace Trains.NET.Rendering
         public int ViewPortWidth { get; private set; }
         public int ViewPortHeight { get; private set; }
 
-        public event EventHandler? ViewPortChanged;
-
-        public PixelMapper(IGameParameters gameParameters)
+        private float _gameScale = 1.0f;
+        public float GameScale
         {
-            _gameParameters = gameParameters;
+            get => _gameScale;
+            set
+            {
+                _gameScale = value;
+                ViewPortChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
+
+        public int CellSize => (int)(40 * this.GameScale);
+
+        public event EventHandler? ViewPortChanged;
 
         public void SetViewPortSize(int width, int height)
         {
@@ -45,32 +52,39 @@ namespace Trains.NET.Rendering
 
         public (int, int) ViewPortPixelsToCoords(int x, int y)
         {
-            return ((x - this.ViewPortX) / _gameParameters.CellSize, (y - this.ViewPortY) / _gameParameters.CellSize);
+            return ((x - this.ViewPortX) / this.CellSize, (y - this.ViewPortY) / this.CellSize);
         }
 
-        public (int, int) CoordsToViewPortPixels(int column, int row)
+        public (int, int, bool) CoordsToViewPortPixels(int column, int row)
         {
-            return ((column * _gameParameters.CellSize) + this.ViewPortX, (row * _gameParameters.CellSize) + this.ViewPortY);
+            int x = (column * this.CellSize) + this.ViewPortX;
+            int y = (row * this.CellSize) + this.ViewPortY;
+            bool onScreen = x >= -this.CellSize &&
+                            y >= -this.CellSize &&
+                            x < this.ViewPortWidth + this.CellSize &&
+                            y < this.ViewPortHeight + this.CellSize;
+            return (x, y, onScreen);
         }
 
         public (int, int) WorldPixelsToCoords(int x, int y)
         {
-            return (x / _gameParameters.CellSize, y / _gameParameters.CellSize);
+            return (x / this.CellSize, y / this.CellSize);
         }
 
         public (int, int) CoordsToWorldPixels(int column, int row)
         {
-            return (column * _gameParameters.CellSize, row * _gameParameters.CellSize);
+            return (column * this.CellSize, row * this.CellSize);
         }
 
         public IPixelMapper Snapshot()
         {
-            return new PixelMapper(_gameParameters)
+            return new PixelMapper()
             {
                  ViewPortX = this.ViewPortX,
                  ViewPortY = this.ViewPortY,
                  ViewPortHeight = this.ViewPortHeight,
-                 ViewPortWidth = this.ViewPortWidth
+                 ViewPortWidth = this.ViewPortWidth,
+                 GameScale = this.GameScale
             };
         }
     }

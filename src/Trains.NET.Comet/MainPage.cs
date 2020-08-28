@@ -59,6 +59,15 @@ namespace Trains.NET.Comet
                         _configurationShown || !trainControls.BuildMode ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
+                        new HStack()
+                        {
+                            new Button(" - ", () => _game.Zoom(-1))
+                                .Frame(40),
+                            new Spacer(),
+                            new Button(" + ", () => _game.Zoom(1))
+                                .Frame(40),
+                        },
+                        new Spacer(),
                         new Button("Snapshot", () => Snapshot()),
                         new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
                         new DrawableControl(_miniMapDelegate).Frame(height: 100)
@@ -123,7 +132,7 @@ namespace Trains.NET.Comet
 
         public void Save()
         {
-            _gameStorage.WriteStaticEntities(_trackLayout);
+            _gameStorage.WriteStaticEntities(_trackLayout.OfType<IStaticEntity>());
             _gameStorage.WriteTerrain(_terrainMap);
         }
 

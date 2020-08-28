@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class TreeRenderer : IRenderer<Tree>
+    public class TreeRenderer : ICachableRenderer<Tree>
     {
         private readonly float _maxTreeSize;
         private readonly float _minTreeSize;
-        private readonly int _cellSize;
         private readonly float _centerOffset;
         private readonly float _baseRadius;
         private readonly PaintBrush _baseTreeBrush;
         private readonly PaintBrush _topTreeBrush;
-        private readonly Dictionary<int, IImage> _cachedStyles = new Dictionary<int, IImage>();
-        private readonly IImageFactory _imageFactory;
 
         // Change this if you don't like the majority of tree styles
         private const int SeedOffset = 1337;
@@ -22,11 +18,10 @@ namespace Trains.NET.Rendering
         // Change this if you want more variance/styles
         private const int MaxStyles = 100;
 
-        public TreeRenderer(IImageFactory imageFactory, IGameParameters gameParameters)
+        public TreeRenderer()
         {
-            _cellSize = gameParameters.CellSize;
-            _centerOffset = _cellSize / 2.0f;
-            _baseRadius = _cellSize / 4.0f;
+            _centerOffset = 50.0f;
+            _baseRadius = 25.0f;
             _minTreeSize = _baseRadius;
             _maxTreeSize = _baseRadius * 1.25f;
             _baseTreeBrush = new PaintBrush
@@ -40,32 +35,18 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Fill,
                 IsAntialias = true
             };
-            _imageFactory = imageFactory;
         }
+
+        public string GetCacheKey(Tree item) => GetTrimmedTreeSeed(item).ToString();
+
+        private static int GetTrimmedTreeSeed(Tree tree) => tree.Seed % MaxStyles;
 
         public void Render(ICanvas canvas, Tree tree)
-        {
-            int index = tree.Seed % MaxStyles;
-            if (!_cachedStyles.TryGetValue(index, out IImage cachedImage))
-            {
-                using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_cellSize, _cellSize);
-
-                DrawTree(imageCanvas.Canvas, index);
-
-                cachedImage = imageCanvas.Render();
-                _cachedStyles.Add(index, cachedImage);
-
-            }
-
-            canvas.DrawImage(cachedImage, 0, 0);
-        }
-
-        private void DrawTree(ICanvas canvas, int treeSeed)
         {
             canvas.Translate(_centerOffset, _centerOffset);
 
             // Let's make some repeatable numbers
-            var r = new Random(SeedOffset + treeSeed);
+            var r = new Random(SeedOffset + GetTrimmedTreeSeed(tree));
             int circleCount = r.Next(10, 20);
 
             // Draw a base fill
@@ -86,7 +67,7 @@ namespace Trains.NET.Rendering
             {
                 float angle = angleOffset + (float)(Math.PI * 2.0 * i / circleCount);
                 float offset = r.NextFloat(_minTreeSize, _maxTreeSize);
-                float radius = r.NextFloat(_cellSize / 10, 3 * _cellSize / 20);
+                float radius = r.NextFloat(10.0f, 15.0f);
                 float x = (float)(scale * offset * Math.Cos(angle));
                 float y = (float)(scale * offset * Math.Sin(angle));
 

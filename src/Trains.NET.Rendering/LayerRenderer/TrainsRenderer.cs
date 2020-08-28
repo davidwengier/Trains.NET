@@ -24,9 +24,15 @@ namespace Trains.NET.Rendering
             {
                 canvas.Save();
 
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+
+                if (!onScreen) continue;
 
                 canvas.Translate(x, y);
+
+                float scale = pixelMapper.CellSize / 100.0f;
+
+                canvas.Scale(scale, scale);
 
                 _trainRenderer.Render(canvas, train);
 

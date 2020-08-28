@@ -8,20 +8,18 @@ namespace Trains.NET.Rendering
         private readonly float _outerTrackOffset;
         private readonly float _innerPlankOffset;
         private readonly float _outerPlankOffset;
-        private readonly IGameParameters _gameParameters;
         private readonly ITrackParameters _trackParameters;
         private readonly IPathFactory _pathFactory;
 
-        public TrackPathBuilder(IGameParameters gameParameters, ITrackParameters trackParameters, IPathFactory pathFactory)
+        public TrackPathBuilder(ITrackParameters trackParameters, IPathFactory pathFactory)
         {
-            _gameParameters = gameParameters;
             _trackParameters = trackParameters;
             _pathFactory = pathFactory;
 
-            _innerTrackOffset = _gameParameters.CellSize / 2.0f - _trackParameters.TrackWidth / 2.0f;
-            _outerTrackOffset = _gameParameters.CellSize / 2.0f + _trackParameters.TrackWidth / 2.0f;
-            _innerPlankOffset = _gameParameters.CellSize / 2.0f - _trackParameters.PlankLength / 2.0f;
-            _outerPlankOffset = _gameParameters.CellSize / 2.0f + _trackParameters.PlankLength / 2.0f;
+            _innerTrackOffset = 50.0f - _trackParameters.TrackWidth / 2.0f;
+            _outerTrackOffset = 50.0f + _trackParameters.TrackWidth / 2.0f;
+            _innerPlankOffset = 50.0f - _trackParameters.PlankLength / 2.0f;
+            _outerPlankOffset = 50.0f + _trackParameters.PlankLength / 2.0f;
         }
         public IPath BuildCornerTrackPath()
         {
@@ -40,16 +38,16 @@ namespace Trains.NET.Rendering
             IPath trackPath = _pathFactory.Create();
 
             trackPath.MoveTo(0, _innerTrackOffset);
-            trackPath.LineTo(_gameParameters.CellSize, _innerTrackOffset);
+            trackPath.LineTo(100.0f, _innerTrackOffset);
             trackPath.MoveTo(0, _outerTrackOffset);
-            trackPath.LineTo(_gameParameters.CellSize, _outerTrackOffset);
+            trackPath.LineTo(100.0f, _outerTrackOffset);
 
             return trackPath;
         }
 
         public IPath BuildHorizontalPlankPath()
         {
-            float plankGap = _gameParameters.CellSize / _trackParameters.NumPlanks;
+            float plankGap = 100.0f / _trackParameters.NumPlanks;
 
             IPath path = _pathFactory.Create();
 

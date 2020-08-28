@@ -5,13 +5,6 @@ namespace Trains.NET.Rendering
     [Order(0)]
     public class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
-        private readonly IGameParameters _gameParameters;
-
-        public GridRenderer(IGameParameters parameters)
-        {
-            _gameParameters = parameters;
-        }
-
         public bool Enabled { get; set; }
         public string Name => "Grid";
         public bool IsDirty => false;
@@ -25,12 +18,12 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Stroke
             };
 
-            for (int x = pixelMapper.ViewPortX; x < pixelMapper.ViewPortWidth + 1; x += _gameParameters.CellSize)
+            for (int x = pixelMapper.ViewPortX; x < pixelMapper.ViewPortWidth + 1; x += pixelMapper.CellSize)
             {
                 canvas.DrawLine(x, 0, x, height, grid);
             }
 
-            for (int y = pixelMapper.ViewPortY; y < pixelMapper.ViewPortHeight + 1; y += _gameParameters.CellSize)
+            for (int y = pixelMapper.ViewPortY; y < pixelMapper.ViewPortHeight + 1; y += pixelMapper.CellSize)
             {
                 canvas.DrawLine(0, y, width, y, grid);
             }

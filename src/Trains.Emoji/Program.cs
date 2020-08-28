@@ -26,14 +26,13 @@ namespace Trains.Emoji
             _track = DI.ServiceLocator.GetService<TrackRenderer>();
 
             IEnumerable<ITrainPalette>? palletes = DI.ServiceLocator.GetService<IEnumerable<ITrainPalette>>();
-
-            IGameParameters gameParameters = DI.ServiceLocator.GetService<IGameParameters>();
+            IPixelMapper pixelMapper = DI.ServiceLocator.GetService<IPixelMapper>();
             ITrainParameters trainParameters = DI.ServiceLocator.GetService<ITrainParameters>();
             _trains = palletes
-                      .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(gameParameters, trainParameters, new TrainPainter(new ITrainPalette[] { x }))))
+                      .Select(x => (x.GetType().Name, (IRenderer<Train>)new TrainRenderer(trainParameters, new TrainPainter(new ITrainPalette[] { x }))))
                       .ToArray();
 
-            _size = gameParameters.CellSize;
+            _size = pixelMapper.CellSize;
         }
 
         public void Save()

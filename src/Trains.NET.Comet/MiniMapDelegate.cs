@@ -15,7 +15,6 @@ namespace Trains.NET.Comet
         private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
         private readonly ITerrainMap _terrainMap;
-        private readonly IGameParameters _gameParameters;
         private readonly SKPaint _paint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
@@ -25,13 +24,12 @@ namespace Trains.NET.Comet
         {
             Style = SKPaintStyle.Stroke,
             Color = SKColors.White,
-            StrokeWidth = 80
+            StrokeWidth = 1
         };
 
-        public MiniMapDelegate(ILayout trackLayout, IGameParameters gameParameters, IPixelMapper pixelMapper, ITerrainMap terrainMap)
+        public MiniMapDelegate(ILayout trackLayout, IPixelMapper pixelMapper, ITerrainMap terrainMap)
         {
             _trackLayout = trackLayout;
-            _gameParameters = gameParameters;
             _pixelMapper = pixelMapper;
             _terrainMap = terrainMap;
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
@@ -44,12 +42,7 @@ namespace Trains.NET.Comet
             if (dirtyRect.IsEmpty) return;
             if (!_redraw) return;
 
-            const int maxGridSize = PixelMapper.MaxGridSize;
-            using var bitmap = new SKBitmap(maxGridSize, maxGridSize, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-
-            using var tempCanvas = new SKCanvas(bitmap);
-            tempCanvas.Clear(TerrainColourLookup.DefaultColour.ToSkia());
-            using var canvasWrapper = new SKCanvasWrapper(tempCanvas);
+            canvas.Clear(TerrainColourLookup.DefaultColour.ToSkia());
 
             using var paint = new SKPaint
             {
@@ -59,19 +52,18 @@ namespace Trains.NET.Comet
             foreach (Terrain terrain in _terrainMap)
             {
                 paint.Color = TerrainColourLookup.GetTerrainColour(terrain).ToSkia();
-                (int x, int y) = _pixelMapper.CoordsToWorldPixels(terrain.Column, terrain.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), paint);
+                canvas.DrawRect(terrain.Column, terrain.Row, 1, 1, paint);
             }
 
             foreach (Track track in _trackLayout.OfType<Track>())
             {
-                (int x, int y) = _pixelMapper.CoordsToWorldPixels(track.Column, track.Row);
-                tempCanvas.DrawRect(new SKRect(x, y, _gameParameters.CellSize + x, _gameParameters.CellSize + y), _paint);
+                canvas.DrawRect(track.Column, track.Row, 1, 1, _paint);
             }
 
-            tempCanvas.DrawRect(new SKRect(_pixelMapper.ViewPortX * -1, _pixelMapper.ViewPortY * -1, Math.Abs(_pixelMapper.ViewPortX) + _pixelMapper.ViewPortWidth, Math.Abs(_pixelMapper.ViewPortY) + _pixelMapper.ViewPortHeight), _viewPortPaint);
+            (int left, int top) = _pixelMapper.ViewPortPixelsToCoords(0, 0);
+            (int right, int bottom) = _pixelMapper.ViewPortPixelsToCoords(_pixelMapper.ViewPortWidth, _pixelMapper.ViewPortHeight);
 
-            canvas.DrawBitmap(bitmap, new SKRect(0, 0, maxGridSize, maxGridSize), new SKRect(0, 0, 100, 100));
+            canvas.DrawRect(left, top, right - left, bottom - top, _viewPortPaint);
 
             _redraw = false;
         }
@@ -84,8 +76,8 @@ namespace Trains.NET.Comet
 
         public override void DragInteraction(PointF[] points)
         {
-            float x = points[0].X * (PixelMapper.MaxGridSize / 100);
-            float y = points[0].Y * (PixelMapper.MaxGridSize / 100);
+            float x = points[0].X * (PixelMapper.MaxGridSize / 75) * _pixelMapper.GameScale;
+            float y = points[0].Y * (PixelMapper.MaxGridSize / 75) * _pixelMapper.GameScale;
 
             x -= _pixelMapper.ViewPortWidth / 2;
             y -= _pixelMapper.ViewPortHeight / 2;

@@ -4,14 +4,17 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        public const int MaxGridSize = 3000;
-
         public int ViewPortX { get; private set; }
         public int ViewPortY { get; private set; }
         public int ViewPortWidth { get; private set; }
         public int ViewPortHeight { get; private set; }
 
         private float _gameScale = 1.0f;
+        private int _columns;
+        private int _rows;
+
+        public int MaxGridSize => _columns * this.CellSize;
+
         public float GameScale
         {
             get => _gameScale;
@@ -26,6 +29,12 @@ namespace Trains.NET.Rendering
 
         public event EventHandler? ViewPortChanged;
 
+        public void Initialize(int columns, int rows)
+        {
+            _columns = columns;
+            _rows = rows;
+        }
+
         public void SetViewPortSize(int width, int height)
         {
             this.ViewPortWidth = width;
@@ -36,8 +45,8 @@ namespace Trains.NET.Rendering
         {
             int oldX = this.ViewPortX;
             int oldY = this.ViewPortY;
-            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (MaxGridSize - this.ViewPortWidth));
-            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (MaxGridSize - this.ViewPortHeight));
+            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (this.MaxGridSize - this.ViewPortWidth));
+            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (this.MaxGridSize - this.ViewPortHeight));
 
             if (this.ViewPortX != oldX || this.ViewPortY != oldY)
             {

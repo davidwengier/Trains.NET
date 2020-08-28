@@ -38,7 +38,7 @@ namespace Trains.NET.Rendering
 
                 Color colour = TerrainColourLookup.GetTerrainColour(terrain);
 
-                if (colour.HexCode == TerrainColourLookup.DefaultColour.HexCode) continue;
+                if (colour == TerrainColourLookup.DefaultColour) continue;
 
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
             }

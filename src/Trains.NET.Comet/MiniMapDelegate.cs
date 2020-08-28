@@ -76,8 +76,7 @@ namespace Trains.NET.Comet
 
         public override void DragInteraction(PointF[] points)
         {
-            float x = points[0].X * (PixelMapper.MaxGridSize / 75) * _pixelMapper.GameScale;
-            float y = points[0].Y * (PixelMapper.MaxGridSize / 75) * _pixelMapper.GameScale;
+            (int x, int y) = _pixelMapper.CoordsToWorldPixels((int)points[0].X, (int)points[0].Y);
 
             x -= _pixelMapper.ViewPortWidth / 2;
             y -= _pixelMapper.ViewPortHeight / 2;

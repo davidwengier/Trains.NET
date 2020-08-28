@@ -57,8 +57,8 @@ namespace Trains.NET.Engine
                 return;
             }
 
-            _columns = columns;
-            _rows = rows;
+            _columns = Math.Max(columns, 100);
+            _rows = Math.Max(rows, 100);
 
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;

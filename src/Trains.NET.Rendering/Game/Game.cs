@@ -44,8 +44,8 @@ namespace Trains.NET.Rendering
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
 
-            (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(PixelMapper.MaxGridSize, PixelMapper.MaxGridSize);
-            _gameBoard.Initialize(columns, rows);
+            _gameBoard.Initialize(100, 100);
+            _pixelMapper.Initialize(100, 100);
         }
 
         private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)

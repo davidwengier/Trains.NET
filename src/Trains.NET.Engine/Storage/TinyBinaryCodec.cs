@@ -26,7 +26,7 @@ namespace Trains.NET.Engine
             [0 Track  ][1 track ][xxxx track dir  ] - Declares the current cell contains a particular track (as table below), moves to next cell
             [1 Control][0 repeat][xxx  count      ] - Repeats the following command x times
             [1 Control][1 misc  ][0    end of line] - Declares the line is over, move to next row & set col to 0
-            [1 Control][1 misc  ][1    swap col/row or block] - *Experimental* Does literally nothing
+            [1 Control][1 misc  ][1    swap col/row or block] - Tree??
 
             rqCt3GdQTuJ6gmJiYmJ6gmLuNiYnqCYmJiYnqCdxPUFruNA=
         */
@@ -34,7 +34,7 @@ namespace Trains.NET.Engine
 
         public IEnumerable<IStaticEntity> Decode(string input)
         {
-            if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<Track>();
+            if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<IStaticEntity>();
 
             string[] parts = input.Split("!");
 
@@ -48,7 +48,7 @@ namespace Trains.NET.Engine
                 throw new InvalidOperationException("You are using a share code from the future, and this is the past. Please stop.");
             }
 
-            var tracks = new List<Track>();
+            var staticEntities = new List<IStaticEntity>();
 
             var br = new BitReader(Convert.FromBase64String(input));
 
@@ -76,7 +76,7 @@ namespace Trains.NET.Engine
 
                         for (int i = 0; i < count; i++)
                         {
-                            tracks.Add(new Track()
+                            staticEntities.Add(new Track()
                             {
                                 Column = col++,
                                 Row = row,
@@ -102,17 +102,24 @@ namespace Trains.NET.Engine
                             // End Of Line
                             col = 0;
                             row += count;
-                            count = 1;
                         }
                         else
                         {
-                            // Experimental
-                            throw new Exception("Potato is a fruit, implement this please <3");
+                            // Experimental Tree
+                            for (int i = 0; i < count; i++)
+                            {
+                                staticEntities.Add(new Tree()
+                                {
+                                    Column = col++,
+                                    Row = row
+                                });
+                            }
                         }
-                    }
+						count = 1;
+					}
                 }
             }
-            return tracks;
+            return staticEntities;
         }
 
         public string Encode(IEnumerable<IStaticEntity> tracks)
@@ -165,6 +172,7 @@ namespace Trains.NET.Engine
             for (int c = 0; c <= lastCol; c++)
             {
                 TrackEncoding currentDir = TrackEncoding.Blank;
+
                 if (row.ContainsKey(c))
                 {
                     currentDir = s_directionMap.Single(x => x.Value == row[c]).Key;
@@ -289,7 +297,7 @@ namespace Trains.NET.Engine
             public bool EndOfBytes() => _byteIndex >= _bytes.Length;
         }
 
-        private class BitWriter
+		private class BitWriter
         {
             private readonly List<byte> _bytes = new List<byte>();
             private byte _currentByte;
@@ -299,7 +307,8 @@ namespace Trains.NET.Engine
             public void Write4BitInt(int x) => Write(BitFromRight(x, 3), BitFromRight(x, 2), BitFromRight(x, 1), BitFromRight(x, 0));
             public void WriteEOL() => Write(1, 1, 0);
             public void WriteEmpty() => Write(0, 0);
-            public void WriteTrack(TrackEncoding track)
+			public void WriteTree() => Write(1, 1, 1);
+			public void WriteTrack(TrackEncoding track)
             {
                 Write(0, 1);
                 Write4BitInt((int)track);

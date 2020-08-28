@@ -29,7 +29,9 @@ namespace Trains.NET.Rendering
                     continue;
                 }
 
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+
+                if (!onScreen) continue;
 
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
             }

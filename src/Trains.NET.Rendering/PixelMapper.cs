@@ -55,9 +55,15 @@ namespace Trains.NET.Rendering
             return ((x - this.ViewPortX) / this.CellSize, (y - this.ViewPortY) / this.CellSize);
         }
 
-        public (int, int) CoordsToViewPortPixels(int column, int row)
+        public (int, int, bool) CoordsToViewPortPixels(int column, int row)
         {
-            return ((column * this.CellSize) + this.ViewPortX, (row * this.CellSize) + this.ViewPortY);
+            int x = (column * this.CellSize) + this.ViewPortX;
+            int y = (row * this.CellSize) + this.ViewPortY;
+            bool onScreen = x >= -this.CellSize &&
+                            y >= -this.CellSize &&
+                            x < this.ViewPortWidth + this.CellSize &&
+                            y < this.ViewPortHeight + this.CellSize;
+            return (x, y, onScreen);
         }
 
         public (int, int) WorldPixelsToCoords(int x, int y)

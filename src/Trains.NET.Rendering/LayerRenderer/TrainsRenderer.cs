@@ -24,7 +24,9 @@ namespace Trains.NET.Rendering
             {
                 canvas.Save();
 
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+
+                if (!onScreen) continue;
 
                 canvas.Translate(x, y);
 

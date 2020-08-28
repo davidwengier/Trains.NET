@@ -29,14 +29,14 @@ namespace Trains.NET.Rendering.LayerRenderer
                     Style = PaintStyle.Fill
                 };
 
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
 
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
 
                 float speedModifier = 0.005f; // * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
                 foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
                 {
-                    (x, y) = pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
+                    (x, y, _) = pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
 
                     canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
                 }

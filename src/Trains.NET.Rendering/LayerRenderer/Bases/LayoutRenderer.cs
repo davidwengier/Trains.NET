@@ -32,9 +32,9 @@ namespace Trains.NET.Rendering
 
             foreach (T entity in _layout)
             {
-                (int x, int y) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
+                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
 
-                if (x < -pixelMapper.CellSize || y < -pixelMapper.CellSize || x > width || y > height) continue;
+                if (!onScreen) continue;
 
                 canvas.Save();
 

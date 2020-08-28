@@ -65,7 +65,7 @@ namespace Trains.NET.Rendering
             columns = Math.Max(columns, 1);
             rows = Math.Max(rows, 1);
 
-            (width, height) = _pixelMapper.CoordsToViewPortPixels(columns, rows);
+            (width, height, _) = _pixelMapper.CoordsToViewPortPixels(columns + 1, rows + 1);
 
             if (_width != width || _height != height)
             {
@@ -180,7 +180,7 @@ namespace Trains.NET.Rendering
             {
                 if (vehicle.Follow)
                 {
-                    (int x, int y) = _pixelMapper.CoordsToViewPortPixels(vehicle.Column, vehicle.Row);
+                    (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(vehicle.Column, vehicle.Row);
 
                     double easing = 10;
                     int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);

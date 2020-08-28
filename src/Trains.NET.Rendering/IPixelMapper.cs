@@ -15,7 +15,7 @@ namespace Trains.NET.Rendering
 
         (int X, int Y) CoordsToWorldPixels(int column, int row);
         (int Column, int Row) WorldPixelsToCoords(int x, int y);
-        (int X, int Y) CoordsToViewPortPixels(int column, int row);
+        (int X, int Y, bool OnScreen) CoordsToViewPortPixels(int column, int row);
         (int Column, int Row) ViewPortPixelsToCoords(int x, int y);
         void AdjustViewPort(int x, int y);
         void SetViewPortSize(int width, int height);

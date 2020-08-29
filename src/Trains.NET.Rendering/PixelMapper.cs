@@ -28,6 +28,7 @@ namespace Trains.NET.Rendering
         {
             this.ViewPortWidth = width;
             this.ViewPortHeight = height;
+            AdjustViewPort(0, 0);
         }
 
         public void SetViewPort(int x, int y)

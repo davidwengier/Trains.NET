@@ -8,24 +8,13 @@ namespace Trains.NET.Rendering
         public int ViewPortY { get; private set; }
         public int ViewPortWidth { get; private set; }
         public int ViewPortHeight { get; private set; }
-
-        private float _gameScale = 1.0f;
-        private int _columns;
-        private int _rows;
+        public float GameScale { get; private set; } = 1.0f;
 
         public int MaxGridSize => _columns * this.CellSize;
-
-        public float GameScale
-        {
-            get => _gameScale;
-            set
-            {
-                _gameScale = value;
-                ViewPortChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         public int CellSize => (int)(40 * this.GameScale);
+
+        private int _columns;
+        private int _rows;
 
         public event EventHandler? ViewPortChanged;
 
@@ -68,10 +57,10 @@ namespace Trains.NET.Rendering
         {
             int x = (column * this.CellSize) + this.ViewPortX;
             int y = (row * this.CellSize) + this.ViewPortY;
-            bool onScreen = x >= -this.CellSize &&
-                            y >= -this.CellSize &&
-                            x < this.ViewPortWidth + this.CellSize &&
-                            y < this.ViewPortHeight + this.CellSize;
+            bool onScreen = x > -this.CellSize &&
+                            y > -this.CellSize &&
+                            x <= this.ViewPortWidth &&
+                            y <= this.ViewPortHeight;
             return (x, y, onScreen);
         }
 
@@ -93,8 +82,53 @@ namespace Trains.NET.Rendering
                  ViewPortY = this.ViewPortY,
                  ViewPortHeight = this.ViewPortHeight,
                  ViewPortWidth = this.ViewPortWidth,
-                 GameScale = this.GameScale
+                 GameScale = this.GameScale,
+                 _columns = _columns,
+                 _rows = _rows
             };
+        }
+
+        private (float, float) GetScaledViewPortSize()
+            => GetScaledViewPortSize(this.GameScale);
+
+        private (float, float) GetScaledViewPortSize(float scale)
+            => (this.ViewPortWidth / scale,
+                this.ViewPortHeight / scale);
+
+        public void AdjustGameScale(float delta)
+        {
+            float newGameScale = this.GameScale * delta;
+
+            // Check to see if it is TOO FAR!
+            if (newGameScale < 0.1 ||
+                this.MaxGridSize / this.GameScale * newGameScale < this.ViewPortWidth ||
+                this.MaxGridSize / this.GameScale * newGameScale < this.ViewPortHeight)
+            {
+                return;
+            }
+
+            // Viewport X & Y will be negative, as they are canvas transations, so swap em!
+            float currentX = -this.ViewPortX / this.GameScale;
+            float currentY = -this.ViewPortY / this.GameScale;
+
+            (float svpWidth, float svpHeight) = GetScaledViewPortSize();
+
+            float currentCenterX = currentX + svpWidth / 2.0f;
+            float currentCenterY = currentY + svpHeight / 2.0f;
+
+            (float newSvpWidth, float newSvpHeight) = GetScaledViewPortSize(newGameScale);
+
+            float newX = currentCenterX - newSvpWidth / 2.0f;
+            float newY = currentCenterY - newSvpHeight / 2.0f;
+
+            this.ViewPortX = -(int)Math.Round(newX * newGameScale);
+            this.ViewPortY = -(int)Math.Round(newY * newGameScale);
+
+            this.GameScale = newGameScale;
+
+            AdjustViewPort(0, 0);
+
+            ViewPortChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

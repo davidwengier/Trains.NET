@@ -61,10 +61,10 @@ namespace Trains.NET.Comet
                         new Spacer(),
                         new HStack()
                         {
-                            new Button(" - ", () => _game.Zoom(-1))
+                            new Button(" - ", () => _game.ZoomOut())
                                 .Frame(40),
                             new Spacer(),
-                            new Button(" + ", () => _game.Zoom(1))
+                            new Button(" + ", () => _game.ZoomIn())
                                 .Frame(40),
                         },
                         new Spacer(),

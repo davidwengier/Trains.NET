@@ -5,14 +5,15 @@ namespace Trains.NET.Rendering
     [Order(0)]
     public class TerrainRenderer : ICachableLayerRenderer
     {
+        private readonly ITerrainMap _terrainMap;
+        private readonly IImageFactory _imageFactory;
+        private IImage? _terrainImage;
         private bool _dirty;
 
-        private readonly ITerrainMap _terrainMap;
-
-        public TerrainRenderer(ITerrainMap terrainMap)
+        public TerrainRenderer(ITerrainMap terrainMap, IImageFactory imageFactory)
         {
             _terrainMap = terrainMap;
-
+            _imageFactory = imageFactory;
             _terrainMap.CollectionChanged += (s, e) => _dirty = true;
         }
 
@@ -22,28 +23,77 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            canvas.DrawRect(0, 0, pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight, new PaintBrush { Style = PaintStyle.Fill, Color = TerrainColourLookup.DefaultColour });
-
             if (_terrainMap.IsEmpty())
             {
                 return;
             }
 
-            // Draw any non-grass cells
+            if (_dirty == true || _terrainImage == null)
+            {
+                // Should we be getting this from here?
+                int columns = pixelMapper.MaxGridSize / pixelMapper.CellSize;
+                int rows = pixelMapper.MaxGridSize / pixelMapper.CellSize;
+
+                // If we try to build before we know the size of the world, stay marked as dirty/null
+                if (columns < 1 || rows < 1)
+                {
+                    return;
+                }
+
+                _terrainImage = BuildTerrainImage(columns, rows);
+
+                _dirty = false;
+            }
+
+            (Rectangle source, Rectangle destination) = GetSourceAndDestinationRectangles(pixelMapper);
+
+            canvas.DrawImage(_terrainImage, source, destination);
+        }
+
+        private static (Rectangle Source, Rectangle Destination) GetSourceAndDestinationRectangles(IPixelMapper pixelMapper)
+        {
+            (int topLeftColumn, int topLeftRow) = pixelMapper.ViewPortPixelsToCoords(0, 0);
+            (int bottomRightColumn, int bottomRightRow) = pixelMapper.ViewPortPixelsToCoords(pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight);
+
+            bottomRightColumn += 1;
+            bottomRightRow += 1;
+
+            Rectangle source = new(topLeftColumn, topLeftRow, bottomRightColumn, bottomRightRow);
+
+            (int destinationTopLeftX, int destinationTopLeftY, _) = pixelMapper.CoordsToViewPortPixels(topLeftColumn, topLeftRow);
+            (int destinationBottomRightX, int destinationBottomRightY, _) = pixelMapper.CoordsToViewPortPixels(bottomRightColumn, bottomRightRow);
+
+            Rectangle destination = new(destinationTopLeftX, destinationTopLeftY, destinationBottomRightX, destinationBottomRightY);
+
+            return (source, destination);
+        }
+
+        private IImage BuildTerrainImage(int columns, int rows)
+        {
+            using IImageCanvas textureImage = _imageFactory.CreateImageCanvas(columns, rows);
+
+            textureImage.Canvas.DrawRect(0, 0, columns, rows,
+                                    new PaintBrush
+                                    {
+                                        Style = PaintStyle.Fill,
+                                        Color = TerrainColourLookup.DefaultColour
+                                    });
+
             foreach (Terrain terrain in _terrainMap)
             {
-                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(terrain.Column, terrain.Row);
-
-                if (!onScreen) continue;
-
                 Color colour = TerrainColourLookup.GetTerrainColour(terrain);
 
                 if (colour == TerrainColourLookup.DefaultColour) continue;
 
-                canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, new PaintBrush { Style = PaintStyle.Fill, Color = colour });
+                textureImage.Canvas.DrawRect(terrain.Column, terrain.Row, 1, 1,
+                                    new PaintBrush
+                                    {
+                                        Style = PaintStyle.Fill,
+                                        Color = colour
+                                    });
             }
 
-            _dirty = false;
+            return textureImage.Render();
         }
     }
 }

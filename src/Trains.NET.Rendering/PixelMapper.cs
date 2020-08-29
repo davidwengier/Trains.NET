@@ -93,7 +93,9 @@ namespace Trains.NET.Rendering
                  ViewPortY = this.ViewPortY,
                  ViewPortHeight = this.ViewPortHeight,
                  ViewPortWidth = this.ViewPortWidth,
-                 GameScale = this.GameScale
+                 GameScale = this.GameScale,
+                 _columns = _columns,
+                 _rows = _rows
             };
         }
     }

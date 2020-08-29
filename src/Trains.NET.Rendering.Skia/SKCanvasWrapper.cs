@@ -8,6 +8,12 @@ namespace Trains.NET.Rendering.Skia
     {
         private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
 
+        private static readonly SKPaint s_noAntialiasPaint = new SKPaint
+        {
+            IsAntialias = false,
+            IsDither = false
+        };
+
         private readonly SkiaSharp.SKCanvas _canvas;
 
         public SKCanvasWrapper(SkiaSharp.SKCanvas canvas)
@@ -37,6 +43,9 @@ namespace Trains.NET.Rendering.Skia
 
         public void DrawImage(IImage image, int x, int y)
             => _canvas.DrawImage(image.ToSkia(), x, y);
+
+        public void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle)
+            => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), s_noAntialiasPaint);
 
 
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)

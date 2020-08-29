@@ -1,43 +1,41 @@
-﻿using Trains.NET.Engine;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    [Order(0)]
-    public class TerrainRenderer : ICachableLayerRenderer
+    public class TerrainMapRenderer : ITerrainMapRenderer
     {
         private readonly ITerrainMap _terrainMap;
         private readonly IImageFactory _imageFactory;
         private IImage? _terrainImage;
         private bool _dirty;
 
-        public TerrainRenderer(ITerrainMap terrainMap, IImageFactory imageFactory)
+        public TerrainMapRenderer(ITerrainMap terrainMap, IImageFactory imageFactory)
         {
             _terrainMap = terrainMap;
             _imageFactory = imageFactory;
             _terrainMap.CollectionChanged += (s, e) => _dirty = true;
         }
-
-        public bool Enabled { get; set; } = true;
-        public string Name => "Terrain";
-        public bool IsDirty => _dirty;
-
-        public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
+        public bool TryGetTerrainImage([NotNullWhen(true)] out IImage? image)
         {
             if (_terrainMap.IsEmpty())
             {
-                return;
+                image = null;
+                return false;
             }
 
             if (_dirty == true || _terrainImage == null)
             {
                 // Should we be getting this from here?
-                int columns = pixelMapper.MaxGridSize / pixelMapper.CellSize;
-                int rows = pixelMapper.MaxGridSize / pixelMapper.CellSize;
+                int columns = _terrainMap.Max(x => x.Column);
+                int rows = _terrainMap.Max(x => x.Row);
 
                 // If we try to build before we know the size of the world, stay marked as dirty/null
                 if (columns < 1 || rows < 1)
                 {
-                    return;
+                    image = null;
+                    return false;
                 }
 
                 _terrainImage = BuildTerrainImage(columns, rows);
@@ -45,27 +43,8 @@ namespace Trains.NET.Rendering
                 _dirty = false;
             }
 
-            (Rectangle source, Rectangle destination) = GetSourceAndDestinationRectangles(pixelMapper);
-
-            canvas.DrawImage(_terrainImage, source, destination);
-        }
-
-        private static (Rectangle Source, Rectangle Destination) GetSourceAndDestinationRectangles(IPixelMapper pixelMapper)
-        {
-            (int topLeftColumn, int topLeftRow) = pixelMapper.ViewPortPixelsToCoords(0, 0);
-            (int bottomRightColumn, int bottomRightRow) = pixelMapper.ViewPortPixelsToCoords(pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight);
-
-            bottomRightColumn += 1;
-            bottomRightRow += 1;
-
-            Rectangle source = new(topLeftColumn, topLeftRow, bottomRightColumn, bottomRightRow);
-
-            (int destinationTopLeftX, int destinationTopLeftY, _) = pixelMapper.CoordsToViewPortPixels(topLeftColumn, topLeftRow);
-            (int destinationBottomRightX, int destinationBottomRightY, _) = pixelMapper.CoordsToViewPortPixels(bottomRightColumn, bottomRightRow);
-
-            Rectangle destination = new(destinationTopLeftX, destinationTopLeftY, destinationBottomRightX, destinationBottomRightY);
-
-            return (source, destination);
+            image = _terrainImage;
+            return true;
         }
 
         private IImage BuildTerrainImage(int columns, int rows)

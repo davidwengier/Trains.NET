@@ -25,7 +25,7 @@ namespace Trains.NET.Rendering.Skia
             if (!s_paintCache.TryGetValue(paint, out SKPaint skPaint))
             {
                 skPaint = paint.ToSkia();
-                s_paintCache.Add(paint, skPaint);
+                s_paintCache[paint] = skPaint;
             }
             return skPaint;
         }

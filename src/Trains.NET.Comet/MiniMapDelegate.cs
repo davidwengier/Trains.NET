@@ -14,7 +14,7 @@ namespace Trains.NET.Comet
         private bool _redraw = true;
         private readonly ILayout _trackLayout;
         private readonly IPixelMapper _pixelMapper;
-        private readonly ITerrainMap _terrainMap;
+        private readonly ITerrainMapRenderer _terrainMapRenderer;
         private readonly SKPaint _paint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
@@ -27,14 +27,13 @@ namespace Trains.NET.Comet
             StrokeWidth = 1
         };
 
-        public MiniMapDelegate(ILayout trackLayout, IPixelMapper pixelMapper, ITerrainMap terrainMap)
+        public MiniMapDelegate(ILayout trackLayout, IPixelMapper pixelMapper, ITerrainMapRenderer terrainMapRenderer)
         {
             _trackLayout = trackLayout;
             _pixelMapper = pixelMapper;
-            _terrainMap = terrainMap;
+            _terrainMapRenderer = terrainMapRenderer;
             _pixelMapper.ViewPortChanged += (s, e) => _redraw = true;
             _trackLayout.CollectionChanged += (s, e) => _redraw = true;
-            _terrainMap.CollectionChanged += (s, e) => _redraw = true;
         }
 
         public override void Draw(SKCanvas canvas, RectangleF dirtyRect)
@@ -42,17 +41,13 @@ namespace Trains.NET.Comet
             if (dirtyRect.IsEmpty) return;
             if (!_redraw) return;
 
-            canvas.Clear(TerrainColourLookup.DefaultColour.ToSkia());
-
-            using var paint = new SKPaint
+            if(_terrainMapRenderer.TryGetTerrainImage(out IImage? terrainImage))
             {
-                Style = SKPaintStyle.Fill,
-            };
-
-            foreach (Terrain terrain in _terrainMap)
+                canvas.DrawImage(terrainImage.ToSkia(), 0, 0);
+            }
+            else
             {
-                paint.Color = TerrainColourLookup.GetTerrainColour(terrain).ToSkia();
-                canvas.DrawRect(terrain.Column, terrain.Row, 1, 1, paint);
+                canvas.Clear(TerrainColourLookup.DefaultColour.ToSkia());
             }
 
             foreach (Track track in _trackLayout.OfType<Track>())

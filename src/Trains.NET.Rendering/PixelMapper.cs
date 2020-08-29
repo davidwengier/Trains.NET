@@ -96,5 +96,12 @@ namespace Trains.NET.Rendering
                  GameScale = this.GameScale
             };
         }
+
+        public void AdjustGameScale(float delta)
+        {
+            float newGameScale = this.GameScale * delta;
+
+            this.GameScale = newGameScale;
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
-    [Order(0)]
+    [Order(1)]
     public class GridRenderer : ILayerRenderer, ICachableLayerRenderer
     {
         public bool Enabled { get; set; }

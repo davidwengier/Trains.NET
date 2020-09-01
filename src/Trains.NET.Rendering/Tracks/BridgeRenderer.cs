@@ -2,7 +2,6 @@
 
 namespace Trains.NET.Rendering
 {
-
     [Order(90)]
     public class BridgeRenderer : ICachableRenderer<Track>
     {

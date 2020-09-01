@@ -2,7 +2,9 @@
 
 namespace Trains.NET.Rendering
 {
-    public class BridgeRenderer : IBridgeRenderer
+
+    [Order(90)]
+    public class BridgeRenderer : ICachableRenderer<Track>
     {
         private const int CanvasSize = 100;
         private const float RailingInset = SupportTopInset + SupportHeight;
@@ -16,6 +18,9 @@ namespace Trains.NET.Rendering
         private const float WaterWashWidth = 6 + SupportWidth + 2 * SupportTopInset;
         private const float WaterWashHeight = SupportHeight + SupportTopInset;
         private const float WaterWashLeftPosition = (CanvasSize - WaterWashWidth) / 2.0f;
+
+        private readonly ITerrainMap _terrainMap;
+
         private static readonly PaintBrush s_waterWashPaint = new PaintBrush
         {
             Color = new Color("#D1EEEE"),
@@ -31,12 +36,23 @@ namespace Trains.NET.Rendering
             Color = new Color("#C29A69"),
             Style = PaintStyle.Fill
         };
- 
-        public void Render(ICanvas canvas, TrackDirection direction)
+
+        public BridgeRenderer(ITerrainMap terrainMap)
+        {
+            _terrainMap = terrainMap;
+        }
+
+        public bool ShouldRender(Track track)
+            => _terrainMap.GetTerrainOrDefault(track.Column, track.Row).IsWater();
+
+        public string GetCacheKey(Track track)
+            => track.Direction.ToString();
+
+        public void Render(ICanvas canvas, Track track)
         {
             canvas.Save();
-            canvas.RotateDegrees(GetDirectionRotation(direction), CanvasSize / 2, CanvasSize / 2);
-            switch (direction)
+            canvas.RotateDegrees(GetDirectionRotation(track.Direction), CanvasSize / 2, CanvasSize / 2);
+            switch (track.Direction)
             {
                 case TrackDirection.Horizontal:
                 case TrackDirection.Vertical:
@@ -120,7 +136,7 @@ namespace Trains.NET.Rendering
             TrackDirection.RightUp_RightDown => 90,
             TrackDirection.RightDown_LeftDown => 180,
             TrackDirection.LeftDown_LeftUp => 270,
-            
+
             _ => 0,
         };
         private static void DrawHorizontalSupports(ICanvas canvas)

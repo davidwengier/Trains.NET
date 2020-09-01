@@ -2,6 +2,7 @@
 
 namespace Trains.NET.Rendering
 {
+    [Order(100)]
     public class TrackRenderer : ICachableRenderer<Track>
     {
         private readonly ITrackParameters _trackParameters;

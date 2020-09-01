@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -9,7 +10,12 @@ namespace Trains.NET.Rendering
         public bool IsDirty => _dirty;
 
         public CachableLayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory)
-            : base (layout, renderer, imageFactory)
+            : this(layout, new[] { renderer }, imageFactory)
+        {
+        }
+
+        public CachableLayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory)
+            : base(layout, renderers, imageFactory)
         {
             layout.CollectionChanged += (s, e) => _dirty = true;
         }

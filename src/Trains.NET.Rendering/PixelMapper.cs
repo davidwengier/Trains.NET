@@ -4,11 +4,15 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        public int ViewPortX { get; private set; }
-        public int ViewPortY { get; private set; }
-        public int ViewPortWidth { get; private set; }
-        public int ViewPortHeight { get; private set; }
-        public float GameScale { get; private set; } = 1.0f;
+        public int ViewPortX { get; set; }
+        public int ViewPortY { get; set; }
+        public int ViewPortWidth { get; set; }
+        public int ViewPortHeight { get; set; }
+        public float GameScale { get; set; } = 1.0f;
+
+        public int Columns => _columns;
+        public int Rows => _rows;
+
 
         public int MaxGridSize => _columns * this.CellSize;
         public int CellSize => (int)(40 * this.GameScale);

@@ -1,0 +1,71 @@
+﻿using Trains.NET.Engine;
+
+namespace Trains.NET.Rendering.UI
+{
+    public class MiniMapScreen : IScreen
+    {
+        private readonly PaintBrush _border = new PaintBrush
+        {
+            Color = Colors.Black,
+            StrokeWidth = 2,
+            Style = PaintStyle.Stroke
+        };
+        private readonly PaintBrush _paint = new PaintBrush()
+        {
+            Style = PaintStyle.Fill,
+            Color = Colors.Black
+        };
+        private readonly PaintBrush _viewPortPaint = new PaintBrush()
+        {
+            Style = PaintStyle.Stroke,
+            Color = Colors.White,
+            StrokeWidth = 1
+        };
+
+        private readonly ITerrainMapRenderer _terrainMapRenderer;
+        private readonly ILayout<Track> _trackLayout;
+        private readonly IPixelMapper _pixelMapper;
+
+        public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper)
+        {
+            _terrainMapRenderer = terrainMapRenderer;
+            _trackLayout = trackLayout;
+            _pixelMapper = pixelMapper;
+        }
+
+        public bool HandleInteraction(int x, int y, bool pressed)
+        {
+            return false;
+        }
+
+        public void Render(ICanvas canvas, int width, int height)
+        {
+            canvas.Save();
+
+            canvas.Translate(100, height - _pixelMapper.Rows - 100);
+
+            if (_terrainMapRenderer.TryGetTerrainImage(out IImage? terrainImage))
+            {
+                canvas.DrawImage(terrainImage, 0, 0);
+            }
+            else
+            {
+                canvas.Clear(TerrainColourLookup.DefaultColour);
+            }
+
+            foreach (Track track in _trackLayout)
+            {
+                canvas.DrawRect(track.Column, track.Row, 1, 1, _paint);
+            }
+
+            (int left, int top) = _pixelMapper.ViewPortPixelsToCoords(0, 0);
+            (int right, int bottom) = _pixelMapper.ViewPortPixelsToCoords(_pixelMapper.ViewPortWidth, _pixelMapper.ViewPortHeight);
+
+            canvas.DrawRect(left, top, right - left, bottom - top, _viewPortPaint);
+
+            canvas.DrawRect(0, 0, _pixelMapper.Rows, _pixelMapper.Columns, _border);
+
+            canvas.Restore();
+        }
+    }
+}

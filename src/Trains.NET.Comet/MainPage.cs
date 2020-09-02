@@ -23,7 +23,6 @@ namespace Trains.NET.Comet
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
         private readonly MiniMapDelegate _miniMapDelegate;
-        private Size _lastSize = Size.Empty;
         private bool _presenting = true;
 
         public MainPage(IGame game,
@@ -136,14 +135,9 @@ namespace Trains.NET.Comet
             _gameStorage.WriteTerrain(_terrainMap);
         }
 
-        public void Redraw(Size newSize)
+        public void Redraw()
         {
-            if (Math.Abs(newSize.Width - _lastSize.Width) >= 20 ||
-                Math.Abs(newSize.Height - _lastSize.Height) >= 20)
-            {
-                _lastSize = newSize;
-                ViewPropertyChanged(ResetPropertyString, null);
-            }
+            ViewPropertyChanged(ResetPropertyString, null);
         }
 
         private static View CreateCommandControls(IEnumerable<ICommand> commands)

@@ -68,7 +68,7 @@ namespace Trains
         {
             if (MainFrame.Content is CometPage cometPage && cometPage.View is MainPage mainPage)
             {
-                mainPage.Redraw(e.NewSize);
+                mainPage.Redraw();
             }
         }
 

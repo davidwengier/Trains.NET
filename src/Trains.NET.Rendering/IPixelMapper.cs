@@ -13,6 +13,8 @@ namespace Trains.NET.Rendering
         float GameScale { get; }
         int CellSize { get; }
         int MaxGridSize { get; }
+        int Rows { get; }
+        int Columns { get; }
 
         (int X, int Y) CoordsToWorldPixels(int column, int row);
         (int Column, int Row) WorldPixelsToCoords(int x, int y);

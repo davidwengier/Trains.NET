@@ -17,6 +17,8 @@ namespace Trains.NET.Rendering
         private bool _needsBufferReset;
         private int _width;
         private int _height;
+        private int _screenWidth;
+        private int _screenHeight;
         private readonly IGameBoard _gameBoard;
         private readonly IEnumerable<ILayerRenderer> _boardRenderers;
         private readonly IPixelMapper _pixelMapper;
@@ -25,21 +27,31 @@ namespace Trains.NET.Rendering
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-AllUp");
         private readonly ElapsedMillisecondsTimedStat _gameBufferReset = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Game-BufferReset");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
+        private readonly Dictionary<IScreen, ElapsedMillisecondsTimedStat> _screenDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
+        private readonly IEnumerable<IScreen> _screens;
 
-        public Game(IGameBoard gameBoard, IEnumerable<ILayerRenderer> boardRenderers, IPixelMapper pixelMapper, IImageFactory imageFactory, ITimer renderLoop)
+        public Game(IGameBoard gameBoard,
+                    IEnumerable<ILayerRenderer> boardRenderers,
+                    IPixelMapper pixelMapper,
+                    IImageFactory imageFactory,
+                    ITimer renderLoop,
+                    IEnumerable<IScreen> screens)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
             _pixelMapper = pixelMapper;
             _imageFactory = imageFactory;
+            _renderLoop = renderLoop;
+            _screens = screens;
+
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
+            _screenDrawTimes = _screens.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
             _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
 
-            _renderLoop = renderLoop;
             _renderLoop.Elapsed += (s, e) => DrawFrame();
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
@@ -58,9 +70,18 @@ namespace Trains.NET.Rendering
             }
             return sb.ToString();
         }
+        private static string GetLayerDiagnosticsName(IScreen screen)
+        {
+            var sb = new StringBuilder("Draw-Screen-");
+            sb.Append(screen.GetType().Name.Replace(" ", ""));
+            return sb.ToString();
+        }
 
         public void SetSize(int width, int height)
         {
+            _screenWidth = width;
+            _screenHeight = height;
+
             (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
             columns = Math.Max(columns, 1);
             rows = Math.Max(rows, 1);
@@ -87,6 +108,13 @@ namespace Trains.NET.Rendering
                 {
                     canvas.DrawImage(_backBuffer, 0, 0);
                 }
+            }
+
+            foreach (var screen in _screens)
+            {
+                _screenDrawTimes[screen].Start();
+                screen.Render(canvas, _screenWidth, _screenHeight);
+                _screenDrawTimes[screen].Stop();
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +21,6 @@ namespace Trains.NET.Comet
         private readonly ITerrainMap _terrainMap;
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
-        private readonly MiniMapDelegate _miniMapDelegate;
         private bool _presenting = true;
 
         public MainPage(IGame game,
@@ -33,14 +31,12 @@ namespace Trains.NET.Comet
                         ILayout trackLayout,
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
-                        MiniMapDelegate miniMapDelegate,
                         TrainsDelegate trainsDelegate)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             _game = game;
             _controlDelegate = trainsDelegate;
-            _miniMapDelegate = miniMapDelegate;
 
             this.Body = () =>
             {
@@ -68,8 +64,7 @@ namespace Trains.NET.Comet
                         },
                         new Spacer(),
                         new Button("Snapshot", () => Snapshot()),
-                        new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
-                        new DrawableControl(_miniMapDelegate).Frame(height: 100)
+                        new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value)
                     }.Frame(100, alignment: Alignment.Top),
                     new VStack()
                     {
@@ -119,7 +114,6 @@ namespace Trains.NET.Comet
                 _drawTime.Start();
 
                 _controlDelegate.Invalidate();
-                _miniMapDelegate.Invalidate();
 
                 _drawTime.Stop();
 
@@ -192,7 +186,6 @@ namespace Trains.NET.Comet
             {
                 _presenting = false;
                 _game.Dispose();
-                _miniMapDelegate.Dispose();
             }
             base.Dispose(disposing);
         }

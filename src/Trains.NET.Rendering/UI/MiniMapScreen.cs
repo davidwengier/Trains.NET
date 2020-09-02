@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
@@ -26,16 +27,43 @@ namespace Trains.NET.Rendering.UI
         private readonly ILayout<Track> _trackLayout;
         private readonly IPixelMapper _pixelMapper;
 
+        public event EventHandler? Changed;
+
         public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper)
         {
             _terrainMapRenderer = terrainMapRenderer;
             _trackLayout = trackLayout;
             _pixelMapper = pixelMapper;
+
+            _trackLayout.CollectionChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
+            _pixelMapper.ViewPortChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool HandleInteraction(int x, int y, bool pressed)
+        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
-            return false;
+            if (action == MouseAction.Move)
+            {
+                return false;
+            }
+
+            x -= 100;
+            y -= height - _pixelMapper.Rows - 100;
+
+            if (x <= 0 || x >= _pixelMapper.Columns ||
+                y <= 0 || y >= _pixelMapper.Rows)
+            {
+                return false;
+            }
+
+            // we're inside the minimap
+            (x, y) = _pixelMapper.CoordsToWorldPixels(x, y);
+
+            x -= _pixelMapper.ViewPortWidth / 2;
+            y -= _pixelMapper.ViewPortHeight / 2;
+
+            _pixelMapper.SetViewPort(x, y);
+
+            return true;
         }
 
         public void Render(ICanvas canvas, int width, int height)

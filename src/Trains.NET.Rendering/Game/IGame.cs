@@ -11,5 +11,6 @@ namespace Trains.NET.Rendering
         (int Width, int Height) GetSize();
         void ZoomIn();
         void ZoomOut();
+        (int Width, int Height) GetScreenSize();
     }
 }

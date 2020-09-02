@@ -32,6 +32,7 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
         private readonly IEnumerable<IScreen> _screens;
+        private readonly Dictionary<IScreen, IImage> _screenCache = new Dictionary<IScreen, IImage>();
 
         public Game(IGameBoard gameBoard,
                     IEnumerable<ILayerRenderer> boardRenderers,
@@ -46,6 +47,11 @@ namespace Trains.NET.Rendering
             _imageFactory = imageFactory;
             _renderLoop = renderLoop;
             _screens = screens;
+
+            foreach (var screen in _screens)
+            {
+                screen.Changed += (s, e) => _screenCache.Remove(screen);
+            }
 
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _screenDrawTimes = _screens.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
@@ -82,6 +88,8 @@ namespace Trains.NET.Rendering
             _screenWidth = width;
             _screenHeight = height;
 
+            _screenCache.Clear();
+
             (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
             columns = Math.Max(columns, 1);
             rows = Math.Max(rows, 1);
@@ -100,8 +108,15 @@ namespace Trains.NET.Rendering
 
         public (int Width, int Height) GetSize() => (_width, _height);
 
+        public (int Width, int Height) GetScreenSize() => (_screenWidth, _screenHeight);
+
         public void Render(ICanvas canvas)
         {
+            if (_width == 0 || _height == 0)
+            {
+                return;
+            }
+
             lock (_bufferLock)
             {
                 if (_backBuffer != null)
@@ -112,9 +127,16 @@ namespace Trains.NET.Rendering
 
             foreach (var screen in _screens)
             {
-                _screenDrawTimes[screen].Start();
-                screen.Render(canvas, _screenWidth, _screenHeight);
-                _screenDrawTimes[screen].Stop();
+                if (!_screenCache.TryGetValue(screen, out var image))
+                {
+                    _screenDrawTimes[screen].Start();
+                    using var imageCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
+                    screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
+                    _screenDrawTimes[screen].Stop();
+                    image = imageCanvas.Render();
+                    _screenCache.Add(screen, image);
+                }
+                canvas.DrawImage(image, 0, 0);
             }
         }
 

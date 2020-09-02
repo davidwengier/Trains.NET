@@ -15,6 +15,7 @@ namespace Trains.NET.Comet
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
         private readonly Factory<IToolPreviewer> _previewerFactory;
+        private readonly IInteractionManager _interactionManager;
         private (int column, int row) _lastDragCell;
         private bool _dragging;
         private float _mouseX;
@@ -22,11 +23,12 @@ namespace Trains.NET.Comet
 
         public State<ITool?> CurrentTool { get; } = new State<ITool?>();
 
-        public TrainsDelegate(IGame game, IPixelMapper pixelMapper, Factory<IToolPreviewer> previewerFactory)
+        public TrainsDelegate(IGame game, IPixelMapper pixelMapper, Factory<IToolPreviewer> previewerFactory, IInteractionManager interactionManager)
         {
             _game = game;
             _pixelMapper = pixelMapper;
             _previewerFactory = previewerFactory;
+            _interactionManager = interactionManager;
         }
 
         public override void Resized(RectangleF bounds)
@@ -91,6 +93,11 @@ namespace Trains.NET.Comet
 
         public override bool StartInteraction(PointF[] points)
         {
+            if (_interactionManager.PointerClick((int)points[0].X, (int)points[0].Y))
+            {
+                return true;
+            }
+
             SetMousePosition(points);
 
             if (this.CurrentTool.Value == null)
@@ -112,8 +119,21 @@ namespace Trains.NET.Comet
             return true;
         }
 
+        public override void StartHoverInteraction(PointF[] points)
+        {
+            if (_interactionManager.PointerMove((int)points[0].X, (int)points[0].Y))
+            {
+                return;
+            }
+        }
+
         public override void DragInteraction(PointF[] points)
         {
+            if (_interactionManager.PointerDrag((int)points[0].X, (int)points[0].Y))
+            {
+                return;
+            }
+
             SetMousePosition(points);
 
             if (this.CurrentTool.Value == null)
@@ -144,6 +164,11 @@ namespace Trains.NET.Comet
 
         public override void EndInteraction(PointF[] points)
         {
+            if (_interactionManager.PointerRelease((int)points[0].X, (int)points[0].Y))
+            {
+                return;
+            }
+
             SetMousePosition(points);
 
             _lastDragCell = (-1, -1);

@@ -29,7 +29,7 @@ namespace Trains.Emoji
 
         public void Save(int imageSize)
         {
-            _pixelMapper.GameScale = imageSize / 40.0f;
+            _pixelMapper.AdjustGameScale(imageSize / 40.0f);
 
             if (!Directory.Exists(FolderName))
             {

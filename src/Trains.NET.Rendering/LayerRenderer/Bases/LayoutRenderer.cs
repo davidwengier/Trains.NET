@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -56,7 +55,7 @@ namespace Trains.NET.Rendering
                     {
                         heightScale = GetScaleForTerrainHeight(entity.Column, entity.Row);
                     }
-                    
+
                     if (renderer is ICachableRenderer<T> cachableRenderer)
                     {
                         canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
@@ -68,6 +67,7 @@ namespace Trains.NET.Rendering
                             using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
 
                             float scale = pixelMapper.CellSize / 100.0f;
+
                             imageCanvas.Canvas.Scale(scale, scale);
 
                             if (heightScale < 1)
@@ -75,25 +75,25 @@ namespace Trains.NET.Rendering
                                 imageCanvas.Canvas.Scale(heightScale, heightScale, 50, 50);
                             }
 
-                            imageCanvas.Canvas.Scale(scale, scale);
-
                             renderer.Render(imageCanvas.Canvas, entity);
 
                             cachedImage = imageCanvas.Render();
 
                             _cache[(key, heightScale)] = cachedImage;
-                       }
+                        }
 
-                       canvas.DrawImage(cachedImage, 0, 0);
-                  }
-                  else
-                  {
-                      float scale = pixelMapper.CellSize / 100.0f;
-                      canvas.Scale(scale, scale);
-                      if (heightScale < 1)
-                      {
-                          canvas.Scale(heightScale, heightScale, 50, 50);
-                      }
+                        canvas.DrawImage(cachedImage, 0, 0);
+                    }
+                    else
+                    {
+                        float scale = pixelMapper.CellSize / 100.0f;
+                        canvas.Scale(scale, scale);
+                        if (heightScale < 1)
+                        {
+                            canvas.Scale(heightScale, heightScale, 50, 50);
+                        }
+                    }
+
                 }
 
                 canvas.Restore();

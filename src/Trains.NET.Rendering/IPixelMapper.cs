@@ -10,7 +10,7 @@ namespace Trains.NET.Rendering
         int ViewPortY { get; }
         int ViewPortWidth { get; }
         int ViewPortHeight { get; }
-        float GameScale { get; set; }
+        float GameScale { get; }
         int CellSize { get; }
         int MaxGridSize { get; }
 

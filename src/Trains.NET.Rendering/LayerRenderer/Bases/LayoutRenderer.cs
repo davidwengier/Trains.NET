@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering
     public abstract class LayoutRenderer<T> : ILayerRenderer where T : class, IStaticEntity
     {
         private readonly ILayout<T> _layout;
-        private readonly IRenderer<T> _renderer;
+        private readonly IEnumerable<IRenderer<T>> _renderers;
         private readonly IImageFactory _imageFactory;
         private readonly ITerrainMap _terrainMap;
         private readonly Dictionary<(string, float), IImage> _cache = new Dictionary<(string, float), IImage>();
@@ -18,10 +18,10 @@ namespace Trains.NET.Rendering
 
         private int _lastCellSize;
 
-        public LayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory, ITerrainMap terrainMap)
+        public LayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap)
         {
             _layout = layout;
-            _renderer = renderer;
+            _renderers = renderers;
             _imageFactory = imageFactory;
             _terrainMap = terrainMap;
         }
@@ -44,49 +44,56 @@ namespace Trains.NET.Rendering
 
                 canvas.Translate(x, y);
 
-                float heightScale = 1;
-                if (this.IsScaledByHeight)
+                foreach (IRenderer<T> renderer in _renderers)
                 {
-                    heightScale = GetScaleForTerrainHeight(entity.Column, entity.Row);
-                }
-
-                if(_renderer is ICachableRenderer<T> cachableRenderer)
-                {
-                    canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
-
-                    string key = cachableRenderer.GetCacheKey(entity);
-
-                    if (!_cache.TryGetValue((key, heightScale), out IImage cachedImage))
+                    if (!renderer.ShouldRender(entity))
                     {
-                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
+                        continue;
+                    }
 
-                        float scale = pixelMapper.CellSize / 100.0f;
-                        imageCanvas.Canvas.Scale(scale, scale);
+                    float heightScale = 1;
+                    if (this.IsScaledByHeight)
+                    {
+                        heightScale = GetScaleForTerrainHeight(entity.Column, entity.Row);
+                    }
+                    
+                    if (renderer is ICachableRenderer<T> cachableRenderer)
+                    {
+                        canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
 
-                        if (heightScale < 1)
+                        string key = renderer.GetType().Name + "." + cachableRenderer.GetCacheKey(entity);
+
+                        if (!_cache.TryGetValue((key, heightScale), out IImage cachedImage))
                         {
-                            imageCanvas.Canvas.Scale(heightScale, heightScale, 50, 50);
-                        }
+                            using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
 
-                        _renderer.Render(imageCanvas.Canvas, entity);
+                            float scale = pixelMapper.CellSize / 100.0f;
+                            imageCanvas.Canvas.Scale(scale, scale);
 
-                        cachedImage = imageCanvas.Render();
+                            if (heightScale < 1)
+                            {
+                                imageCanvas.Canvas.Scale(heightScale, heightScale, 50, 50);
+                            }
 
-                        _cache[(key, heightScale)] = cachedImage;
-                    }
+                            imageCanvas.Canvas.Scale(scale, scale);
 
-                    canvas.DrawImage(cachedImage, 0, 0);
-                }
-                else
-                {
-                    float scale = pixelMapper.CellSize / 100.0f;
-                    canvas.Scale(scale, scale);
-                    if (heightScale < 1)
-                    {
-                        canvas.Scale(heightScale, heightScale, 50, 50);
-                    }
+                            renderer.Render(imageCanvas.Canvas, entity);
 
-                    _renderer.Render(canvas, entity);
+                            cachedImage = imageCanvas.Render();
+
+                            _cache[(key, heightScale)] = cachedImage;
+                       }
+
+                       canvas.DrawImage(cachedImage, 0, 0);
+                  }
+                  else
+                  {
+                      float scale = pixelMapper.CellSize / 100.0f;
+                      canvas.Scale(scale, scale);
+                      if (heightScale < 1)
+                      {
+                          canvas.Scale(heightScale, heightScale, 50, 50);
+                      }
                 }
 
                 canvas.Restore();

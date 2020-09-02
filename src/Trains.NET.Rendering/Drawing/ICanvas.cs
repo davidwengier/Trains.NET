@@ -18,6 +18,7 @@ namespace Trains.NET.Rendering
         void Clear(Color color);
         void GradientRect(float x, float y, float width, float height, Color start, Color end);
         void Scale(float scaleX, float scaleY);
+        void Scale(float scaleX, float scaleY, float x, float y);
         void DrawImage(IImage cachedImage, int x, int y);
         float MeasureText(string text, PaintBrush paint);
         void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle);

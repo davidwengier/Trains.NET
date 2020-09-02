@@ -8,6 +8,12 @@ namespace Trains.NET.Rendering.Skia
     {
         private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
 
+        private static readonly SKPaint s_noAntialiasPaint = new SKPaint
+        {
+            IsAntialias = false,
+            IsDither = false
+        };
+
         private readonly SkiaSharp.SKCanvas _canvas;
 
         public SKCanvasWrapper(SkiaSharp.SKCanvas canvas)
@@ -19,7 +25,7 @@ namespace Trains.NET.Rendering.Skia
             if (!s_paintCache.TryGetValue(paint, out SKPaint skPaint))
             {
                 skPaint = paint.ToSkia();
-                s_paintCache.Add(paint, skPaint);
+                s_paintCache[paint] = skPaint;
             }
             return skPaint;
         }
@@ -37,6 +43,9 @@ namespace Trains.NET.Rendering.Skia
 
         public void DrawImage(IImage image, int x, int y)
             => _canvas.DrawImage(image.ToSkia(), x, y);
+
+        public void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle)
+            => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), s_noAntialiasPaint);
 
 
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)
@@ -72,6 +81,9 @@ namespace Trains.NET.Rendering.Skia
 
         public void Scale(float scaleX, float scaleY)
             => _canvas.Scale(scaleX, scaleY);
+
+        public void Scale(float scaleX, float scaleY, float x, float y)
+            => _canvas.Scale(scaleX, scaleY, x, y);
 
         public void RotateDegrees(float degrees, float x, float y)
             => _canvas.RotateDegrees(degrees, x, y);

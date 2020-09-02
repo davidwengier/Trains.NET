@@ -202,26 +202,11 @@ namespace Trains.NET.Rendering
             _gameBoard.Dispose();
         }
 
-        private const float ZoomStep = 0.25f;
-        private const int ZoomLevels = 20;
+        private const float ZoomInDelta = 1.25f;
+        private const float ZoomOutDelta = 1f / ZoomInDelta;
 
-        public void Zoom(float zoomDelta)
-        {
-            float newScale = _pixelMapper.GameScale + zoomDelta * ZoomStep;
+        public void ZoomOut() => _pixelMapper.AdjustGameScale(ZoomOutDelta);
 
-            if(newScale < ZoomStep)
-            {
-                newScale = ZoomStep;
-            }
-
-            float maxZoomScale = ZoomStep * (ZoomLevels + 1);
-
-            if (newScale > maxZoomScale)
-            {
-                newScale = maxZoomScale;
-            }
-
-            _pixelMapper.GameScale = newScale;
-        }
+        public void ZoomIn() => _pixelMapper.AdjustGameScale(ZoomInDelta);
     }
 }

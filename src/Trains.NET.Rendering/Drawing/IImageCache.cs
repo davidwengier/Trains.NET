@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering
     [Transient]
     public interface IImageCache : IDisposable
     {
-        IImage Get(object key);
+        IImage? Get(object key);
         void Set(object key, IImage image);
         bool IsDirty(object key);
         void SetDirty(object key);

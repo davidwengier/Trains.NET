@@ -119,7 +119,7 @@ namespace Trains.NET.Rendering
                 return;
             }
 
-            IImage gameImage = _imageCache.Get(this);
+            IImage? gameImage = _imageCache.Get(this);
             if (gameImage != null)
             {
                 canvas.DrawImage(gameImage, 0, 0);
@@ -141,21 +141,20 @@ namespace Trains.NET.Rendering
 
             AdjustViewPortIfNecessary();
 
-            IPixelMapper? pixelMapper = _pixelMapper.Snapshot();
+            IPixelMapper pixelMapper = _pixelMapper.Snapshot();
 
             using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
-            ICanvas? canvas = imageCanvas.Canvas;
-            RenderFrame(canvas, pixelMapper);
+            RenderFrame(imageCanvas.Canvas, pixelMapper);
 
             _imageCache.Set(this, imageCanvas.Render());
 
-            foreach (IScreen? screen in _screens)
+            foreach (IScreen screen in _screens)
             {
                 if (_imageCache.IsDirty(screen))
                 {
                     _screenDrawTimes[screen].Start();
-                    using IImageCanvas? screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
+                    using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
                     screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
                     _screenDrawTimes[screen].Stop();
                     _imageCache.Set(screen, screnCanvas.Render());
@@ -163,13 +162,8 @@ namespace Trains.NET.Rendering
             }
         }
 
-        private void RenderFrame(ICanvas? canvas, IPixelMapper pixelMapper)
+        private void RenderFrame(ICanvas canvas, IPixelMapper pixelMapper)
         {
-            if (canvas is null)
-            {
-                throw new ArgumentNullException(nameof(canvas));
-            }
-
             _skiaDrawTime.Start();
 
             canvas.Save();
@@ -188,14 +182,14 @@ namespace Trains.NET.Rendering
                     {
                         _renderCacheDrawTimes[renderer].Start();
 
-                        using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
                         renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
                         _imageCache.Set(renderer, imageCanvas.Render());
                         _renderCacheDrawTimes[renderer].Stop();
                     }
 
                     _renderLayerDrawTimes[renderer].Start();
-                    canvas.DrawImage(_imageCache.Get(renderer), 0, 0);
+                    canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
                     _renderLayerDrawTimes[renderer].Stop();
                 }
                 else
@@ -214,7 +208,7 @@ namespace Trains.NET.Rendering
 
         public void AdjustViewPortIfNecessary()
         {
-            foreach (IMovable? vehicle in _gameBoard.GetMovables())
+            foreach (IMovable vehicle in _gameBoard.GetMovables())
             {
                 if (vehicle.Follow)
                 {

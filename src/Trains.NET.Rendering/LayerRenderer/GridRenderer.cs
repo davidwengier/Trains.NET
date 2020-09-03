@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering
 {
     [Order(1)]
-    public class GridRenderer : ILayerRenderer, ICachableLayerRenderer
+    public class GridRenderer : ICachableLayerRenderer
     {
         public bool Enabled { get; set; }
         public string Name => "Grid";

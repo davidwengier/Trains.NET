@@ -229,8 +229,8 @@ namespace Trains.NET.Rendering
 
         public void Dispose()
         {
-            _imageCache.Dispose();
             _renderLoop.Dispose();
+            _imageCache.Dispose();
             _gameBoard.Dispose();
         }
 

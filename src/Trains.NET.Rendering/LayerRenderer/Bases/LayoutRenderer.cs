@@ -9,7 +9,7 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<IRenderer<T>> _renderers;
         private readonly IImageFactory _imageFactory;
         private readonly ITerrainMap _terrainMap;
-        private readonly Dictionary<(string, float), IImage> _cache = new Dictionary<(string, float), IImage>();
+        private readonly IImageCache _imageCache;
 
         public bool Enabled { get; set; }
         public string Name { get; internal set; } = string.Empty;
@@ -17,19 +17,20 @@ namespace Trains.NET.Rendering
 
         private int _lastCellSize;
 
-        public LayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap)
+        public LayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap, IImageCache imageCache)
         {
             _layout = layout;
             _renderers = renderers;
             _imageFactory = imageFactory;
             _terrainMap = terrainMap;
+            _imageCache = imageCache;
         }
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
             if (pixelMapper.CellSize != _lastCellSize)
             {
-                _cache.Clear();
+                _imageCache.Clear();
                 _lastCellSize = pixelMapper.CellSize;
             }
 
@@ -60,9 +61,9 @@ namespace Trains.NET.Rendering
                     {
                         canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
 
-                        string key = renderer.GetType().Name + "." + cachableRenderer.GetCacheKey(entity);
+                        string key = $"{renderer.GetType().Name}.{cachableRenderer.GetCacheKey(entity)}.{heightScale}";
 
-                        if (!_cache.TryGetValue((key, heightScale), out IImage cachedImage))
+                        if (_imageCache.IsDirty(key))
                         {
                             using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
 
@@ -77,12 +78,10 @@ namespace Trains.NET.Rendering
 
                             renderer.Render(imageCanvas.Canvas, entity);
 
-                            cachedImage = imageCanvas.Render();
-
-                            _cache[(key, heightScale)] = cachedImage;
+                            _imageCache.Set(key, imageCanvas.Render());
                         }
 
-                        canvas.DrawImage(cachedImage, 0, 0);
+                        canvas.DrawImage(_imageCache.Get(key), 0, 0);
                     }
                     else
                     {

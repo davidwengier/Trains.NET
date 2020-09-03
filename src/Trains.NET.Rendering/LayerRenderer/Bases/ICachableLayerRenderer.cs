@@ -1,7 +1,9 @@
-﻿namespace Trains.NET.Rendering
+﻿using System;
+
+namespace Trains.NET.Rendering
 {
     public interface ICachableLayerRenderer : ILayerRenderer
     {
-        bool IsDirty { get; }
+        event EventHandler? Changed;
     }
 }

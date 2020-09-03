@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -7,7 +8,8 @@ namespace Trains.NET.Rendering
     {
         public bool Enabled { get; set; }
         public string Name => "Grid";
-        public bool IsDirty => false;
+
+        public event EventHandler? Changed;
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {

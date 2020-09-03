@@ -81,7 +81,7 @@ namespace Trains.NET.Rendering
                             _imageCache.Set(key, imageCanvas.Render());
                         }
 
-                        canvas.DrawImage(_imageCache.Get(key), 0, 0);
+                        canvas.DrawImage(_imageCache.Get(key)!, 0, 0);
                     }
                     else
                     {

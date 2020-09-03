@@ -18,7 +18,7 @@ namespace Trains.NET.Rendering.Drawing
             }
         }
 
-        public IImage Get(object key)
+        public IImage? Get(object key)
         {
             lock (_cacheLock)
             {

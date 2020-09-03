@@ -9,13 +9,13 @@ namespace Trains.NET.Rendering
 
         public bool IsDirty => _dirty;
 
-        public CachableLayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory, ITerrainMap terrainMap)
-            : this(layout, new[] { renderer }, imageFactory, terrainMap)
+        public CachableLayoutRenderer(ILayout<T> layout, IRenderer<T> renderer, IImageFactory imageFactory, ITerrainMap terrainMap, IImageCache imageCache)
+            : this(layout, new[] { renderer }, imageFactory, terrainMap, imageCache)
         {
         }
 
-        public CachableLayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap)
-            : base (layout, renderers, imageFactory, terrainMap)
+        public CachableLayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap, IImageCache imageCache)
+            : base (layout, renderers, imageFactory, terrainMap, imageCache)
         {
             layout.CollectionChanged += (s, e) => _dirty = true;
         }

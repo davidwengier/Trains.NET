@@ -4,8 +4,8 @@ namespace Trains.NET.Rendering
 {
     public class PixelMapper : IPixelMapper
     {
-        private readonly int _columns = 200;
-        private readonly int _rows = 100;
+        private const int _columns = 200;
+        private const int _rows = 100;
 
         public int Columns => _columns;
         public int Rows => _rows;
@@ -62,6 +62,11 @@ namespace Trains.NET.Rendering
                             x <= this.ViewPortWidth &&
                             y <= this.ViewPortHeight;
             return (x, y, onScreen);
+        }
+
+        public (int, int) WorldPixelsToViewPortPixels(int x, int y)
+        {
+            return ((int)(x * this.GameScale) + this.ViewPortX, (int)(y * this.GameScale) + this.ViewPortY);
         }
 
         public (int, int) WorldPixelsToCoords(int x, int y)

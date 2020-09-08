@@ -7,6 +7,7 @@ namespace Trains.NET.Rendering.Drawing
     {
         private readonly object _cacheLock = new object();
 
+        private readonly Dictionary<object, IImage> _disposeBuffer = new();
         private readonly Dictionary<object, IImage> _imageBuffer = new();
         private readonly Dictionary<object, bool> _dirtySTate = new();
 
@@ -48,9 +49,16 @@ namespace Trains.NET.Rendering.Drawing
         {
             lock (_cacheLock)
             {
-                if (_imageBuffer.TryGetValue(key, out IImage existing))
+                // If we have anything waiting to be disposed, dispose it
+                if (_disposeBuffer.TryGetValue(key, out IImage oldImage))
                 {
-                    existing.Dispose();
+                    oldImage.Dispose();
+                }
+                // Move the current image into the dispose buffer, this way if anyone is still holding on
+                // to it we won't be disposing it out from under them
+                if (_imageBuffer.TryGetValue(key, out IImage previousImage))
+                {
+                    _disposeBuffer[key] = previousImage;
                 }
                 _imageBuffer[key] = image;
                 _dirtySTate[key] = false;
@@ -61,6 +69,10 @@ namespace Trains.NET.Rendering.Drawing
         {
             lock (_cacheLock)
             {
+                foreach (IImage image in _disposeBuffer.Values)
+                {
+                    image.Dispose();
+                }
                 foreach (IImage image in _imageBuffer.Values)
                 {
                     image.Dispose();

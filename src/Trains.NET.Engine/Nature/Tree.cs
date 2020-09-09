@@ -9,7 +9,7 @@ namespace Trains.NET.Engine
         public int Column { get ; set ; }
         public int Row { get ; set ; }
 
-        public int Seed { get; private set; }
+        public int Seed { get; set; }
 
         public Tree()
         {

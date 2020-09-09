@@ -14,7 +14,8 @@ namespace Trains.NET.Rendering
         public int Rows => _rows;
 
 
-        public int MaxGridSize => _columns * this.CellSize;
+        public int MaxGridWidth => _columns * this.CellSize;
+        public int MaxGridHeight => _rows * this.CellSize;
         public int CellSize => (int)(40 * this.GameScale);
 
         private int _columns;
@@ -39,8 +40,8 @@ namespace Trains.NET.Rendering
         {
             int oldX = this.ViewPortX;
             int oldY = this.ViewPortY;
-            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (this.MaxGridSize - this.ViewPortWidth));
-            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (this.MaxGridSize - this.ViewPortHeight));
+            this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (this.MaxGridWidth - this.ViewPortWidth));
+            this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (this.MaxGridHeight - this.ViewPortHeight));
 
             if (this.ViewPortX != oldX || this.ViewPortY != oldY)
             {
@@ -106,8 +107,8 @@ namespace Trains.NET.Rendering
 
             // Check to see if it is TOO FAR!
             if (newGameScale < 0.1 ||
-                this.MaxGridSize / this.GameScale * newGameScale < this.ViewPortWidth ||
-                this.MaxGridSize / this.GameScale * newGameScale < this.ViewPortHeight)
+                this.MaxGridWidth / this.GameScale * newGameScale < this.ViewPortWidth ||
+                this.MaxGridHeight / this.GameScale * newGameScale < this.ViewPortHeight)
             {
                 return;
             }

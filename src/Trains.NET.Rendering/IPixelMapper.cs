@@ -12,9 +12,10 @@ namespace Trains.NET.Rendering
         int ViewPortHeight { get; }
         float GameScale { get; }
         int CellSize { get; }
-        int MaxGridSize { get; }
         int Rows { get; }
         int Columns { get; }
+        int MaxGridWidth { get; }
+        int MaxGridHeight { get; }
 
         (int X, int Y) CoordsToWorldPixels(int column, int row);
         (int Column, int Row) WorldPixelsToCoords(int x, int y);
@@ -24,7 +25,7 @@ namespace Trains.NET.Rendering
         void SetViewPortSize(int width, int height);
         void SetViewPort(int x, int y);
         IPixelMapper Snapshot();
-        void Initialize(int v1, int v2);
+        void Initialize(int columns, int rows);
         void AdjustGameScale(float delta);
     }
 }

@@ -91,7 +91,7 @@ namespace Trains.NET.Rendering.UI
 
             canvas.DrawRect(left, top, right - left, bottom - top, _viewPortPaint);
 
-            canvas.DrawRect(0, 0, _pixelMapper.Rows, _pixelMapper.Columns, _border);
+            canvas.DrawRect(0, 0, _pixelMapper.Columns, _pixelMapper.Rows, _border);
 
             canvas.Restore();
         }

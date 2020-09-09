@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
@@ -6,16 +7,28 @@ namespace Trains.NET.Rendering.UI
     {
         private readonly IEnumerable<IScreen> _screens;
         private readonly IGame _game;
+        private readonly IPixelMapper _pixelMapper;
         private IScreen? _capturedScreen;
 
-        public InteractionManager(IEnumerable<IScreen> screens, IGame game)
+        public ITool? CurrentTool { get; set; }
+
+        public InteractionManager(IEnumerable<IScreen> screens, IGame game, IPixelMapper pixelMapper)
         {
             _screens = screens;
             _game = game;
+            _pixelMapper = pixelMapper;
         }
 
         public bool PointerClick(int x, int y)
-            => HandleInteraction(x, y, MouseAction.Click);
+        {
+            if (HandleInteraction(x, y, MouseAction.Click))
+            {
+                return true;
+            }
+
+
+            return false;
+        }
 
         public bool PointerMove(int x, int y)
             => HandleInteraction(x, y, MouseAction.Move);
@@ -35,7 +48,7 @@ namespace Trains.NET.Rendering.UI
 
         private bool HandleInteraction(int x, int y, MouseAction action)
         {
-            var (width, height) = _game.GetScreenSize();
+            (int width, int height) = _game.GetScreenSize();
 
             if (_capturedScreen != null)
             {
@@ -43,12 +56,37 @@ namespace Trains.NET.Rendering.UI
                 return true;
             }
 
-            foreach (var screen in _screens)
+            foreach (IScreen screen in _screens)
             {
                 if (screen.HandleInteraction(x, y, width, height, action))
                 {
                     _capturedScreen = screen;
                     return true;
+                }
+            }
+
+
+            if (this.CurrentTool is not null)
+            {
+                (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+
+                if (this.CurrentTool.IsValid(column, row) && action != MouseAction.Move)
+                {
+                    this.CurrentTool.Execute(column, row);
+                    return true;
+                }
+                else if (this.CurrentTool is IDraggableTool draggableTool)
+                {
+                    if (action == MouseAction.Click)
+                    {
+                        draggableTool.StartDrag(x, y);
+                        return true;
+                    }
+                    else if (action == MouseAction.Drag)
+                    {
+                        draggableTool.ContinueDrag(x, y);
+                        return true;
+                    }
                 }
             }
 

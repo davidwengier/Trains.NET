@@ -1,7 +1,11 @@
-﻿namespace Trains.NET.Rendering
+﻿using Trains.NET.Engine;
+
+namespace Trains.NET.Rendering
 {
     public interface IInteractionManager
     {
+        ITool? CurrentTool { get; set; }
+
         bool PointerClick(int x, int y);
 
         bool PointerMove(int x, int y);

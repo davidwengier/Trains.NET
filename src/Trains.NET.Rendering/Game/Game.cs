@@ -11,10 +11,6 @@ namespace Trains.NET.Rendering
     {
         private const int RenderInterval = 16;
 
-        private readonly object _bufferLock = new object();
-        private IImage? _backBuffer;
-
-        private bool _needsBufferReset;
         private int _width;
         private int _height;
         private int _screenWidth;
@@ -25,21 +21,20 @@ namespace Trains.NET.Rendering
         private readonly IImageFactory _imageFactory;
         private readonly PerSecondTimedStat _skiaFps = InstrumentationBag.Add<PerSecondTimedStat>("Draw-FPS-Skia");
         private readonly ElapsedMillisecondsTimedStat _skiaDrawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Skia-AllUp");
-        private readonly ElapsedMillisecondsTimedStat _gameBufferReset = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Game-BufferReset");
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<IScreen, ElapsedMillisecondsTimedStat> _screenDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
-        private readonly Dictionary<ILayerRenderer, IImage> _imageBuffer = new();
         private readonly ITimer _renderLoop;
         private readonly IEnumerable<IScreen> _screens;
-        private readonly Dictionary<IScreen, IImage> _screenCache = new Dictionary<IScreen, IImage>();
+        private readonly IImageCache _imageCache;
 
         public Game(IGameBoard gameBoard,
                     IEnumerable<ILayerRenderer> boardRenderers,
                     IPixelMapper pixelMapper,
                     IImageFactory imageFactory,
                     ITimer renderLoop,
-                    IEnumerable<IScreen> screens)
+                    IEnumerable<IScreen> screens,
+                    IImageCache imageCache)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -47,16 +42,21 @@ namespace Trains.NET.Rendering
             _imageFactory = imageFactory;
             _renderLoop = renderLoop;
             _screens = screens;
+            _imageCache = imageCache;
 
-            foreach (var screen in _screens)
+            foreach (IScreen screen in _screens)
             {
-                screen.Changed += (s, e) => _screenCache.Remove(screen);
+                screen.Changed += (s, e) => _imageCache.SetDirty(screen);
+            }
+            foreach (ICachableLayerRenderer renderer in _boardRenderers.OfType<ICachableLayerRenderer>())
+            {
+                renderer.Changed += (s, e) => _imageCache.SetDirty(renderer);
             }
 
             _renderLayerDrawTimes = _boardRenderers.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _screenDrawTimes = _screens.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
-            _pixelMapper.ViewPortChanged += (s, e) => _needsBufferReset = true;
+            _pixelMapper.ViewPortChanged += (s, e) => _imageCache.SetDirtyAll(_boardRenderers);
 
             _renderLoop.Elapsed += (s, e) => DrawFrame();
             _renderLoop.Interval = RenderInterval;
@@ -88,7 +88,7 @@ namespace Trains.NET.Rendering
             _screenWidth = width;
             _screenHeight = height;
 
-            _screenCache.Clear();
+            _imageCache.SetDirtyAll(_screens);
 
             (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
             columns = Math.Max(columns, 1);
@@ -102,7 +102,9 @@ namespace Trains.NET.Rendering
                 _height = height;
                 _pixelMapper.SetViewPortSize(_width, _height);
 
-                _needsBufferReset = true;
+                // strictly speaking this only needs to clear renderers, but we already cleared screens
+                // so its easier just to call clear
+                _imageCache.Clear();
             }
         }
 
@@ -117,26 +119,19 @@ namespace Trains.NET.Rendering
                 return;
             }
 
-            lock (_bufferLock)
+            IImage? gameImage = _imageCache.Get(this);
+            if (gameImage != null)
             {
-                if (_backBuffer != null)
-                {
-                    canvas.DrawImage(_backBuffer, 0, 0);
-                }
+                canvas.DrawImage(gameImage, 0, 0);
             }
 
-            foreach (var screen in _screens)
+            foreach (IScreen screen in _screens)
             {
-                if (!_screenCache.TryGetValue(screen, out var image))
+                IImage? screenImage = _imageCache.Get(screen);
+                if (screenImage != null)
                 {
-                    _screenDrawTimes[screen].Start();
-                    using var imageCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
-                    screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
-                    _screenDrawTimes[screen].Stop();
-                    image = imageCanvas.Render();
-                    _screenCache.Add(screen, image);
+                    canvas.DrawImage(screenImage, 0, 0);
                 }
-                canvas.DrawImage(image, 0, 0);
             }
         }
 
@@ -146,42 +141,29 @@ namespace Trains.NET.Rendering
 
             AdjustViewPortIfNecessary();
 
-            IPixelMapper? pixelMapper = _pixelMapper.Snapshot();
+            IPixelMapper pixelMapper = _pixelMapper.Snapshot();
 
-            using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+            using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
-            ICanvas? canvas = imageCanvas.Canvas;
-            RenderFrame(canvas, pixelMapper);
+            RenderFrame(imageCanvas.Canvas, pixelMapper);
 
-            IImage? oldBuffer = _backBuffer;
-            lock (_bufferLock)
+            _imageCache.Set(this, imageCanvas.Render());
+
+            foreach (IScreen screen in _screens)
             {
-                _backBuffer = imageCanvas.Render();
-            }
-            oldBuffer?.Dispose();
-
-            if (_needsBufferReset)
-            {
-                _gameBufferReset.Start();
-
-                foreach (IImage image in _imageBuffer.Values)
+                if (_imageCache.IsDirty(screen))
                 {
-                    image.Dispose();
+                    _screenDrawTimes[screen].Start();
+                    using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
+                    screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
+                    _screenDrawTimes[screen].Stop();
+                    _imageCache.Set(screen, screnCanvas.Render());
                 }
-                _imageBuffer.Clear();
-
-                _needsBufferReset = false;
-                _gameBufferReset.Stop();
             }
         }
 
-        private void RenderFrame(ICanvas? canvas, IPixelMapper pixelMapper)
+        private void RenderFrame(ICanvas canvas, IPixelMapper pixelMapper)
         {
-            if (canvas is null)
-            {
-                throw new ArgumentNullException(nameof(canvas));
-            }
-
             _skiaDrawTime.Start();
 
             canvas.Save();
@@ -196,18 +178,18 @@ namespace Trains.NET.Rendering
 
                 if (renderer is ICachableLayerRenderer cachable)
                 {
-                    if (cachable.IsDirty || !_imageBuffer.ContainsKey(renderer))
+                    if (_imageCache.IsDirty(renderer))
                     {
                         _renderCacheDrawTimes[renderer].Start();
 
-                        using IImageCanvas? imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
                         renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
-                        _imageBuffer[renderer] = imageCanvas.Render();
+                        _imageCache.Set(renderer, imageCanvas.Render());
                         _renderCacheDrawTimes[renderer].Stop();
                     }
 
                     _renderLayerDrawTimes[renderer].Start();
-                    canvas.DrawImage(_imageBuffer[renderer], 0, 0);
+                    canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
                     _renderLayerDrawTimes[renderer].Stop();
                 }
                 else
@@ -226,7 +208,7 @@ namespace Trains.NET.Rendering
 
         public void AdjustViewPortIfNecessary()
         {
-            foreach (IMovable? vehicle in _gameBoard.GetMovables())
+            foreach (IMovable vehicle in _gameBoard.GetMovables())
             {
                 if (vehicle.Follow)
                 {
@@ -247,8 +229,8 @@ namespace Trains.NET.Rendering
 
         public void Dispose()
         {
-            _backBuffer?.Dispose();
             _renderLoop.Dispose();
+            _imageCache.Dispose();
             _gameBoard.Dispose();
         }
 

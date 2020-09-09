@@ -79,18 +79,19 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             AssertSnapshotsSame(expected, actual);
         }
 
-
         private static void AssertSnapshotsSame(IPixelMapper expected, IPixelMapper actual)
         {
             Assert.Equal(expected.CellSize, actual.CellSize);
             Assert.Equal(expected.GameScale, actual.GameScale);
-            Assert.Equal(expected.MaxGridSize, actual.MaxGridSize);
+            Assert.Equal(expected.MaxGridWidth, actual.MaxGridWidth);
+            Assert.Equal(expected.MaxGridHeight, actual.MaxGridHeight);
             Assert.Equal(expected.ViewPortHeight, actual.ViewPortHeight);
             Assert.Equal(expected.ViewPortWidth, actual.ViewPortWidth);
             Assert.Equal(expected.ViewPortX, actual.ViewPortX);
             Assert.Equal(expected.ViewPortY, actual.ViewPortY);
         }
     }
+
     public class CoordPixelConverstionTests
     {
         private const int DefaultCellSize = 40;

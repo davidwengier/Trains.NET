@@ -17,9 +17,10 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             _pixelMapper = new PixelMapper();
             _pixelMapper.Initialize(GameSize, GameSize);
             _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
-            int centerViewportOffset = _pixelMapper.MaxGridSize / 2 - ScreenSize / 2;
+            int centerViewportOffsetX = _pixelMapper.MaxGridWidth / 2 - ScreenSize / 2;
+            int centerViewportOffsetY = _pixelMapper.MaxGridHeight / 2 - ScreenSize / 2;
 
-            _pixelMapper.SetViewPort(centerViewportOffset, centerViewportOffset);
+            _pixelMapper.SetViewPort(centerViewportOffsetX, centerViewportOffsetY);
             _output = output;
         }
 

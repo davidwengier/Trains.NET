@@ -7,6 +7,7 @@ namespace Trains.NET.Rendering
     {  
         public static Color DefaultColour => Colors.Green;
         private static Color WaterToLandTransition = Colors.LightYellow;
+        private static Color LandToMountainTransition = Colors.Gray;
 
         private static readonly List<Color> _heightOrderedColours = new List<Color> {
                 Colors.DarkBlue,
@@ -23,6 +24,12 @@ namespace Trains.NET.Rendering
         {
             int heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
             return _heightOrderedColours.IndexOf(WaterToLandTransition) * heightPerTerrainType - 1;
+        }
+
+        public static int GetMountainLevel()
+        {
+            int heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
+            return _heightOrderedColours.IndexOf(LandToMountainTransition) * heightPerTerrainType;
         }
 
         public static Color GetTerrainColour(Terrain terrain)

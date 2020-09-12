@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia
@@ -65,10 +66,29 @@ namespace Trains.NET.Rendering.Skia
 
         public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {
+            GradientRect(x, y, width, height, new[] { start, end, start });
+        }
+
+        public void GradientRect(float x, float y, float width, float height, IEnumerable<Color> colours)
+        {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
                                                        new SKPoint(x, y + height),
-                                                       new SKColor[] { start.ToSkia(), end.ToSkia(), start.ToSkia() },
+                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
                                                        SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
+        public void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours)
+        {
+            var shader = SKShader.CreateRadialGradient(new SKPoint(circleX, circleY), 
+                                                       radius, 
+                                                       colours.Select(colour => colour.ToSkia()).ToArray(), 
+                                                       SKShaderTileMode.Clamp);
+
             using var paint = new SKPaint
             {
                 Shader = shader

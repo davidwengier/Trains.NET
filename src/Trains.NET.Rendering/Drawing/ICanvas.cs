@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Rendering
 {
@@ -22,5 +23,7 @@ namespace Trains.NET.Rendering
         void DrawImage(IImage cachedImage, int x, int y);
         float MeasureText(string text, PaintBrush paint);
         void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle);
+        void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours);
+        void GradientRect(float x, float y, float width, float height, IEnumerable<Color> colours);
     }
 }

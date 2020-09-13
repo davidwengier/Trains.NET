@@ -10,7 +10,7 @@ namespace Trains.NET.Tests
         private readonly ImageCache _imageCache = new ImageCache();
 
         [Fact]
-        public void BasicCacheOperations()
+        public void Set()
         {
             object key = new object();
             var image = new TestImage();
@@ -40,7 +40,7 @@ namespace Trains.NET.Tests
         }
 
         [Fact]
-        public void DirtyTests()
+        public void SetDirty()
         {
             object key = new object();
             var image = new TestImage();
@@ -52,6 +52,13 @@ namespace Trains.NET.Tests
             _imageCache.SetDirty(key);
             Assert.True(_imageCache.IsDirty(key));
             Assert.Equal(image, _imageCache.Get(key));
+        }
+
+        [Fact]
+        public void SetDirtyAll()
+        {
+            object key = new object();
+            var image = new TestImage();
 
             _imageCache.Set(key, image);
             Assert.False(_imageCache.IsDirty(key));
@@ -60,10 +67,54 @@ namespace Trains.NET.Tests
             _imageCache.SetDirtyAll(new object[] { key });
             Assert.True(_imageCache.IsDirty(key));
             Assert.Equal(image, _imageCache.Get(key));
+        }
+
+        [Fact]
+        public void Clear()
+        {
+            object key = new object();
+            var image = new TestImage();
 
             _imageCache.Set(key, image);
             Assert.False(_imageCache.IsDirty(key));
             Assert.Equal(image, _imageCache.Get(key));
+
+            _imageCache.Clear();
+            Assert.True(_imageCache.IsDirty(key));
+            Assert.Equal(image, _imageCache.Get(key));
+        }
+
+        [Fact]
+        public void SuspendSetDirtyCalls()
+        {
+            object key = new object();
+            var image = new TestImage();
+
+            _imageCache.Set(key, image);
+            Assert.False(_imageCache.IsDirty(key));
+
+            using (_ = _imageCache.SuspendSetDirtyCalls())
+            {
+                _imageCache.SetDirty(key);
+
+                Assert.False(_imageCache.IsDirty(key));
+            }
+
+            Assert.True(_imageCache.IsDirty(key));
+
+            _imageCache.Set(key, image);
+            Assert.False(_imageCache.IsDirty(key));
+
+            _imageCache.SetDirty(key);
+
+            using (_ = _imageCache.SuspendSetDirtyCalls())
+            {
+                _imageCache.Set(key, image);
+
+                Assert.False(_imageCache.IsDirty(key));
+            }
+
+            Assert.False(_imageCache.IsDirty(key));
         }
 
         public void Dispose()
@@ -73,7 +124,14 @@ namespace Trains.NET.Tests
 
         private class TestImage : IImage
         {
+            public int State { get; }
             public bool IsDisposed { get; private set; }
+
+            public TestImage(int state = 0)
+            {
+                this.State = state;
+            }
+
             public void Dispose()
             {
                 this.IsDisposed = true;

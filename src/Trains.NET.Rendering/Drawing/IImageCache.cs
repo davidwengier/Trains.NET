@@ -13,5 +13,6 @@ namespace Trains.NET.Rendering
         void SetDirty(object key);
         void Clear();
         void SetDirtyAll(IEnumerable<object> keys);
+        IDisposable SuspendSetDirtyCalls();
     }
 }

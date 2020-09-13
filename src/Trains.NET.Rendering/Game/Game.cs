@@ -141,23 +141,26 @@ namespace Trains.NET.Rendering
 
             AdjustViewPortIfNecessary();
 
-            IPixelMapper pixelMapper = _pixelMapper.Snapshot();
-
-            using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
-
-            RenderFrame(imageCanvas.Canvas, pixelMapper);
-
-            _imageCache.Set(this, imageCanvas.Render());
-
-            foreach (IScreen screen in _screens)
+            using (_ = _imageCache.SuspendSetDirtyCalls())
             {
-                if (_imageCache.IsDirty(screen))
+                IPixelMapper pixelMapper = _pixelMapper.Snapshot();
+
+                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+
+                RenderFrame(imageCanvas.Canvas, pixelMapper);
+
+                _imageCache.Set(this, imageCanvas.Render());
+
+                foreach (IScreen screen in _screens)
                 {
-                    _screenDrawTimes[screen].Start();
-                    using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
-                    screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
-                    _screenDrawTimes[screen].Stop();
-                    _imageCache.Set(screen, screnCanvas.Render());
+                    if (_imageCache.IsDirty(screen))
+                    {
+                        _screenDrawTimes[screen].Start();
+                        using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
+                        screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
+                        _screenDrawTimes[screen].Stop();
+                        _imageCache.Set(screen, screnCanvas.Render());
+                    }
                 }
             }
         }

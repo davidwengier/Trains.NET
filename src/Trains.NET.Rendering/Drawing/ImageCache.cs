@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Trains.NET.Rendering.Drawing
 {
-    public class ImageCache : IImageCache
+    public partial class ImageCache : IImageCache
     {
         private readonly object _cacheLock = new object();
 
         private readonly Dictionary<object, IImage> _disposeBuffer = new();
         private readonly Dictionary<object, IImage> _imageBuffer = new();
-        private readonly Dictionary<object, bool> _dirtySTate = new();
+        private readonly Dictionary<object, bool> _dirtyState = new();
+        private SuspectSetDirtyCallsTracker? _setDirtyCallsTracker;
 
         public void Clear()
         {
-            foreach (object key in _dirtySTate.Keys.ToArray())
+            lock (_cacheLock)
             {
-                _dirtySTate[key] = true;
+                SetDirtyAll(_dirtyState.Keys.ToArray());
             }
         }
 
@@ -29,19 +31,43 @@ namespace Trains.NET.Rendering.Drawing
 
         public bool IsDirty(object key)
         {
-            return _dirtySTate.GetValueOrDefault(key) || !_imageBuffer.ContainsKey(key);
+            lock (_cacheLock)
+            {
+                if (!_imageBuffer.ContainsKey(key))
+                {
+                    return true;
+                }
+
+                if (!_dirtyState.ContainsKey(key))
+                {
+                    return true;
+                }
+
+                return _dirtyState[key];
+            }
         }
 
         public void SetDirty(object key)
         {
-            _dirtySTate[key] = true;
+            lock (_cacheLock)
+            {
+                if (_setDirtyCallsTracker is not null)
+                {
+                    _setDirtyCallsTracker.Add(key);
+                    return;
+                }
+                _dirtyState[key] = true;
+            }
         }
 
         public void SetDirtyAll(IEnumerable<object> keys)
         {
-            foreach (object key in keys)
+            lock (_cacheLock)
             {
-                SetDirty(key);
+                foreach (object key in keys)
+                {
+                    SetDirty(key);
+                }
             }
         }
 
@@ -61,7 +87,7 @@ namespace Trains.NET.Rendering.Drawing
                     _disposeBuffer[key] = previousImage;
                 }
                 _imageBuffer[key] = image;
-                _dirtySTate[key] = false;
+                _dirtyState[key] = false;
             }
         }
 
@@ -78,7 +104,32 @@ namespace Trains.NET.Rendering.Drawing
                     image.Dispose();
                 }
                 _imageBuffer.Clear();
-                _dirtySTate.Clear();
+                _dirtyState.Clear();
+                _setDirtyCallsTracker?.Dispose();
+            }
+        }
+
+        public IDisposable SuspendSetDirtyCalls()
+        {
+            lock (_cacheLock)
+            {
+                if (_setDirtyCallsTracker is not null)
+                {
+                    throw new InvalidOperationException("Suspending dirty processing cannot be nested. Sorry!");
+                }
+
+                _setDirtyCallsTracker = new SuspectSetDirtyCallsTracker(this);
+                return _setDirtyCallsTracker;
+            }
+        }
+
+        private void ResumeDirtyProcessing(IEnumerable<object> keys)
+        {
+            lock (_cacheLock)
+            {
+                _setDirtyCallsTracker = null;
+
+                SetDirtyAll(keys);
             }
         }
     }

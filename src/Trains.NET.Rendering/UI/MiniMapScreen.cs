@@ -29,7 +29,7 @@ namespace Trains.NET.Rendering.UI
 
         public event EventHandler? Changed;
 
-        public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper)
+        public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper, ITerrainMap terrainMap)
         {
             _terrainMapRenderer = terrainMapRenderer;
             _trackLayout = trackLayout;
@@ -37,6 +37,7 @@ namespace Trains.NET.Rendering.UI
 
             _trackLayout.CollectionChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
             _pixelMapper.ViewPortChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
+            terrainMap.CollectionChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)

@@ -6,6 +6,7 @@ using Comet;
 using SkiaSharp;
 using SkiaSharp.Views.WPF;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Sounds;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -33,7 +34,8 @@ namespace Trains.NET.Comet
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
                         TrainsDelegate trainsDelegate,
-                        IInteractionManager interactionManager)
+                        IInteractionManager interactionManager,
+                        ISoundGenerator soundGenerator)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
@@ -66,7 +68,13 @@ namespace Trains.NET.Comet
                         },
                         new Spacer(),
                         new Button("Snapshot", () => Snapshot()),
-                        new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value)
+                        new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
+                        new ToggleButton("Sound", soundGenerator.IsRunning, () => {
+                            if(soundGenerator.IsRunning)
+                                 soundGenerator.Stop();
+                            else
+                                 soundGenerator.Start();
+                        }),
                     }.Frame(100, alignment: Alignment.Top),
                     new VStack()
                     {

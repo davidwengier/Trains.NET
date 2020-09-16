@@ -3,6 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
+    [Order(10)]
     public class MiniMapScreen : IScreen
     {
         private readonly PaintBrush _border = new PaintBrush

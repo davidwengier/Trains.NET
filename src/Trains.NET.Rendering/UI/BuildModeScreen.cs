@@ -1,8 +1,9 @@
 ﻿using System;
-using Trains.NET.Rendering.Drawing;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
+    [Order(110)]
     public class BuildModeScreen : IScreen
     {
         private const int TextPadding = 15;

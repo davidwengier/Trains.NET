@@ -1,4 +1,4 @@
-﻿namespace Trains.NET.Rendering.Drawing
+﻿namespace Trains.NET.Rendering
 {
     public static class ColorExtensions
     {

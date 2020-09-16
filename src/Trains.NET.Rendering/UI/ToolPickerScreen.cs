@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Trains.NET.Engine;
-using Trains.NET.Rendering.Drawing;
 
 namespace Trains.NET.Rendering.UI
 {
+    [Order(100)]
     public class ToolPickerScreen : IScreen
     {
         private const int TextPadding = 15;

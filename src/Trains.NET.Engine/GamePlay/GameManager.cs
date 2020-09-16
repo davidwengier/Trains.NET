@@ -28,6 +28,7 @@ namespace Trains.NET.Engine
                 _buildMode = value;
                 _currentTool = _defaultTool;
                 _gameBoard.Enabled = !_buildMode;
+
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -38,6 +39,7 @@ namespace Trains.NET.Engine
             set
             {
                 _currentTool = value;
+
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }

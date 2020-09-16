@@ -30,8 +30,7 @@ namespace Trains.NET.Comet
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
                         TrainsDelegate trainsDelegate,
-                        ISoundGenerator soundGenerator,
-                        IGameManager gameManager)
+                        ISoundGenerator soundGenerator)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
@@ -46,7 +45,7 @@ namespace Trains.NET.Comet
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
                         new Spacer(),
-                        _configurationShown || !gameManager.BuildMode ? null :
+                        _configurationShown ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
                         new HStack()

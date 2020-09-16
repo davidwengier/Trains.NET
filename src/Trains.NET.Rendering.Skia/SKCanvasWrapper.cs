@@ -61,6 +61,9 @@ namespace Trains.NET.Rendering.Skia
         public void DrawRect(float x, float y, float width, float height, PaintBrush paint)
             => _canvas.DrawRect(x, y, width, height, GetSKPaint(paint));
 
+        public void DrawRoundRect(float x, float y, float width, float height, float radiusX, float radiusY, PaintBrush paint)
+            => _canvas.DrawRoundRect(x, y, width, height, radiusX, radiusY, GetSKPaint(paint));
+
         public void DrawText(string text, float x, float y, PaintBrush paint)
             => _canvas.DrawText(text, x, y, GetSKPaint(paint));
 

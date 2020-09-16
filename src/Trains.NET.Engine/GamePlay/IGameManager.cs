@@ -1,7 +1,6 @@
 ﻿using System;
-using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Engine
 {
     public interface IGameManager
     {

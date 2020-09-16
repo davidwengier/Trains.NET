@@ -7,23 +7,23 @@ namespace Trains.NET.Comet
     {
         private readonly IGameBoard _gameBoard;
         private readonly ILayout<Track> _trackLayout;
-        private readonly ITrainController _gameState;
+        private readonly ITrainManager _trainManager;
 
         public ToolMode Mode => ToolMode.Play;
         public string Name => "Train";
 
-        public TrainTool(IGameBoard gameBoard, ILayout<Track> trackLayout, ITrainController gameState)
+        public TrainTool(IGameBoard gameBoard, ILayout<Track> trackLayout, ITrainManager gameState)
         {
             _gameBoard = gameBoard;
             _trackLayout = trackLayout;
-            _gameState = gameState;
+            _trainManager = gameState;
         }
 
         public void Execute(int column, int row)
         {
             if (_gameBoard.AddTrain(column, row) is Train train)
             {
-                _gameState.SetCurrentTrain(train);
+                _trainManager.CurrentTrain = train;
             }
         }
 

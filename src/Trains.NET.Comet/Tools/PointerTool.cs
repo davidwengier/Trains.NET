@@ -6,7 +6,7 @@ namespace Trains.NET.Comet
     [Order(1)]
     public class PointerTool : IDraggableTool
     {
-        private readonly ITrainController _gameState;
+        private readonly ITrainManager _trainManager;
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
         private readonly ILayout<Track> _trackLayout;
@@ -14,9 +14,9 @@ namespace Trains.NET.Comet
         private int _lastY;
 
         public ToolMode Mode => ToolMode.All;
-        public PointerTool(ITrainController gameState, IGameBoard gameBoard, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
+        public PointerTool(ITrainManager trainManager, IGameBoard gameBoard, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
         {
-            _gameState = gameState;
+            _trainManager = trainManager;
             _gameBoard = gameBoard;
             _pixelMapper = pixelMapper;
             _trackLayout = trackLayout;
@@ -41,7 +41,7 @@ namespace Trains.NET.Comet
         {
             if (_gameBoard.GetMovableAt(column, row) is Train train)
             {
-                _gameState.SetCurrentTrain(train);
+                _trainManager.CurrentTrain = train;
             }
             else
             {

@@ -25,5 +25,6 @@ namespace Trains.NET.Rendering
         void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle);
         void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours);
         void GradientRect(float x, float y, float width, float height, IEnumerable<Color> colours);
+        void DrawRoundRect(float x, float y, float width, float height, float radiusX, float radiusY, PaintBrush paint);
     }
 }

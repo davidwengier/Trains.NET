@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering.UI
+namespace Trains.NET.Engine
 {
     public class GameManager : IGameManager
     {
         private bool _buildMode;
         private ITool _currentTool;
         private readonly ITool _defaultTool;
+        private readonly IGameBoard _gameBoard;
 
         public event EventHandler? Changed;
 
-        public GameManager(IEnumerable<ITool> tools)
+        public GameManager(IEnumerable<ITool> tools, IGameBoard gameBoard)
         {
             _defaultTool = tools.First();
             _currentTool = _defaultTool;
+            _gameBoard = gameBoard;
         }
 
         public bool BuildMode
@@ -26,6 +27,7 @@ namespace Trains.NET.Rendering.UI
             {
                 _buildMode = value;
                 _currentTool = _defaultTool;
+                _gameBoard.Enabled = !_buildMode;
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }

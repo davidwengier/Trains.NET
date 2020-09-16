@@ -26,12 +26,12 @@ namespace Trains.NET.Comet
         public MainPage(IGame game,
                         IEnumerable<ILayerRenderer> layers,
                         IEnumerable<ICommand> commands,
-                        ITrainController trainControls,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
                         TrainsDelegate trainsDelegate,
-                        ISoundGenerator soundGenerator)
+                        ISoundGenerator soundGenerator,
+                        IGameManager gameManager)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
@@ -46,7 +46,7 @@ namespace Trains.NET.Comet
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
                         new Spacer(),
-                        _configurationShown || !trainControls.BuildMode ? null :
+                        _configurationShown || !gameManager.BuildMode ? null :
                             CreateCommandControls(commands),
                         new Spacer(),
                         new HStack()
@@ -67,11 +67,7 @@ namespace Trains.NET.Comet
                                  soundGenerator.Start();
                         }),
                     }.Frame(100, alignment: Alignment.Top),
-                    new VStack()
-                    {
-                        new TrainControllerPanel(trainControls),
-                        new DrawableControl(_controlDelegate)
-                    }
+                    new DrawableControl(_controlDelegate)
                 }.FillHorizontal();
             };
 

@@ -37,6 +37,7 @@ namespace Trains.NET.Rendering.UI
 
             _trackLayout.CollectionChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
             _pixelMapper.ViewPortChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
+            _terrainMapRenderer.Changed += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
@@ -72,14 +73,7 @@ namespace Trains.NET.Rendering.UI
 
             canvas.Translate(100, height - _pixelMapper.Rows - 100);
 
-            if (_terrainMapRenderer.TryGetTerrainImage(out IImage? terrainImage))
-            {
-                canvas.DrawImage(terrainImage, 0, 0);
-            }
-            else
-            {
-                canvas.Clear(TerrainColourLookup.DefaultColour);
-            }
+            canvas.DrawImage(_terrainMapRenderer.GetTerrainImage(), 0, 0);
 
             foreach (Track track in _trackLayout)
             {

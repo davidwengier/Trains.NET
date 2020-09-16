@@ -10,5 +10,8 @@ namespace Trains.NET
 
         public static bool IsLand(this Terrain terrain)
             => !terrain.IsWater();
+
+        public static bool IsMountain(this Terrain terrain)
+            => terrain.Height >= TerrainColourLookup.GetMountainLevel();
     }
 }

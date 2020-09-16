@@ -6,9 +6,9 @@ namespace Trains.NET.Rendering
     public static class TerrainColourLookup
     {  
         public static Color DefaultColour => Colors.Green;
-        private static Color WaterToLandTransition = Colors.LightYellow;
+        private static readonly Color s_waterToLandTransition = Colors.LightYellow;
 
-        private static readonly List<Color> _heightOrderedColours = new List<Color> {
+        private static readonly List<Color> s_heightOrderedColours = new List<Color> {
                 Colors.DarkBlue,
                 Colors.LightBlue,
                 Colors.LightYellow,
@@ -21,22 +21,22 @@ namespace Trains.NET.Rendering
 
         public static int GetWaterLevel()
         {
-            int heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
-            return _heightOrderedColours.IndexOf(WaterToLandTransition) * heightPerTerrainType - 1;
+            int heightPerTerrainType = (Terrain.MaxHeight / s_heightOrderedColours.Count) + 1;
+            return s_heightOrderedColours.IndexOf(s_waterToLandTransition) * heightPerTerrainType - 1;
         }
 
         public static Color GetTerrainColour(Terrain terrain)
         {
-            int heightPerTerrainType = (Terrain.MaxHeight / _heightOrderedColours.Count) + 1;
+            int heightPerTerrainType = (Terrain.MaxHeight / s_heightOrderedColours.Count) + 1;
 
             int colourLookup = terrain.Height / heightPerTerrainType;
-            return _heightOrderedColours[colourLookup];
+            return s_heightOrderedColours[colourLookup];
         } 
         
         public static int GetLandColourCount()
         {
-            var firstLand = _heightOrderedColours.IndexOf(WaterToLandTransition);
-            return _heightOrderedColours.Count - firstLand;
+            int firstLand = s_heightOrderedColours.IndexOf(s_waterToLandTransition);
+            return s_heightOrderedColours.Count - firstLand;
         }
     }
 }

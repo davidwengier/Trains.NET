@@ -328,7 +328,6 @@ namespace Trains.NET.Engine
         {
             _movables = _movables.Clear();
             _layout.Clear();
-            _terrainMap.Clear();
 
             _terrainSeed = new Random().Next();
 

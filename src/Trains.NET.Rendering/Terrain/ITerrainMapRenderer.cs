@@ -1,9 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 
 namespace Trains.NET.Rendering
 {
     public interface ITerrainMapRenderer
     {
-        bool TryGetTerrainImage([NotNullWhen(true)] out IImage? image);
+        event EventHandler? Changed;
+
+        IImage GetTerrainImage();
     }
 }

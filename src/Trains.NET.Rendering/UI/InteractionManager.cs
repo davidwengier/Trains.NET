@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
@@ -8,15 +7,15 @@ namespace Trains.NET.Rendering.UI
         private readonly IEnumerable<IScreen> _screens;
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
+        private readonly IGameManager _gameManager;
         private IScreen? _capturedScreen;
 
-        public ITool? CurrentTool { get; set; }
-
-        public InteractionManager(IEnumerable<IScreen> screens, IGame game, IPixelMapper pixelMapper)
+        public InteractionManager(IEnumerable<IScreen> screens, IGame game, IPixelMapper pixelMapper, IGameManager gameManager)
         {
             _screens = screens;
             _game = game;
             _pixelMapper = pixelMapper;
+            _gameManager = gameManager;
         }
 
         public bool PointerClick(int x, int y)
@@ -66,16 +65,16 @@ namespace Trains.NET.Rendering.UI
             }
 
 
-            if (this.CurrentTool is not null)
+            if (_gameManager.CurrentTool is not null)
             {
                 (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
-                if (this.CurrentTool.IsValid(column, row) && action != MouseAction.Move)
+                if (_gameManager.CurrentTool.IsValid(column, row) && action != MouseAction.Move)
                 {
-                    this.CurrentTool.Execute(column, row);
+                    _gameManager.CurrentTool.Execute(column, row);
                     return true;
                 }
-                else if (this.CurrentTool is IDraggableTool draggableTool)
+                else if (_gameManager.CurrentTool is IDraggableTool draggableTool)
                 {
                     if (action == MouseAction.Click)
                     {

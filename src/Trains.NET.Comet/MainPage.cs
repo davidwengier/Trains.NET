@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Comet;
@@ -22,11 +21,9 @@ namespace Trains.NET.Comet
         private readonly ITerrainMap _terrainMap;
         private readonly IGame _game;
         private readonly TrainsDelegate _controlDelegate;
-        private readonly IInteractionManager _interactionManager;
         private bool _presenting = true;
 
         public MainPage(IGame game,
-                        IEnumerable<ITool> tools,
                         IEnumerable<ILayerRenderer> layers,
                         IEnumerable<ICommand> commands,
                         ITrainController trainControls,
@@ -34,26 +31,20 @@ namespace Trains.NET.Comet
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
                         TrainsDelegate trainsDelegate,
-                        IInteractionManager interactionManager,
                         ISoundGenerator soundGenerator)
         {
             this.Title("Trains - " + ThisAssembly.AssemblyInformationalVersion);
 
             _game = game;
             _controlDelegate = trainsDelegate;
-            _interactionManager = interactionManager;
             this.Body = () =>
             {
                 return new HStack()
                 {
                     new VStack()
                     {
-                        _configurationShown ? null :
-                            new Button(trainControls.BuildMode ? "Building" : "Playing", () => SwitchGameMode()),
-                        new Spacer(),
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
-                                CreateToolsControls(tools, trainControls.BuildMode.Value),
                         new Spacer(),
                         _configurationShown || !trainControls.BuildMode ? null :
                             CreateCommandControls(commands),
@@ -88,15 +79,6 @@ namespace Trains.NET.Comet
             _gameStorage = gameStorage;
 
             _ = PresentLoop();
-
-            void SwitchGameMode()
-            {
-                trainControls.ToggleBuildMode();
-
-                if (_interactionManager == null) return;
-
-                _interactionManager.CurrentTool = tools.FirstOrDefault(t => ShouldShowTool(trainControls.BuildMode, t));
-            }
 
             void Snapshot()
             {
@@ -154,31 +136,6 @@ namespace Trains.NET.Comet
 
             return controlsGroup;
         }
-
-        private View CreateToolsControls(IEnumerable<ITool> tools, bool buildMode)
-        {
-            var controlsGroup = new RadioGroup(Orientation.Vertical);
-            foreach (ITool? tool in tools.Where(t => ShouldShowTool(buildMode, t)))
-            {
-                if (_interactionManager.CurrentTool == null)
-                {
-                    _interactionManager.CurrentTool = tool;
-                }
-
-                controlsGroup.Add(new RadioButton(() => tool.Name, () => _interactionManager.CurrentTool == tool, () => _interactionManager.CurrentTool = tool));
-            }
-
-            return controlsGroup;
-        }
-
-        private static bool ShouldShowTool(bool buildMode, ITool tool)
-            => (buildMode, tool.Mode) switch
-            {
-                (true, ToolMode.Build) => true,
-                (false, ToolMode.Play) => true,
-                (_, ToolMode.All) => true,
-                _ => false
-            };
 
         private static View CreateConfigurationControls(IEnumerable<ILayerRenderer> layers)
         {

@@ -14,6 +14,18 @@ namespace Trains.NET.Rendering.UI
 
         private readonly IEnumerable<ITool> _tools;
         private readonly IGameManager _gameManager;
+
+        private readonly PaintBrush _border = new()
+        {
+            Color = Colors.Black,
+            Style = PaintStyle.Stroke,
+            StrokeWidth = 3
+        };
+        private readonly PaintBrush _panelBackground = new()
+        {
+            Color = Colors.White.WithAlpha("aa"),
+            Style = PaintStyle.Fill
+        };
         private readonly PaintBrush _background = new PaintBrush
         {
             Style = PaintStyle.Fill,
@@ -51,12 +63,15 @@ namespace Trains.NET.Rendering.UI
         {
             if (action is MouseAction.Click or MouseAction.Move)
             {
-                if (x is >= ButtonGap and <= ButtonGap + ButtonWidth)
+                var validTools = _tools.Where(t => ShouldShowTool(_gameManager.BuildMode, t)).ToList();
+                int yPos = ButtonGap * 3;
+
+                if (x is >= 0 and <= ButtonGap + ButtonWidth + 20 && y >= yPos && y <= yPos + validTools.Count * ButtonGap * 2 + 20)
                 {
-                    int yPos = ButtonGap * 3;
+                    yPos += 20;
                     foreach (ITool tool in _tools.Where(t => ShouldShowTool(_gameManager.BuildMode, t)))
                     {
-                        if (y >= yPos && y <= yPos + ButtonGap)
+                        if (x is >= ButtonGap and <= ButtonGap + ButtonWidth && y >= yPos && y <= yPos + ButtonGap)
                         {
                             if (action == MouseAction.Click)
                             {
@@ -72,6 +87,7 @@ namespace Trains.NET.Rendering.UI
 
                         yPos += ButtonGap + ButtonGap;
                     }
+                    return true;
                 }
                 _hoverTool = null;
             }
@@ -82,7 +98,14 @@ namespace Trains.NET.Rendering.UI
         {
             int yPos = ButtonGap * 3;
 
-            foreach (ITool tool in _tools.Where(t=>ShouldShowTool(_gameManager.BuildMode, t)))
+            var validTools = _tools.Where(t => ShouldShowTool(_gameManager.BuildMode, t)).ToList();
+
+            canvas.DrawRoundRect(-50, yPos, 50 + ButtonGap + ButtonWidth + 20, validTools.Count * ButtonGap * 2 + 20, 10, 10, _border);
+            canvas.DrawRoundRect(-50, yPos, 50 + ButtonGap + ButtonWidth + 20, validTools.Count * ButtonGap * 2 + 20, 10, 10, _panelBackground);
+
+            yPos += 20;
+
+            foreach (ITool tool in validTools)
             {
                 PaintBrush brush = tool == _hoverTool ? _hoverBackground
                             : tool == _gameManager.CurrentTool ? _activeBackground

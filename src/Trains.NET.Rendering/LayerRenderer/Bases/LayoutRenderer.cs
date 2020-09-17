@@ -54,7 +54,7 @@ namespace Trains.NET.Rendering
                     float heightScale = 1;
                     if (this.IsScaledByHeight)
                     {
-                        heightScale = GetScaleForTerrainHeight(entity.Column, entity.Row);
+                        heightScale = _terrainMap.GetTerrainOrDefault(entity.Column, entity.Row).GetScaleFactor();
                     }
 
                     if (renderer is ICachableRenderer<T> cachableRenderer)
@@ -97,38 +97,6 @@ namespace Trains.NET.Rendering
 
                 canvas.Restore();
             }
-        }
-
-        private float GetScaleForTerrainHeight(int column, int row)
-        {
-            float minimumScaling = 0.5f;
-            float maximumScaling = 1.0f;
-
-            Terrain terrain = _terrainMap.GetTerrainOrDefault(column, row);
-            int height = terrain.Height;
-
-            // We only want to deal with water level and up
-            int lowerBoundedHeight = height < TerrainColourLookup.GetWaterLevel()
-                ? TerrainColourLookup.GetWaterLevel()
-                : height;
-
-            int heightRange = Terrain.MaxHeight - TerrainColourLookup.GetWaterLevel();
-            int heightDelta = lowerBoundedHeight - TerrainColourLookup.GetWaterLevel();
-
-            // This will give us a value of 0 to 1 for scaling
-            float heightScalingFactor = (float)heightDelta / (float)heightRange;
-
-            // We want to lock this into a number of discrete bands to make caching easier
-            int bandCount = TerrainColourLookup.GetLandColourCount();
-
-            float bandedScalingFactor = ((int)(bandCount * heightScalingFactor)) / (float)bandCount;
-
-            float delta = maximumScaling - minimumScaling;
-
-            // Apply the scaling factor to this and add it back to the lower bound
-            float scaledValue = (delta * bandedScalingFactor) + minimumScaling;
-
-            return scaledValue;
         }
     }
 }

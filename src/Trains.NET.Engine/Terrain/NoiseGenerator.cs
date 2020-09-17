@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Trains.NET.Engine
 {
-    public static class NoiseGenerator
+    internal static class NoiseGenerator
     {
         // Copied from https://stackoverflow.com/questions/8659351/2d-perlin-noise
         public static Dictionary<(int x, int y), float> GenerateNoiseMap(int width, int height, int octaves, int seed)

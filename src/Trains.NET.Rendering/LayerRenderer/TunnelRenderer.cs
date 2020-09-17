@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Rendering.Drawing;
 
 namespace Trains.NET.Rendering
 {
@@ -26,13 +25,13 @@ namespace Trains.NET.Rendering
             foreach (var track in _trackLayout)
             {
                 var terrain = _terrainMap.GetTerrainOrDefault(track.Column, track.Row);
-                if (terrain.Height < TerrainColourLookup.GetMountainLevel()) continue;
+                if (!terrain.IsMountain) continue;
 
                 Color colour = TerrainColourLookup.GetTerrainColour(terrain);
 
                 if (colour == TerrainColourLookup.DefaultColour) continue;
 
-                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize,
                                 new PaintBrush
                                 {
@@ -85,7 +84,7 @@ namespace Trains.NET.Rendering
         }
 
         private bool IsTunnelEntrance(Track? track)
-            => track is not null && !_terrainMap.GetTerrainOrDefault(track.Column, track.Row).IsMountain();
+            => track is not null && !_terrainMap.GetTerrainOrDefault(track.Column, track.Row).IsMountain;
 
         private Color BuildModeAwareColour(Color color)
             => !_gameBoard.Enabled

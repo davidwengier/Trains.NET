@@ -15,8 +15,7 @@ namespace Trains.NET.Engine
         Terrain GetAdjacentTerrainLeft(Terrain terrain);
         Terrain GetAdjacentTerrainRight(Terrain terrain);
         Terrain GetTerrainOrDefault(int column, int row);
-        void Clear();
-
+        void Reset(int seed, int columns, int rows);
         bool IsEmpty();
     }
 }

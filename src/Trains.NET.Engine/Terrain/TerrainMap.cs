@@ -11,9 +11,22 @@ namespace Trains.NET.Engine
 
         public event EventHandler? CollectionChanged;
 
-        public void Clear()
+        public void Reset(int seed, int columns, int rows)
         {
-            _terrainMap = _terrainMap.Clear();
+            Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(columns, rows, 4, seed);
+
+            var builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
+            foreach (var coord in noiseMap.Keys)
+            {
+                builder.Add(coord, new Terrain
+                {
+                    Column = coord.x,
+                    Row = coord.y,
+                    Height = (int)(noiseMap[coord] * Terrain.MaxHeight)
+                });
+            }
+            _terrainMap = builder.ToImmutable();
+
             CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 

@@ -91,6 +91,19 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
+        public void GradientRectLeftRight(float x, float y, float width, float height, IEnumerable<Color> colours)
+        {
+            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
+                                                       new SKPoint(x + width, y),
+                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
+                                                       SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                Shader = shader
+            };
+            _canvas.DrawRect(x, y, width, height, paint);
+        }
+
         public void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateRadialGradient(new SKPoint(circleX, circleY),

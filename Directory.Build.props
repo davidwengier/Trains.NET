@@ -6,6 +6,8 @@
     <Features>strict</Features>
     <Nullable>enable</Nullable>
     <NoWarn>NU1701</NoWarn>
+    <WarningLevel>5</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

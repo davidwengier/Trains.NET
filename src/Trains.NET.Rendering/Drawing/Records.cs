@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Trains.NET.Rendering
 {
     public record PaintBrush
@@ -12,13 +13,32 @@ namespace Trains.NET.Rendering
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable format
-    public record Color(string HexCode)
+    public record Color(int A, int R, int G, int B)
     {
-        public Color WithAlpha(string alpha)
-            => this with
+        public Color(string hexCode)
+            : this(HtmlToArgb(hexCode))
+        {
+        }
+
+        private static Color HtmlToArgb(string htmlColor)
+        {
+            if (htmlColor.Length == 7)
             {
-                HexCode = "#" + alpha + this.HexCode[^6..]
-            };
+                return new Color(byte.MaxValue,
+                    Convert.ToByte(htmlColor.Substring(1, 2), 16),
+                    Convert.ToByte(htmlColor.Substring(3, 2), 16),
+                    Convert.ToByte(htmlColor.Substring(5, 2), 16));
+            }
+            else if (htmlColor.Length == 9)
+            {
+                return new Color(
+                    Convert.ToByte(htmlColor.Substring(1, 2), 16),
+                    Convert.ToByte(htmlColor.Substring(3, 2), 16),
+                    Convert.ToByte(htmlColor.Substring(5, 2), 16),
+                    Convert.ToByte(htmlColor.Substring(7, 2), 16));
+            }
+            throw new ArgumentException($"Invalid color code '{htmlColor}', must be #RRGGBB or #AARRGGBB", nameof(htmlColor));
+        }
     }
 
     public record Rectangle(float Left, float Top, float Right, float Bottom);

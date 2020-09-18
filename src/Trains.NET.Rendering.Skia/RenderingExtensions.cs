@@ -10,7 +10,7 @@ namespace Trains.NET.Rendering.Skia
         public static SKColor ToSkia(this Color color) => color switch
         {
             Color c when c == Colors.Empty => SKColor.Empty,
-            _ => SKColor.Parse(color.HexCode)
+            _ => new SKColor((byte)color.R, (byte)color.G, (byte)color.B, (byte)color.A)
         };
 
         public static SKPaintStyle ToSkia(this PaintStyle style) => style switch

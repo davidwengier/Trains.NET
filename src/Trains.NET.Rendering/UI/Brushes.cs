@@ -13,11 +13,11 @@
         {
             IsAntialias = true,
             Style = PaintStyle.Fill,
-            Color = Colors.White.WithAlpha("aa")
+            Color = Colors.White with { A = 170 }
         };
         public static readonly PaintBrush ButtonBackground = PanelBackground with { Color = Colors.LightGray };
         public static readonly PaintBrush ButtonActiveBackground = PanelBackground with { Color = Colors.LightBlue };
-        public static readonly PaintBrush ButtonHoverBackground = PanelBackground with { Color = Colors.LightBlue.WithAlpha("55") };
+        public static readonly PaintBrush ButtonHoverBackground = PanelBackground with { Color = Colors.LightBlue with { A = 85 } };
 
         public static readonly PaintBrush Label = new PaintBrush
         {

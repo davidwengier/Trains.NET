@@ -6,14 +6,15 @@ namespace Trains.NET.Engine
     {
         public const int MaxHeight = 100;
 
-        private const int NumberWaterLevels = 2;
-        private const int NumberSandLevels = 1; // Not really important, but good to remember
-        private const int NumberLandLevels = 3;
-        private const int NumberMountainLevels = 2;
+        public const int NumberWaterLevels = 2;
+        public const int NumberSandLevels = 1; // Not really important, but good to remember
+        public const int NumberLandLevels = 3;
+        public const int NumberMountainLevels = 2;
 
         private const int TotalLevels = NumberWaterLevels + NumberSandLevels + NumberLandLevels + NumberMountainLevels;
         private const int HeightPerLevel = MaxHeight / TotalLevels + 1;
         private const int LastWaterHeight = NumberWaterLevels * HeightPerLevel - 1;
+        private const int FirstLandHeight = LastWaterHeight + 1;
         private const int FirstMountainHeight = (TotalLevels - NumberMountainLevels) * HeightPerLevel;
         private const int TotalLandLevels = TotalLevels - NumberWaterLevels;
 
@@ -21,19 +22,22 @@ namespace Trains.NET.Engine
         public int Row { get; set; }
         public int Height { get; set; }
 
+        public int TerrainLevel => this.Height / HeightPerLevel;
         public bool IsWater => this.Height <= LastWaterHeight;
-
         public bool IsLand => !this.IsWater;
-
         public bool IsMountain => this.Height >= FirstMountainHeight;
 
+        /// <summary>
+        /// Gets a value between 0 and 1 that maps to the position in the possible range of terrain
+        /// </summary>
+        /// <returns></returns>
         public float GetScaleFactor()
         {
             const float minimumScaling = 0.5f;
             const float maximumScaling = 1.0f;
 
             // We only want to deal with water level and up
-            int height = Math.Max(this.Height, LastWaterHeight);
+            int height = Math.Max(this.Height, FirstLandHeight);
 
             float heightRange = MaxHeight - LastWaterHeight;
             float heightDelta = height - LastWaterHeight;

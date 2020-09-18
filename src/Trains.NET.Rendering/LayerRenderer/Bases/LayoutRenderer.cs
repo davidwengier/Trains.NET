@@ -54,7 +54,7 @@ namespace Trains.NET.Rendering
                     float heightScale = 1;
                     if (this.IsScaledByHeight)
                     {
-                        heightScale = _terrainMap.GetTerrainOrDefault(entity.Column, entity.Row).GetScaleFactor();
+                        heightScale = _terrainMap.Get(entity.Column, entity.Row).GetScaleFactor();
                     }
 
                     if (renderer is ICachableRenderer<T> cachableRenderer)

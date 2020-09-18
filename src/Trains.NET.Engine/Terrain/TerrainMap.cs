@@ -15,8 +15,8 @@ namespace Trains.NET.Engine
         {
             Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(columns, rows, 4, seed);
 
-            var builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
-            foreach (var coord in noiseMap.Keys)
+            ImmutableDictionary<(int, int), Terrain>.Builder builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
+            foreach ((int x, int y) coord in noiseMap.Keys)
             {
                 builder.Add(coord, new Terrain
                 {
@@ -30,21 +30,10 @@ namespace Trains.NET.Engine
             CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SetTerrainHeight(int column, int row, int height)
-        {
-            GetOrAdd(column, row).Height = height;
-            CollectionChanged?.Invoke(this, EventArgs.Empty);
-        }
-
         public void Set(IEnumerable<Terrain> terrainList)
         {
             _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
             CollectionChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private Terrain GetOrAdd(int column, int row)
-        {
-            return ImmutableInterlocked.GetOrAdd(ref _terrainMap, (column, row), key => new Terrain { Column = key.Item1, Row = key.Item2 });
         }
 
         public IEnumerator<Terrain> GetEnumerator()
@@ -57,41 +46,7 @@ namespace Trains.NET.Engine
             return GetEnumerator();
         }
 
-        public Terrain GetAdjacentTerrainUp(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row - 1);
-        }
-
-        public Terrain GetAdjacentTerrainDown(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column, terrain.Row + 1);
-        }
-
-        public Terrain GetAdjacentTerrainLeft(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column - 1, terrain.Row);
-        }
-
-        public Terrain GetAdjacentTerrainRight(Terrain terrain)
-        {
-            return GetTerrainOrDefault(terrain.Column + 1, terrain.Row);
-        }
-
-        public Terrain GetTerrainOrDefault(int column, int row)
-        {
-            if (_terrainMap.TryGetValue((column, row), out Terrain? adjacentTerrain))
-            {
-                return adjacentTerrain;
-            }
-
-            return new Terrain
-            {
-                Row = row,
-                Column = column,
-                Height = 0,
-            };
-        }
-
-        public bool IsEmpty() => _terrainMap.IsEmpty;
+        public Terrain Get(int column, int row)
+            => _terrainMap[(column, row)];
     }
 }

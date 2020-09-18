@@ -13,6 +13,18 @@ namespace Trains.NET.Tests
             };
             col.Add(column, row, track);
         }
+
+        public static void AddTrack(this ILayout col, int column, int row, TrackDirection direction)
+        {
+            var track = new Track()
+            {
+                Column = column,
+                Row = row,
+                Direction = direction
+            };
+            col.Add(column, row, track);
+        }
+
         public static Track GetTrackAt(this ILayout trackLayout, int column, int row)
         {
             trackLayout.TryGet(column, row, out Track track);

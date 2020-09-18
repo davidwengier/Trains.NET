@@ -193,57 +193,67 @@ namespace Trains.NET.Engine
                 TrainMovement.MoveHorizontal(position);
             }
         }
-        private bool CanConnectRight() => this.Direction switch
-        {
-            _ when !this.Happy => true,
-            TrackDirection.RightDown => true,
-            TrackDirection.RightUp => true,
-            TrackDirection.Horizontal => true,
-            TrackDirection.Cross => true,
-            TrackDirection.RightDown_LeftDown => true,
-            TrackDirection.LeftUp_RightUp => true,
-            TrackDirection.RightUp_RightDown => true,
-            _ => false
-        };
 
-        private bool CanConnectDown() => this.Direction switch
-        {
-            _ when !this.Happy => true,
-            TrackDirection.RightDown => true,
-            TrackDirection.LeftDown => true,
-            TrackDirection.Vertical => true,
-            TrackDirection.Cross => true,
-            TrackDirection.RightDown_LeftDown => true,
-            TrackDirection.LeftDown_LeftUp => true,
-            TrackDirection.RightUp_RightDown => true,
-            _ => false
-        };
+        private bool CanConnectRight()
+            => !this.Happy || IsConnectedRight();
+        private bool CanConnectDown()
+            => !this.Happy || IsConnectedDown();
+        private bool CanConnectLeft()
+            => !this.Happy || IsConnectedLeft();
+        private bool CanConnectUp()
+            => !this.Happy || IsConnectedUp();
 
-        private bool CanConnectLeft() => this.Direction switch
-        {
-            _ when !this.Happy => true,
-            TrackDirection.LeftDown => true,
-            TrackDirection.LeftUp => true,
-            TrackDirection.Horizontal => true,
-            TrackDirection.Cross => true,
-            TrackDirection.RightDown_LeftDown => true,
-            TrackDirection.LeftUp_RightUp => true,
-            TrackDirection.LeftDown_LeftUp => true,
-            _ => false
-        };
+        private bool IsConnectedRight()
+            => this.Direction switch
+            {
+                TrackDirection.RightDown => true,
+                TrackDirection.RightUp => true,
+                TrackDirection.Horizontal => true,
+                TrackDirection.Cross => true,
+                TrackDirection.RightDown_LeftDown => true,
+                TrackDirection.LeftUp_RightUp => true,
+                TrackDirection.RightUp_RightDown => true,
+                _ => false
+            };
 
-        private bool CanConnectUp() => this.Direction switch
-        {
-            _ when !this.Happy => true,
-            TrackDirection.LeftUp => true,
-            TrackDirection.RightUp => true,
-            TrackDirection.Vertical => true,
-            TrackDirection.Cross => true,
-            TrackDirection.LeftDown_LeftUp => true,
-            TrackDirection.LeftUp_RightUp => true,
-            TrackDirection.RightUp_RightDown => true,
-            _ => false
-        };
+        private bool IsConnectedDown()
+            => this.Direction switch
+            {
+                TrackDirection.RightDown => true,
+                TrackDirection.LeftDown => true,
+                TrackDirection.Vertical => true,
+                TrackDirection.Cross => true,
+                TrackDirection.RightDown_LeftDown => true,
+                TrackDirection.LeftDown_LeftUp => true,
+                TrackDirection.RightUp_RightDown => true,
+                _ => false
+            };
+
+        private bool IsConnectedLeft()
+            => this.Direction switch
+            {
+                TrackDirection.LeftDown => true,
+                TrackDirection.LeftUp => true,
+                TrackDirection.Horizontal => true,
+                TrackDirection.Cross => true,
+                TrackDirection.RightDown_LeftDown => true,
+                TrackDirection.LeftUp_RightUp => true,
+                TrackDirection.LeftDown_LeftUp => true,
+                _ => false
+            };
+
+        private bool IsConnectedUp()
+            => this.Direction switch
+            {
+                TrackDirection.LeftUp => true,
+                TrackDirection.RightUp => true,
+                TrackDirection.Vertical => true,
+                TrackDirection.Cross => true,
+                TrackDirection.LeftDown_LeftUp => true,
+                TrackDirection.LeftUp_RightUp => true,
+                TrackDirection.RightUp_RightDown => true,
+                _ => false
+            };
 
         public void SetBestTrackDirection(bool ignoreHappyness)
         {
@@ -337,19 +347,31 @@ namespace Trains.NET.Engine
             neighbors.Left?.SetBestTrackDirection(ignoreHappyness);
         }
 
+        public TrackNeighbors GetConnectedNeighbors()
+        {
+            _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
+
+            return new TrackNeighbors(
+                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedRight() && left.IsConnectedRight() ? left : null,
+                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && IsConnectedUp() && up.IsConnectedDown() ? up : null,
+                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && IsConnectedRight() && right.IsConnectedLeft() ? right : null,
+                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && IsConnectedDown() && down.IsConnectedUp() ? down : null
+                );
+        }
+
         public TrackNeighbors GetNeighbors()
         {
             _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
             return new TrackNeighbors(
                 _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && left.CanConnectRight() ? left : null,
-                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && up.CanConnectDown() == true ? up : null,
-                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && right.CanConnectLeft() == true ? right : null,
-                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && down.CanConnectUp() == true ? down : null
+                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && up.CanConnectDown() ? up : null,
+                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && right.CanConnectLeft() ? right : null,
+                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && down.CanConnectUp() ? down : null
                 );
         }
 
-        private TrackNeighbors GetAllNeighbors()
+        public TrackNeighbors GetAllNeighbors()
         {
             _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 

@@ -9,7 +9,7 @@ namespace Trains.NET.Rendering
         public bool Enabled { get; set; }
         public string Name => "Grid";
 
-        public event EventHandler? Changed;
+        public event EventHandler? Changed { add { } remove { } } // wacky, but stops the compiler complaining its unused
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {

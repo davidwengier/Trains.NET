@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -10,6 +11,27 @@ namespace Trains.NET.Rendering
         private readonly ILayout<Track> _trackLayout;
         private readonly IGameBoard _gameBoard;
         private const int BuildModeAlpha = 170;
+
+        private const int NO_TUNNELS = 0;
+        private const int TOP = 1;
+        private const int RIGHT = 2;
+        private const int BOTTOM = 4;
+        private const int LEFT = 8;
+
+        private const int TOPRIGHT_CORNER = 3;
+        private const int BOTTOMRIGHT_CORNER = 6;
+        private const int TOPLEFT_CORNER = 9;
+        private const int BOTTOMLEFT_CORNER = 12;
+
+        private const int STRAIGHT_HORIZONTAL = 10;
+        private const int STRAIGHT_VERTICAL = 5;
+
+        private const int THREEWAY_NO_LEFT = 7;
+        private const int THREEWAY_NO_UP = 14;
+        private const int THREEWAY_NO_RIGHT = 13;
+        private const int THREEWAY_NO_DOWN = 11;
+
+        private const int FOUR_WAY = 15;
 
         public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameBoard gameBoard)
         {
@@ -23,7 +45,7 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            Dictionary<(int column, int row), int> nonMountainCellEntrances = new();
+            Dictionary<(int column, int row), int> neighbourTunnels = new();
 
             var lightColour = BuildModeAwareColour(Colors.LightGray);
             var darkColour = BuildModeAwareColour(Colors.Gray);
@@ -45,61 +67,47 @@ namespace Trains.NET.Rendering
 
                 TrackNeighbors trackNeighbours = track.GetNeighbors();
 
-                var tunnels = 0;
-                if (IsTunnelEntrance(trackNeighbours.Up))
+                var currentCellTunnels = NO_TUNNELS;
+                var neighbourTrackConfigs = new List<(Track neighbourTrack, int currentCellTunnel, int neighbourTunnel)>
                 {
-                    tunnels += 1;
+                    (trackNeighbours.Up, TOP, BOTTOM),
+                    (trackNeighbours.Right, RIGHT, LEFT),
+                    (trackNeighbours.Down, BOTTOM, TOP),
+                    (trackNeighbours.Left, LEFT, RIGHT)
+                };
 
-                    var key = (column: trackNeighbours.Up.Column, row: trackNeighbours.Up.Row);
-                    nonMountainCellEntrances.IncrementValue(key, 4);
+                foreach (var neighbourTrackConfig in neighbourTrackConfigs)
+                {
+                    if (!IsTunnelEntrance(neighbourTrackConfig.neighbourTrack)) continue;
+
+                    currentCellTunnels += neighbourTrackConfig.currentCellTunnel;
+                    var key = (column: neighbourTrackConfig.neighbourTrack.Column, row: neighbourTrackConfig.neighbourTrack.Row);
+                    neighbourTunnels.IncrementValue(key, neighbourTrackConfig.neighbourTunnel);
                 }
 
-                if (IsTunnelEntrance(trackNeighbours.Right))
-                {
-                    tunnels += 2;
+                switch (currentCellTunnels) {
+                    case NO_TUNNELS: break;
+                    case TOP:
+                    case RIGHT:
+                    case BOTTOM:
+                    case LEFT: DrawSingleTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case STRAIGHT_VERTICAL:
+                    case STRAIGHT_HORIZONTAL: DrawStraightTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case TOPRIGHT_CORNER:
+                    case BOTTOMRIGHT_CORNER:
+                    case TOPLEFT_CORNER:
+                    case BOTTOMLEFT_CORNER: DrawCornerIntersection(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case THREEWAY_NO_UP:
+                    case THREEWAY_NO_RIGHT:
+                    case THREEWAY_NO_DOWN:
+                    case THREEWAY_NO_LEFT: DrawThreeWayTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case FOUR_WAY: DrawFourWayIntersection(canvas, pixelMapper, x, y, lightColour, darkColour); break;
 
-                    var key = (column: trackNeighbours.Right.Column, row: trackNeighbours.Right.Row);
-                    nonMountainCellEntrances.IncrementValue(key, 8);
-                }
-
-                if (IsTunnelEntrance(trackNeighbours.Down))
-                {
-                    tunnels += 4;
-
-                    var key = (column: trackNeighbours.Down.Column, row: trackNeighbours.Down.Row);
-                    nonMountainCellEntrances.IncrementValue(key, 1);
-                }
-
-                if (IsTunnelEntrance(trackNeighbours.Left))
-                {
-                    tunnels += 8;
-
-                    var key = (column: trackNeighbours.Left.Column, row: trackNeighbours.Left.Row);
-                    nonMountainCellEntrances.IncrementValue(key, 2);
-                }
-
-                switch (tunnels) {
-                    case 0: break;
-                    case 15: DrawFourWayIntersection(canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case 3:
-                    case 6:
-                    case 9:
-                    case 12: DrawTwoWayIntersection(tunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case 1:
-                    case 2:
-                    case 4:
-                    case 8: DrawSingleTunnel(tunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case 14:
-                    case 13:
-                    case 11:
-                    case 7: DrawThreeWayTunnel(tunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case 5:
-                    case 10: DrawStraightTunnel(tunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
                 }
             }
 
             var colours = new[] { darkColour, lightColour, darkColour };
-            foreach (var kv in nonMountainCellEntrances)
+            foreach (var kv in neighbourTunnels)
             {
                 (int col, int row) = kv.Key;
                 var tunnels = kv.Value;
@@ -108,22 +116,23 @@ namespace Trains.NET.Rendering
 
                 switch (tunnels)
                 {
-                    case 0: break;
-                    case 15: DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, colours); break;
-                    case 3:
-                    case 6:
-                    case 9:
-                    case 12: DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case 1:
-                    case 2:
-                    case 4:
-                    case 8: DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case 14:
-                    case 13:
-                    case 11:
-                    case 7: DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case 5:
-                    case 10: DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case NO_TUNNELS: break;
+                    case TOP:
+                    case RIGHT:
+                    case BOTTOM:
+                    case LEFT: DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case STRAIGHT_VERTICAL:
+                    case STRAIGHT_HORIZONTAL: DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case TOPRIGHT_CORNER:
+                    case BOTTOMRIGHT_CORNER:
+                    case TOPLEFT_CORNER:
+                    case BOTTOMLEFT_CORNER: DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case THREEWAY_NO_UP:
+                    case THREEWAY_NO_RIGHT:
+                    case THREEWAY_NO_DOWN:
+                    case THREEWAY_NO_LEFT: DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case FOUR_WAY: DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, colours); break;
+
                 }
             }
         }
@@ -132,227 +141,228 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                10 => 0,
-                5 => 90,
-                _ => throw new System.NotImplementedException(),
+                STRAIGHT_HORIZONTAL => 0,
+                STRAIGHT_VERTICAL => 90,
+                _ => throw new NotImplementedException(),
             };
 
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(angle, 0.5f * pixelMapper.CellSize, 0.5f * pixelMapper.CellSize);
-            canvas.GradientRect(0, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
-            canvas.GradientRect(0.75f * pixelMapper.CellSize, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                c.GradientRect(0, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
+                c.GradientRect(0.75f * pixelMapper.CellSize, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
+            };
 
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawThreeWayEntrance(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color[] colours)
         {
             var angle = (tunnels) switch
             {
-                7 => 0,
-                11 => 270,
-                13 => 180,
-                14 => 90,
-                _ => throw new System.NotImplementedException(),
+                THREEWAY_NO_LEFT => 0,
+                THREEWAY_NO_UP => 90,
+                THREEWAY_NO_RIGHT => 180,
+                THREEWAY_NO_DOWN => 270,
+                _ => throw new NotImplementedException()
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var quarterCellSize = 0.25f * cellSize;
-            var threequarterCellSize = 0.75f * cellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var quarterCellSize = 0.25f * cellSize;
+                var threequarterCellSize = 0.75f * cellSize;
 
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(angle, 0.5f * pixelMapper.CellSize, 0.5f * pixelMapper.CellSize);
+                c.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
+                c.GradientRect(threequarterCellSize, 0, quarterCellSize, cellSize, colours);
+                c.GradientRectLeftRight(0, threequarterCellSize, cellSize, quarterCellSize, colours);
+                c.GradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
+                c.GradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
+            };
 
-            canvas.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
-            canvas.GradientRect(threequarterCellSize, 0, quarterCellSize, cellSize, colours);
-            canvas.GradientRectLeftRight(0, threequarterCellSize, cellSize, quarterCellSize, colours);
-            canvas.GradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
-            canvas.GradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
-
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawFourWayEntranceIntersection(ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color[] colours)
         {
-            var cellSize = pixelMapper.CellSize;
-            var quarterCellSize = 0.25f * cellSize;
-            var threequarterCellSize = 0.75f * cellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var quarterCellSize = 0.25f * cellSize;
+                var threequarterCellSize = 0.75f * cellSize;
 
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.GradientRect(0, 0, quarterCellSize, cellSize, colours);
-            canvas.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
-            canvas.GradientRect(0, threequarterCellSize, quarterCellSize, cellSize, colours);
-            canvas.GradientRectLeftRight(0, threequarterCellSize, cellSize, quarterCellSize, colours);
-            canvas.GradientCircle(0, 0, quarterCellSize, quarterCellSize, 0, 0, cellSize, colours);
-            canvas.GradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
-            canvas.GradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
-            canvas.GradientCircle(0, threequarterCellSize, quarterCellSize, quarterCellSize, 0, cellSize, cellSize, colours);
+                c.GradientRect(0, 0, quarterCellSize, cellSize, colours);
+                c.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
+                c.GradientRect(0, threequarterCellSize, quarterCellSize, cellSize, colours);
+                c.GradientRectLeftRight(0, threequarterCellSize, cellSize, quarterCellSize, colours);
+                c.GradientCircle(0, 0, quarterCellSize, quarterCellSize, 0, 0, cellSize, colours);
+                c.GradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
+                c.GradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
+                c.GradientCircle(0, threequarterCellSize, quarterCellSize, quarterCellSize, 0, cellSize, cellSize, colours);
+            };
 
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, 0, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawSingleEntrance(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color[] colours)
         {
             var angle = (tunnels) switch
             {
-                8 => 0,
-                1 => 90,
-                2 => 180,
-                4 => 270,
-                _ => throw new System.NotImplementedException()
+                LEFT => 0,
+                TOP => 90,
+                RIGHT => 180,
+                BOTTOM => 270,
+                _ => throw new NotImplementedException()
             };
 
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(angle, 0.5f * pixelMapper.CellSize, 0.5f * pixelMapper.CellSize);
-            canvas.GradientRect(0, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                c.GradientRect(0, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, colours);
+            };
 
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawTwoWayEntranceIntersection(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color[] colours)
         {
             var angle = (tunnels) switch
             {
-                3 => 90,
-                6 => 180,
-                9 => 0,
-                12 => 270,
-                _ => throw new System.NotImplementedException()
+                TOPLEFT_CORNER => 0,
+                TOPRIGHT_CORNER => 90,
+                BOTTOMRIGHT_CORNER => 180,
+                BOTTOMLEFT_CORNER => 270,
+                _ => throw new NotImplementedException()
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * cellSize;
-            var quarterCellSize = 0.25f * cellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * cellSize;
+                var quarterCellSize = 0.25f * cellSize;
 
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
-            canvas.GradientRect(0, 0, quarterCellSize, cellSize, colours);
-            canvas.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
-            canvas.GradientCircle(0, 0, quarterCellSize, quarterCellSize, 0, 0, cellSize, colours);
+                c.GradientRect(0, 0, quarterCellSize, cellSize, colours);
+                c.GradientRectLeftRight(0, 0, cellSize, quarterCellSize, colours);
+                c.GradientCircle(0, 0, quarterCellSize, quarterCellSize, 0, 0, cellSize, colours);
+            };
 
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawStraightTunnel(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
         {
             var angle = (tunnels) switch
             {
-                10 => 0,
-                5 => 90,
-                _ => throw new System.NotImplementedException(),
+                STRAIGHT_HORIZONTAL => 0,
+                STRAIGHT_VERTICAL => 90,
+                _ => throw new NotImplementedException(),
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * pixelMapper.CellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * pixelMapper.CellSize;
 
-            canvas.Save();
-            canvas.Translate(x, y);
+                c.GradientRect(0, 0, cellSize, cellSize, darkColour, lightColour);
+            };
 
-            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
-
-            canvas.GradientRect(0, 0, cellSize, cellSize, darkColour, lightColour);
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawThreeWayTunnel(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
         {
             var angle = (tunnels) switch
             {
-                14 => 0,
-                13 => 90,
-                11 => 180,
-                7 => 270,
-                _ => throw new System.NotImplementedException()
+                THREEWAY_NO_UP => 0,
+                THREEWAY_NO_RIGHT => 90,
+                THREEWAY_NO_DOWN => 180,
+                THREEWAY_NO_LEFT => 270,
+                _ => throw new NotImplementedException()
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * pixelMapper.CellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * pixelMapper.CellSize;
 
+                c.GradientRect(0, 0, cellSize, halfCellSize, new Color[] { darkColour, lightColour });
+                c.GradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, new[] { darkColour, lightColour });
+                c.GradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, new[] { darkColour, lightColour });
+            };
 
-            canvas.Save();
-            canvas.Translate(x, y);
-
-            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
-
-
-            canvas.GradientRect(0, 0, cellSize, halfCellSize, new Color[] { darkColour, lightColour });
-            canvas.GradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, new[] { darkColour, lightColour });
-            canvas.GradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, new[] { darkColour, lightColour });
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawSingleTunnel(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
         {
             var angle = (tunnels) switch
             {
-                8 => 0,
-                1 => 90,
-                2 => 180,
-                4 => 270,
-                _ => throw new System.NotImplementedException()
+                LEFT => 0,
+                TOP => 90,
+                RIGHT => 180,
+                BOTTOM => 270,
+                _ => throw new NotImplementedException()
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * pixelMapper.CellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * pixelMapper.CellSize;
 
+                c.GradientCircle(0, 0, cellSize, cellSize, 0, halfCellSize, halfCellSize, new[] { lightColour, darkColour });
+            };
 
-            canvas.Save();
-            canvas.Translate(x, y);
-
-            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
-
-            canvas.GradientCircle(0, 0, cellSize, cellSize, 0, halfCellSize, halfCellSize, new[] { lightColour, darkColour });
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
-        private static void DrawTwoWayIntersection(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
+        private static void DrawCornerIntersection(int tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
         {
-            var angle = (tunnels / 3) switch
+            var angle = (tunnels) switch
             {
-                1 => 90,
-                2 => 180,
-                3 => 0,
-                4 => 270,
-                _ => throw new System.NotImplementedException()
+                TOPLEFT_CORNER => 0,
+                TOPRIGHT_CORNER => 90,
+                BOTTOMRIGHT_CORNER => 180,
+                BOTTOMLEFT_CORNER => 270,
+                _ => throw new NotImplementedException()
             };
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * pixelMapper.CellSize;
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * pixelMapper.CellSize;
 
-            var gradientColours = new List<Color> { darkColour, lightColour, darkColour };
+                var gradientColours = new List<Color> { darkColour, lightColour, darkColour };
 
-            canvas.Save();
-            canvas.Translate(x, y);
+                c.GradientCircle(0, 0, cellSize, cellSize, 0, 0, cellSize, gradientColours);
+            };
 
-            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
-
-            canvas.GradientCircle(0, 0, cellSize, cellSize, 0, 0, cellSize, gradientColours);
-
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, angle, 0.5f * pixelMapper.CellSize);
         }
 
         private static void DrawFourWayIntersection(ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color lightColour, Color darkColour)
         {
-            canvas.Save();
-            canvas.Translate(x, y);
+            Action<ICanvas> drawAction = (ICanvas c) =>
+            {
+                var cellSize = pixelMapper.CellSize;
+                var halfCellSize = 0.5f * pixelMapper.CellSize;
 
-            var cellSize = pixelMapper.CellSize;
-            var halfCellSize = 0.5f * pixelMapper.CellSize;
+                var gradientColours = new List<Color> { darkColour, lightColour };
 
-            var gradientColours = new List<Color> { darkColour, lightColour };
-            canvas.GradientCircle(0, 0, halfCellSize, halfCellSize, 0, 0, halfCellSize, gradientColours); // Top left
-            canvas.GradientCircle(halfCellSize, 0, halfCellSize, halfCellSize, cellSize, 0, halfCellSize, gradientColours); // Top right
-            canvas.GradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, gradientColours); // Bottom right
-            canvas.GradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, gradientColours); // Bottom left
+                c.GradientCircle(0, 0, halfCellSize, halfCellSize, 0, 0, halfCellSize, gradientColours); // Top left
+                c.GradientCircle(halfCellSize, 0, halfCellSize, halfCellSize, cellSize, 0, halfCellSize, gradientColours); // Top right
+                c.GradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, gradientColours); // Bottom right
+                c.GradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, gradientColours); // Bottom left
+            };
 
-            canvas.Restore();
+            DrawInCell(x, y, canvas, drawAction, 0, 0.5f * pixelMapper.CellSize);
         }
 
+        private static void DrawInCell(int x, int y, ICanvas canvas, Action<ICanvas> drawAction, float angle, float halfCellSize)
+        {
+            canvas.Save();
+            canvas.Translate(x, y);
+            canvas.RotateDegrees(angle, halfCellSize, halfCellSize);
+            drawAction(canvas);
+            canvas.Restore();
+        }
 
         private bool IsTunnelEntrance(Track? track)
             => track is not null && !_terrainMap.Get(track.Column, track.Row).IsMountain;

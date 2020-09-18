@@ -65,10 +65,10 @@ namespace Trains.NET.Rendering
                                     Color = darkColour,
                                 });
 
-                TrackNeighbors trackNeighbours = track.GetNeighbors();
+                TrackNeighbors trackNeighbours = track.GetConnectedNeighbors();
 
                 var currentCellTunnels = NO_TUNNELS;
-                var neighbourTrackConfigs = new List<(Track neighbourTrack, int currentCellTunnel, int neighbourTunnel)>
+                var neighbourTrackConfigs = new List<(Track? neighbourTrack, int currentCellTunnel, int neighbourTunnel)>
                 {
                     (trackNeighbours.Up, TOP, BOTTOM),
                     (trackNeighbours.Right, RIGHT, LEFT),
@@ -81,11 +81,15 @@ namespace Trains.NET.Rendering
                     if (!IsTunnelEntrance(neighbourTrackConfig.neighbourTrack)) continue;
 
                     currentCellTunnels += neighbourTrackConfig.currentCellTunnel;
-                    var key = (column: neighbourTrackConfig.neighbourTrack.Column, row: neighbourTrackConfig.neighbourTrack.Row);
+                    var neighbourTrack = neighbourTrackConfig.neighbourTrack is not null
+                        ? neighbourTrackConfig.neighbourTrack
+                        : new Track();
+                    var key = (column: neighbourTrack.Column, row: neighbourTrack.Row);
                     neighbourTunnels.IncrementValue(key, neighbourTrackConfig.neighbourTunnel);
                 }
 
-                switch (currentCellTunnels) {
+                switch (currentCellTunnels)
+                {
                     case NO_TUNNELS: break;
                     case TOP:
                     case RIGHT:

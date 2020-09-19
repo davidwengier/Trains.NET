@@ -8,7 +8,7 @@
   
   <ItemGroup>
 
-    <PackageReference Update="System.Collections.Immutable" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Update="System.Collections.Immutable" Version="5.0.0-preview.8.20407.11" />
 
     <!-- Analyzers etc. -->
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0" />
@@ -17,7 +17,7 @@
     <!-- For source generators -->
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0-3.final" PrivateAssets="all" />
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0" PrivateAssets="all" />
- 
+
     <!-- SkiaSharp -->
     <PackageReference Update="SkiaSharp"                    Version="2.80.2" />
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.2" />

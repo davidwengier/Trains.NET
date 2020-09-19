@@ -34,7 +34,7 @@ namespace Trains.NET.Rendering
             var strings = new List<string>();
 
             float maxWidth = 0;
-            foreach((string name, IStat stat) in InstrumentationBag.Stats)
+            foreach ((string name, IStat stat) in InstrumentationBag.Stats)
             {
                 if (stat.ShouldShow())
                 {

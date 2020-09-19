@@ -87,9 +87,9 @@ namespace Trains.NET.Rendering.Skia
 
         public void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours)
         {
-            var shader = SKShader.CreateRadialGradient(new SKPoint(circleX, circleY), 
-                                                       radius, 
-                                                       colours.Select(colour => colour.ToSkia()).ToArray(), 
+            var shader = SKShader.CreateRadialGradient(new SKPoint(circleX, circleY),
+                                                       radius,
+                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
                                                        SKShaderTileMode.Clamp);
 
             using var paint = new SKPaint

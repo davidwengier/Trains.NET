@@ -6,8 +6,8 @@ namespace Trains.NET.Engine
     {
         private static readonly Random s_random = new Random();
 
-        public int Column { get ; set ; }
-        public int Row { get ; set ; }
+        public int Column { get; set; }
+        public int Row { get; set; }
 
         public int Seed { get; set; }
 

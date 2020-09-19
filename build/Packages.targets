@@ -3,35 +3,31 @@
   <PropertyGroup>
     <RestoreSources>
       https://api.nuget.org/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json;
     </RestoreSources>
   </PropertyGroup>
   
   <ItemGroup>
 
-    <!-- Updates - Opt-in per project -->
-    
-    <PackageReference Update="System.Collections.Immutable" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Update="System.Collections.Immutable" Version="5.0.0-rc.1.20451.14" />
 
+    <!-- Analyzers etc. -->
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.8.0-3.final" />
 
+    <!-- For source generators -->
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0-3.final" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0" PrivateAssets="all" />
+ 
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="2.80.2-preview.33" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.2-preview.33" />
-    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.2-preview.33" />
-    
-    <!-- Includes - for all projects -->
+    <PackageReference Update="SkiaSharp"                    Version="2.80.2" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
+    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.2" />
     
     <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.8.0-3.20428.2">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.8.0-3.final">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0-3.20428.2" PrivateAssets="all" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.1-beta1.20420.6" PrivateAssets="all" />
-
 
     <!-- Nerdbank GitVersioning -->
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31">

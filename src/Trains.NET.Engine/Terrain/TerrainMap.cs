@@ -49,7 +49,7 @@ namespace Trains.NET.Engine
             return GetTerrainOrDefault(terrain.Column, terrain.Row - 1);
         }
 
-         public Terrain GetAdjacentTerrainDown(Terrain terrain)
+        public Terrain GetAdjacentTerrainDown(Terrain terrain)
         {
             return GetTerrainOrDefault(terrain.Column, terrain.Row + 1);
         }

@@ -33,10 +33,10 @@ namespace Trains.NET.Comet
         public override void StartHoverInteraction(PointF[] points)
             => _interactionManager.PointerMove((int)points[0].X, (int)points[0].Y);
 
-        public override void DragInteraction(PointF[] points) 
+        public override void DragInteraction(PointF[] points)
             => _interactionManager.PointerDrag((int)points[0].X, (int)points[0].Y);
 
-        public override void EndInteraction(PointF[] points) 
+        public override void EndInteraction(PointF[] points)
             => _interactionManager.PointerRelease((int)points[0].X, (int)points[0].Y);
     }
 }

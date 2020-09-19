@@ -100,7 +100,7 @@ namespace Trains.Sounds
             lock (_lock)
             {
                 if (_handle.handle != IntPtr.Zero)
-            {
+                {
                     Win32API.midiOutShortMsg(_handle, message);
                 }
             }

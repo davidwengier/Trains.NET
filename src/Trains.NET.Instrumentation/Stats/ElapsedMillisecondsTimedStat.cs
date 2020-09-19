@@ -19,7 +19,7 @@ namespace Trains.NET.Instrumentation
         }
         public override string GetDescription()
         {
-            if(this.Value == null)
+            if (this.Value == null)
             {
                 return "null";
             }

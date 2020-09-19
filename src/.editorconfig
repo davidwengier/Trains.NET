@@ -234,3 +234,5 @@ dotnet_diagnostic.CA1030.severity = none
 
 # CA1724: Type names should not match namespaces
 dotnet_diagnostic.CA1724.severity = none
+
+dotnet_diagnostic.IDE0055.severity = error

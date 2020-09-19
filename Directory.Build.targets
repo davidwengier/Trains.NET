@@ -12,6 +12,7 @@
   <!-- Only applies to Trains.NET things -->
   <ItemGroup Condition="'$(IsTrains)' == 'true'">
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
   </ItemGroup>
 
   <Import Project="build\Packages.targets" Condition="'$(IsTrains)' == 'true'" />

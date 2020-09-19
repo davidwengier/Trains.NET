@@ -14,6 +14,6 @@
 
         public float SmokeStackRadius => 5.0f;
 
-        public float SmokeStackOffset => 12/5f;
+        public float SmokeStackOffset => 12 / 5f;
     }
 }

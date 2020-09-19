@@ -18,7 +18,7 @@
         }
 
         public TrainPosition(int column, int row, float relativeLeft, float relativeTop, float angle, float distance)
-            :this(relativeLeft, relativeTop, angle, distance)
+            : this(relativeLeft, relativeTop, angle, distance)
         {
             this.Column = column;
             this.Row = row;

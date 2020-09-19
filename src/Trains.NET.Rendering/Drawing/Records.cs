@@ -11,17 +11,19 @@ namespace Trains.NET.Rendering
     }
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable format
     public record Color(string HexCode)
     {
         public Color WithAlpha(string alpha)
-            => this with 
+            => this with
             {
-                HexCode = "#" + alpha + HexCode[^6..]
+                HexCode = "#" + alpha + this.HexCode[^6..]
             };
     }
 
     public record Rectangle(float Left, float Top, float Right, float Bottom);
 #pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore format
 }
 
 namespace System.Runtime.CompilerServices

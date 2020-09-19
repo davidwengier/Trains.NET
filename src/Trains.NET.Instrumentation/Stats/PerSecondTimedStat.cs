@@ -6,7 +6,7 @@ namespace Trains.NET.Instrumentation
     public class PerSecondTimedStat : AveragedStat
     {
         private readonly Stopwatch _sw;
-        public PerSecondTimedStat() 
+        public PerSecondTimedStat()
             : base(60) // Average over 60 samples
         {
             _sw = new Stopwatch();
@@ -14,7 +14,7 @@ namespace Trains.NET.Instrumentation
 
         public void Update()
         {
-            if(_sw.IsRunning)
+            if (_sw.IsRunning)
             {
                 SetValue(1000.0 / _sw.ElapsedMilliseconds);
             }

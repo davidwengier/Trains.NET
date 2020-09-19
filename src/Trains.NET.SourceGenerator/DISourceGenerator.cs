@@ -13,11 +13,11 @@ namespace Trains.NET.SourceGenerator
     [Generator]
     public class DISourceGenerator : ISourceGenerator
     {
-        public void Initialize(InitializationContext context)
+        public void Initialize(GeneratorInitializationContext context)
         {
         }
 
-        public void Execute(SourceGeneratorContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             Compilation? compilation = context.Compilation;
 
@@ -246,8 +246,8 @@ namespace DI
         {
             foreach (INamedTypeSymbol? x in GetAllTypes(compilation.GlobalNamespace.GetNamespaceMembers()))
             {
-                if (!x.IsAbstract && 
-                        x.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToFind)))
+                if (!x.IsAbstract &&
+                    x.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToFind)))
                 {
                     yield return x;
                 }

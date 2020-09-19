@@ -31,10 +31,10 @@ namespace Trains.NET.Engine
 
         private void ThreadLoop()
         {
-            while(_threadLoopEnabled)
+            while (_threadLoopEnabled)
             {
                 // If we are not enabled, or we have more than the CoarseSleepThreshold ms left until we need to invoke, sleep for 1 ms
-                while (_threadLoopEnabled && 
+                while (_threadLoopEnabled &&
                     (!_elapsedEventEnabled ||
                     _stopwatch.ElapsedMilliseconds + CoarseSleepThreshold < _nextInvoke))
                 {

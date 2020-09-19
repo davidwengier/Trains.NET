@@ -84,13 +84,13 @@ namespace Trains.NET.Rendering
         {
             return new PixelMapper()
             {
-                 ViewPortX = this.ViewPortX,
-                 ViewPortY = this.ViewPortY,
-                 ViewPortHeight = this.ViewPortHeight,
-                 ViewPortWidth = this.ViewPortWidth,
-                 GameScale = this.GameScale,
-                 _columns = _columns,
-                 _rows = _rows
+                ViewPortX = this.ViewPortX,
+                ViewPortY = this.ViewPortY,
+                ViewPortHeight = this.ViewPortHeight,
+                ViewPortWidth = this.ViewPortWidth,
+                GameScale = this.GameScale,
+                _columns = _columns,
+                _rows = _rows
             };
         }
 

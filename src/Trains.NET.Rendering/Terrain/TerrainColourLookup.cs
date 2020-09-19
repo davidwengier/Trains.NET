@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering
 {
     public static class TerrainColourLookup
-    {  
+    {
         public static Color DefaultColour => Colors.Green;
         private static readonly Color s_waterToLandTransition = Colors.LightYellow;
         private static readonly Color s_landToMountainTransition = Colors.Gray;
@@ -38,8 +38,8 @@ namespace Trains.NET.Rendering
 
             int colourLookup = terrain.Height / heightPerTerrainType;
             return s_heightOrderedColours[colourLookup];
-        } 
-        
+        }
+
         public static int GetLandColourCount()
         {
             int firstLand = s_heightOrderedColours.IndexOf(s_waterToLandTransition);

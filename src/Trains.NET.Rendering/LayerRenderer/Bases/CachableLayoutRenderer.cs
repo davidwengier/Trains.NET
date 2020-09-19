@@ -14,7 +14,7 @@ namespace Trains.NET.Rendering
         }
 
         public CachableLayoutRenderer(ILayout<T> layout, IEnumerable<IRenderer<T>> renderers, IImageFactory imageFactory, ITerrainMap terrainMap, IImageCache imageCache)
-            : base (layout, renderers, imageFactory, terrainMap, imageCache)
+            : base(layout, renderers, imageFactory, terrainMap, imageCache)
         {
             layout.CollectionChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }

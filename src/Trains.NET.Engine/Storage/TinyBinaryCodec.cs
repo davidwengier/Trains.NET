@@ -115,8 +115,8 @@ namespace Trains.NET.Engine
                                 });
                             }
                         }
-						count = 1;
-					}
+                        count = 1;
+                    }
                 }
             }
             return staticEntities;
@@ -297,7 +297,7 @@ namespace Trains.NET.Engine
             public bool EndOfBytes() => _byteIndex >= _bytes.Length;
         }
 
-		private class BitWriter
+        private class BitWriter
         {
             private readonly List<byte> _bytes = new List<byte>();
             private byte _currentByte;
@@ -307,8 +307,8 @@ namespace Trains.NET.Engine
             public void Write4BitInt(int x) => Write(BitFromRight(x, 3), BitFromRight(x, 2), BitFromRight(x, 1), BitFromRight(x, 0));
             public void WriteEOL() => Write(1, 1, 0);
             public void WriteEmpty() => Write(0, 0);
-			public void WriteTree() => Write(1, 1, 1);
-			public void WriteTrack(TrackEncoding track)
+            public void WriteTree() => Write(1, 1, 1);
+            public void WriteTrack(TrackEncoding track)
             {
                 Write(0, 1);
                 Write4BitInt((int)track);

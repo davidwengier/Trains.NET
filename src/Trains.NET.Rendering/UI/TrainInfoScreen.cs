@@ -6,41 +6,97 @@ namespace Trains.NET.Rendering.UI
     [Order(20)]
     public class TrainInfoScreen : IScreen
     {
-        private readonly PaintBrush _border = new()
-        {
-            Color = Colors.Black,
-            Style = PaintStyle.Stroke,
-            StrokeWidth = 3
-        };
-        private readonly PaintBrush _background = new()
-        {
-            Color = Colors.White.WithAlpha("aa"),
-            Style = PaintStyle.Fill
-        };
-        private readonly PaintBrush _label = new PaintBrush
-        {
-            TextSize = 13,
-            IsAntialias = true,
-            Color = Colors.Black
-        };
-
         private readonly ITrainManager _trainManager;
+        private readonly IGameManager _gameManager;
+        private readonly IGameBoard _gameBoard;
 
         public event EventHandler? Changed;
 
-        public TrainInfoScreen(ITrainManager trainManager)
+        public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IGameBoard gameBoard)
         {
             _trainManager = trainManager;
+            _gameManager = gameManager;
+            _gameBoard = gameBoard;
             _trainManager.Changed += (s, e) => Changed?.Invoke(s, e);
+            _gameManager.Changed += (s, e) => Changed?.Invoke(s, e);
+            _trainManager.CurrentTrainPropertyChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
+            if (_trainManager.CurrentTrain == null)
+            {
+                return false;
+            }
+
+            const int PanelWidth = 300;
+
+            Train train = _trainManager.CurrentTrain;
+
+            if (x >= width - (PanelWidth + 50) - 5 && y >= 50 - 5 && y <= 100)
+            {
+                x -= width - (PanelWidth + 50);
+                y -= 50;
+
+                if (x < 5 && y < 5)
+                {
+                    _trainManager.CurrentTrain = null;
+                }
+                else if (x < 0 || y < 0)
+                {
+                    // filter out the thin border that isn't the X button, but isn't the panel either
+                    return false;
+                }
+
+                x -= 10;
+
+                // text is drawn from the baseline, but easier to track from the top
+                y -= 20 - Brushes.Label.TextSize.GetValueOrDefault();
+                if (y >= 0 && y <= 20 && x >= PanelWidth - 90 && x <= PanelWidth - 70)
+                {
+                    _trainManager.ToggleFollow(train);
+                }
+
+                y -= 20;
+                if (y >= 0 && y <= 20)
+                {
+                    if (x is >= PanelWidth - 90)
+                    {
+                        _trainManager.CurrentTrain = null;
+                        _gameBoard.RemoveMovable(train);
+                    }
+                    else if (_gameManager.BuildMode)
+                    {
+                        return true;
+                    }
+                    else if (x is >= 0 and < 18)
+                    {
+                        train.Slower();
+                    }
+                    else if (x is >= 20 and < 38)
+                    {
+                        train.Start();
+                        Changed?.Invoke(this, EventArgs.Empty);
+                    }
+                    else if (x is >= 40 and < 58)
+                    {
+                        train.Stop();
+                        Changed?.Invoke(this, EventArgs.Empty);
+                    }
+                    else if (x is >= 60 and < 78)
+                    {
+                        train.Faster();
+                    }
+                }
+                return true;
+            }
             return false;
         }
 
         public void Render(ICanvas canvas, int width, int height)
         {
+            const int PanelWidth = 300;
+
             if (_trainManager.CurrentTrain == null)
             {
                 return;
@@ -48,20 +104,37 @@ namespace Trains.NET.Rendering.UI
 
             Train train = _trainManager.CurrentTrain;
 
-            canvas.DrawRoundRect(width - 300, 50, 250, 20, 10, 10, _border);
-            canvas.DrawRoundRect(width - 300, 50, 250, 20, 10, 10, _background);
+            canvas.Translate(width - (PanelWidth + 50), 50);
 
-            canvas.DrawText(train.Name, width - 280, 65, _label);
+            canvas.DrawRoundRect(0, 0, PanelWidth, 50, 10, 10, Brushes.PanelBorder);
+            canvas.DrawRoundRect(0, 0, PanelWidth, 50, 10, 10, Brushes.PanelBackground);
 
-            /*
-                void Delete();
-                void Faster();
-                void SetCurrentTrain(Train? train);
-                void Slower();
-                void Start();
-                void Stop();
-                void ToggleFollowMode();
-            */
+            using (var _ = canvas.Scope())
+            {
+                canvas.Translate(2, 2);
+
+                canvas.DrawCircle(0, 0, 7, Brushes.PanelBorder with { StrokeWidth = 1 });
+                canvas.DrawCircle(0, 0, 7, Brushes.PanelBackground);
+                canvas.DrawText("x", -4, 5, Brushes.Label);
+            }
+
+            canvas.Translate(10, 20);
+
+            canvas.DrawText(train.Name, 0, 0, Brushes.Label);
+            canvas.DrawText("{{fa-eye}}", PanelWidth - 90, 0, train.Follow ? Brushes.Active : Brushes.Label);
+
+            canvas.Translate(0, 20);
+            var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
+            canvas.DrawText("{{fa-backward}}", 0, 0, brush);
+            canvas.DrawText("{{fa-forward}}", 60, 0, brush);
+            canvas.DrawText($"{train.CurrentSpeed:0} km/h", 90, 0, brush);
+
+            brush = _gameManager.BuildMode || !train.Stopped ? Brushes.Disabled : Brushes.Label;
+            canvas.DrawText("{{fa-play}}", 20, 0, brush);
+            brush = _gameManager.BuildMode || train.Stopped ? Brushes.Disabled : Brushes.Label;
+            canvas.DrawText("{{fa-pause}}", 40, 0, brush);
+
+            canvas.DrawText("{{fa-trash}}", PanelWidth - 90, 0, Brushes.Label);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkiaSharp;
+using SkiaSharp.Extended.Iconify;
 
 namespace Trains.NET.Rendering.Skia
 {
@@ -14,6 +15,11 @@ namespace Trains.NET.Rendering.Skia
             IsAntialias = false,
             IsDither = false
         };
+
+        static SKCanvasWrapper()
+        {
+            SKTextRunLookup.Instance.AddFontAwesome();
+        }
 
         private readonly SkiaSharp.SKCanvas _canvas;
 
@@ -65,7 +71,7 @@ namespace Trains.NET.Rendering.Skia
             => _canvas.DrawRoundRect(x, y, width, height, radiusX, radiusY, GetSKPaint(paint));
 
         public void DrawText(string text, float x, float y, PaintBrush paint)
-            => _canvas.DrawText(text, x, y, GetSKPaint(paint));
+            => _canvas.DrawIconifiedText(text, x, y, GetSKPaint(paint));
 
         public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {

@@ -12,23 +12,6 @@ namespace Trains.NET.Rendering.UI
 
         private readonly IGameManager _gameManager;
 
-        private readonly PaintBrush _hoverBackground = new PaintBrush
-        {
-            Style = PaintStyle.Fill,
-            Color = Colors.LightBlue.WithAlpha("55")
-        };
-        private readonly PaintBrush _background = new PaintBrush
-        {
-            Style = PaintStyle.Fill,
-            Color = Colors.LightGray
-        };
-        private readonly PaintBrush _label = new PaintBrush
-        {
-            TextSize = 13,
-            IsAntialias = true,
-            Color = Colors.Black
-        };
-
         public event EventHandler? Changed;
 
         private bool _isHovered;
@@ -66,13 +49,13 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            PaintBrush brush = _isHovered ? _hoverBackground : _background;
+            PaintBrush brush = _isHovered ? Brushes.ButtonHoverBackground : Brushes.ButtonBackground;
             canvas.DrawRect(0, 0, ButtonWidth, ButtonHeight, brush);
 
             string buttonText = _gameManager.BuildMode ? "Building" : "Playing";
-            float textWidth = canvas.MeasureText(buttonText, _label);
+            float textWidth = canvas.MeasureText(buttonText, Brushes.Label);
 
-            canvas.DrawText(buttonText, ((ButtonWidth - textWidth) / 2), TextPadding, _label);
+            canvas.DrawText(buttonText, ((ButtonWidth - textWidth) / 2), TextPadding, Brushes.Label);
         }
     }
 }

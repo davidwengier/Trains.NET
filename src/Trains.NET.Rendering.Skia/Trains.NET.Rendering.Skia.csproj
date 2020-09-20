@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.Extended.Iconify.FontAwesome" />
   </ItemGroup>
 
   <ItemGroup>

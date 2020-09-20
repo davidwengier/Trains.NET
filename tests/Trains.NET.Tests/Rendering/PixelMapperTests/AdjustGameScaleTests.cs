@@ -7,7 +7,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
     public class AdjustGameScaleTests
     {
         private const int ScreenSize = 720;
-        private const int GameSize = 100;
         
         private readonly IPixelMapper _pixelMapper;
         private readonly ITestOutputHelper _output;
@@ -15,7 +14,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         public AdjustGameScaleTests(ITestOutputHelper output)
         {
             _pixelMapper = new PixelMapper();
-            _pixelMapper.Initialize(GameSize, GameSize);
             _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
             int centerViewportOffsetX = _pixelMapper.MaxGridWidth / 2 - ScreenSize / 2;
             int centerViewportOffsetY = _pixelMapper.MaxGridHeight / 2 - ScreenSize / 2;
@@ -27,11 +25,9 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void AdjustGameScale_CantZoomToZero()
         {
-            const int GameSize = 100;
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(GameSize, GameSize);
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             pixelMapper.AdjustGameScale(0.0f);
@@ -43,11 +39,9 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void AdjustGameScale_SingleZoomOut_CorrectViewportWorldPosition()
         {
-            const int GameSize = 100;
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
             
-            pixelMapper.Initialize(GameSize, GameSize);
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             // Set the inital viewport to be at 100,100
@@ -67,11 +61,9 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void AdjustGameScale_SingleZoomIn_CorrectViewportWorldPosition()
         {
-            const int GameSize = 100;
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(GameSize, GameSize);
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             // Set the inital viewport to be at 100,100
@@ -91,11 +83,9 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void AdjustGameScale_DoubleZoomIn_CorrectViewportWorldPosition()
         {
-            const int GameSize = 100;
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(GameSize, GameSize);
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             // Set the inital viewport to be at 100,100
@@ -121,11 +111,9 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void AdjustGameScale_DoubleZoomIn_OddPos_CorrectViewportWorldPosition()
         {
-            const int GameSize = 100;
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(GameSize, GameSize);
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             // Set the inital viewport to be at 100,100

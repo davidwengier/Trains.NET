@@ -51,20 +51,15 @@ namespace Trains.NET.Engine
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public void Initialize(int columns, int rows)
         {
-            if (_storage == null)
-            {
-                return;
-            }
-
-            _columns = Math.Max(columns, 100);
-            _rows = Math.Max(rows, 100);
+            _columns = columns;
+            _rows = rows;
 
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;
             try
             {
-                tracks = _storage.ReadStaticEntities();
-                terrain = _storage.ReadTerrain();
+                tracks = _storage?.ReadStaticEntities();
+                terrain = _storage?.ReadTerrain();
             }
             catch { }
 

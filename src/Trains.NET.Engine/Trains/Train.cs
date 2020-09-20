@@ -5,12 +5,15 @@ namespace Trains.NET.Engine
 {
     public class Train : IMovable, INotifyPropertyChanged
     {
-        public const float SpeedScaleModifier = 0.005f;
+        // only used for tests??
+        internal const float SpeedScaleModifier = 0.005f;
+
         private const int MaximumSpeed = 200;
         private const float MinimumLookaheadSpeed = 5.0f;
         private const float DefaultSpeed = 20.0f;
         private readonly Random _random = new Random();
         private float? _lookaheadOverride;
+        private bool _collisionAhead;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -32,20 +35,21 @@ namespace Trains.NET.Engine
             }
         }
 
-        public float DistanceToMove => this.CurrentSpeed;
+        public Guid UniqueID { get; private set; } = Guid.NewGuid();
 
-        public Guid UniqueID { get; set; } = Guid.NewGuid();
         public int Column { get; set; }
         public int Row { get; set; }
         public float Angle { get; set; }
         public float RelativeLeft { get; set; } = 0.5f;
         public float RelativeTop { get; set; } = 0.5f;
-        public string Name { get; set; }
+
+        public string Name { get; private set; }
         public float CurrentSpeed { get; private set; }
         public float DesiredSpeed { get; private set; }
         public bool Stopped { get; private set; }
-        public bool CollisionAhead { get; private set; }
+
         public bool Follow { get; set; }
+
 
         public void SetAngle(float angle)
         {
@@ -83,9 +87,9 @@ namespace Trains.NET.Engine
 
         public void Stop() => this.Stopped = true;
 
-        internal void Pause() => this.CollisionAhead = true;
+        internal void Pause() => _collisionAhead = true;
 
-        internal void Resume() => this.CollisionAhead = false;
+        internal void Resume() => _collisionAhead = false;
 
         public void Slower()
         {
@@ -94,6 +98,7 @@ namespace Trains.NET.Engine
                 this.DesiredSpeed -= 5;
             }
         }
+
         public void Faster()
         {
             if (this.DesiredSpeed < MaximumSpeed)
@@ -108,7 +113,7 @@ namespace Trains.NET.Engine
 
         internal void AdjustSpeed()
         {
-            if (this.Stopped || this.CollisionAhead)
+            if (this.Stopped || _collisionAhead)
             {
                 this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }

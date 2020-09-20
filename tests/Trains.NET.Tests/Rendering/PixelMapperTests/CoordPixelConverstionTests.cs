@@ -10,7 +10,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void Snapshot_PostSnapshot_SnapshotShoudntChange()
         {
-            int gameSize = 100;
             int width = 200;
             int height = 200;
             int viewportX = 30;
@@ -19,7 +18,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
 
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(gameSize, gameSize);
             pixelMapper.SetViewPortSize(width, height);
             pixelMapper.AdjustGameScale(gameScale);
             pixelMapper.SetViewPort(viewportX, viewportY);
@@ -40,7 +38,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [Fact]
         public void Snapshot_FullySetup()
         {
-            int gameSize = 100;
             int width = 200;
             int height = 200;
             int viewportX = 30;
@@ -48,7 +45,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
 
             IPixelMapper pixelMapper = new PixelMapper();
 
-            pixelMapper.Initialize(gameSize, gameSize);
             pixelMapper.SetViewPortSize(width, height);
             pixelMapper.SetViewPort(viewportX, viewportY);
             pixelMapper.AdjustGameScale(2f);
@@ -99,7 +95,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         private const int HalfDefaultCellSize = DefaultCellSize / 2;
         // This screen size is used as part of the data below, be careful if you change it.
         private const int ScreenSize = 200;
-        private const int GameSize = 100;
         private readonly ITestOutputHelper _output;
         private readonly IPixelMapper _pixelMapper;
 
@@ -108,7 +103,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             _output = output;
 
             _pixelMapper = new PixelMapper();
-            _pixelMapper.Initialize(GameSize, GameSize);
             _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
             _pixelMapper.LogData(output);
 

@@ -62,8 +62,7 @@ namespace Trains.NET.Rendering
             _renderLoop.Interval = RenderInterval;
             _renderLoop.Start();
 
-            _gameBoard.Initialize(200, 100);
-            _pixelMapper.Initialize(200, 100);
+            _gameBoard.Initialize(_pixelMapper.Columns, _pixelMapper.Rows);
         }
 
         private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)

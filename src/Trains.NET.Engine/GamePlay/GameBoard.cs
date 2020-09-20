@@ -30,8 +30,7 @@ namespace Trains.NET.Engine
             set
             {
                 _terrainSeed = value;
-                _terrainMap.Clear();
-                GenerateStartingTerrain();
+                _terrainMap.Reset(value, _columns, _rows);
             }
         }
 
@@ -331,31 +330,7 @@ namespace Trains.NET.Engine
 
             _terrainSeed = new Random().Next();
 
-            GenerateStartingTerrain();
-        }
-
-        private void GenerateStartingTerrain()
-        {
-            int maxHeight = Terrain.MaxHeight;
-
-            Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4, _terrainSeed);
-            var terrainlist = new List<Terrain>();
-
-            for (int x = 0; x < _columns; x++)
-            {
-                for (int y = 0; y < _rows; y++)
-                {
-                    (int x, int y) key = (x, y);
-                    float noise = noiseMap.ContainsKey(key) ? noiseMap[key] : 0;
-                    terrainlist.Add(new Terrain
-                    {
-                        Column = x,
-                        Row = y,
-                        Height = (int)(noise * maxHeight)
-                    });
-                }
-            }
-            _terrainMap.Set(terrainlist);
+            _terrainMap.Reset(_terrainSeed, _columns, _rows);
         }
 
         public void Dispose()

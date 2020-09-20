@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Rendering.Drawing;
 
 namespace Trains.NET.Rendering
 {
@@ -9,7 +8,7 @@ namespace Trains.NET.Rendering
         private readonly ITerrainMap _terrainMap;
         private readonly ILayout<Track> _trackLayout;
         private readonly IGameBoard _gameBoard;
-        private const string BuildModeAlpha = "aa";
+        private const int BuildModeAlpha = 170;
 
         public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameBoard gameBoard)
         {
@@ -23,16 +22,14 @@ namespace Trains.NET.Rendering
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (var track in _trackLayout)
+            foreach (Track track in _trackLayout)
             {
-                var terrain = _terrainMap.GetTerrainOrDefault(track.Column, track.Row);
-                if (terrain.Height < TerrainColourLookup.GetMountainLevel()) continue;
+                Terrain terrain = _terrainMap.Get(track.Column, track.Row);
+                if (!terrain.IsMountain) continue;
 
-                Color colour = TerrainColourLookup.GetTerrainColour(terrain);
+                Color colour = TerrainMapRenderer.GetTerrainColour(terrain);
 
-                if (colour == TerrainColourLookup.DefaultColour) continue;
-
-                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize,
                                 new PaintBrush
                                 {
@@ -40,10 +37,10 @@ namespace Trains.NET.Rendering
                                     Color = BuildModeAwareColour(colour),
                                 });
 
-                var trackNeighbours = track.GetNeighbors();
+                TrackNeighbors trackNeighbours = track.GetNeighbors();
 
-                var lightColour = BuildModeAwareColour(Colors.LightGray);
-                var darkColour = BuildModeAwareColour(colour);
+                Color lightColour = BuildModeAwareColour(Colors.LightGray);
+                Color darkColour = BuildModeAwareColour(colour);
 
                 if (IsTunnelEntrance(trackNeighbours.Up))
                 {
@@ -85,11 +82,11 @@ namespace Trains.NET.Rendering
         }
 
         private bool IsTunnelEntrance(Track? track)
-            => track is not null && !_terrainMap.GetTerrainOrDefault(track.Column, track.Row).IsMountain();
+            => track is not null && !_terrainMap.Get(track.Column, track.Row).IsMountain;
 
         private Color BuildModeAwareColour(Color color)
             => !_gameBoard.Enabled
-                ? color.WithAlpha(BuildModeAlpha)
+                ? color with { A = BuildModeAlpha }
                 : color;
     }
 }

@@ -6,17 +6,10 @@ namespace Trains.NET.Engine
     public interface ITerrainMap : IEnumerable<Terrain>
     {
         event EventHandler CollectionChanged;
+
+        Terrain Get(int column, int row);
         void Set(IEnumerable<Terrain> terrainList);
 
-        void SetTerrainHeight(int column, int row, int height);
-
-        Terrain GetAdjacentTerrainUp(Terrain terrain);
-        Terrain GetAdjacentTerrainDown(Terrain terrain);
-        Terrain GetAdjacentTerrainLeft(Terrain terrain);
-        Terrain GetAdjacentTerrainRight(Terrain terrain);
-        Terrain GetTerrainOrDefault(int column, int row);
-        void Clear();
-
-        bool IsEmpty();
+        void Reset(int seed, int columns, int rows);
     }
 }

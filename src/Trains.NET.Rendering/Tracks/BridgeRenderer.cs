@@ -48,7 +48,7 @@ namespace Trains.NET.Rendering
         }
 
         public bool ShouldRender(Track track)
-            => _terrainMap.GetTerrainOrDefault(track.Column, track.Row).IsWater();
+            => _terrainMap.Get(track.Column, track.Row).IsWater;
 
         public string GetCacheKey(Track track)
             => track.Direction.ToString();

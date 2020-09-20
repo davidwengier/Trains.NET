@@ -2,7 +2,7 @@
 {
     public static class Colors
     {
-        public static readonly Color Empty = new Color("EMPTY");
+        public static readonly Color Empty = new Color(0, 0, 0, 0);
 
         public static readonly Color Cyan = new Color("#00FFFF");
         public static readonly Color Black = new Color("#000000");

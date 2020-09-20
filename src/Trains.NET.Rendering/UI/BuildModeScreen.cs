@@ -8,7 +8,7 @@ namespace Trains.NET.Rendering.UI
     {
         private const int TextPadding = 15;
         private const int ButtonHeight = 20;
-        private const int ButtonWidth = 50;
+        private const int ButtonWidth = 60;
 
         private readonly IGameManager _gameManager;
 
@@ -26,6 +26,9 @@ namespace Trains.NET.Rendering.UI
         {
             if (action is MouseAction.Click or MouseAction.Move)
             {
+                x -= 15;
+                y -= 50;
+
                 if (x is >= 0 and <= ButtonWidth)
                 {
                     if (y >= 0 && y <= ButtonHeight)
@@ -49,8 +52,11 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
+            canvas.Translate(15, 50);
+
             PaintBrush brush = _isHovered ? Brushes.ButtonHoverBackground : Brushes.ButtonBackground;
-            canvas.DrawRect(0, 0, ButtonWidth, ButtonHeight, brush);
+            canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, Brushes.PanelBorder);
+            canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, brush);
 
             string buttonText = _gameManager.BuildMode ? "Building" : "Playing";
             float textWidth = canvas.MeasureText(buttonText, Brushes.Label);

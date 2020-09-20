@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
@@ -13,7 +14,7 @@ namespace Trains.NET.Rendering.UI
 
         public InteractionManager(IEnumerable<IScreen> screens, IGame game, IPixelMapper pixelMapper, IGameManager gameManager)
         {
-            _screens = screens;
+            _screens = screens.Reverse().ToArray();
             _game = game;
             _pixelMapper = pixelMapper;
             _gameManager = gameManager;

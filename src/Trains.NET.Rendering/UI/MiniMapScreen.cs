@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.UI
         {
             Style = PaintStyle.Stroke,
             Color = Colors.White,
-            StrokeWidth = 1
+            StrokeWidth = 2
         };
 
         private readonly ITerrainMapRenderer _terrainMapRenderer;
@@ -48,8 +48,8 @@ namespace Trains.NET.Rendering.UI
                 return false;
             }
 
-            x -= 100;
-            y -= height - _pixelMapper.Rows - 100;
+            x -= width - _pixelMapper.Columns - 150;
+            y -= height - _pixelMapper.Rows - 50;
 
             if (x <= 0 || x >= _pixelMapper.Columns ||
                 y <= 0 || y >= _pixelMapper.Rows)
@@ -72,7 +72,7 @@ namespace Trains.NET.Rendering.UI
         {
             canvas.Save();
 
-            canvas.Translate(100, height - _pixelMapper.Rows - 100);
+            canvas.Translate(width - _pixelMapper.Columns - 150, height - _pixelMapper.Rows - 50);
 
             canvas.DrawImage(_terrainMapRenderer.GetTerrainImage(), 0, 0);
 

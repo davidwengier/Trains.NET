@@ -6,14 +6,15 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering.UI
 {
     [Order(100)]
-    public class ToolPickerScreen : ButtonPanelBase
+    public class ToolsPanel : ButtonPanelBase
     {
         private readonly IGameManager _gameManager;
         private readonly List<Button> _buttons;
 
         protected override int Top => 60;
+        protected override int TopPadding => 20;
 
-        public ToolPickerScreen(IEnumerable<ITool> tools, IGameManager gameManager)
+        public ToolsPanel(IEnumerable<ITool> tools, IGameManager gameManager)
         {
             _gameManager = gameManager;
 

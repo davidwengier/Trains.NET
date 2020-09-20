@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows;
 using Comet;
-using SkiaSharp;
-using SkiaSharp.Views.WPF;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Sounds;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
-using Trains.NET.Rendering.Skia;
 
 namespace Trains.NET.Comet
 {
@@ -25,7 +21,6 @@ namespace Trains.NET.Comet
 
         public MainPage(IGame game,
                         IEnumerable<ILayerRenderer> layers,
-                        IEnumerable<ICommand> commands,
                         ILayout trackLayout,
                         IGameStorage gameStorage,
                         ITerrainMap terrainMap,
@@ -45,9 +40,6 @@ namespace Trains.NET.Comet
                         _configurationShown ?
                                 CreateConfigurationControls(layers) :
                         new Spacer(),
-                        _configurationShown ? null :
-                            CreateCommandControls(commands),
-                        new Spacer(),
                         new HStack()
                         {
                             new Button(" - ", () => _game.ZoomOut())
@@ -57,7 +49,6 @@ namespace Trains.NET.Comet
                                 .Frame(40),
                         },
                         new Spacer(),
-                        new Button("Snapshot", () => Snapshot()),
                         new Button("Configuration", ()=> _configurationShown.Value = !_configurationShown.Value),
                         new ToggleButton("Sound", soundGenerator.IsRunning, () => {
                             if(soundGenerator.IsRunning)
@@ -75,19 +66,6 @@ namespace Trains.NET.Comet
 
             _ = PresentLoop();
 
-            void Snapshot()
-            {
-                (int width, int height) = _game.GetSize();
-                using var bitmap = new SKBitmap(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                using var skCanvas = new SKCanvas(bitmap);
-                using (ICanvas canvas = new SKCanvasWrapper(skCanvas))
-                {
-                    canvas.Save();
-                    _game.Render(canvas);
-                    canvas.Restore();
-                }
-                Clipboard.SetImage(bitmap.ToWriteableBitmap());
-            }
             _terrainMap = terrainMap;
         }
 
@@ -119,17 +97,6 @@ namespace Trains.NET.Comet
         public void Redraw()
         {
             ViewPropertyChanged(ResetPropertyString, null);
-        }
-
-        private static View CreateCommandControls(IEnumerable<ICommand> commands)
-        {
-            var controlsGroup = new VStack();
-            foreach (ICommand cmd in commands)
-            {
-                controlsGroup.Add(new Button(cmd.Name, () => cmd.Execute()));
-            }
-
-            return controlsGroup;
         }
 
         private static View CreateConfigurationControls(IEnumerable<ILayerRenderer> layers)

@@ -17,7 +17,7 @@ namespace Trains.NET.Rendering
             _gameBoard = gameBoard;
         }
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; }
         public string Name => "Tunnels";
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)

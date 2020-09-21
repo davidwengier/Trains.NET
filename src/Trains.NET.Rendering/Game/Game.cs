@@ -118,6 +118,8 @@ namespace Trains.NET.Rendering
                 return;
             }
 
+            canvas.Clear(Colors.White);
+
             IImage? gameImage = _imageCache.Get(this);
             if (gameImage != null)
             {
@@ -235,12 +237,5 @@ namespace Trains.NET.Rendering
             _imageCache.Dispose();
             _gameBoard.Dispose();
         }
-
-        private const float ZoomInDelta = 1.25f;
-        private const float ZoomOutDelta = 1f / ZoomInDelta;
-
-        public void ZoomOut() => _pixelMapper.AdjustGameScale(ZoomOutDelta);
-
-        public void ZoomIn() => _pixelMapper.AdjustGameScale(ZoomInDelta);
     }
 }

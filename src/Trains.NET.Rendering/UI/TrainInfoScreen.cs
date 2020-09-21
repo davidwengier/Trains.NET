@@ -29,11 +29,11 @@ namespace Trains.NET.Rendering.UI
                 return false;
             }
 
-            const int PanelWidth = 300;
+            const int PanelWidth = 250;
 
             Train train = _trainManager.CurrentTrain;
 
-            if (x >= width - (PanelWidth + 50) - 5 && y >= 50 - 5 && y <= 100)
+            if (x >= width - (PanelWidth + 50) - 5 && x <= width - 50 && y >= 50 - 5 && y <= 100)
             {
                 x -= width - (PanelWidth + 50);
                 y -= 50;
@@ -52,7 +52,7 @@ namespace Trains.NET.Rendering.UI
 
                 // text is drawn from the baseline, but easier to track from the top
                 y -= 20 - Brushes.Label.TextSize.GetValueOrDefault();
-                if (y >= 0 && y <= 20 && x >= PanelWidth - 90 && x <= PanelWidth - 70)
+                if (y >= 0 && y <= 20 && x >= PanelWidth - 40 && x <= PanelWidth - 20)
                 {
                     _trainManager.ToggleFollow(train);
                 }
@@ -60,7 +60,7 @@ namespace Trains.NET.Rendering.UI
                 y -= 20;
                 if (y >= 0 && y <= 20)
                 {
-                    if (x is >= PanelWidth - 90)
+                    if (x is >= PanelWidth - 40)
                     {
                         _trainManager.CurrentTrain = null;
                         _gameBoard.RemoveMovable(train);
@@ -95,7 +95,7 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            const int PanelWidth = 300;
+            const int PanelWidth = 250;
 
             if (_trainManager.CurrentTrain == null)
             {
@@ -121,7 +121,7 @@ namespace Trains.NET.Rendering.UI
             canvas.Translate(10, 20);
 
             canvas.DrawText(train.Name, 0, 0, Brushes.Label);
-            canvas.DrawText("{{fa-eye}}", PanelWidth - 90, 0, train.Follow ? Brushes.Active : Brushes.Label);
+            canvas.DrawText("{{fa-eye}}", PanelWidth - 40, 0, train.Follow ? Brushes.Active : Brushes.Label);
 
             canvas.Translate(0, 20);
             var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
@@ -134,7 +134,7 @@ namespace Trains.NET.Rendering.UI
             brush = _gameManager.BuildMode || train.Stopped ? Brushes.Disabled : Brushes.Label;
             canvas.DrawText("{{fa-pause}}", 40, 0, brush);
 
-            canvas.DrawText("{{fa-trash}}", PanelWidth - 90, 0, Brushes.Label);
+            canvas.DrawText("{{fa-trash}}", PanelWidth - 40, 0, Brushes.Label);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Trains.NET.Rendering.UI
                 return false;
             }
 
-            x -= width - _pixelMapper.Columns - 150;
+            x -= width - _pixelMapper.Columns - 50;
             y -= height - _pixelMapper.Rows - 50;
 
             if (x <= 0 || x >= _pixelMapper.Columns ||
@@ -72,7 +72,7 @@ namespace Trains.NET.Rendering.UI
         {
             canvas.Save();
 
-            canvas.Translate(width - _pixelMapper.Columns - 150, height - _pixelMapper.Rows - 50);
+            canvas.Translate(width - _pixelMapper.Columns - 50, height - _pixelMapper.Rows - 50);
 
             canvas.DrawImage(_terrainMapRenderer.GetTerrainImage(), 0, 0);
 

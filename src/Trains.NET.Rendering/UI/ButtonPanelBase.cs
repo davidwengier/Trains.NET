@@ -13,7 +13,7 @@ namespace Trains.NET.Rendering.UI
         private const int TextYPadding = 15;
         private const int TextXPadding = 10;
         private const int ButtonGap = 10;
-        private const int ButtonLeft = 15;
+        private const int ButtonLeft = 5;
         private const int ButtonHeight = 20;
         private float _buttonWidth = 60;
 
@@ -21,6 +21,7 @@ namespace Trains.NET.Rendering.UI
 
         protected abstract int Top { get; }
         protected virtual int TopPadding { get; } = 15;
+        protected virtual PanelSide Side { get; } = PanelSide.Left;
 
         public event EventHandler? Changed;
 
@@ -32,8 +33,23 @@ namespace Trains.NET.Rendering.UI
 
                 int yPos = this.Top;
 
-                if (x is >= 0 && x <= ButtonLeft + _buttonWidth + 20 && y >= yPos && y <= yPos + buttons.Count * (ButtonHeight + ButtonGap) + 20)
+                var panelWidth = ButtonLeft + (int)_buttonWidth + 20;
+                if (this.Side == PanelSide.Right)
                 {
+                    x -= (width - panelWidth);
+                }
+
+                if (x is >= 0 && x <= panelWidth && y >= yPos && y <= yPos + buttons.Count * (ButtonHeight + ButtonGap) + 20)
+                {
+                    if (this.Side == PanelSide.Right)
+                    {
+                        x -= 10;
+                    }
+                    else
+                    {
+                        x -= 5;
+                    }
+
                     yPos += this.TopPadding;
                     foreach (Button button in GetButtons())
                     {
@@ -77,10 +93,31 @@ namespace Trains.NET.Rendering.UI
             }
             _buttonWidth += TextXPadding;
 
-            canvas.DrawRoundRect(-50, yPos, 50 + ButtonLeft + _buttonWidth + 20, buttons.Count * (ButtonGap + ButtonHeight) + 20, 10, 10, Brushes.PanelBorder);
-            canvas.DrawRoundRect(-50, yPos, 50 + ButtonLeft + _buttonWidth + 20, buttons.Count * (ButtonGap + ButtonHeight) + 20, 10, 10, Brushes.PanelBackground);
+            var panelHeight = buttons.Count * (ButtonGap + ButtonHeight) + 20;
+            var panelWidth = 20 + ButtonLeft + _buttonWidth + 20;
+
+            if (this.Side == PanelSide.Right)
+            {
+                canvas.Translate(width - panelWidth + 20, 0);
+            }
+            else
+            {
+                canvas.Translate(-20, 0);
+            }
+
+            canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);
+            canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBackground);
 
             yPos += this.TopPadding;
+
+            if (this.Side == PanelSide.Right)
+            {
+                canvas.Translate(10, 0);
+            }
+            else
+            {
+                canvas.Translate(25, 0);
+            }
 
             foreach (Button button in buttons)
             {

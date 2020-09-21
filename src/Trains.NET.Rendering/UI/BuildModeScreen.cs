@@ -26,7 +26,7 @@ namespace Trains.NET.Rendering.UI
         {
             if (action is MouseAction.Click or MouseAction.Move)
             {
-                x -= 15;
+                x -= 10;
                 y -= 50;
 
                 if (x is >= 0 and <= ButtonWidth)
@@ -52,7 +52,7 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            canvas.Translate(15, 50);
+            canvas.Translate(10, 50);
 
             PaintBrush brush = _isHovered ? Brushes.ButtonHoverBackground : Brushes.ButtonBackground;
             canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, Brushes.PanelBorder);

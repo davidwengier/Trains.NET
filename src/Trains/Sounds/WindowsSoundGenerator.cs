@@ -1,37 +1,42 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Trains.NET.Engine.Sounds;
+using Trains.NET.Engine;
 
 namespace Trains.Sounds
 {
-    public sealed class WindowsSoundGenerator : ISoundGenerator
+    public sealed class WindowsSoundGenerator : ITogglable, IDisposable
     {
+        private bool _enabled;
         private readonly MidiSynth _synth;
 
-        public bool IsRunning { get; private set; }
+        public string Name => "Sounds";
+
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled == value)
+                {
+                    return;
+                }
+
+                _enabled = value;
+                if (_enabled)
+                {
+                    _synth.Init();
+                    Task.Run(async () => await RunLoopAsync().ConfigureAwait(false)); ;
+                }
+                else
+                {
+                    _synth.Close();
+                }
+            }
+        }
 
         public WindowsSoundGenerator()
         {
             _synth = new MidiSynth();
-        }
-
-        public void Start()
-        {
-            if (!this.IsRunning)
-            {
-                this.IsRunning = true;
-                _synth.Init();
-                Task.Run(async () => await RunLoopAsync().ConfigureAwait(false)); ;
-            }
-        }
-
-        public void Stop()
-        {
-            if (this.IsRunning)
-            {
-                this.IsRunning = false;
-                _synth.Close();
-            }
         }
 
         private async Task RunLoopAsync()
@@ -40,7 +45,7 @@ namespace Trains.Sounds
             var random = new Random();
 
             _synth.Train();
-            while (this.IsRunning)
+            while (_enabled)
             {
                 switch (random.Next(0, 20))
                 {

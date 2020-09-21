@@ -1,10 +1,9 @@
-﻿
+﻿using Trains.NET.Engine;
+
 namespace Trains.NET.Rendering
 {
-    public interface ILayerRenderer
+    public interface ILayerRenderer : ITogglable
     {
-        bool Enabled { get; set; }
-        string Name { get; }
         void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper);
     }
 }

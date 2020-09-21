@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering.UI
 {
     [Order(10)]
-    public class MiniMapScreen : IScreen
+    public class MiniMapScreen : IScreen, ITogglable
     {
         private readonly PaintBrush _border = new PaintBrush
         {
@@ -27,8 +27,21 @@ namespace Trains.NET.Rendering.UI
         private readonly ITerrainMapRenderer _terrainMapRenderer;
         private readonly ILayout<Track> _trackLayout;
         private readonly IPixelMapper _pixelMapper;
+        private bool _enabled = true;
 
         public event EventHandler? Changed;
+
+        public string Name => "Minimap";
+
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                _enabled = value;
+                Changed?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper)
         {
@@ -43,6 +56,11 @@ namespace Trains.NET.Rendering.UI
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
+            if (!this.Enabled)
+            {
+                return false;
+            }
+
             if (action == MouseAction.Move)
             {
                 return false;
@@ -70,7 +88,10 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            canvas.Save();
+            if (!this.Enabled)
+            {
+                return;
+            }
 
             canvas.Translate(width - _pixelMapper.Columns - 50, height - _pixelMapper.Rows - 50);
 
@@ -87,8 +108,6 @@ namespace Trains.NET.Rendering.UI
             canvas.DrawRect(left, top, right - left, bottom - top, _viewPortPaint);
 
             canvas.DrawRect(0, 0, _pixelMapper.Columns, _pixelMapper.Rows, _border);
-
-            canvas.Restore();
         }
     }
 }

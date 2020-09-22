@@ -59,7 +59,7 @@ namespace Trains.NET.Rendering
 
                     if (renderer is ICachableRenderer<T> cachableRenderer)
                     {
-                        canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false);
+                        canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false, false);
 
                         string key = $"{renderer.GetType().Name}.{cachableRenderer.GetCacheKey(entity)}.{heightScale}";
 

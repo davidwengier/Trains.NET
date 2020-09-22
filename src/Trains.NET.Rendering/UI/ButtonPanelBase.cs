@@ -16,9 +16,12 @@ namespace Trains.NET.Rendering.UI
         private const int ButtonLeft = 5;
         private const int ButtonHeight = 20;
         private float _buttonWidth = 60;
+        private float _titleWidth;
 
         private Button? _hoverButton;
 
+        protected virtual bool Collapsed { get; set; }
+        protected virtual string? Title { get; }
         protected abstract int Top { get; }
         protected virtual int TopPadding { get; } = 15;
         protected virtual PanelSide Side { get; } = PanelSide.Left;
@@ -36,7 +39,29 @@ namespace Trains.NET.Rendering.UI
                 var panelWidth = ButtonLeft + (int)_buttonWidth + 20;
                 if (this.Side == PanelSide.Right)
                 {
-                    x -= (width - panelWidth);
+                    if (this.Collapsed)
+                    {
+                        x -= width;
+                    }
+                    else
+                    {
+                        x -= (width - panelWidth);
+                    }
+                }
+
+                if (this.Title is { Length: > 0 })
+                {
+                    if (x >= -ButtonHeight && x <= 0 && y >= yPos + 10 && y <= yPos + 10 + _titleWidth)
+                    {
+                        this.Collapsed = !this.Collapsed;
+                        OnChanged();
+                        return true;
+                    }
+                }
+
+                if (this.Collapsed)
+                {
+                    return false;
                 }
 
                 if (x is >= 0 && x <= panelWidth && y >= yPos && y <= yPos + buttons.Count * (ButtonHeight + ButtonGap) + 20)
@@ -85,8 +110,14 @@ namespace Trains.NET.Rendering.UI
         {
             int yPos = this.Top;
 
+            _titleWidth = 0f;
+            if (this.Title is { Length: > 0 })
+            {
+                _titleWidth = canvas.MeasureText(this.Title, Brushes.Label);
+            }
+
             var buttons = GetButtons().ToList();
-            _buttonWidth = 0;
+            _buttonWidth = _titleWidth;
             foreach (Button button in buttons)
             {
                 _buttonWidth = Math.Max(_buttonWidth, canvas.MeasureText(button.Label, Brushes.Label));
@@ -98,15 +129,51 @@ namespace Trains.NET.Rendering.UI
 
             if (this.Side == PanelSide.Right)
             {
-                canvas.Translate(width - panelWidth + 20, 0);
+                if (this.Collapsed)
+                {
+                    canvas.Translate(width + 2, 0);
+                }
+                else
+                {
+                    canvas.Translate(width - panelWidth + 20, 0);
+                }
+
             }
             else
             {
                 canvas.Translate(-20, 0);
             }
 
-            canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);
             canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBackground);
+
+            if (this.Title is { Length: > 0 })
+            {
+                // TODO: Titles on the left hand side
+                canvas.Save();
+
+                using (var _ = canvas.Scope())
+                {
+                    canvas.ClipRect(new Rectangle(0, yPos + 10, ButtonHeight / 2, yPos + _titleWidth + 20), true, true);
+                    canvas.DrawRoundRect(-ButtonHeight, yPos + 10, ButtonHeight + 3, _titleWidth + 10, 5, 5, Brushes.PanelBackground);
+                    canvas.DrawRoundRect(-ButtonHeight, yPos + 10, ButtonHeight + 3, _titleWidth + 10, 5, 5, Brushes.PanelBorder);
+                }
+
+                using (var _ = canvas.Scope())
+                {
+                    canvas.Translate(0, yPos);
+                    canvas.RotateDegrees(270);
+                    canvas.DrawText(this.Title, -15 - _titleWidth, -5, Brushes.Label);
+                }
+
+                canvas.ClipRect(new Rectangle(-2, yPos + 10, ButtonHeight / 2, yPos + _titleWidth + 20), true, true);
+            }
+
+            canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);
+
+            if (_titleWidth > 0)
+            {
+                canvas.Restore();
+            }
 
             yPos += this.TopPadding;
 

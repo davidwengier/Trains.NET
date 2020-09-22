@@ -130,7 +130,7 @@ namespace Trains.NET.Rendering
 
                 canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
 
-                canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false);
+                canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
 
                 DrawCornerTrack(canvas);
 

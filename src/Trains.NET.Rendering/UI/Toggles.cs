@@ -8,6 +8,8 @@ namespace Trains.NET.Rendering.UI
     {
         private readonly Button[] _buttons;
 
+        protected override bool Collapsed { get; set; } = true;
+        protected override string? Title => "Configuration";
         protected override int Top => 200;
         protected override PanelSide Side => PanelSide.Right;
 

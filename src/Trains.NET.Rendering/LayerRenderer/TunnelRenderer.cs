@@ -12,26 +12,26 @@ namespace Trains.NET.Rendering
         private readonly IGameBoard _gameBoard;
         private const int BuildModeAlpha = 170;
 
-        private const int NO_TUNNELS = 0;
-        private const int TOP = 1;
-        private const int RIGHT = 2;
-        private const int BOTTOM = 4;
-        private const int LEFT = 8;
+        private const int NoTunnels = 0;
+        private const int Top = 1;
+        private const int Right = 2;
+        private const int Bottom = 4;
+        private const int Left = 8;
 
-        private const int TOPRIGHT_CORNER = 3;
-        private const int BOTTOMRIGHT_CORNER = 6;
-        private const int TOPLEFT_CORNER = 9;
-        private const int BOTTOMLEFT_CORNER = 12;
+        private const int TopRightCorner = 3;
+        private const int BottomRightCorner = 6;
+        private const int TopLeftCorner = 9;
+        private const int BottomLeftCorner = 12;
 
-        private const int STRAIGHT_HORIZONTAL = 10;
-        private const int STRAIGHT_VERTICAL = 5;
+        private const int StraightHorizontal = 10;
+        private const int StraightVertical = 5;
 
-        private const int THREEWAY_NO_LEFT = 7;
-        private const int THREEWAY_NO_UP = 14;
-        private const int THREEWAY_NO_RIGHT = 13;
-        private const int THREEWAY_NO_DOWN = 11;
+        private const int ThreewayNoLeft = 7;
+        private const int ThreewayNoUp = 14;
+        private const int ThreewayNoRight = 13;
+        private const int ThreewayNoDown = 11;
 
-        private const int FOUR_WAY = 15;
+        private const int FourWayIntersection = 15;
 
         public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameBoard gameBoard)
         {
@@ -67,13 +67,13 @@ namespace Trains.NET.Rendering
 
                 TrackNeighbors trackNeighbours = track.GetConnectedNeighbors();
 
-                var currentCellTunnels = NO_TUNNELS;
+                var currentCellTunnels = NoTunnels;
                 var neighbourTrackConfigs = new List<(Track? neighbourTrack, int currentCellTunnel, int neighbourTunnel)>
                 {
-                    (trackNeighbours.Up, TOP, BOTTOM),
-                    (trackNeighbours.Right, RIGHT, LEFT),
-                    (trackNeighbours.Down, BOTTOM, TOP),
-                    (trackNeighbours.Left, LEFT, RIGHT)
+                    (trackNeighbours.Up, Top, Bottom),
+                    (trackNeighbours.Right, Right, Left),
+                    (trackNeighbours.Down, Bottom, Top),
+                    (trackNeighbours.Left, Left, Right)
                 };
 
                 foreach (var neighbourTrackConfig in neighbourTrackConfigs)
@@ -90,22 +90,22 @@ namespace Trains.NET.Rendering
 
                 switch (currentCellTunnels)
                 {
-                    case NO_TUNNELS: break;
-                    case TOP:
-                    case RIGHT:
-                    case BOTTOM:
-                    case LEFT: DrawSingleTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case STRAIGHT_VERTICAL:
-                    case STRAIGHT_HORIZONTAL: DrawStraightTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case TOPRIGHT_CORNER:
-                    case BOTTOMRIGHT_CORNER:
-                    case TOPLEFT_CORNER:
-                    case BOTTOMLEFT_CORNER: DrawCornerIntersection(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case THREEWAY_NO_UP:
-                    case THREEWAY_NO_RIGHT:
-                    case THREEWAY_NO_DOWN:
-                    case THREEWAY_NO_LEFT: DrawThreeWayTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
-                    case FOUR_WAY: DrawFourWayIntersection(canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case NoTunnels: break;
+                    case Top:
+                    case Right:
+                    case Bottom:
+                    case Left: DrawSingleTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case StraightVertical:
+                    case StraightHorizontal: DrawStraightTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case TopRightCorner:
+                    case BottomRightCorner:
+                    case TopLeftCorner:
+                    case BottomLeftCorner: DrawCornerIntersection(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case ThreewayNoUp:
+                    case ThreewayNoRight:
+                    case ThreewayNoDown:
+                    case ThreewayNoLeft: DrawThreeWayTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour); break;
+                    case FourWayIntersection: DrawFourWayIntersection(canvas, pixelMapper, x, y, lightColour, darkColour); break;
 
                 }
             }
@@ -120,22 +120,22 @@ namespace Trains.NET.Rendering
 
                 switch (tunnels)
                 {
-                    case NO_TUNNELS: break;
-                    case TOP:
-                    case RIGHT:
-                    case BOTTOM:
-                    case LEFT: DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case STRAIGHT_VERTICAL:
-                    case STRAIGHT_HORIZONTAL: DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case TOPRIGHT_CORNER:
-                    case BOTTOMRIGHT_CORNER:
-                    case TOPLEFT_CORNER:
-                    case BOTTOMLEFT_CORNER: DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case THREEWAY_NO_UP:
-                    case THREEWAY_NO_RIGHT:
-                    case THREEWAY_NO_DOWN:
-                    case THREEWAY_NO_LEFT: DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
-                    case FOUR_WAY: DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, colours); break;
+                    case NoTunnels: break;
+                    case Top:
+                    case Right:
+                    case Bottom:
+                    case Left: DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case StraightVertical:
+                    case StraightHorizontal: DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case TopRightCorner:
+                    case BottomRightCorner:
+                    case TopLeftCorner:
+                    case BottomLeftCorner: DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case ThreewayNoUp:
+                    case ThreewayNoRight:
+                    case ThreewayNoDown:
+                    case ThreewayNoLeft: DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, colours); break;
+                    case FourWayIntersection: DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, colours); break;
 
                 }
             }
@@ -145,8 +145,8 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                STRAIGHT_HORIZONTAL => 0,
-                STRAIGHT_VERTICAL => 90,
+                StraightHorizontal => 0,
+                StraightVertical => 90,
                 _ => throw new NotImplementedException(),
             };
 
@@ -163,10 +163,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                THREEWAY_NO_LEFT => 0,
-                THREEWAY_NO_UP => 90,
-                THREEWAY_NO_RIGHT => 180,
-                THREEWAY_NO_DOWN => 270,
+                ThreewayNoLeft => 0,
+                ThreewayNoUp => 90,
+                ThreewayNoRight => 180,
+                ThreewayNoDown => 270,
                 _ => throw new NotImplementedException()
             };
 
@@ -211,10 +211,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                LEFT => 0,
-                TOP => 90,
-                RIGHT => 180,
-                BOTTOM => 270,
+                Left => 0,
+                Top => 90,
+                Right => 180,
+                Bottom => 270,
                 _ => throw new NotImplementedException()
             };
 
@@ -230,10 +230,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                TOPLEFT_CORNER => 0,
-                TOPRIGHT_CORNER => 90,
-                BOTTOMRIGHT_CORNER => 180,
-                BOTTOMLEFT_CORNER => 270,
+                TopLeftCorner => 0,
+                TopRightCorner => 90,
+                BottomRightCorner => 180,
+                BottomLeftCorner => 270,
                 _ => throw new NotImplementedException()
             };
 
@@ -255,8 +255,8 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                STRAIGHT_HORIZONTAL => 0,
-                STRAIGHT_VERTICAL => 90,
+                StraightHorizontal => 0,
+                StraightVertical => 90,
                 _ => throw new NotImplementedException(),
             };
 
@@ -275,10 +275,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                THREEWAY_NO_UP => 0,
-                THREEWAY_NO_RIGHT => 90,
-                THREEWAY_NO_DOWN => 180,
-                THREEWAY_NO_LEFT => 270,
+                ThreewayNoUp => 0,
+                ThreewayNoRight => 90,
+                ThreewayNoDown => 180,
+                ThreewayNoLeft => 270,
                 _ => throw new NotImplementedException()
             };
 
@@ -299,10 +299,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                LEFT => 0,
-                TOP => 90,
-                RIGHT => 180,
-                BOTTOM => 270,
+                Left => 0,
+                Top => 90,
+                Right => 180,
+                Bottom => 270,
                 _ => throw new NotImplementedException()
             };
 
@@ -321,10 +321,10 @@ namespace Trains.NET.Rendering
         {
             var angle = (tunnels) switch
             {
-                TOPLEFT_CORNER => 0,
-                TOPRIGHT_CORNER => 90,
-                BOTTOMRIGHT_CORNER => 180,
-                BOTTOMLEFT_CORNER => 270,
+                TopLeftCorner => 0,
+                TopRightCorner => 90,
+                BottomRightCorner => 180,
+                BottomLeftCorner => 270,
                 _ => throw new NotImplementedException()
             };
 

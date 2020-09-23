@@ -1,6 +1,6 @@
 ﻿using Trains.NET.Engine;
 
-namespace Trains.NET.Comet
+namespace Trains.NET.Rendering
 {
     [Order(50)]
     public class TrainTool : ITool

@@ -1,7 +1,6 @@
 ﻿using Trains.NET.Engine;
-using Trains.NET.Rendering;
 
-namespace Trains.NET.Comet
+namespace Trains.NET.Rendering
 {
     [Order(1)]
     public class PointerTool : IDraggableTool

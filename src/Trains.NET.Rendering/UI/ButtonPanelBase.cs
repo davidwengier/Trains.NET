@@ -96,6 +96,11 @@ namespace Trains.NET.Rendering.UI
                     }
                     return true;
                 }
+                else if (this.Title is { Length: > 0 } && !this.Collapsed)
+                {
+                    this.Collapsed = true;
+                    OnChanged();
+                }
                 _hoverButton = null;
             }
             return false;
@@ -124,7 +129,7 @@ namespace Trains.NET.Rendering.UI
             }
             _buttonWidth += TextXPadding;
 
-            var panelHeight = buttons.Count * (ButtonGap + ButtonHeight) + 20;
+            var panelHeight = Math.Max(_titleWidth + 20, buttons.Count * (ButtonGap + ButtonHeight) + 20);
             var panelWidth = 20 + ButtonLeft + _buttonWidth + 20;
 
             if (this.Side == PanelSide.Right)
@@ -188,10 +193,14 @@ namespace Trains.NET.Rendering.UI
 
             foreach (Button button in buttons)
             {
-                PaintBrush brush = button == _hoverButton ? Brushes.ButtonHoverBackground
-                            : button.IsActive?.Invoke() ?? false ? Brushes.ButtonActiveBackground
-                            : Brushes.ButtonBackground;
+                var isActive = button.IsActive?.Invoke() ?? false;
+                PaintBrush brush = isActive ? Brushes.ButtonActiveBackground
+                    : Brushes.ButtonBackground;
                 canvas.DrawRect(ButtonLeft, yPos, _buttonWidth, ButtonHeight, brush);
+                if (button == _hoverButton)
+                {
+                    canvas.DrawRect(ButtonLeft, yPos, _buttonWidth, ButtonHeight, Brushes.ButtonHoverBackground);
+                }
 
                 float textWidth = canvas.MeasureText(button.Label, Brushes.Label);
 

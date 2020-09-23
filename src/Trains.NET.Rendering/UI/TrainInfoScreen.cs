@@ -24,6 +24,11 @@ namespace Trains.NET.Rendering.UI
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
+            if (action != MouseAction.Click)
+            {
+                return false;
+            }
+
             if (_trainManager.CurrentTrain == null)
             {
                 return false;

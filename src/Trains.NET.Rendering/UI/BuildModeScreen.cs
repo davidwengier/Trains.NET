@@ -54,9 +54,12 @@ namespace Trains.NET.Rendering.UI
         {
             canvas.Translate(10, 50);
 
-            PaintBrush brush = _isHovered ? Brushes.ButtonHoverBackground : Brushes.ButtonBackground;
+            canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, Brushes.ButtonBackground);
+            if (_isHovered)
+            {
+                canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, Brushes.ButtonHoverBackground);
+            }
             canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, Brushes.PanelBorder);
-            canvas.DrawRoundRect(-5, 0, ButtonWidth + 10, ButtonHeight, 10, 10, brush);
 
             string buttonText = _gameManager.BuildMode ? "Building" : "Playing";
             float textWidth = canvas.MeasureText(buttonText, Brushes.Label);

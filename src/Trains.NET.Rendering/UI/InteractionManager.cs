@@ -60,7 +60,10 @@ namespace Trains.NET.Rendering.UI
             {
                 if (screen.HandleInteraction(x, y, width, height, action))
                 {
-                    _capturedScreen = screen;
+                    if (action != MouseAction.Move)
+                    {
+                        _capturedScreen = screen;
+                    }
                     return true;
                 }
             }

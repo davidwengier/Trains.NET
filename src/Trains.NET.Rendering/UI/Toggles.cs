@@ -4,6 +4,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
 {
+    [Order(150)]
     public class Toggles : ButtonPanelBase
     {
         private readonly Button[] _buttons;

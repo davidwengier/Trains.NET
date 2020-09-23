@@ -69,18 +69,20 @@ namespace Trains
 
             this.Title = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
 
-            SizeChanged += MainWindow_SizeChanged;
+            _skElement.SizeChanged += MainWindow_SizeChanged;
         }
 
         private void _skElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
-            {
-                return;
-            }
-
             var mousePos = e.GetPosition(_skElement);
-            _interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                _interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
+            }
+            else
+            {
+                _interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
+            }
         }
 
         private void _skElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)

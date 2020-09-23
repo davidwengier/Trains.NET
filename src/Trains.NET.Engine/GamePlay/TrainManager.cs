@@ -46,7 +46,7 @@ namespace Trains.NET.Engine
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        private void Train_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Train_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             CurrentTrainPropertyChanged?.Invoke(sender, e);
         }

@@ -101,7 +101,7 @@ namespace Trains.NET.Engine
             {
                 for (int c = 0; c <= maxColumn; c++)
                 {
-                    IStaticEntity entity = tracks.FirstOrDefault(t => t.Column == c && t.Row == r);
+                    IStaticEntity? entity = tracks.FirstOrDefault(t => t.Column == c && t.Row == r);
                     if (entity == null)
                     {
                         sb.Append(' ');

@@ -76,13 +76,13 @@ namespace Trains.NET.Rendering.Drawing
             lock (_cacheLock)
             {
                 // If we have anything waiting to be disposed, dispose it
-                if (_disposeBuffer.TryGetValue(key, out IImage oldImage))
+                if (_disposeBuffer.TryGetValue(key, out IImage? oldImage))
                 {
                     oldImage.Dispose();
                 }
                 // Move the current image into the dispose buffer, this way if anyone is still holding on
                 // to it we won't be disposing it out from under them
-                if (_imageBuffer.TryGetValue(key, out IImage previousImage))
+                if (_imageBuffer.TryGetValue(key, out IImage? previousImage))
                 {
                     _disposeBuffer[key] = previousImage;
                 }

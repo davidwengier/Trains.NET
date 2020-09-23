@@ -72,7 +72,7 @@ namespace Trains
             SizeChanged += MainWindow_SizeChanged;
         }
 
-        private void _skElement_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void _skElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
         {
             if (e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
             {
@@ -83,7 +83,7 @@ namespace Trains
             _interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
         }
 
-        private void _skElement_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void _skElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
             {
@@ -94,7 +94,7 @@ namespace Trains
             _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
         }
 
-        private void _skElement_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void _skElement_MouseUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ChangedButton != System.Windows.Input.MouseButton.Left)
             {
@@ -143,12 +143,12 @@ namespace Trains
             File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
         }
 
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MainWindow_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
             _game.SetSize((int)e.NewSize.Width, (int)e.NewSize.Height);
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void CurrentDomain_UnhandledException(object? sender, UnhandledExceptionEventArgs e)
         {
             MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
         }

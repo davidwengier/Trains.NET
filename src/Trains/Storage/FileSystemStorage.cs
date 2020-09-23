@@ -40,8 +40,12 @@ namespace Trains.Storage
 
         public void WriteStaticEntities(IEnumerable<IStaticEntity> tracks)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_tracksFilePath));
-            File.WriteAllText(_tracksFilePath, _trackSerializer.Serialize(tracks));
+            var tracksFileDirectory = Path.GetDirectoryName(_tracksFilePath);
+            if (tracksFileDirectory != null)
+            {
+                Directory.CreateDirectory(tracksFileDirectory);
+                File.WriteAllText(_tracksFilePath, _trackSerializer.Serialize(tracks));
+            }
         }
 
         public IEnumerable<Terrain> ReadTerrain()
@@ -56,8 +60,12 @@ namespace Trains.Storage
 
         public void WriteTerrain(IEnumerable<Terrain> terrainList)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_terrainFilePath));
-            File.WriteAllText(_terrainFilePath, _terrainSerializer.Serialize(terrainList));
+            var terrainFileDirectory = Path.GetDirectoryName(_terrainFilePath);
+            if (terrainFileDirectory != null)
+            {
+                Directory.CreateDirectory(terrainFileDirectory);
+                File.WriteAllText(_terrainFilePath, _terrainSerializer.Serialize(terrainList));
+            }
         }
     }
 }

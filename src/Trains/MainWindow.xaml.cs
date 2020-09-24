@@ -1,14 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using SkiaSharp.Views.WPF;
 using Trains.NET.Engine;
-using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
-using Trains.NET.Rendering.Skia;
 using Trains.Storage;
 
 namespace Trains
@@ -19,16 +14,12 @@ namespace Trains
     public partial class MainWindow : Window
     {
         private readonly string _windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
-
-        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("Real-FPS");
-        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Real Draw Time");
         private readonly IGame _game;
         private readonly IGameStorage _gameStorage;
         private readonly ITerrainMap _terrainMap;
         private readonly ILayout _trackLayout;
-        private readonly SKElement _skElement;
+        private readonly GameElement _gameElement;
         private readonly IInteractionManager _interactionManager;
-        private bool _presenting = true;
 
         public MainWindow()
         {
@@ -50,31 +41,28 @@ namespace Trains
                 }
             }
 
-            _skElement = new SKElement();
-            _skElement.PaintSurface += SKElement_PaintSurface;
-
-            _skElement.MouseDown += _skElement_MouseDown;
-            _skElement.MouseMove += _skElement_MouseMove;
-            _skElement.MouseUp += _skElement_MouseUp;
-
-            this.Content = _skElement;
-
             _game = DI.ServiceLocator.GetService<IGame>();
             _gameStorage = DI.ServiceLocator.GetService<IGameStorage>();
             _terrainMap = DI.ServiceLocator.GetService<ITerrainMap>();
             _trackLayout = DI.ServiceLocator.GetService<ILayout>();
             _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
-            _ = PresentLoop();
+            _gameElement = new GameElement(_game);
+
+            _gameElement.MouseDown += _skElement_MouseDown;
+            _gameElement.MouseMove += _skElement_MouseMove;
+            _gameElement.MouseUp += _skElement_MouseUp;
+
+            this.Content = _gameElement;
 
             this.Title = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
 
-            _skElement.SizeChanged += MainWindow_SizeChanged;
+            _gameElement.SizeChanged += MainWindow_SizeChanged;
         }
 
         private void _skElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
         {
-            var mousePos = e.GetPosition(_skElement);
+            var mousePos = e.GetPosition(_gameElement);
             if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
             {
                 _interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
@@ -92,7 +80,7 @@ namespace Trains
                 return;
             }
 
-            var mousePos = e.GetPosition(_skElement);
+            var mousePos = e.GetPosition(_gameElement);
             _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
         }
 
@@ -103,32 +91,8 @@ namespace Trains
                 return;
             }
 
-            var mousePos = e.GetPosition(_skElement);
+            var mousePos = e.GetPosition(_gameElement);
             _interactionManager.PointerRelease((int)mousePos.X, (int)mousePos.Y);
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-        private void SKElement_PaintSurface(object? sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
-        {
-            DpiScale dpi = VisualTreeHelper.GetDpi(_skElement);
-            e.Surface.Canvas.Scale((float)dpi.DpiScaleX, (float)dpi.DpiScaleY);
-            _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
-        }
-
-        private async Task PresentLoop()
-        {
-            while (_presenting)
-            {
-                _drawTime.Start();
-
-                _skElement.InvalidateVisual();
-
-                _drawTime.Stop();
-
-                _fps.Update();
-
-                await Task.Delay(16).ConfigureAwait(true);
-            }
         }
 
         public void Save()
@@ -140,7 +104,6 @@ namespace Trains
         protected override void OnClosing(CancelEventArgs e)
         {
             Save();
-            _presenting = false;
             _game.Dispose();
             File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
         }

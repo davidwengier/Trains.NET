@@ -118,8 +118,6 @@ namespace Trains.NET.Rendering
                 return;
             }
 
-            canvas.Clear(Colors.White);
-
             IImage? gameImage = _imageCache.Get(this);
             if (gameImage != null)
             {

@@ -46,8 +46,7 @@ namespace Trains
             _terrainMap = DI.ServiceLocator.GetService<ITerrainMap>();
             _trackLayout = DI.ServiceLocator.GetService<ILayout>();
             _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
-
-            _gameElement = new GameElement(_game);
+            _gameElement = DI.ServiceLocator.GetService<GameElement>();
 
             _gameElement.MouseDown += _skElement_MouseDown;
             _gameElement.MouseMove += _skElement_MouseMove;

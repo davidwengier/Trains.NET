@@ -7,6 +7,10 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Rendering
 {
+    public interface ISwapChain
+    {
+        void DrawNext(Action<ICanvas> draw);
+    }
     public class Game : IGame
     {
         private const int RenderInterval = 16;
@@ -27,6 +31,7 @@ namespace Trains.NET.Rendering
         private readonly ITimer _renderLoop;
         private readonly IEnumerable<IScreen> _screens;
         private readonly IImageCache _imageCache;
+        private readonly ISwapChain _swapChain;
 
         public Game(IGameBoard gameBoard,
                     IEnumerable<ILayerRenderer> boardRenderers,
@@ -34,7 +39,8 @@ namespace Trains.NET.Rendering
                     IImageFactory imageFactory,
                     ITimer renderLoop,
                     IEnumerable<IScreen> screens,
-                    IImageCache imageCache)
+                    IImageCache imageCache,
+                    ISwapChain swapChain)
         {
             _gameBoard = gameBoard;
             _boardRenderers = boardRenderers;
@@ -43,6 +49,7 @@ namespace Trains.NET.Rendering
             _renderLoop = renderLoop;
             _screens = screens;
             _imageCache = imageCache;
+            _swapChain = swapChain;
 
             foreach (IScreen screen in _screens)
             {
@@ -137,22 +144,23 @@ namespace Trains.NET.Rendering
             {
                 IPixelMapper pixelMapper = _pixelMapper.Snapshot();
 
-                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                _swapChain.DrawNext(canvas => DrawFrame(canvas, pixelMapper));
+            }
+        }
 
-                imageCanvas.Canvas.Save();
-                RenderFrame(imageCanvas.Canvas, pixelMapper);
-                imageCanvas.Canvas.Restore();
+        private void DrawFrame(ICanvas canvas, IPixelMapper pixelMapper)
+        {
+            canvas.Save();
+            RenderFrame(canvas, pixelMapper);
+            canvas.Restore();
 
-                foreach (IScreen screen in _screens)
-                {
-                    _screenDrawTimes[screen].Start();
-                    imageCanvas.Canvas.Save();
-                    screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
-                    imageCanvas.Canvas.Restore();
-                    _screenDrawTimes[screen].Stop();
-                }
-
-                _imageCache.Set(this, imageCanvas.Render());
+            foreach (IScreen screen in _screens)
+            {
+                _screenDrawTimes[screen].Start();
+                canvas.Save();
+                screen.Render(canvas, _screenWidth, _screenHeight);
+                canvas.Restore();
+                _screenDrawTimes[screen].Stop();
             }
         }
 

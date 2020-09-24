@@ -1,6 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media;
 using SkiaSharp;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -13,10 +11,7 @@ namespace Trains
     {
         private const int SwapChainCount = 3;
         private int _current;
-        private readonly WriteableBitmap[] _buffer = new WriteableBitmap[SwapChainCount];
-        private readonly IntPtr[] _backBuffers = new IntPtr[SwapChainCount];
-        private readonly int[] _backBufferStrides = new int[SwapChainCount];
-        private readonly bool[] _buffersLocked = new bool[SwapChainCount];
+        private readonly WriteableBitmapFrameBuffer[] _swapChain = new WriteableBitmapFrameBuffer[SwapChainCount];
         private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SwapChain-DrawNext");
         private int _width;
         private int _height;
@@ -26,12 +21,9 @@ namespace Trains
         {
             int next = (_current + 1) % SwapChainCount;
 
-            if (_width < 1 || _height < 1 || _buffer[next] == null)
-            {
-                return;
-            }
+            WriteableBitmapFrameBuffer buffer = _swapChain[next];
 
-            if (!_buffersLocked[next])
+            if (_width < 1 || _height < 1 || buffer == null || !buffer.Locked)
             {
                 return;
             }
@@ -40,7 +32,7 @@ namespace Trains
 
             // Render the game
             var info = new SKImageInfo(_width, _height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            using (var surface = SKSurface.Create(info, _backBuffers[next], _backBufferStrides[next]))
+            using (var surface = SKSurface.Create(info, buffer.BackBuffer, buffer.BackBufferStride))
             {
                 if (surface != null)
                 {
@@ -62,20 +54,14 @@ namespace Trains
 
             for (int i = 0; i < SwapChainCount; i++)
             {
-                if (_buffer[i] != null)
+                if (_swapChain[i] != null && _swapChain[i].Locked)
                 {
-                    if (_buffersLocked[i])
-                    {
-                        _buffer[i].Unlock();
-                    }
+                    _swapChain[i].Bitmap.Unlock();
                 }
-                _buffer[i] = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
-                _backBuffers[i] = _buffer[i].BackBuffer;
-                _backBufferStrides[i] = _buffer[i].BackBufferStride;
-                _buffersLocked[i] = false;
+                _swapChain[i] = new WriteableBitmapFrameBuffer(width, height);
             }
-            _buffer[0].Lock();
-            _buffersLocked[0] = true;
+
+            _swapChain[_current].LockAndDirty();
 
             _width = width;
             _height = height;
@@ -83,29 +69,20 @@ namespace Trains
 
         public void PresentCurrent(Action<ImageSource> present)
         {
-            var currentImage = _buffer[_current];
+            var current = _swapChain[_current];
 
-            if (_width < 1 || _height < 1 || currentImage == null)
+            if (_width < 1 || _height < 1 || current == null)
             {
                 return;
             }
 
-            if (_buffersLocked[_current])
-            {
-                _buffersLocked[_current] = false;
-                currentImage.Unlock();
-            }
+            current.Unlock();
 
-            present(currentImage);
+            present(current.Bitmap);
 
             int next = (_current + 1) % SwapChainCount;
 
-            if (!_buffersLocked[next])
-            {
-                _buffer[next].Lock();
-                _buffer[next].AddDirtyRect(new Int32Rect(0, 0, _width, _height));
-                _buffersLocked[next] = true;
-            }
+            _swapChain[next].LockAndDirty();
         }
     }
 }

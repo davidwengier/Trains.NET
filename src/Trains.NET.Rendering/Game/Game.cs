@@ -7,10 +7,6 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Rendering
 {
-    public interface ISwapChain
-    {
-        void DrawNext(Action<ICanvas> draw);
-    }
     public class Game : IGame
     {
         private const int RenderInterval = 16;

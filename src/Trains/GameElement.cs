@@ -11,9 +11,7 @@ namespace Trains
     {
         private readonly bool _designMode;
         private TimeSpan _lastRenderingTime = TimeSpan.Zero;
-        private readonly PerSecondTimedStat _wpfFps = InstrumentationBag.Add<PerSecondTimedStat>("WPF-CompositionTargetFPS");
-        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-DrawTime");
-        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("GameElement-OnRenderFPS");
+        private readonly ElapsedMillisecondsTimedStat _onRenderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-OnRender");
         private readonly WriteableBitmapSwapChain _swapChain;
         public bool Enabled { get; set; } = true;
 
@@ -36,8 +34,6 @@ namespace Trains
             _lastRenderingTime = args.RenderingTime;
 
             InvalidateVisual();
-
-            _wpfFps.Update();
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -47,14 +43,13 @@ namespace Trains
             if (_designMode)
                 return;
 
-            _drawTime.Start();
+            _onRenderTime.Start();
 
             _swapChain.SetSize((int)this.ActualWidth, (int)this.ActualHeight);
 
             _swapChain.PresentCurrent(currentImage => drawingContext.DrawImage(currentImage, new Rect(0, 0, this.ActualWidth, this.ActualHeight)));
 
-            _drawTime.Stop();
-            _fps.Update();
+            _onRenderTime.Stop();
         }
     }
 }

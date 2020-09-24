@@ -16,8 +16,10 @@ namespace Trains
         private readonly IGame _game;
         private WriteableBitmap? _bitmap;
         private TimeSpan _lastRenderingTime = TimeSpan.Zero;
-        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("Real-FPS");
-        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Real Draw Time");
+        private readonly PerSecondTimedStat _wpfFps = InstrumentationBag.Add<PerSecondTimedStat>("WPF-CompositionTargetFPS");
+        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-DrawTime");
+        private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
+        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("GameElement-OnRenderFPS");
 
         public bool Enabled { get; set; } = true;
 
@@ -39,13 +41,9 @@ namespace Trains
 
             _lastRenderingTime = args.RenderingTime;
 
-            _drawTime.Start();
-
             InvalidateVisual();
 
-            _drawTime.Stop();
-
-            _fps.Update();
+            _wpfFps.Update();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
@@ -68,6 +66,8 @@ namespace Trains
             if (_bitmap == null)
                 return;
 
+            _renderTime.Start();
+
             var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
             _bitmap.Lock();
@@ -82,7 +82,13 @@ namespace Trains
 
             _bitmap.Unlock();
 
+            _renderTime.Stop();
+            _drawTime.Start();
+
             drawingContext.DrawImage(_bitmap, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+
+            _drawTime.Stop();
+            _fps.Update();
         }
     }
 }

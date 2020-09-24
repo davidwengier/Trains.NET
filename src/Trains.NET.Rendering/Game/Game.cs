@@ -118,19 +118,12 @@ namespace Trains.NET.Rendering
                 return;
             }
 
+            canvas.Clear(Colors.White);
+
             IImage? gameImage = _imageCache.Get(this);
             if (gameImage != null)
             {
                 canvas.DrawImage(gameImage, 0, 0);
-            }
-
-            foreach (IScreen screen in _screens)
-            {
-                IImage? screenImage = _imageCache.Get(screen);
-                if (screenImage != null)
-                {
-                    canvas.DrawImage(screenImage, 0, 0);
-                }
             }
         }
 
@@ -146,21 +139,20 @@ namespace Trains.NET.Rendering
 
                 using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
+                imageCanvas.Canvas.Save();
                 RenderFrame(imageCanvas.Canvas, pixelMapper);
-
-                _imageCache.Set(this, imageCanvas.Render());
+                imageCanvas.Canvas.Restore();
 
                 foreach (IScreen screen in _screens)
                 {
-                    if (_imageCache.IsDirty(screen))
-                    {
-                        _screenDrawTimes[screen].Start();
-                        using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
-                        screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
-                        _screenDrawTimes[screen].Stop();
-                        _imageCache.Set(screen, screnCanvas.Render());
-                    }
+                    _screenDrawTimes[screen].Start();
+                    imageCanvas.Canvas.Save();
+                    screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
+                    imageCanvas.Canvas.Restore();
+                    _screenDrawTimes[screen].Stop();
                 }
+
+                _imageCache.Set(this, imageCanvas.Render());
             }
         }
 

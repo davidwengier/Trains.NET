@@ -114,20 +114,14 @@ namespace Trains.NET.Rendering
 
         public (int Width, int Height) GetScreenSize() => (_screenWidth, _screenHeight);
 
-        public void Render(ICanvas canvas)
+        public void Render(Action<ISwapChain> render)
         {
             if (_width == 0 || _height == 0)
             {
                 return;
             }
 
-            canvas.Clear(Colors.White);
-
-            IImage? gameImage = _imageCache.Get(this);
-            if (gameImage != null)
-            {
-                canvas.DrawImage(gameImage, 0, 0);
-            }
+            render(_swapChain);
         }
 
         public void DrawFrame()
@@ -140,23 +134,29 @@ namespace Trains.NET.Rendering
             {
                 IPixelMapper pixelMapper = _pixelMapper.Snapshot();
 
-                _swapChain.DrawNext(canvas => DrawFrame(canvas, pixelMapper));
+                _swapChain.DrawNext(canvas =>
+                {
+                    canvas.Clear(Colors.White);
+
+                    DrawFrame(canvas, pixelMapper);
+                });
             }
         }
 
         private void DrawFrame(ICanvas canvas, IPixelMapper pixelMapper)
         {
-            canvas.Save();
-            RenderFrame(canvas, pixelMapper);
-            canvas.Restore();
+            using (_ = canvas.Scope())
+            {
+                RenderFrame(canvas, pixelMapper);
+            }
 
             foreach (IScreen screen in _screens)
             {
-                _screenDrawTimes[screen].Start();
-                canvas.Save();
-                screen.Render(canvas, _screenWidth, _screenHeight);
-                canvas.Restore();
-                _screenDrawTimes[screen].Stop();
+                using (_ = _screenDrawTimes[screen].Measure())
+                using (_ = canvas.Scope())
+                {
+                    screen.Render(canvas, _screenWidth, _screenHeight);
+                }
             }
         }
 

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using SkiaSharp.Views.WPF;
 using Trains.NET.Engine;
+using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.Storage;
 
@@ -14,12 +18,16 @@ namespace Trains
     public partial class MainWindow : Window
     {
         private readonly string _windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
+
+        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SKElement-FPS");
+        private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SKElement-DrawTime");
         private readonly IGame _game;
         private readonly IGameStorage _gameStorage;
         private readonly ITerrainMap _terrainMap;
         private readonly ILayout _trackLayout;
-        private readonly GameElement _gameElement;
+        private readonly FrameworkElement _gameElement;
         private readonly IInteractionManager _interactionManager;
+        private bool _presenting = true;
 
         public MainWindow()
         {
@@ -46,7 +54,21 @@ namespace Trains
             _terrainMap = DI.ServiceLocator.GetService<ITerrainMap>();
             _trackLayout = DI.ServiceLocator.GetService<ILayout>();
             _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
-            _gameElement = DI.ServiceLocator.GetService<GameElement>();
+
+            if (DI.ServiceLocator.GetService<ISwapChain>().GetType() == typeof(WriteableBitmapSwapChain))
+            {
+                _gameElement = DI.ServiceLocator.GetService<GameElement>();
+            }
+            else
+            {
+                var skElement = new SKElement();
+
+                skElement.PaintSurface += SKElement_PaintSurface;
+
+                _gameElement = skElement;
+
+                _ = PresentLoop();
+            }
 
             _gameElement.MouseDown += _skElement_MouseDown;
             _gameElement.MouseMove += _skElement_MouseMove;
@@ -94,6 +116,36 @@ namespace Trains
             _interactionManager.PointerRelease((int)mousePos.X, (int)mousePos.Y);
         }
 
+        private void SKElement_PaintSurface(object? sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
+        {
+            DpiScale dpi = VisualTreeHelper.GetDpi(_gameElement);
+            e.Surface.Canvas.Scale((float)dpi.DpiScaleX, (float)dpi.DpiScaleY);
+            _game.Render(swapChain =>
+            {
+                var skiaImageSwapChain = (SkiaImageSwapChain)swapChain;
+
+                skiaImageSwapChain.SetSize((int)_gameElement.ActualWidth, (int)_gameElement.ActualHeight);
+
+                skiaImageSwapChain.PresentCurrent(image => e.Surface.Canvas.DrawImage(image, 0, 0));
+            });
+        }
+
+        private async Task PresentLoop()
+        {
+            while (_presenting)
+            {
+                _drawTime.Start();
+
+                _gameElement.InvalidateVisual();
+
+                _drawTime.Stop();
+
+                _fps.Update();
+
+                await Task.Delay(16).ConfigureAwait(true);
+            }
+        }
+
         public void Save()
         {
             _gameStorage.WriteStaticEntities(_trackLayout);
@@ -103,6 +155,7 @@ namespace Trains
         protected override void OnClosing(CancelEventArgs e)
         {
             Save();
+            _presenting = false;
             _game.Dispose();
             File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
         }

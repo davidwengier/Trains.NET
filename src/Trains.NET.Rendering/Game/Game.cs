@@ -221,16 +221,13 @@ namespace Trains.NET.Rendering
             {
                 if (vehicle.Follow)
                 {
-                    (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(vehicle.Column, vehicle.Row);
+                    (int x, int y) = _pixelMapper.CoordsToWorldPixels(vehicle.Column, vehicle.Row);
 
-                    double easing = 10;
-                    int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
-                    int adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
+                    x += (int)(_pixelMapper.CellSize * vehicle.RelativeLeft);
+                    y += (int)(_pixelMapper.CellSize * vehicle.RelativeTop);
 
-                    if (adjustX != 0 || adjustY != 0)
-                    {
-                        _pixelMapper.AdjustViewPort(adjustX, adjustY);
-                    }
+                    _pixelMapper.SetViewPortCenter(x, y);
+
                     break;
                 }
             }

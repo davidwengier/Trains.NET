@@ -43,6 +43,9 @@ namespace Trains.NET.Rendering
             }
         }
 
+        public void SetViewPortCenter(int x, int y)
+            => SetViewPort(x - this.ViewPortWidth / 2, y - this.ViewPortHeight / 2);
+
         public void AdjustViewPort(int x, int y)
         {
             SetViewPort(-1 * (this.ViewPortX + x), -1 * (this.ViewPortY + y));

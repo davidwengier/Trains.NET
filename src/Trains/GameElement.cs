@@ -42,7 +42,7 @@ namespace Trains
             if (_designMode)
                 return;
 
-            using (_ = _onRenderTime.Measure())
+            using (_onRenderTime.Measure())
             {
                 _game.Render(swapChain =>
                 {

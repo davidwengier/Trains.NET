@@ -81,7 +81,6 @@ namespace Trains.NET.Engine
 
             using (var _ = _gameUpdateTime.Measure())
             {
-                _gameUpdateTime.Start();
                 try
                 {
                     DoGameLoopStep();

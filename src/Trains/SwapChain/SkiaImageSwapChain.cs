@@ -7,7 +7,7 @@ using Trains.NET.Rendering.Skia;
 namespace Trains
 {
     [Order(10)]
-    public class SkiaImageSwapChain //: ISwapChain // Order didn't want to work, so commenting out for the moment
+    public class SkiaImageSwapChain // : ISwapChain // Order didn't want to work, so commenting out for the moment
     {
         private readonly IImageCache _imageCache;
         private readonly IImageFactory _imageFactory;
@@ -21,7 +21,7 @@ namespace Trains
         }
         public void DrawNext(Action<ICanvas> draw)
         {
-            using (_ = _imageCache.SuspendSetDirtyCalls())
+            using (_imageCache.SuspendSetDirtyCalls())
             {
                 using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 

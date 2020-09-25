@@ -93,7 +93,7 @@ namespace Trains.NET.Tests
             _imageCache.Set(key, image);
             Assert.False(_imageCache.IsDirty(key));
 
-            using (_ = _imageCache.SuspendSetDirtyCalls())
+            using (_imageCache.SuspendSetDirtyCalls())
             {
                 _imageCache.SetDirty(key);
 
@@ -107,7 +107,7 @@ namespace Trains.NET.Tests
 
             _imageCache.SetDirty(key);
 
-            using (_ = _imageCache.SuspendSetDirtyCalls())
+            using (_imageCache.SuspendSetDirtyCalls())
             {
                 _imageCache.Set(key, image);
 

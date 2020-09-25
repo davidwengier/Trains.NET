@@ -134,11 +134,10 @@ namespace Trains
         {
             while (_presenting)
             {
-                _drawTime.Start();
-
-                _gameElement.InvalidateVisual();
-
-                _drawTime.Stop();
+                using (_drawTime.Measure())
+                {
+                    _gameElement.InvalidateVisual();
+                }
 
                 _fps.Update();
 

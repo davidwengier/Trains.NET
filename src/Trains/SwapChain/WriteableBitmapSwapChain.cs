@@ -30,19 +30,18 @@ namespace Trains
                 return;
             }
 
-            _renderTime.Start();
-
-            // Render the game
-            var info = new SKImageInfo(_width, _height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            using (var surface = SKSurface.Create(info, buffer.BackBuffer, buffer.BackBufferStride))
+            using (_renderTime.Measure())
             {
-                if (surface != null)
+                // Render the game
+                var info = new SKImageInfo(_width, _height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                using (var surface = SKSurface.Create(info, buffer.BackBuffer, buffer.BackBufferStride))
                 {
-                    draw(new SKCanvasWrapper(surface.Canvas));
+                    if (surface != null)
+                    {
+                        draw(new SKCanvasWrapper(surface.Canvas));
+                    }
                 }
             }
-
-            _renderTime.Stop();
 
             _current = next;
         }

@@ -48,6 +48,13 @@ namespace Trains.NET.Rendering.UI
                         x -= (width - panelWidth);
                     }
                 }
+                else
+                {
+                    if (this.Collapsed)
+                    {
+                        x -= ButtonHeight;
+                    }
+                }
 
                 if (this.Title is { Length: > 0 })
                 {
@@ -142,19 +149,30 @@ namespace Trains.NET.Rendering.UI
                 {
                     canvas.Translate(width - panelWidth + 20, 0);
                 }
-
             }
             else
             {
-                canvas.Translate(-20, 0);
+                if (this.Collapsed)
+                {
+                    canvas.Translate(-panelWidth - 2, 0);
+                }
+                else
+                {
+                    canvas.Translate(-20, 0);
+                }
             }
 
             canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBackground);
 
             if (this.Title is { Length: > 0 })
             {
-                // TODO: Titles on the left hand side
                 canvas.Save();
+
+                if (this.Side == PanelSide.Left)
+                {
+                    canvas.Save();
+                    canvas.RotateDegrees(180, panelWidth / 2, yPos + 10 + ((_titleWidth + 10) / 2));
+                }
 
                 using (var _ = canvas.Scope())
                 {
@@ -170,7 +188,15 @@ namespace Trains.NET.Rendering.UI
                     canvas.DrawText(this.Title, -15 - _titleWidth, -5, Brushes.Label);
                 }
 
-                canvas.ClipRect(new Rectangle(-2, yPos + 10, ButtonHeight / 2, yPos + _titleWidth + 20), true, true);
+                if (this.Side == PanelSide.Left)
+                {
+                    canvas.Restore();
+                    canvas.ClipRect(new Rectangle(panelWidth - 3, yPos + 10, (panelWidth - 3) + ButtonHeight / 2, yPos + _titleWidth + 20), true, true);
+                }
+                else
+                {
+                    canvas.ClipRect(new Rectangle(-2, yPos + 10, ButtonHeight / 2, yPos + _titleWidth + 20), true, true);
+                }
             }
 
             canvas.DrawRoundRect(0, yPos, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);

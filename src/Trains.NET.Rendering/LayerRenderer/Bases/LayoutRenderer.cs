@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
@@ -46,7 +47,6 @@ namespace Trains.NET.Rendering
 
                     foreach (IRenderer<T> renderer in _renderers)
                     {
-
                         if (!renderer.ShouldRender(entity))
                         {
                             continue;
@@ -92,8 +92,9 @@ namespace Trains.NET.Rendering
                             {
                                 canvas.Scale(heightScale, heightScale, 50, 50);
                             }
+                            renderer.Render(canvas, entity);
                         }
-
+                        break;
                     }
                 }
             }

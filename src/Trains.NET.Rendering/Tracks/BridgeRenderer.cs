@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(90)]
-    public class BridgeRenderer : ICachableRenderer<Bridge>
+    public class BridgeRenderer : TypeMappingRenderer<Bridge, Track>
     {
         private const int CanvasSize = 100;
         private const float RailingInset = SupportTopInset + SupportHeight;
@@ -19,6 +19,7 @@ namespace Trains.NET.Rendering
         private const float WaterWashLeftPosition = (CanvasSize - WaterWashWidth) / 2.0f;
 
         private readonly ITerrainMap _terrainMap;
+        private readonly TrackRenderer _trackRenderer;
         private readonly IPath _cornerPlankPath;
         private readonly IPath _cornerRailPath;
         private static readonly PaintBrush s_waterWashPaint = new PaintBrush
@@ -40,20 +41,21 @@ namespace Trains.NET.Rendering
             IsAntialias = true
         };
 
-        public BridgeRenderer(ITerrainMap terrainMap, IPathFactory pathFactory)
+        public BridgeRenderer(ITerrainMap terrainMap, IPathFactory pathFactory, TrackRenderer trackRenderer)
         {
             _terrainMap = terrainMap;
+            _trackRenderer = trackRenderer;
             _cornerPlankPath = BuildCornerPlankPath(pathFactory);
             _cornerRailPath = BuildCornerRailPath(pathFactory);
         }
 
-        public bool ShouldRender(Bridge track)
-            => _terrainMap.Get(track.Column, track.Row).IsWater;
+        protected override bool ShouldRender(Bridge bridge)
+            => _terrainMap.Get(bridge.Column, bridge.Row).IsWater;
 
-        public string GetCacheKey(Bridge track)
-            => track.Direction.ToString();
+        //public string GetCacheKey(Bridge track)
+        //    => track.Direction.ToString();
 
-        public void Render(ICanvas canvas, Bridge track)
+        protected override void Render(ICanvas canvas, Bridge track)
         {
             using (canvas.Scope())
             {
@@ -80,6 +82,10 @@ namespace Trains.NET.Rendering
                         DrawIntersectionBridge(canvas);
                         break;
                 }
+            }
+            using (canvas.Scope())
+            {
+                _trackRenderer.Render(canvas, track);
             }
         }
 

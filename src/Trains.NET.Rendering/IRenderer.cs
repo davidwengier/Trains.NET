@@ -1,4 +1,7 @@
-﻿namespace Trains.NET.Rendering
+﻿using System;
+using Trains.NET.Engine;
+
+namespace Trains.NET.Rendering
 {
     public interface IRenderer<T>
     {

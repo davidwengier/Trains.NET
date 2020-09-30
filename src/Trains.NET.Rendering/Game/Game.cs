@@ -139,17 +139,19 @@ namespace Trains.NET.Rendering
 
                 using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
-                imageCanvas.Canvas.Save();
-                RenderFrame(imageCanvas.Canvas, pixelMapper);
-                imageCanvas.Canvas.Restore();
+                using (imageCanvas.Canvas.Scope())
+                {
+                    RenderFrame(imageCanvas.Canvas, pixelMapper);
+                }
 
                 foreach (IScreen screen in _screens)
                 {
                     using (_screenDrawTimes[screen].Measure())
                     {
-                        imageCanvas.Canvas.Save();
-                        screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
-                        imageCanvas.Canvas.Restore();
+                        using (imageCanvas.Canvas.Scope())
+                        {
+                            screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
+                        }
                     }
                 }
 
@@ -160,46 +162,45 @@ namespace Trains.NET.Rendering
         private void RenderFrame(ICanvas canvas, IPixelMapper pixelMapper)
         {
             using (_skiaDrawTime.Measure())
+            using (canvas.Scope())
             {
-
-                canvas.Save();
-
                 foreach (ILayerRenderer renderer in _boardRenderers)
                 {
                     if (!renderer.Enabled)
                     {
                         continue;
                     }
-                    canvas.Save();
-
-                    if (renderer is ICachableLayerRenderer cachable)
+                    using (canvas.Scope())
                     {
-                        if (_imageCache.IsDirty(renderer))
+
+                        if (renderer is ICachableLayerRenderer cachable)
                         {
-                            using (_renderCacheDrawTimes[renderer].Measure())
+                            if (_imageCache.IsDirty(renderer))
                             {
-                                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
-                                renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
-                                _imageCache.Set(renderer, imageCanvas.Render());
+                                using (_renderCacheDrawTimes[renderer].Measure())
+                                {
+                                    using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                                    renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
+                                    _imageCache.Set(renderer, imageCanvas.Render());
+                                }
+                            }
+
+                            using (_renderLayerDrawTimes[renderer].Measure())
+                            {
+                                canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
                             }
                         }
-
-                        using (_renderLayerDrawTimes[renderer].Measure())
+                        else
                         {
-                            canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
+                            using (_renderLayerDrawTimes[renderer].Measure())
+                            {
+                                renderer.Render(canvas, _width, _height, pixelMapper);
+                            }
                         }
                     }
-                    else
-                    {
-                        using (_renderLayerDrawTimes[renderer].Measure())
-                        {
-                            renderer.Render(canvas, _width, _height, pixelMapper);
-                        }
-                    }
-                    canvas.Restore();
                 }
-                canvas.Restore();
             }
+
             _skiaFps.Update();
         }
 

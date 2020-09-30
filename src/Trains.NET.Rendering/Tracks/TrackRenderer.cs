@@ -89,57 +89,58 @@ namespace Trains.NET.Rendering
 
         private void DrawVertical(ICanvas canvas)
         {
-            canvas.Save();
-            canvas.RotateDegrees(90, 50.0f, 50.0f);
+            using (canvas.Scope())
+            {
+                canvas.RotateDegrees(90, 50.0f, 50.0f);
 
-            DrawHorizontal(canvas);
+                DrawHorizontal(canvas);
 
-            canvas.Restore();
+            }
         }
         private void DrawCross(ICanvas canvas)
         {
             canvas.DrawPath(_horizontalPlankPath, _plankPaint);
 
-            canvas.Save();
-            canvas.RotateDegrees(90, 50.0f, 50.0f);
+            using (canvas.Scope())
+            {
+                canvas.RotateDegrees(90, 50.0f, 50.0f);
 
-            DrawHorizontal(canvas);
-
-            canvas.Restore();
+                DrawHorizontal(canvas);
+            }
 
             DrawHorizontalTracks(canvas);
         }
 
         private void DrawCorner(ICanvas canvas, Track track)
         {
-            canvas.Save();
-            canvas.RotateDegrees(track.Direction.TrackRotationAngle(), 50.0f, 50.0f);
-
-            if (track.HasAlternateState() && track.AlternateState)
+            using (canvas.Scope())
             {
-                canvas.Scale(-1, 1);
-                canvas.Translate(-100.0f, 0);
-            }
+                canvas.RotateDegrees(track.Direction.TrackRotationAngle(), 50.0f, 50.0f);
 
-            canvas.DrawPath(_cornerPlankPath, _plankPaint);
+                if (track.HasAlternateState() && track.AlternateState)
+                {
+                    canvas.Scale(-1, 1);
+                    canvas.Translate(-100.0f, 0);
+                }
 
-            if (track.HasAlternateState())
-            {
-                canvas.Save();
-                canvas.RotateDegrees(90, 50.0f, 50.0f);
+                canvas.DrawPath(_cornerPlankPath, _plankPaint);
 
-                canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
+                if (track.HasAlternateState())
+                {
+                    using (canvas.Scope())
+                    {
+                        canvas.RotateDegrees(90, 50.0f, 50.0f);
 
-                canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
+                        canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
+
+                        canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
+
+                        DrawCornerTrack(canvas);
+                    }
+                }
 
                 DrawCornerTrack(canvas);
-
-                canvas.Restore();
             }
-
-            DrawCornerTrack(canvas);
-
-            canvas.Restore();
         }
 
         private void DrawCornerTrack(ICanvas canvas)

@@ -122,15 +122,12 @@ namespace Trains.Emoji
             using var bitmap = new SKBitmap(pixelMapper.CellSize, pixelMapper.CellSize, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
             using var skCanvas = new SKCanvas(bitmap);
             using (ICanvas canvas = new SKCanvasWrapper(skCanvas))
+            using (canvas.Scope())
             {
-                canvas.Save();
-
                 float scale = pixelMapper.CellSize / 100.0f;
                 canvas.Scale(scale, scale);
 
                 renderMethod(canvas);
-
-                canvas.Restore();
             }
             using Stream s = File.OpenWrite(Path.Combine(folderName, name + ".png"));
             bitmap.Encode(s, SKEncodedImageFormat.Png, 100);
@@ -151,9 +148,10 @@ namespace Trains.Emoji
         {
             foreach (IRenderer<Track> renderer in trackRenderers)
             {
-                canvas.Save();
-                renderer.Render(canvas, track);
-                canvas.Restore();
+                using (canvas.Scope())
+                {
+                    renderer.Render(canvas, track);
+                }
             }
         }
 

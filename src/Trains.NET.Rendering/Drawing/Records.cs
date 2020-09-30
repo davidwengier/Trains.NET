@@ -45,8 +45,3 @@ namespace Trains.NET.Rendering
 #pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore format
 }
-
-namespace System.Runtime.CompilerServices
-{
-    public static class IsExternalInit { }
-}

@@ -331,6 +331,11 @@ namespace Trains.NET.Engine
         public void Dispose()
         {
             _gameLoopTimer?.Dispose();
+            if (_storage is not null)
+            {
+                _storage.WriteStaticEntities(_layout);
+                _storage.WriteTerrain(_terrainMap);
+            }
         }
 
         public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t is not null && t.Column == column && t.Row == row);

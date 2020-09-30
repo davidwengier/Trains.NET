@@ -21,11 +21,11 @@ namespace Trains.NET.SourceGenerator
         {
             Compilation? compilation = context.Compilation;
 
-            string sourceBuilder = Generate(compilation);
+            string sourceBuilder = Generate(context, compilation);
             context.AddSource("ServiceLocator.cs", SourceText.From(sourceBuilder, Encoding.UTF8));
         }
 
-        public static string Generate(Compilation compilation)
+        public static string Generate(GeneratorExecutionContext context, Compilation compilation)
         {
             string stub = @"
 namespace DI
@@ -70,7 +70,7 @@ namespace DI
 
                 foreach (INamedTypeSymbol? typeToCreate in typesToCreate)
                 {
-                    Generate(typeToCreate, compilation, services, knownTypes);
+                    Generate(context, typeToCreate, compilation, services, knownTypes);
                 }
             }
 
@@ -180,14 +180,14 @@ namespace DI
             return typeName;
         }
 
-        private static void Generate(INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, KnownTypes knownTypes)
+        private static void Generate(GeneratorExecutionContext context, INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, KnownTypes knownTypes)
         {
             typeToCreate = (INamedTypeSymbol)typeToCreate.WithNullableAnnotation(default);
 
             if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.IEnumerableOfT))
             {
                 ITypeSymbol? typeToFind = typeToCreate.TypeArguments[0];
-                IOrderedEnumerable<INamedTypeSymbol>? types = FindImplementations(typeToFind, compilation).OrderBy(t => (int)(t.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, knownTypes.OrderAttribute))?.ConstructorArguments[0].Value ?? 0));
+                var types = FindImplementations(context, compilation, knownTypes, typeToFind);
 
                 INamedTypeSymbol? list = knownTypes.ListOfT.Construct(typeToFind);
                 var listService = new Service(typeToCreate);
@@ -197,7 +197,7 @@ namespace DI
 
                 foreach (INamedTypeSymbol? thingy in types)
                 {
-                    Generate(thingy, compilation, listService.ConstructorArguments, knownTypes);
+                    Generate(context, thingy, compilation, listService.ConstructorArguments, knownTypes);
                 }
             }
             else if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.ILayoutOfT))
@@ -209,13 +209,17 @@ namespace DI
                 var layoutService = new Service(typeToCreate);
                 services.Add(layoutService);
                 layoutService.ImplementationType = layout;
-                Generate(layout, compilation, layoutService.ConstructorArguments, knownTypes);
+                Generate(context, layout, compilation, layoutService.ConstructorArguments, knownTypes);
             }
             else
             {
-                INamedTypeSymbol? realType = typeToCreate.IsAbstract ? FindImplementation(typeToCreate, compilation) : typeToCreate;
+                INamedTypeSymbol? realType = typeToCreate.IsAbstract ? FindImplementation(context, compilation, knownTypes, typeToCreate) : typeToCreate;
 
-                if (realType != null)
+                if (realType == null)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create("TRAINS1", "DI", $"Can't find an implemnentation for {realType}", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
+                }
+                else
                 {
                     var service = new Service(typeToCreate);
                     services.Add(service);
@@ -229,7 +233,7 @@ namespace DI
                         {
                             if (parametr.Type is INamedTypeSymbol paramType)
                             {
-                                Generate(paramType, compilation, service.ConstructorArguments, knownTypes);
+                                Generate(context, paramType, compilation, service.ConstructorArguments, knownTypes);
                             }
                         }
                     }
@@ -237,20 +241,34 @@ namespace DI
             }
         }
 
-        private static INamedTypeSymbol? FindImplementation(ITypeSymbol typeToCreate, Compilation compilation)
+        private static INamedTypeSymbol? FindImplementation(GeneratorExecutionContext context, Compilation compilation, KnownTypes knownTypes, ITypeSymbol typeToFind)
         {
-            return FindImplementations(typeToCreate, compilation).FirstOrDefault();
+            return FindImplementations(context, compilation, knownTypes, typeToFind).FirstOrDefault();
         }
 
-        private static IEnumerable<INamedTypeSymbol> FindImplementations(ITypeSymbol typeToFind, Compilation compilation)
+        private static IOrderedEnumerable<INamedTypeSymbol> FindImplementations(GeneratorExecutionContext context, Compilation compilation, KnownTypes knownTypes, ITypeSymbol typeToFind)
         {
-            foreach (INamedTypeSymbol? x in GetAllTypes(compilation.GlobalNamespace.GetNamespaceMembers()))
+            return FindImplementations(context, typeToFind, compilation).OrderBy(t => (int)(t.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, knownTypes.OrderAttribute))?.ConstructorArguments[0].Value ?? 0));
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1801:Review unused parameters", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+        private static IEnumerable<INamedTypeSymbol> FindImplementations(GeneratorExecutionContext context, ITypeSymbol typeToFind, Compilation compilation)
+        {
+            foreach (INamespaceSymbol? ns in compilation.GlobalNamespace.GetNamespaceMembers())
             {
-                if (!x.IsAbstract &&
-                    x.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToFind)))
+                if (ns.Name == "System" || ns.Name == "Microsoft" || ns.Name == "SkiaSharp" || ns.Name == "OpenTK") continue;
+
+                int count = 0;
+                foreach (INamedTypeSymbol? x in GetAllTypes(new[] { ns }))
                 {
-                    yield return x;
+                    count++;
+                    if (!x.IsAbstract && x.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, typeToFind)))
+                    {
+                        yield return x;
+                    }
                 }
+                // context.ReportDiagnostic(Diagnostic.Create("TRAINS2", "DI", $"{ns}: {count}", DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4, false));
             }
         }
 

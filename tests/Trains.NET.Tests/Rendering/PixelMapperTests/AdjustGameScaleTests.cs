@@ -7,7 +7,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
     public class AdjustGameScaleTests
     {
         private const int ScreenSize = 720;
-        
+
         private readonly IPixelMapper _pixelMapper;
         private readonly ITestOutputHelper _output;
 
@@ -41,7 +41,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         {
             const int ScreenSize = 200;
             IPixelMapper pixelMapper = new PixelMapper();
-            
+
             pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
             // Set the inital viewport to be at 100,100
@@ -189,7 +189,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
             _pixelMapper.LogData(_output);
 
-            for (int i=0; i<zoomSteps; i++)
+            for (int i = 0; i < zoomSteps; i++)
             {
                 _pixelMapper.ZoomInPixelMapper();
                 _pixelMapper.LogData(_output);

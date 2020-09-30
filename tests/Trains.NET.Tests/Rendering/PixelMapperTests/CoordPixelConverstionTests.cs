@@ -106,7 +106,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
             _pixelMapper.LogData(output);
 
-            if(DefaultCellSize != _pixelMapper.CellSize)
+            if (DefaultCellSize != _pixelMapper.CellSize)
             {
                 throw new Exception("Cell size is different than this test expects, these tests assume the DefaultCellSize is " + DefaultCellSize);
             }
@@ -391,7 +391,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [InlineData(0, 1, 0, DefaultCellSize, 0, 0)]
         [InlineData(1, 0, DefaultCellSize, 0, 0, 0)]
         [InlineData(1, 1, DefaultCellSize, DefaultCellSize, 0, 0)]
-        
+
         [InlineData(0, 0, DefaultCellSize, 0, -DefaultCellSize, 0)]
         [InlineData(0, 0, 0, DefaultCellSize, 0, -DefaultCellSize)]
         [InlineData(0, 0, DefaultCellSize, DefaultCellSize, -DefaultCellSize, -DefaultCellSize)]

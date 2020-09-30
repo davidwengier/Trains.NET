@@ -172,36 +172,40 @@ namespace Trains.NET.Rendering
                     }
                     using (canvas.Scope())
                     {
-
-                        if (renderer is ICachableLayerRenderer cachable)
-                        {
-                            if (_imageCache.IsDirty(renderer))
-                            {
-                                using (_renderCacheDrawTimes[renderer].Measure())
-                                {
-                                    using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
-                                    renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
-                                    _imageCache.Set(renderer, imageCanvas.Render());
-                                }
-                            }
-
-                            using (_renderLayerDrawTimes[renderer].Measure())
-                            {
-                                canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
-                            }
-                        }
-                        else
-                        {
-                            using (_renderLayerDrawTimes[renderer].Measure())
-                            {
-                                renderer.Render(canvas, _width, _height, pixelMapper);
-                            }
-                        }
+                        RenderLayer(canvas, pixelMapper, renderer);
                     }
                 }
             }
 
             _skiaFps.Update();
+        }
+
+        private void RenderLayer(ICanvas canvas, IPixelMapper pixelMapper, ILayerRenderer renderer)
+        {
+            if (renderer is ICachableLayerRenderer cachable)
+            {
+                if (_imageCache.IsDirty(renderer))
+                {
+                    using (_renderCacheDrawTimes[renderer].Measure())
+                    {
+                        using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                        renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
+                        _imageCache.Set(renderer, imageCanvas.Render());
+                    }
+                }
+
+                using (_renderLayerDrawTimes[renderer].Measure())
+                {
+                    canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
+                }
+            }
+            else
+            {
+                using (_renderLayerDrawTimes[renderer].Measure())
+                {
+                    renderer.Render(canvas, _width, _height, pixelMapper);
+                }
+            }
         }
 
         public void AdjustViewPortIfNecessary()

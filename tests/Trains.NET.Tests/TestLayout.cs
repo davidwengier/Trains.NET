@@ -12,9 +12,8 @@ namespace Trains.NET.Tests
 
         public event EventHandler CollectionChanged;
 
-        public void Add(int column, int row)
+        public void Add(int column, int row, IStaticEntity entityToAdd)
         {
-            var entityToAdd = new Track();
             entityToAdd.SetOwner(this);
             _layout.Add((column, row), entityToAdd);
         }

@@ -40,62 +40,61 @@ namespace Trains.NET.Rendering
 
                 if (!onScreen) continue;
 
-                canvas.Save();
-
-                canvas.Translate(x, y);
-
-                foreach (IRenderer<T> renderer in _renderers)
+                using (canvas.Scope())
                 {
-                    if (!renderer.ShouldRender(entity))
+                    canvas.Translate(x, y);
+
+                    foreach (IRenderer<T> renderer in _renderers)
                     {
-                        continue;
-                    }
-
-                    float heightScale = 1;
-                    if (this.IsScaledByHeight)
-                    {
-                        heightScale = _terrainMap.Get(entity.Column, entity.Row).GetScaleFactor();
-                    }
-
-                    if (renderer is ICachableRenderer<T> cachableRenderer)
-                    {
-                        canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false, false);
-
-                        string key = $"{renderer.GetType().Name}.{cachableRenderer.GetCacheKey(entity)}.{heightScale}";
-
-                        if (_imageCache.IsDirty(key))
+                        if (!renderer.ShouldRender(entity))
                         {
-                            using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
+                            continue;
+                        }
 
-                            float scale = pixelMapper.CellSize / 100.0f;
+                        float heightScale = 1;
+                        if (this.IsScaledByHeight)
+                        {
+                            heightScale = _terrainMap.Get(entity.Column, entity.Row).GetScaleFactor();
+                        }
 
-                            imageCanvas.Canvas.Scale(scale, scale);
+                        if (renderer is ICachableRenderer<T> cachableRenderer)
+                        {
+                            canvas.ClipRect(new Rectangle(0, 0, pixelMapper.CellSize, pixelMapper.CellSize), false, false);
 
-                            if (heightScale < 1)
+                            string key = $"{renderer.GetType().Name}.{cachableRenderer.GetCacheKey(entity)}.{heightScale}";
+
+                            if (_imageCache.IsDirty(key))
                             {
-                                imageCanvas.Canvas.Scale(heightScale, heightScale, 50, 50);
+                                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
+
+                                float scale = pixelMapper.CellSize / 100.0f;
+
+                                imageCanvas.Canvas.Scale(scale, scale);
+
+                                if (heightScale < 1)
+                                {
+                                    imageCanvas.Canvas.Scale(heightScale, heightScale, 50, 50);
+                                }
+
+                                renderer.Render(imageCanvas.Canvas, entity);
+
+                                _imageCache.Set(key, imageCanvas.Render());
                             }
 
-                            renderer.Render(imageCanvas.Canvas, entity);
-
-                            _imageCache.Set(key, imageCanvas.Render());
+                            canvas.DrawImage(_imageCache.Get(key)!, 0, 0);
                         }
-
-                        canvas.DrawImage(_imageCache.Get(key)!, 0, 0);
-                    }
-                    else
-                    {
-                        float scale = pixelMapper.CellSize / 100.0f;
-                        canvas.Scale(scale, scale);
-                        if (heightScale < 1)
+                        else
                         {
-                            canvas.Scale(heightScale, heightScale, 50, 50);
+                            float scale = pixelMapper.CellSize / 100.0f;
+                            canvas.Scale(scale, scale);
+                            if (heightScale < 1)
+                            {
+                                canvas.Scale(heightScale, heightScale, 50, 50);
+                            }
                         }
+
                     }
-
                 }
-
-                canvas.Restore();
             }
         }
     }

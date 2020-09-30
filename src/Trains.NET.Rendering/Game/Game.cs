@@ -125,15 +125,6 @@ namespace Trains.NET.Rendering
             {
                 canvas.DrawImage(gameImage, 0, 0);
             }
-
-            foreach (IScreen screen in _screens)
-            {
-                IImage? screenImage = _imageCache.Get(screen);
-                if (screenImage != null)
-                {
-                    canvas.DrawImage(screenImage, 0, 0);
-                }
-            }
         }
 
         public void DrawFrame()
@@ -148,66 +139,73 @@ namespace Trains.NET.Rendering
 
                 using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
 
-                RenderFrame(imageCanvas.Canvas, pixelMapper);
-
-                _imageCache.Set(this, imageCanvas.Render());
+                using (imageCanvas.Canvas.Scope())
+                {
+                    RenderFrame(imageCanvas.Canvas, pixelMapper);
+                }
 
                 foreach (IScreen screen in _screens)
                 {
-                    if (_imageCache.IsDirty(screen))
+                    using (_screenDrawTimes[screen].Measure())
                     {
-                        _screenDrawTimes[screen].Start();
-                        using IImageCanvas screnCanvas = _imageFactory.CreateImageCanvas(_screenWidth, _screenHeight);
-                        screen.Render(screnCanvas.Canvas, _screenWidth, _screenHeight);
-                        _screenDrawTimes[screen].Stop();
-                        _imageCache.Set(screen, screnCanvas.Render());
+                        using (imageCanvas.Canvas.Scope())
+                        {
+                            screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
+                        }
                     }
                 }
+
+                _imageCache.Set(this, imageCanvas.Render());
             }
         }
 
         private void RenderFrame(ICanvas canvas, IPixelMapper pixelMapper)
         {
-            _skiaDrawTime.Start();
-
-            canvas.Save();
-
-            foreach (ILayerRenderer renderer in _boardRenderers)
+            using (_skiaDrawTime.Measure())
+            using (canvas.Scope())
             {
-                if (!renderer.Enabled)
+                foreach (ILayerRenderer renderer in _boardRenderers)
                 {
-                    continue;
-                }
-                canvas.Save();
-
-                if (renderer is ICachableLayerRenderer cachable)
-                {
-                    if (_imageCache.IsDirty(renderer))
+                    if (!renderer.Enabled)
                     {
-                        _renderCacheDrawTimes[renderer].Start();
+                        continue;
+                    }
+                    using (canvas.Scope())
+                    {
+                        RenderLayer(canvas, pixelMapper, renderer);
+                    }
+                }
+            }
 
+            _skiaFps.Update();
+        }
+
+        private void RenderLayer(ICanvas canvas, IPixelMapper pixelMapper, ILayerRenderer renderer)
+        {
+            if (renderer is ICachableLayerRenderer cachable)
+            {
+                if (_imageCache.IsDirty(renderer))
+                {
+                    using (_renderCacheDrawTimes[renderer].Measure())
+                    {
                         using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
                         renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
                         _imageCache.Set(renderer, imageCanvas.Render());
-                        _renderCacheDrawTimes[renderer].Stop();
                     }
-
-                    _renderLayerDrawTimes[renderer].Start();
-                    canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
-                    _renderLayerDrawTimes[renderer].Stop();
                 }
-                else
+
+                using (_renderLayerDrawTimes[renderer].Measure())
                 {
-                    _renderLayerDrawTimes[renderer].Start();
-                    renderer.Render(canvas, _width, _height, pixelMapper);
-                    _renderLayerDrawTimes[renderer].Stop();
+                    canvas.DrawImage(_imageCache.Get(renderer)!, 0, 0);
                 }
-                canvas.Restore();
             }
-            canvas.Restore();
-
-            _skiaDrawTime.Stop();
-            _skiaFps.Update();
+            else
+            {
+                using (_renderLayerDrawTimes[renderer].Measure())
+                {
+                    renderer.Render(canvas, _width, _height, pixelMapper);
+                }
+            }
         }
 
         public void AdjustViewPortIfNecessary()

@@ -22,21 +22,20 @@ namespace Trains.NET.Rendering
         {
             foreach (Train train in _gameBoard.GetMovables())
             {
-                canvas.Save();
+                using (canvas.Scope())
+                {
+                    (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
 
-                (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                    if (!onScreen) continue;
 
-                if (!onScreen) continue;
+                    canvas.Translate(x, y);
 
-                canvas.Translate(x, y);
+                    float scale = pixelMapper.CellSize / 100.0f;
 
-                float scale = pixelMapper.CellSize / 100.0f;
+                    canvas.Scale(scale, scale);
 
-                canvas.Scale(scale, scale);
-
-                _trainRenderer.Render(canvas, train);
-
-                canvas.Restore();
+                    _trainRenderer.Render(canvas, train);
+                }
             }
         }
     }

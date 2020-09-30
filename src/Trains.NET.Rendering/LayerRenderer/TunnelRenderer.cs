@@ -66,19 +66,20 @@ namespace Trains.NET.Rendering
 
         private static void DrawTunnelEntrance(ICanvas canvas, IPixelMapper pixelMapper, int x, int y, float angle, Color lightColour, Color darkColor)
         {
-            canvas.Save();
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(angle, 0.5f * pixelMapper.CellSize, 0.5f * pixelMapper.CellSize);
-            canvas.GradientRect(pixelMapper.CellSize, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, darkColor, lightColour);
-            canvas.GradientCircle(0.5f * pixelMapper.CellSize,
-                                  0,
-                                  0.5f * pixelMapper.CellSize,
-                                  pixelMapper.CellSize,
-                                  pixelMapper.CellSize,
-                                  0.5f * pixelMapper.CellSize,
-                                  0.5f * pixelMapper.CellSize,
-                                  new[] { lightColour, darkColor });
-            canvas.Restore();
+            using (canvas.Scope())
+            {
+                canvas.Translate(x, y);
+                canvas.RotateDegrees(angle, 0.5f * pixelMapper.CellSize, 0.5f * pixelMapper.CellSize);
+                canvas.GradientRect(pixelMapper.CellSize, 0, 0.25f * pixelMapper.CellSize, pixelMapper.CellSize, darkColor, lightColour);
+                canvas.GradientCircle(0.5f * pixelMapper.CellSize,
+                                      0,
+                                      0.5f * pixelMapper.CellSize,
+                                      pixelMapper.CellSize,
+                                      pixelMapper.CellSize,
+                                      0.5f * pixelMapper.CellSize,
+                                      0.5f * pixelMapper.CellSize,
+                                      new[] { lightColour, darkColor });
+            }
         }
 
         private bool IsTunnelEntrance(Track? track)

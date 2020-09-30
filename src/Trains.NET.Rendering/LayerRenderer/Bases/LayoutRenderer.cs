@@ -46,6 +46,7 @@ namespace Trains.NET.Rendering
 
                     foreach (IRenderer<T> renderer in _renderers)
                     {
+
                         if (!renderer.ShouldRender(entity))
                         {
                             continue;

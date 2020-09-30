@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(90)]
-    public class BridgeRenderer : ICachableRenderer<Track>
+    public class BridgeRenderer : ICachableRenderer<Bridge>
     {
         private const int CanvasSize = 100;
         private const float RailingInset = SupportTopInset + SupportHeight;
@@ -47,13 +47,13 @@ namespace Trains.NET.Rendering
             _cornerRailPath = BuildCornerRailPath(pathFactory);
         }
 
-        public bool ShouldRender(Track track)
+        public bool ShouldRender(Bridge track)
             => _terrainMap.Get(track.Column, track.Row).IsWater;
 
-        public string GetCacheKey(Track track)
+        public string GetCacheKey(Bridge track)
             => track.Direction.ToString();
 
-        public void Render(ICanvas canvas, Track track)
+        public void Render(ICanvas canvas, Bridge track)
         {
             using (canvas.Scope())
             {

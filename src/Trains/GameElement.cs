@@ -66,28 +66,26 @@ namespace Trains
             if (_bitmap == null)
                 return;
 
-            _renderTime.Start();
-
-            var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-
-            _bitmap.Lock();
-
-            // Render the game
-            using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
+            using (_renderTime.Measure())
             {
-                _game.Render(new SKCanvasWrapper(surface.Canvas));
+                var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+
+                _bitmap.Lock();
+
+                // Render the game
+                using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
+                {
+                    _game.Render(new SKCanvasWrapper(surface.Canvas));
+                }
+
+                _bitmap.AddDirtyRect(new Int32Rect(0, 0, info.Width, info.Height));
+
+                _bitmap.Unlock();
             }
-
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, info.Width, info.Height));
-
-            _bitmap.Unlock();
-
-            _renderTime.Stop();
-            _drawTime.Start();
-
-            drawingContext.DrawImage(_bitmap, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-
-            _drawTime.Stop();
+            using (_drawTime.Measure())
+            {
+                drawingContext.DrawImage(_bitmap, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            }
             _fps.Update();
         }
     }

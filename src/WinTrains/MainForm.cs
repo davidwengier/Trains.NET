@@ -77,8 +77,10 @@ namespace WinTrains
         {
             while (_presenting)
             {
-                _drawTime.Start();
-                _skControl.Invalidate();
+                using (_drawTime.Measure())
+                {
+                    _skControl.Invalidate();
+                }
                 _drawTime.Stop();
 
                 _fps.Update();

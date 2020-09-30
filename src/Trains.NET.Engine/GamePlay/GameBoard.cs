@@ -79,15 +79,16 @@ namespace Trains.NET.Engine
         {
             if (!this.Enabled) return;
 
-            _gameUpdateTime.Start();
-            try
+            using (_gameUpdateTime.Measure())
             {
-                DoGameLoopStep();
+                try
+                {
+                    DoGameLoopStep();
+                }
+                catch (Exception)
+                {
+                }
             }
-            catch (Exception)
-            {
-            }
-            _gameUpdateTime.Stop();
         }
 
         private void DoGameLoopStep()

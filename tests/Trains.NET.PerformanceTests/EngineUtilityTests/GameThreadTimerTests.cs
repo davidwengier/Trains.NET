@@ -23,7 +23,7 @@ namespace Trains.NET.Tests.EngineUtilityTests
         {
             const int TestInterval = 20;
             bool run = false;
-            using(ITimer gameTimer = new GameThreadTimer())
+            using (ITimer gameTimer = new GameThreadTimer())
             {
                 gameTimer.Interval = TestInterval;
                 gameTimer.Elapsed += (sender, e) => run = true;
@@ -41,7 +41,7 @@ namespace Trains.NET.Tests.EngineUtilityTests
         {
             const double IntervalDiffMillisecondThreshold = 2.0;
 
-            (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw =>{}).ConfigureAwait(false);
+            (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw => { }).ConfigureAwait(false);
 
             Assert.True(enoughSamples, "Didn't collect enough samples to average");
             Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
@@ -91,7 +91,7 @@ namespace Trains.NET.Tests.EngineUtilityTests
                 await Task.Delay(interval * TargetSampleSize).ConfigureAwait(false);
             }
 
-            if(times.Count < 2)
+            if (times.Count < 2)
             {
                 return (false, 0);
             }

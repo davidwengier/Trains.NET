@@ -10,12 +10,14 @@ namespace Trains.NET.Engine
         where T : class, IStaticEntity
     {
         private readonly ILayout _layout;
+        private readonly IEnumerable<IStaticEntityFactory<T>> _entityFactories;
 
         public event EventHandler? CollectionChanged;
 
-        public FilteredLayout(ILayout layout)
+        public FilteredLayout(ILayout layout, IEnumerable<IStaticEntityFactory<T>> entityFactories)
         {
             _layout = layout;
+            _entityFactories = entityFactories;
             _layout.CollectionChanged += (s, e) => CollectionChanged?.Invoke(s, e);
         }
 
@@ -43,9 +45,27 @@ namespace Trains.NET.Engine
             _layout.Clear();
         }
 
-        public void Add(int column, int row, T track)
+        public void Add(int column, int row)
         {
-            _layout.Add(column, row, track);
+            var entity = CreateNewStaticEntity(column, row);
+            if (entity is null)
+            {
+                return;
+            }
+
+            _layout.Add(column, row, entity);
+        }
+
+        private IStaticEntity? CreateNewStaticEntity(int column, int row)
+        {
+            foreach (var factory in _entityFactories)
+            {
+                if (factory.TryCreateEntity(column, row, out var entity))
+                {
+                    return entity;
+                }
+            }
+            return null;
         }
 
         public bool IsAvailable(int column, int row)

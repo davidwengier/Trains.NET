@@ -20,7 +20,7 @@ namespace Trains.NET.Rendering
 
         public void Execute(int column, int row)
         {
-            _entityCollection.Add(column, row, new Tree());
+            _entityCollection.Add(column, row);
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row) &&

@@ -11,7 +11,7 @@ namespace Trains.NET.Engine
 
         bool TryGet(int column, int row, [NotNullWhen(true)] out T? entity);
         void Clear();
-        void Add(int column, int row, T track);
+        void Add(int column, int row);
         bool IsAvailable(int column, int row);
     }
 }

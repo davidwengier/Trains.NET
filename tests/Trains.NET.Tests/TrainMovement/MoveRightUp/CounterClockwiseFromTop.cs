@@ -4,7 +4,7 @@ using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp
 {
-    public class CounterClockwiseFromTop 
+    public class CounterClockwiseFromTop
     {
         [Theory]
         [InlineData(85.0f)] // Extreme

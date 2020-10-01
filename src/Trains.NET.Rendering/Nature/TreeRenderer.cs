@@ -3,7 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
-    public class TreeRenderer : ICachableRenderer<Tree>
+    public class TreeRenderer : IStaticEntityRenderer<Tree>
     {
         private readonly float _maxTreeSize;
         private readonly float _minTreeSize;

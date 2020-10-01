@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(100)]
-    public class TrackRenderer : ICachableRenderer<Track>
+    public class TrackRenderer : IStaticEntityRenderer<Track>
     {
         private readonly ITrackParameters _trackParameters;
 

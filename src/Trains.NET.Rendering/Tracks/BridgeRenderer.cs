@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(90)]
-    public class BridgeRenderer : TypeMappingRenderer<Bridge, Track>
+    public class BridgeRenderer : SpecializedEntityRenderer<Bridge, Track>
     {
         private const int CanvasSize = 100;
         private const float RailingInset = SupportTopInset + SupportHeight;
@@ -18,7 +18,6 @@ namespace Trains.NET.Rendering
         private const float WaterWashHeight = SupportHeight + SupportTopInset;
         private const float WaterWashLeftPosition = (CanvasSize - WaterWashWidth) / 2.0f;
 
-        private readonly ITerrainMap _terrainMap;
         private readonly TrackRenderer _trackRenderer;
         private readonly IPath _cornerPlankPath;
         private readonly IPath _cornerRailPath;
@@ -41,19 +40,15 @@ namespace Trains.NET.Rendering
             IsAntialias = true
         };
 
-        public BridgeRenderer(ITerrainMap terrainMap, IPathFactory pathFactory, TrackRenderer trackRenderer)
+        public BridgeRenderer(IPathFactory pathFactory, TrackRenderer trackRenderer)
         {
-            _terrainMap = terrainMap;
             _trackRenderer = trackRenderer;
             _cornerPlankPath = BuildCornerPlankPath(pathFactory);
             _cornerRailPath = BuildCornerRailPath(pathFactory);
         }
 
-        protected override bool ShouldRender(Bridge bridge)
-            => _terrainMap.Get(bridge.Column, bridge.Row).IsWater;
-
-        //public string GetCacheKey(Bridge track)
-        //    => track.Direction.ToString();
+        protected override string GetCacheKey(Bridge track)
+            => $"Bridge.{track.Identifier}";
 
         protected override void Render(ICanvas canvas, Bridge track)
         {

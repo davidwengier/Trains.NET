@@ -9,21 +9,25 @@ namespace Trains.NET.Rendering.UI
     public class ToolsPanel : ButtonPanelBase
     {
         private readonly IGameManager _gameManager;
-        private readonly List<Button> _buttons;
+        private readonly List<Button> _buildModeButtons;
+        private readonly List<Button> _playModeButtons;
 
         protected override int Top => 60;
         protected override int TopPadding => 20;
+
+        protected override string? Title => "Tools";
 
         public ToolsPanel(IEnumerable<ITool> tools, IGameManager gameManager)
         {
             _gameManager = gameManager;
 
             _gameManager.Changed += (s, e) => OnChanged();
-            _buttons = tools.Select(tool => new Button(tool.Name, tool, () => tool == _gameManager.CurrentTool, () => _gameManager.CurrentTool = tool)).ToList();
+            _buildModeButtons = tools.Where(t => ShouldShowTool(true, t)).Select(tool => new Button(tool.Name, () => tool == _gameManager.CurrentTool, () => _gameManager.CurrentTool = tool)).ToList();
+            _playModeButtons = tools.Where(t => ShouldShowTool(false, t)).Select(tool => new Button(tool.Name, () => tool == _gameManager.CurrentTool, () => _gameManager.CurrentTool = tool)).ToList();
         }
 
         protected override IEnumerable<Button> GetButtons()
-            => _buttons.Where(t => ShouldShowTool(_gameManager.BuildMode, (ITool)t.Item)).ToList();
+            => _gameManager.BuildMode ? _buildModeButtons : _playModeButtons;
 
         private static bool ShouldShowTool(bool buildMode, ITool tool)
             => (buildMode, tool.Mode) switch

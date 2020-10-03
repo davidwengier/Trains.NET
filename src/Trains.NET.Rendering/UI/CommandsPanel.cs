@@ -8,13 +8,15 @@ namespace Trains.NET.Rendering.UI
     {
         private readonly List<Button> _buttons;
 
-        protected override bool Collapsed { get; set; } = true;
+        protected override bool IsCollapsable => true;
         protected override string? Title => "Commands";
         protected override int Top => 250;
+        protected override PanelPosition Position => PanelPosition.Floating;
+        protected override int Left => 200;
 
         public CommandsPanel(IEnumerable<ICommand> commands)
         {
-            _buttons = commands.Select(c => new Button(c.Name, c, () => false, () => c.Execute())).ToList();
+            _buttons = commands.Select(c => new Button(c.Name, () => false, () => c.Execute())).ToList();
         }
 
         protected override IEnumerable<Button> GetButtons()

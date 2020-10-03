@@ -27,5 +27,7 @@
         };
         public static readonly PaintBrush Disabled = Label with { Color = Colors.LightGray };
         public static readonly PaintBrush Active = Label with { Color = Colors.LightBlue };
+
+        public static readonly PaintBrush Red = PanelBackground with { Color = Colors.LightRed };
     }
 }

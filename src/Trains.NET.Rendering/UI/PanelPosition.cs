@@ -1,8 +1,9 @@
 ﻿namespace Trains.NET.Rendering.UI
 {
-    public enum PanelSide
+    public enum PanelPosition
     {
         Left,
-        Right
+        Right,
+        Floating
     }
 }

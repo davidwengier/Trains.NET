@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering.UI
         protected const int TitleAreaWidth = 20;
         public event EventHandler? Changed;
 
-        protected bool Collapsed { get; set; }
+        protected bool Collapsed { get; set; } = true;
 
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }

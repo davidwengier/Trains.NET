@@ -9,9 +9,11 @@ namespace Trains.NET.Rendering.UI
         protected override string? Title => "Hi There";
         protected override bool IsCollapsable => true;
 
+        private readonly Button _button = new Button("OMG! Awesome", () => false, () => { });
+
         protected override IEnumerable<Button> GetButtons()
         {
-            yield return new Button("OMG! Awesome", () => false, () => { });
+            yield return _button;
         }
     }
 

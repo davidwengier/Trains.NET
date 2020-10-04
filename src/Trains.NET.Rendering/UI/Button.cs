@@ -11,8 +11,8 @@ namespace Trains.NET.Rendering.UI
         private readonly Func<bool> _isActive;
         private readonly Action _onClick;
 
-        public float Width { get; set; }
-        public float Height { get; set; } = ButtonHeight;
+        public int Width { get; set; }
+        public int Height { get; set; } = ButtonHeight;
 
         public Button(string label, Func<bool> isActive, Action onClick)
         {
@@ -22,14 +22,10 @@ namespace Trains.NET.Rendering.UI
         }
 
         public void Click()
-        {
-            _onClick?.Invoke();
-        }
+            => _onClick?.Invoke();
 
-        internal float GetMinimumWidth(ICanvas canvas)
-        {
-            return canvas.MeasureText(_label, Brushes.Label);
-        }
+        internal int GetMinimumWidth(ICanvas canvas)
+            => (int)canvas.MeasureText(_label, Brushes.Label);
 
         internal void Render(ICanvas canvas, bool isHovered)
         {
@@ -43,7 +39,7 @@ namespace Trains.NET.Rendering.UI
                 canvas.DrawRect(0, 0, this.Width, this.Height, Brushes.ButtonHoverBackground);
             }
 
-            float textWidth = canvas.MeasureText(_label, Brushes.Label);
+            var textWidth = canvas.MeasureText(_label, Brushes.Label);
 
             canvas.DrawText(_label, 0 + ((this.Width - textWidth) / 2), TextYPadding, Brushes.Label);
         }

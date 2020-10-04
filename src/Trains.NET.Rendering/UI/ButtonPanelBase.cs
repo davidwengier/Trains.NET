@@ -9,94 +9,34 @@ namespace Trains.NET.Rendering.UI
         private const int TextXPadding = 10;
         private const int ButtonGap = 10;
         private const int ButtonLeft = 5;
-        private float _buttonWidth = 60;
+        private int _buttonWidth = 60;
 
         private Button? _hoverButton;
 
-        public override bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        protected abstract IEnumerable<Button> GetButtons();
+
+        protected override bool HandleMouseAction(int x, int y, MouseAction action)
         {
             if (action is MouseAction.Click or MouseAction.Move)
             {
-                var buttons = GetButtons().ToList();
-
-                int yPos = this.Top;
-
-                var panelWidth = ButtonLeft + (int)_buttonWidth + 20;
-                if (this.Position == PanelPosition.Right)
+                x -= ButtonLeft;
+                foreach (Button button in GetButtons())
                 {
-                    if (IsCollapsed())
+                    if (x is >= 0 && x <= _buttonWidth && y >= 0 && y <= button.Height)
                     {
-                        x -= width;
-                    }
-                    else
-                    {
-                        x -= (width - panelWidth);
-                    }
-                }
-                else if (this.Position == PanelPosition.Left)
-                {
-                    if (IsCollapsed())
-                    {
-                        x -= TitleAreaWidth;
-                    }
-                }
-                else
-                {
-                    x -= this.Left;
-                }
-
-                if (this.Title is { Length: > 0 })
-                {
-                    if (x >= -TitleAreaWidth && x <= 0 && y >= yPos + 10 && y <= yPos + 10 + base.TitleWidth)
-                    {
-                        base.Collapsed = !base.Collapsed;
+                        if (action == MouseAction.Click)
+                        {
+                            button.Click();
+                        }
+                        else
+                        {
+                            _hoverButton = button;
+                        }
                         OnChanged();
                         return true;
                     }
-                }
 
-                if (IsCollapsed())
-                {
-                    return false;
-                }
-
-                var buttonPanelHeight = buttons.Sum(b => b.Height + ButtonGap) - ButtonGap;
-                if (x is >= 0 && x <= panelWidth && y >= yPos && y <= yPos + buttonPanelHeight + 20)
-                {
-                    if (this.Position == PanelPosition.Left)
-                    {
-                        x -= 5;
-                    }
-                    else
-                    {
-                        x -= 10;
-                    }
-
-                    yPos += this.TopPadding;
-                    foreach (Button button in GetButtons())
-                    {
-                        if (x is >= ButtonLeft && x <= ButtonLeft + _buttonWidth && y >= yPos && y <= yPos + button.Height)
-                        {
-                            if (action == MouseAction.Click)
-                            {
-                                button.Click();
-                            }
-                            else
-                            {
-                                _hoverButton = button;
-                            }
-                            OnChanged();
-                            return true;
-                        }
-
-                        yPos += (int)button.Height + ButtonGap;
-                    }
-                    return true;
-                }
-                else if (this.IsCollapsable && !base.Collapsed)
-                {
-                    base.Collapsed = true;
-                    OnChanged();
+                    y -= button.Height + ButtonGap;
                 }
                 _hoverButton = null;
             }
@@ -132,7 +72,5 @@ namespace Trains.NET.Rendering.UI
                 canvas.Translate(0, button.Height + ButtonGap);
             }
         }
-
-        protected abstract IEnumerable<Button> GetButtons();
     }
 }

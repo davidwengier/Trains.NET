@@ -16,9 +16,9 @@ namespace Trains.NET.Rendering.UI
         protected virtual int BottomPadding { get; } = 15;
         protected virtual PanelPosition Position { get; } = PanelPosition.Left;
         protected virtual int Left { get; }
-        protected float TitleWidth { get; set; }
-        protected float InnerWidth { get; set; } = 100;
-        protected float InnerHeight { get; set; } = 100;
+        protected int TitleWidth { get; set; }
+        protected int InnerWidth { get; set; } = 100;
+        protected int InnerHeight { get; set; } = 100;
 
         protected void OnChanged()
         {
@@ -26,26 +26,92 @@ namespace Trains.NET.Rendering.UI
         }
 
         protected bool IsCollapsed()
-            => this.IsCollapsable && this.Collapsed && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
+            => CanCollapse() && this.Collapsed;
 
+        private bool CanCollapse()
+            => this.IsCollapsable && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
 
-        public virtual bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
+            if (action is MouseAction.Drag or MouseAction.Release)
+            {
+                return false;
+            }
+
+            var panelHeight = GetPanelHeight();
+            var panelWidth = GetPanelWidth();
+
+            y -= this.Top;
+
+            if (this.Position == PanelPosition.Right)
+            {
+                if (IsCollapsed())
+                {
+                    x -= width;
+                }
+                else
+                {
+                    x -= (width - panelWidth);
+                }
+            }
+            else if (this.Position == PanelPosition.Left)
+            {
+                if (IsCollapsed())
+                {
+                    x -= TitleAreaWidth;
+                }
+            }
+            else
+            {
+                x -= this.Left;
+            }
+
+            if (IsCollapsed() && x >= -TitleAreaWidth && x <= 0 && y >= 10 && y <= 10 + this.TitleWidth)
+            {
+                this.Collapsed = !this.Collapsed;
+                OnChanged();
+                return true;
+            }
+            else if (!IsCollapsed() && x is >= 0 && x <= panelWidth && y >= 0 && y <= panelHeight)
+            {
+                if (this.Position == PanelPosition.Left)
+                {
+                    x -= 5;
+                }
+                else
+                {
+                    x -= 10;
+                }
+                y -= this.TopPadding;
+
+                return HandleMouseAction(x, y, action);
+            }
+            else if (this.IsCollapsable && !this.Collapsed)
+            {
+                this.Collapsed = true;
+                OnChanged();
+            }
+
             return false;
+        }
+
+        protected virtual bool HandleMouseAction(int x, int y, MouseAction action)
+        {
+            return true;
         }
 
         public virtual void Render(ICanvas canvas, int width, int height)
         {
             canvas.Translate(0, this.Top);
 
-            this.TitleWidth = 0f;
+            this.TitleWidth = 0;
             if (this.Title is { Length: > 0 })
             {
-                this.TitleWidth = canvas.MeasureText(this.Title, Brushes.Label);
+                this.TitleWidth = (int)canvas.MeasureText(this.Title, Brushes.Label);
             }
 
-            var panelHeight = Math.Max(this.TitleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
-            var panelWidth = this.InnerWidth + 20;
+            var panelHeight = GetPanelHeight();
+            var panelWidth = GetPanelWidth();
             if (this.Position != PanelPosition.Floating)
             {
                 panelWidth += 20;
@@ -131,5 +197,11 @@ namespace Trains.NET.Rendering.UI
                 canvas.Translate(10, this.TopPadding);
             }
         }
+
+        private int GetPanelHeight()
+            => Math.Max(this.TitleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
+
+        private int GetPanelWidth()
+            => this.InnerWidth + 20;
     }
 }

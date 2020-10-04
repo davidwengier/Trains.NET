@@ -30,8 +30,21 @@ namespace WinTrains
             _skControl.MouseDown += SKControl_MouseDown;
             _skControl.MouseMove += SKControl_MouseMove;
             _skControl.MouseUp += SKControl_MouseUp;
+            _skControl.MouseWheel += SKControl_MouseWheel;
 
             _ = PresentLoop();
+        }
+
+        private void SKControl_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                _interactionManager.PointerZoomIn(e.X, e.Y);
+            }
+            else
+            {
+                _interactionManager.PointerZoomOut(e.X, e.Y);
+            }
         }
 
         private void SKControl_MouseDown(object? sender, MouseEventArgs e)

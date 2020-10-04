@@ -11,10 +11,6 @@ namespace Trains.NET.Rendering.UI
         protected override bool IsCollapsable => true;
         protected override string? Title => "Commands";
         protected override int Top => 250;
-#if DEBUG
-        protected override PanelPosition Position => PanelPosition.Floating;
-        protected override int Left => 200;
-#endif
 
         public CommandsPanel(IEnumerable<ICommand> commands)
         {

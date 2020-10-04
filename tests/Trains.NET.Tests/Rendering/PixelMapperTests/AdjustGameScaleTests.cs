@@ -141,7 +141,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        [InlineData(8)]
         public void AdjustGameScale_ZoomIn_SameCell(int zoomSteps)
         {
             (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
@@ -183,7 +182,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        [InlineData(8)]
         public void AdjustGameScale_ZoomInZoomOut_SameCell(int zoomSteps)
         {
             (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();

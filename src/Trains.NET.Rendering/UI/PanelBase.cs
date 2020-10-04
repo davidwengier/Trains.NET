@@ -4,10 +4,12 @@ namespace Trains.NET.Rendering.UI
 {
     public abstract class PanelBase : IScreen
     {
-        protected const int TitleAreaWidth = 20;
+        private const int TitleAreaWidth = 20;
+
         public event EventHandler? Changed;
 
-        protected bool Collapsed { get; set; } = true;
+        private bool _collapsed = true;
+        private int _titleWidth;
 
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }
@@ -16,20 +18,9 @@ namespace Trains.NET.Rendering.UI
         protected virtual int BottomPadding { get; } = 15;
         protected virtual PanelPosition Position { get; } = PanelPosition.Left;
         protected virtual int Left { get; }
-        protected int TitleWidth { get; set; }
+
         protected int InnerWidth { get; set; } = 100;
         protected int InnerHeight { get; set; } = 100;
-
-        protected void OnChanged()
-        {
-            Changed?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected bool IsCollapsed()
-            => CanCollapse() && this.Collapsed;
-
-        private bool CanCollapse()
-            => this.IsCollapsable && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
@@ -66,9 +57,9 @@ namespace Trains.NET.Rendering.UI
                 x -= this.Left;
             }
 
-            if (IsCollapsed() && x >= -TitleAreaWidth && x <= 0 && y >= 10 && y <= 10 + this.TitleWidth)
+            if (IsCollapsed() && x >= -TitleAreaWidth && x <= 0 && y >= 10 && y <= 10 + _titleWidth)
             {
-                this.Collapsed = !this.Collapsed;
+                _collapsed = !_collapsed;
                 OnChanged();
                 return true;
             }
@@ -86,28 +77,25 @@ namespace Trains.NET.Rendering.UI
 
                 return HandleMouseAction(x, y, action);
             }
-            else if (this.IsCollapsable && !this.Collapsed)
+            else if (this.IsCollapsable && !_collapsed)
             {
-                this.Collapsed = true;
+                _collapsed = true;
                 OnChanged();
             }
 
             return false;
         }
 
-        protected virtual bool HandleMouseAction(int x, int y, MouseAction action)
+        public void Render(ICanvas canvas, int width, int height)
         {
-            return true;
-        }
+            CalculateSize(canvas);
 
-        public virtual void Render(ICanvas canvas, int width, int height)
-        {
             canvas.Translate(0, this.Top);
 
-            this.TitleWidth = 0;
+            _titleWidth = 0;
             if (this.Title is { Length: > 0 })
             {
-                this.TitleWidth = (int)canvas.MeasureText(this.Title, Brushes.Label);
+                _titleWidth = (int)canvas.MeasureText(this.Title, Brushes.Label);
             }
 
             var panelHeight = GetPanelHeight();
@@ -153,37 +141,37 @@ namespace Trains.NET.Rendering.UI
                 if (this.Position != PanelPosition.Right)
                 {
                     canvas.Save();
-                    canvas.RotateDegrees(180, panelWidth / 2, 10 + ((this.TitleWidth + 10) / 2));
+                    canvas.RotateDegrees(180, panelWidth / 2, 10 + ((_titleWidth + 10) / 2));
                 }
 
                 using (var _ = canvas.Scope())
                 {
-                    canvas.ClipRect(new Rectangle(0, 10, TitleAreaWidth / 2, this.TitleWidth + 20), true, true);
-                    canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, this.TitleWidth + 10, 5, 5, Brushes.PanelBackground);
-                    canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, this.TitleWidth + 10, 5, 5, Brushes.PanelBorder);
+                    canvas.ClipRect(new Rectangle(0, 10, TitleAreaWidth / 2, _titleWidth + 20), true, true);
+                    canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, _titleWidth + 10, 5, 5, Brushes.PanelBackground);
+                    canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, _titleWidth + 10, 5, 5, Brushes.PanelBorder);
                 }
 
                 using (var _ = canvas.Scope())
                 {
                     //canvas.Translate(0, yPos);
                     canvas.RotateDegrees(270);
-                    canvas.DrawText(this.Title, -15 - this.TitleWidth, -5, Brushes.Label);
+                    canvas.DrawText(this.Title, -15 - _titleWidth, -5, Brushes.Label);
                 }
 
                 if (this.Position == PanelPosition.Right)
                 {
-                    canvas.ClipRect(new Rectangle(-2, 10, TitleAreaWidth / 2, this.TitleWidth + 20), true, true);
+                    canvas.ClipRect(new Rectangle(-2, 10, TitleAreaWidth / 2, _titleWidth + 20), true, true);
                 }
                 else
                 {
                     canvas.Restore();
-                    canvas.ClipRect(new Rectangle(panelWidth - 3, 10, (panelWidth - 3) + TitleAreaWidth / 2, this.TitleWidth + 20), true, true);
+                    canvas.ClipRect(new Rectangle(panelWidth - 3, 10, (panelWidth - 3) + TitleAreaWidth / 2, _titleWidth + 20), true, true);
                 }
             }
 
             canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);
 
-            if (this.TitleWidth > 0)
+            if (_titleWidth > 0)
             {
                 canvas.Restore();
             }
@@ -196,10 +184,36 @@ namespace Trains.NET.Rendering.UI
             {
                 canvas.Translate(10, this.TopPadding);
             }
+
+            Render(canvas);
         }
 
+        protected virtual bool HandleMouseAction(int x, int y, MouseAction action)
+        {
+            return true;
+        }
+
+        protected virtual void CalculateSize(ICanvas canvas)
+        {
+        }
+
+        protected virtual void Render(ICanvas canvas)
+        {
+        }
+
+        protected void OnChanged()
+        {
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected bool IsCollapsed()
+            => CanCollapse() && _collapsed;
+
+        private bool CanCollapse()
+            => this.IsCollapsable && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
+
         private int GetPanelHeight()
-            => Math.Max(this.TitleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
+            => Math.Max(_titleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
 
         private int GetPanelWidth()
             => this.InnerWidth + 20;

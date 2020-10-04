@@ -10,7 +10,8 @@ namespace Trains.NET.Rendering.UI
         private readonly IGame _game;
         private readonly IPixelMapper _pixelMapper;
         private readonly IGameManager _gameManager;
-        private IInteractionHandler? _capturedScreen;
+        private IInteractionHandler? _capturedHandler;
+        private ITool? _capturedTool;
 
         public InteractionManager(IEnumerable<IInteractionHandler> handlers, IGame game, IPixelMapper pixelMapper, IGameManager gameManager)
         {
@@ -38,9 +39,10 @@ namespace Trains.NET.Rendering.UI
 
         public bool PointerRelease(int x, int y)
         {
-            if (_capturedScreen != null)
+            if (_capturedHandler != null || _capturedTool != null)
             {
-                _capturedScreen = null;
+                _capturedTool = null;
+                _capturedHandler = null;
                 return true;
             }
             return false;
@@ -56,9 +58,14 @@ namespace Trains.NET.Rendering.UI
         {
             (int width, int height) = _game.GetScreenSize();
 
-            if (_capturedScreen != null)
+            if (_capturedHandler != null)
             {
-                _capturedScreen.HandlePointerAction(x, y, width, height, action);
+                _capturedHandler.HandlePointerAction(x, y, width, height, action);
+                return true;
+            }
+            else if (_capturedTool != null)
+            {
+                ExecuteTool(_capturedTool, x, y, action);
                 return true;
             }
 
@@ -68,7 +75,7 @@ namespace Trains.NET.Rendering.UI
                 {
                     if (action is PointerAction.Click or PointerAction.Drag)
                     {
-                        _capturedScreen = handler;
+                        _capturedHandler = handler;
                     }
                     return true;
                 }
@@ -76,25 +83,38 @@ namespace Trains.NET.Rendering.UI
 
             if (_gameManager.CurrentTool is not null)
             {
-                (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
-
-                if (_gameManager.CurrentTool.IsValid(column, row) && action != PointerAction.Move)
+                if (ExecuteTool(_gameManager.CurrentTool, x, y, action))
                 {
-                    _gameManager.CurrentTool.Execute(column, row);
+                    if (action is PointerAction.Click or PointerAction.Drag)
+                    {
+                        _capturedTool = _gameManager.CurrentTool;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool ExecuteTool(ITool tool, int x, int y, PointerAction action)
+        {
+            (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+
+            if (tool.IsValid(column, row) && action != PointerAction.Move)
+            {
+                tool.Execute(column, row);
+                return true;
+            }
+            else if (tool is IDraggableTool draggableTool)
+            {
+                if (action == PointerAction.Click)
+                {
+                    draggableTool.StartDrag(x, y);
                     return true;
                 }
-                else if (_gameManager.CurrentTool is IDraggableTool draggableTool)
+                else if (action == PointerAction.Drag)
                 {
-                    if (action == PointerAction.Click)
-                    {
-                        draggableTool.StartDrag(x, y);
-                        return true;
-                    }
-                    else if (action == PointerAction.Drag)
-                    {
-                        draggableTool.ContinueDrag(x, y);
-                        return true;
-                    }
+                    draggableTool.ContinueDrag(x, y);
+                    return true;
                 }
             }
 

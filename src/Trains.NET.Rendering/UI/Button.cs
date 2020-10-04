@@ -22,11 +22,11 @@ namespace Trains.NET.Rendering.UI
             _onClick = onClick;
         }
 
-        public bool HandleMouseAction(int x, int y, MouseAction action)
+        public bool HandleMouseAction(int x, int y, PointerAction action)
         {
             if (x is >= 0 && x <= this.Width && y >= 0 && y <= this.Height)
             {
-                if (action == MouseAction.Click)
+                if (action == PointerAction.Click)
                 {
                     _onClick?.Invoke();
                 }

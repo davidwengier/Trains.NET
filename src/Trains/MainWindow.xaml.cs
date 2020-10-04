@@ -42,12 +42,26 @@ namespace Trains
             _gameElement.MouseDown += SKElement_MouseDown;
             _gameElement.MouseMove += SKElement_MouseMove;
             _gameElement.MouseUp += SKElement_MouseUp;
+            _gameElement.MouseWheel += SKElement_MouseWheel;
 
             this.Content = _gameElement;
 
             this.Title = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
 
             _gameElement.SizeChanged += SKElement_SizeChanged;
+        }
+
+        private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            var mousePos = e.GetPosition(_gameElement);
+            if (e.Delta > 0)
+            {
+                _interactionManager.PointerZoomIn((int)mousePos.X, (int)mousePos.Y);
+            }
+            else
+            {
+                _interactionManager.PointerZoomOut((int)mousePos.X, (int)mousePos.Y);
+            }
         }
 
         private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)

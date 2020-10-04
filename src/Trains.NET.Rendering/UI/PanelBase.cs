@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering.UI
 {
-    public abstract class PanelBase : IScreen
+    public abstract class PanelBase : IScreen, IInteractionHandler
     {
         private const int TitleAreaWidth = 20;
 
@@ -24,9 +24,9 @@ namespace Trains.NET.Rendering.UI
 
         public event EventHandler? Changed;
 
-        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
-            if (action is MouseAction.Drag or MouseAction.Release)
+            if (action is not (PointerAction.Move or PointerAction.Click))
             {
                 return false;
             }
@@ -77,7 +77,7 @@ namespace Trains.NET.Rendering.UI
                 }
                 y -= this.TopPadding;
 
-                return HandleMouseAction(x, y, action);
+                return HandlePointerAction(x, y, action);
             }
             else if (this.IsCollapsable && !_collapsed)
             {
@@ -195,7 +195,7 @@ namespace Trains.NET.Rendering.UI
             Render(canvas);
         }
 
-        protected virtual bool HandleMouseAction(int x, int y, MouseAction action)
+        protected virtual bool HandlePointerAction(int x, int y, PointerAction action)
         {
             return true;
         }

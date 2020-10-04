@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering.UI
 {
     [Order(110)]
-    public class BuildModeScreen : IScreen
+    public class BuildModeScreen : IScreen, IInteractionHandler
     {
         private const int TextPadding = 15;
         private const int ButtonHeight = 20;
@@ -22,9 +22,9 @@ namespace Trains.NET.Rendering.UI
             _gameManager.Changed += (s, e) => Changed?.Invoke(s, e);
         }
 
-        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
-            if (action is MouseAction.Click or MouseAction.Move)
+            if (action is PointerAction.Click or PointerAction.Move)
             {
                 x -= 10;
                 y -= 50;
@@ -33,7 +33,7 @@ namespace Trains.NET.Rendering.UI
                 {
                     if (y >= 0 && y <= ButtonHeight)
                     {
-                        if (action == MouseAction.Click)
+                        if (action == Rendering.PointerAction.Click)
                         {
                             _gameManager.BuildMode = !_gameManager.BuildMode;
                         }

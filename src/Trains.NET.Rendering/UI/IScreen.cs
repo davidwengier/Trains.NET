@@ -7,7 +7,5 @@ namespace Trains.NET.Rendering
         event EventHandler? Changed;
 
         void Render(ICanvas canvas, int width, int height);
-
-        bool HandleInteraction(int x, int y, int width, int height, MouseAction action);
     }
 }

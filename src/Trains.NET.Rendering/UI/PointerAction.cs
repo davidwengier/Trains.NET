@@ -1,10 +1,11 @@
 ﻿namespace Trains.NET.Rendering
 {
-    public enum MouseAction
+    public enum PointerAction
     {
         Move,
         Click,
         Drag,
-        Release
+        ZoomIn,
+        ZoomOut
     }
 }

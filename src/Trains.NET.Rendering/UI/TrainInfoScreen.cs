@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering.UI
 {
     [Order(20)]
-    public class TrainInfoScreen : IScreen
+    public class TrainInfoScreen : IScreen, IInteractionHandler
     {
         private readonly ITrainManager _trainManager;
         private readonly IGameManager _gameManager;
@@ -22,9 +22,9 @@ namespace Trains.NET.Rendering.UI
             _trainManager.CurrentTrainPropertyChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
-            if (action != MouseAction.Click)
+            if (action != Rendering.PointerAction.Click)
             {
                 return false;
             }

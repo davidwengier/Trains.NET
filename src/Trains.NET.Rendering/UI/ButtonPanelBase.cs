@@ -12,12 +12,12 @@ namespace Trains.NET.Rendering.UI
 
         protected abstract IEnumerable<Button> GetButtons();
 
-        protected override bool HandleMouseAction(int x, int y, MouseAction action)
+        protected override bool HandlePointerAction(int x, int y, PointerAction action)
         {
-            if (action is MouseAction.Click or MouseAction.Move)
+            if (action is Rendering.PointerAction.Click or Rendering.PointerAction.Move)
             {
                 x -= ButtonLeft;
-                foreach (Button button in GetButtons())
+                foreach (var button in GetButtons())
                 {
                     if (button.HandleMouseAction(x, y, action))
                     {

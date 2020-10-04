@@ -182,7 +182,7 @@ namespace Trains.NET.Rendering
 
         private void RenderLayer(ICanvas canvas, IPixelMapper pixelMapper, ILayerRenderer renderer)
         {
-            if (renderer is ICachableLayerRenderer cachable)
+            if (renderer is ICachableLayerRenderer)
             {
                 if (_imageCache.IsDirty(renderer))
                 {

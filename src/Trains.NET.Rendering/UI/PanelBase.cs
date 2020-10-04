@@ -6,8 +6,6 @@ namespace Trains.NET.Rendering.UI
     {
         private const int TitleAreaWidth = 20;
 
-        public event EventHandler? Changed;
-
         private bool _collapsed = true;
         private int _titleWidth;
 
@@ -21,6 +19,10 @@ namespace Trains.NET.Rendering.UI
 
         protected int InnerWidth { get; set; } = 100;
         protected int InnerHeight { get; set; } = 100;
+
+        public bool Visible { get; set; } = true;
+
+        public event EventHandler? Changed;
 
         public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
         {
@@ -88,6 +90,11 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
+            if (!this.Visible)
+            {
+                return;
+            }
+
             CalculateSize(canvas);
 
             canvas.Translate(0, this.Top);

@@ -53,9 +53,6 @@ namespace Trains.NET.Rendering.Logic
             return path;
         }
 
-        protected override string GetCacheKey(Signal itemToRender)
-            => $"Bridge.{itemToRender.Identifier}.{itemToRender.SignalState}";
-
         protected override void Render(ICanvas canvas, Signal item)
         {
             using (canvas.Scope())

@@ -11,6 +11,8 @@ namespace Trains.NET.Engine
 
         public int Seed { get; set; }
 
+        public string Identifier => this.Seed.ToString();
+
         public Tree()
         {
             Refresh(true);
@@ -18,7 +20,7 @@ namespace Trains.NET.Engine
 
         public void Refresh(bool justAdded)
         {
-            this.Seed = s_random.Next(1, 1000);
+            this.Seed = s_random.Next(1, 100);
         }
 
         public void SetOwner(ILayout? collection)

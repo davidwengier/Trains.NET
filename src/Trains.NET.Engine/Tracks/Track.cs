@@ -15,13 +15,8 @@ namespace Trains.NET.Engine
         /// <summary>
         /// Gets a string that represents the current tracks state
         /// </summary>
-        public string Identifier
-        {
-            get
-            {
-                return this.Direction.ToString() + this.AlternateState.ToString();
-            }
-        }
+        public virtual string Identifier
+            => $"{this.Direction}.{this.AlternateState}";
 
         public int Column { get; set; }
         public int Row { get; set; }

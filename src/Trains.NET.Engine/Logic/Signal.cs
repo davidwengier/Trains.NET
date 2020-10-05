@@ -4,6 +4,9 @@
     {
         public SignalState SignalState { get; private set; }
 
+        public override string Identifier
+            => $"{base.Identifier}.{this.SignalState}";
+
         public Signal() : base()
         {
             this.SignalState = SignalState.Go;

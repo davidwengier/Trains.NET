@@ -47,9 +47,6 @@ namespace Trains.NET.Rendering
             _cornerRailPath = BuildCornerRailPath(pathFactory);
         }
 
-        protected override string GetCacheKey(Bridge track)
-            => $"Bridge.{track.Identifier}";
-
         protected override void Render(ICanvas canvas, Bridge track)
         {
             using (canvas.Scope())

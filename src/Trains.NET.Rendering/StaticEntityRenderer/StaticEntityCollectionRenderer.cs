@@ -54,7 +54,7 @@ namespace Trains.NET.Rendering
                     continue;
                 }
 
-                string key = renderer.GetCacheKey(entity);
+                string key = $"{entity.GetType().Name}.{entity.Identifier}";
                 if (_imageCache.IsDirty(key))
                 {
                     using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);

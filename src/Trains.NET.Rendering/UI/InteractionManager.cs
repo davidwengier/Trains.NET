@@ -99,7 +99,7 @@ namespace Trains.NET.Rendering.UI
         {
             (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
-            if (tool.IsValid(column, row) && action != PointerAction.Move)
+            if (tool.IsValid(column, row) && action is PointerAction.Click or PointerAction.Drag)
             {
                 tool.Execute(column, row);
                 return true;

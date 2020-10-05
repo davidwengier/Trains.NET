@@ -17,6 +17,7 @@ namespace Trains.NET.Engine
         private readonly ITimer? _gameLoopTimer;
         private readonly ITerrainMap _terrainMap;
         private readonly IGameStorage? _storage;
+        private readonly Train _reservedTrain = new Train();
         private int _terrainSeed;
 
         private int _columns;
@@ -94,6 +95,17 @@ namespace Trains.NET.Engine
         private void DoGameLoopStep()
         {
             Dictionary<Track, (Train, float)> takenTracks = new();
+
+            // Reserve any pre-taken tracks
+            foreach (Track track in _layout)
+            {
+                if (track is Signal signal &&
+                    signal.ShouldBlockTrain())
+                {
+                    takenTracks.Add(track, (_reservedTrain, -1));
+                }
+            }
+
             foreach (Train train in _movables)
             {
                 // Claim the track we are currently on, distance of 0

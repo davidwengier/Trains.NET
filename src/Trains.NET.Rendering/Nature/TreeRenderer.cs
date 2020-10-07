@@ -15,9 +15,6 @@ namespace Trains.NET.Rendering
         // Change this if you don't like the majority of tree styles
         private const int SeedOffset = 1337;
 
-        // Change this if you want more variance/styles
-        private const int MaxStyles = 100;
-
         public TreeRenderer()
         {
             _centerOffset = 50.0f;
@@ -37,16 +34,12 @@ namespace Trains.NET.Rendering
             };
         }
 
-        public string GetCacheKey(Tree item) => GetTrimmedTreeSeed(item).ToString();
-
-        private static int GetTrimmedTreeSeed(Tree tree) => tree.Seed % MaxStyles;
-
         public void Render(ICanvas canvas, Tree tree)
         {
             canvas.Translate(_centerOffset, _centerOffset);
 
             // Let's make some repeatable numbers
-            var r = new Random(SeedOffset + GetTrimmedTreeSeed(tree));
+            var r = new Random(SeedOffset + tree.Seed);
             int circleCount = r.Next(10, 20);
 
             // Draw a base fill

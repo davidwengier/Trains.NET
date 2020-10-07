@@ -50,8 +50,6 @@ namespace Trains.NET.Rendering
             };
         }
 
-        public string GetCacheKey(Track item) => item.Identifier;
-
         public void Render(ICanvas canvas, Track track)
         {
             switch (track.Direction)

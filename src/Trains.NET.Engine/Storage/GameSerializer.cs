@@ -4,18 +4,18 @@ using System.Text;
 
 namespace Trains.NET.Engine.Storage
 {
-    public class GameSerializer : ITrackSerializer
+    public class GameSerializer : IEntityCollectionSerializer
     {
-        private readonly IEnumerable<IStaticEntitySerializer> _serializers;
+        private readonly IEnumerable<IEntitySerializer> _serializers;
 
-        public GameSerializer(IEnumerable<IStaticEntitySerializer> serializer)
+        public GameSerializer(IEnumerable<IEntitySerializer> serializer)
         {
             _serializers = serializer;
         }
 
-        public IEnumerable<IStaticEntity> Deserialize(string[] lines)
+        public IEnumerable<IEntity> Deserialize(string[] lines)
         {
-            List<IStaticEntity> entities = new();
+            List<IEntity> entities = new();
 
             foreach (var line in lines)
             {
@@ -34,11 +34,11 @@ namespace Trains.NET.Engine.Storage
             return entities;
         }
 
-        public string Serialize(IEnumerable<IStaticEntity> tracks)
+        public string Serialize(IEnumerable<IEntity> entities)
         {
             StringBuilder sb = new();
 
-            foreach (IStaticEntity entity in tracks)
+            foreach (IEntity entity in entities)
             {
                 foreach (var serializer in _serializers)
                 {

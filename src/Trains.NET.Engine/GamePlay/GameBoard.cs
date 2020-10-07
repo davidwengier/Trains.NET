@@ -57,17 +57,21 @@ namespace Trains.NET.Engine
 
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;
+            IEnumerable<IMovable>? trains = null;
             try
             {
-                tracks = _storage?.ReadStaticEntities();
+                var entities = _storage?.ReadEntities();
+                tracks = entities!.OfType<IStaticEntity>();
+                trains = entities.OfType<IMovable>();
                 terrain = _storage?.ReadTerrain();
             }
             catch { }
 
-            if (tracks is not null && terrain is not null && terrain.Any())
+            if (tracks is not null && terrain is not null && terrain.Any() && trains is not null)
             {
                 _layout.Set(tracks);
                 _terrainMap.Set(terrain);
+                _movables = ImmutableList.CreateRange(trains);
             }
             else
             {
@@ -345,7 +349,7 @@ namespace Trains.NET.Engine
             _gameLoopTimer?.Dispose();
             if (_storage is not null)
             {
-                _storage.WriteStaticEntities(_layout);
+                _storage.WriteEntities(_layout.OfType<IEntity>().Concat(_movables));
                 _storage.WriteTerrain(_terrainMap);
             }
         }

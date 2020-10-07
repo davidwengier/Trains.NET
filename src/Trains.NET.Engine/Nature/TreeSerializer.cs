@@ -2,9 +2,9 @@
 
 namespace Trains.NET.Engine.Nature
 {
-    public class TreeSerializer : IStaticEntitySerializer
+    public class TreeSerializer : IEntitySerializer
     {
-        public bool TryDeserialize(string data, [NotNullWhen(true)] out IStaticEntity? entity)
+        public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
             var bits = data.Split('.', 2);
@@ -26,7 +26,7 @@ namespace Trains.NET.Engine.Nature
             return true;
         }
 
-        public bool TrySerialize(IStaticEntity entity, [NotNullWhen(true)] out string? data)
+        public bool TrySerialize(IEntity entity, [NotNullWhen(true)] out string? data)
         {
             data = null;
             if (entity is not Tree tree)

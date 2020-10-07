@@ -19,32 +19,32 @@ namespace Trains.Storage
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Trains.NET", fileName);
         }
 
-        private readonly ITrackSerializer _trackSerializer;
+        private readonly IEntityCollectionSerializer _entityCollectionSerializer;
         private readonly ITerrainSerializer _terrainSerializer;
 
-        public FileSystemStorage(ITrackSerializer serializer, ITerrainSerializer terrainSerializer)
+        public FileSystemStorage(IEntityCollectionSerializer serializer, ITerrainSerializer terrainSerializer)
         {
-            _trackSerializer = serializer;
+            _entityCollectionSerializer = serializer;
             _terrainSerializer = terrainSerializer;
         }
 
-        public IEnumerable<IStaticEntity> ReadStaticEntities()
+        public IEnumerable<IEntity> ReadEntities()
         {
             if (!File.Exists(_tracksFilePath))
             {
-                return Enumerable.Empty<IStaticEntity>();
+                return Enumerable.Empty<IEntity>();
             }
 
-            return _trackSerializer.Deserialize(File.ReadAllLines(_tracksFilePath));
+            return _entityCollectionSerializer.Deserialize(File.ReadAllLines(_tracksFilePath));
         }
 
-        public void WriteStaticEntities(IEnumerable<IStaticEntity> tracks)
+        public void WriteEntities(IEnumerable<IEntity> entities)
         {
             var tracksFileDirectory = Path.GetDirectoryName(_tracksFilePath);
             if (tracksFileDirectory != null)
             {
                 Directory.CreateDirectory(tracksFileDirectory);
-                File.WriteAllText(_tracksFilePath, _trackSerializer.Serialize(tracks));
+                File.WriteAllText(_tracksFilePath, _entityCollectionSerializer.Serialize(entities));
             }
         }
 

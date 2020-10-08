@@ -26,6 +26,11 @@ namespace Trains.NET.Rendering.UI
 
         public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
+            if (!this.Visible)
+            {
+                return false;
+            }
+
             if (action is not (PointerAction.Move or PointerAction.Click))
             {
                 return false;

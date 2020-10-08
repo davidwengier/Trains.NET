@@ -11,7 +11,7 @@ namespace Trains.NET.Rendering.Drawing
         private readonly Dictionary<object, IImage> _disposeBuffer = new();
         private readonly Dictionary<object, IImage> _imageBuffer = new();
         private readonly Dictionary<object, bool> _dirtyState = new();
-        private SuspectSetDirtyCallsTracker? _setDirtyCallsTracker;
+        private SuspendSetDirtyCallsTracker? _setDirtyCallsTracker;
 
         public void Clear()
         {
@@ -118,7 +118,7 @@ namespace Trains.NET.Rendering.Drawing
                     throw new InvalidOperationException("Suspending dirty processing cannot be nested. Sorry!");
                 }
 
-                _setDirtyCallsTracker = new SuspectSetDirtyCallsTracker(this);
+                _setDirtyCallsTracker = new SuspendSetDirtyCallsTracker(this);
                 return _setDirtyCallsTracker;
             }
         }

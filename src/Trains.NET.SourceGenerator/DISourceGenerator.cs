@@ -189,6 +189,11 @@ namespace DI
                 ITypeSymbol? typeToFind = typeToCreate.TypeArguments[0];
                 var types = FindImplementations(context, compilation, knownTypes, typeToFind);
 
+                if (!types.Any())
+                {
+                    context.ReportDiagnostic(Diagnostic.Create("TRAINS1", "DI", $"Can't find an implemnentation for {typeToFind} to construct an IEnumerable", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
+                }
+
                 INamedTypeSymbol? list = knownTypes.ListOfT.Construct(typeToFind);
                 var listService = new Service(typeToCreate);
                 services.Add(listService);
@@ -217,7 +222,7 @@ namespace DI
 
                 if (realType == null)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create("TRAINS1", "DI", $"Can't find an implemnentation for {realType}", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
+                    context.ReportDiagnostic(Diagnostic.Create("TRAINS1", "DI", $"Can't find an implemnentation for {typeToCreate}", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
                 }
                 else
                 {

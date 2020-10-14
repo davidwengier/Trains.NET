@@ -70,7 +70,7 @@ namespace DI
 
                 foreach (INamedTypeSymbol? typeToCreate in typesToCreate)
                 {
-                    Generate(context, typeToCreate, compilation, services, knownTypes);
+                    Generate(context, typeToCreate, compilation, services, null, knownTypes);
                 }
             }
 
@@ -180,8 +180,9 @@ namespace DI
             return typeName;
         }
 
-        private static void Generate(GeneratorExecutionContext context, INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, KnownTypes knownTypes)
+        private static void Generate(GeneratorExecutionContext context, INamedTypeSymbol typeToCreate, Compilation compilation, List<Service> services, Service? parent, KnownTypes knownTypes)
         {
+            // System.Diagnostics.Debugger.Launch();
             typeToCreate = (INamedTypeSymbol)typeToCreate.WithNullableAnnotation(default);
 
             if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.IEnumerableOfT))
@@ -191,18 +192,25 @@ namespace DI
 
                 if (!types.Any())
                 {
-                    context.ReportDiagnostic(Diagnostic.Create("TRAINS1", "DI", $"Can't find an implemnentation for {typeToFind} to construct an IEnumerable", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
+                    context.ReportDiagnostic(Diagnostic.Create("TRAINS2", "DI", $"Can't find an implemnentation for {typeToFind} to construct an IEnumerable", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
                 }
 
                 INamedTypeSymbol? list = knownTypes.ListOfT.Construct(typeToFind);
-                var listService = new Service(typeToCreate);
+                var listService = new Service(typeToCreate, parent)
+                {
+                    ImplementationType = list,
+                    UseCollectionInitializer = true
+                };
+
+                if (CheckForCycle(context, services, list))
+                {
+                    return;
+                }
                 services.Add(listService);
-                listService.ImplementationType = list;
-                listService.UseCollectionInitializer = true;
 
                 foreach (INamedTypeSymbol? thingy in types)
                 {
-                    Generate(context, thingy, compilation, listService.ConstructorArguments, knownTypes);
+                    Generate(context, thingy, compilation, listService.ConstructorArguments, listService, knownTypes);
                 }
             }
             else if (typeToCreate.IsGenericType && SymbolEqualityComparer.Default.Equals(typeToCreate.ConstructUnboundGenericType(), knownTypes.ILayoutOfT))
@@ -211,10 +219,10 @@ namespace DI
 
                 INamedTypeSymbol? layout = knownTypes.FilteredLayout.Construct(entityType);
 
-                var layoutService = new Service(typeToCreate);
+                var layoutService = new Service(typeToCreate, parent);
                 services.Add(layoutService);
                 layoutService.ImplementationType = layout;
-                Generate(context, layout, compilation, layoutService.ConstructorArguments, knownTypes);
+                Generate(context, layout, compilation, layoutService.ConstructorArguments, layoutService, knownTypes);
             }
             else
             {
@@ -226,10 +234,17 @@ namespace DI
                 }
                 else
                 {
-                    var service = new Service(typeToCreate);
+                    var service = new Service(typeToCreate, parent)
+                    {
+                        ImplementationType = realType,
+                        IsTransient = typeToCreate.GetAttributes().Any(c => SymbolEqualityComparer.Default.Equals(c.AttributeClass, knownTypes.TransientAttribute))
+                    };
+
+                    if (CheckForCycle(context, services, realType))
+                    {
+                        return;
+                    }
                     services.Add(service);
-                    service.ImplementationType = realType;
-                    service.IsTransient = typeToCreate.GetAttributes().Any(c => SymbolEqualityComparer.Default.Equals(c.AttributeClass, knownTypes.TransientAttribute));
 
                     IMethodSymbol? constructor = realType?.Constructors.FirstOrDefault();
                     if (constructor != null)
@@ -238,12 +253,30 @@ namespace DI
                         {
                             if (parametr.Type is INamedTypeSymbol paramType)
                             {
-                                Generate(context, paramType, compilation, service.ConstructorArguments, knownTypes);
+                                Generate(context, paramType, compilation, service.ConstructorArguments, service, knownTypes);
                             }
                         }
                     }
                 }
             }
+        }
+
+        private static bool CheckForCycle(GeneratorExecutionContext context, List<Service> services, INamedTypeSymbol typeToCreate)
+        {
+            foreach (var service in services)
+            {
+                var current = service;
+                while (current != null)
+                {
+                    if (SymbolEqualityComparer.Default.Equals(current.ImplementationType, typeToCreate))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create("TRAINS3", "DI", $"Circular reference detected: {typeToCreate}", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
+                        return true;
+                    }
+                    current = current.Parent;
+                }
+            }
+            return false;
         }
 
         private static INamedTypeSymbol? FindImplementation(GeneratorExecutionContext context, Compilation compilation, KnownTypes knownTypes, ITypeSymbol typeToFind)
@@ -273,7 +306,6 @@ namespace DI
                         yield return x;
                     }
                 }
-                // context.ReportDiagnostic(Diagnostic.Create("TRAINS2", "DI", $"{ns}: {count}", DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4, false));
             }
         }
 

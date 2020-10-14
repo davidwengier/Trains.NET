@@ -1,22 +1,30 @@
 ﻿using System;
 using Trains.NET.Engine;
+using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering.UI
 {
     [Order(20)]
     public class TrainInfoScreen : IScreen, IInteractionHandler
     {
+        private const int TrainDisplayAreaWidth = 75;
+        private const int PanelWidth = 250 + TrainDisplayAreaWidth;
+
         private readonly ITrainManager _trainManager;
         private readonly IGameManager _gameManager;
         private readonly IGameBoard _gameBoard;
+        private readonly ITrainParameters _trainParameters;
+        private readonly ITrainPainter _trainPainter;
 
         public event EventHandler? Changed;
 
-        public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IGameBoard gameBoard)
+        public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IGameBoard gameBoard, ITrainParameters trainParameters, ITrainPainter trainPainter)
         {
             _trainManager = trainManager;
             _gameManager = gameManager;
             _gameBoard = gameBoard;
+            _trainParameters = trainParameters;
+            _trainPainter = trainPainter;
             _trainManager.Changed += (s, e) => Changed?.Invoke(s, e);
             _gameManager.Changed += (s, e) => Changed?.Invoke(s, e);
             _trainManager.CurrentTrainPropertyChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
@@ -33,8 +41,6 @@ namespace Trains.NET.Rendering.UI
             {
                 return false;
             }
-
-            const int PanelWidth = 250;
 
             Train train = _trainManager.CurrentTrain;
 
@@ -62,10 +68,11 @@ namespace Trains.NET.Rendering.UI
                     _trainManager.ToggleFollow(train);
                 }
 
+                x -= TrainDisplayAreaWidth;
                 y -= 20;
                 if (y >= 0 && y <= 20)
                 {
-                    if (x is >= PanelWidth - 40)
+                    if (x is >= (PanelWidth - TrainDisplayAreaWidth) - 40)
                     {
                         _trainManager.CurrentTrain = null;
                         _gameBoard.RemoveMovable(train);
@@ -100,8 +107,6 @@ namespace Trains.NET.Rendering.UI
 
         public void Render(ICanvas canvas, int width, int height)
         {
-            const int PanelWidth = 250;
-
             if (_trainManager.CurrentTrain == null)
             {
                 return;
@@ -125,10 +130,23 @@ namespace Trains.NET.Rendering.UI
 
             canvas.Translate(10, 20);
 
-            canvas.DrawText(train.Name, 0, 0, Brushes.Label);
+            using (canvas.Scope())
+            {
+                canvas.Translate(TrainDisplayAreaWidth / 2, 5);
+                canvas.Scale(0.5f, 0.5f);
+                var palette = _trainPainter.GetPalette(train);
+                TrainRenderer.RenderTrain(canvas, palette, _trainParameters, false);
+            }
+
             canvas.DrawText("{{fa-eye}}", PanelWidth - 40, 0, train.Follow ? Brushes.Active : Brushes.Label);
+            canvas.DrawText("{{fa-trash}}", PanelWidth - 40, 20, Brushes.Label);
+
+            canvas.Translate(TrainDisplayAreaWidth, 0);
+
+            canvas.DrawText(train.Name, 0, 0, Brushes.Label);
 
             canvas.Translate(0, 20);
+
             var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
             canvas.DrawText("{{fa-backward}}", 0, 0, brush);
             canvas.DrawText("{{fa-forward}}", 60, 0, brush);
@@ -138,8 +156,6 @@ namespace Trains.NET.Rendering.UI
             canvas.DrawText("{{fa-play}}", 20, 0, brush);
             brush = _gameManager.BuildMode || train.Stopped ? Brushes.Disabled : Brushes.Label;
             canvas.DrawText("{{fa-pause}}", 40, 0, brush);
-
-            canvas.DrawText("{{fa-trash}}", PanelWidth - 40, 0, Brushes.Label);
         }
     }
 }

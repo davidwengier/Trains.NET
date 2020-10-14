@@ -7,11 +7,13 @@ namespace Trains.NET.Rendering
     {
         private readonly ITrainParameters _trainParameters;
         private readonly ITrainPainter _trainPainter;
+        private readonly ITrainManager _trainManager;
 
-        public TrainRenderer(ITrainParameters trainParameters, ITrainPainter trainPainter)
+        public TrainRenderer(ITrainParameters trainParameters, ITrainPainter trainPainter, ITrainManager trainManager)
         {
             _trainParameters = trainParameters;
             _trainPainter = trainPainter;
+            _trainManager = trainManager;
         }
 
         public void Render(ICanvas canvas, Train train)
@@ -26,6 +28,11 @@ namespace Trains.NET.Rendering
                 Style = PaintStyle.Stroke,
                 StrokeWidth = _trainParameters.StrokeWidth
             };
+
+            if (_trainManager.CurrentTrain == train)
+            {
+                outline = outline with { Color = Colors.LightGray };
+            }
 
             var smokeStack = new PaintBrush
             {

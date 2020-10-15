@@ -34,6 +34,8 @@ namespace Trains.NET.Rendering
             };
         }
 
+        public bool ShouldRender(Tree tree) => true;
+
         public void Render(ICanvas canvas, Tree tree)
         {
             canvas.Translate(_centerOffset, _centerOffset);

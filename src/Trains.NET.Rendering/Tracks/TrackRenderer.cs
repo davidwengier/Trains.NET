@@ -50,6 +50,8 @@ namespace Trains.NET.Rendering
             };
         }
 
+        public bool ShouldRender(Track track) => true;
+
         public void Render(ICanvas canvas, Track track)
         {
             switch (track.Direction)

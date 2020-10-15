@@ -3,6 +3,6 @@
     public interface IRenderer<T>
     {
         void Render(ICanvas canvas, T entity);
-        bool ShouldRender(T entity) => true;
+        bool ShouldRender(T entity);
     }
 }

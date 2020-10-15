@@ -16,6 +16,8 @@ namespace Trains.NET.Rendering
             _trainManager = trainManager;
         }
 
+        public bool ShouldRender(Train train) => true;
+
         public void Render(ICanvas canvas, Train train)
         {
             SetupCanvasToDrawTrain(canvas, train);

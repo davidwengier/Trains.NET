@@ -28,7 +28,7 @@ jobs:
       run: dotnet test
 
     - name: publish
-      run: dotnet publish -o ./publish -f net5.0 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesInSingleFile=true -p:IncludeAllContentForSelfExtract=true src/Trains/Trains.csproj
+      run: dotnet publish -o ./publish -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesInSingleFile=true -p:IncludeAllContentForSelfExtract=true src/Trains/Trains.csproj
 
     - name: GitVersion
       id: nbgv

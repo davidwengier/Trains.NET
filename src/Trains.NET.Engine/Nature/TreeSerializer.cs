@@ -7,7 +7,7 @@ namespace Trains.NET.Engine.Nature
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
-            var bits = data.Split('.', 2);
+            var bits = data.Split(new[] { '.' }, 2);
             if (bits.Length != 2)
             {
                 return false;

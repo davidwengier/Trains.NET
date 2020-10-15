@@ -61,7 +61,7 @@ namespace Trains.NET.Engine
                     heights.Add(height);
                 }
 
-                sb.AppendLine(string.Join(',', heights.Select(h => h.ToString())));
+                sb.AppendLine(string.Join(",", heights.Select(h => h.ToString())));
             }
 
             return sb.ToString();

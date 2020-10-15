@@ -7,7 +7,7 @@ namespace Trains.NET.Engine.Trains
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
-            var bits = data.Split('|', 9);
+            var bits = data.Split(new[] { '|' }, 9);
             if (bits.Length != 9)
             {
                 return false;

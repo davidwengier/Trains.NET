@@ -36,7 +36,7 @@ namespace Trains.NET.Engine
         {
             if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<IStaticEntity>();
 
-            string[] parts = input.Split("!");
+            string[] parts = input.Split('!');
 
             if (parts.Length == 2)
             {

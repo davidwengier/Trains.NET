@@ -19,7 +19,7 @@ namespace Trains.NET.Engine.Storage
 
             foreach (var line in lines)
             {
-                string[] bits = line.Split('|', 3);
+                string[] bits = line.Split(new[] { '|' }, 3);
                 foreach (var serializer in _serializers)
                 {
                     if (serializer.TryDeserialize(bits[2], out var entity))

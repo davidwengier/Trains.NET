@@ -8,7 +8,7 @@ namespace Trains.NET.Engine.Tracks
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
-            var bits = data.Split('.', 4);
+            var bits = data.Split(new[] { '.' }, 4);
             if (bits.Length != 4)
             {
                 return false;
@@ -21,7 +21,7 @@ namespace Trains.NET.Engine.Tracks
 
             var track = new Track()
             {
-                Direction = Enum.Parse<TrackDirection>(bits[1]),
+                Direction = (TrackDirection)Enum.Parse(typeof(TrackDirection), bits[1]),
                 AlternateState = bool.Parse(bits[2]),
                 Happy = bool.Parse(bits[3])
             };

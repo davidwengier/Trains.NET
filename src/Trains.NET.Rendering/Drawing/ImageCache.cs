@@ -25,7 +25,11 @@ namespace Trains.NET.Rendering.Drawing
         {
             lock (_cacheLock)
             {
-                return _imageBuffer.GetValueOrDefault(key);
+                if (_imageBuffer.TryGetValue(key, out var image))
+                {
+                    return image;
+                }
+                return null;
             }
         }
 

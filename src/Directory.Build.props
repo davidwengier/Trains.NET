@@ -1,0 +1,9 @@
+<Project>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <Compile Include="$(MSBuildThisFileDirectory)/Nullable.cs" />
+  </ItemGroup>
+
+  <Import Project="../Directory.Build.props" />
+
+</Project>

@@ -2,6 +2,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <Compile Include="$(MSBuildThisFileDirectory)/Nullable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)/Records.cs" />
   </ItemGroup>
 
   <Import Project="../Directory.Build.props" />

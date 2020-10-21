@@ -2,7 +2,8 @@
 {
     public enum SignalState
     {
-        Stop = 0,
-        Go = 1
+        Stop,
+        TemporaryStop,
+        Go
     }
 }

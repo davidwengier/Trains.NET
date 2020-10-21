@@ -25,6 +25,11 @@ namespace Trains.NET.Rendering.Logic
             Style = PaintStyle.Fill,
             Color = new Color(128, 255, 0, 0)
         };
+        private static readonly PaintBrush s_signalLightAmber = new()
+        {
+            Style = PaintStyle.Fill,
+            Color = new Color(128, 255, 191, 0)
+        };
         private static readonly PaintBrush s_signalLightGreen = new()
         {
             Style = PaintStyle.Fill,
@@ -89,7 +94,15 @@ namespace Trains.NET.Rendering.Logic
                 using (canvas.Scope())
                 {
                     canvas.Translate(SignalLightHousingWidth, SignalHeight / 2);
-                    canvas.DrawPath(_lightPath, state == SignalState.Go ? s_signalLightGreen : s_signalLightRed);
+
+                    var signalColor = state switch
+                    {
+                        SignalState.Stop => s_signalLightRed,
+                        SignalState.TemporaryStop => s_signalLightAmber,
+                        _ => s_signalLightGreen
+                    };
+
+                    canvas.DrawPath(_lightPath, signalColor);
                 }
 
                 // Housing

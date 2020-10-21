@@ -8,8 +8,8 @@ namespace Trains.NET.Engine.Tracks
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
-            var bits = data.Split('.', 4);
-            if (bits.Length != 4)
+            var bits = data.Split('.', 5);
+            if (bits.Length != 5)
             {
                 return false;
             }
@@ -23,7 +23,8 @@ namespace Trains.NET.Engine.Tracks
             {
                 Direction = Enum.Parse<TrackDirection>(bits[1]),
                 SignalState = Enum.Parse<SignalState>(bits[2]),
-                Happy = bool.Parse(bits[3])
+                Happy = bool.Parse(bits[3]),
+                TemporaryStopCounter = int.Parse(bits[4])
             };
             entity = track;
             return true;
@@ -37,7 +38,7 @@ namespace Trains.NET.Engine.Tracks
                 return false;
             }
 
-            data = $"{nameof(Signal)}.{signal.Direction}.{signal.SignalState}.{signal.Happy}";
+            data = $"{nameof(Signal)}.{signal.Direction}.{signal.SignalState}.{signal.Happy}.{signal.TemporaryStopCounter}";
             return true;
         }
     }

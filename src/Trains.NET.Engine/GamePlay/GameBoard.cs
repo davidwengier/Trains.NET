@@ -98,6 +98,11 @@ namespace Trains.NET.Engine
 
         private void DoGameLoopStep()
         {
+            foreach (IUpdatableEntity entity in _layout.OfType<IUpdatableEntity>())
+            {
+                entity.Update();
+            }
+
             Dictionary<Track, (Train, float)> takenTracks = new();
 
             // Reserve any pre-taken tracks

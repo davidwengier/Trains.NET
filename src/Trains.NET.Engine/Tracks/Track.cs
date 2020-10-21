@@ -43,15 +43,23 @@ namespace Trains.NET.Engine
             }
         }
 
-        public void TryToggle()
+        public virtual void TryToggle()
         {
             if (HasAlternateState())
             {
                 this.AlternateState = !this.AlternateState;
             }
 
+            OnChanged();
+        }
+
+        protected void OnChanged()
+        {
             _trackLayout?.RaiseCollectionChanged();
         }
+
+        public virtual bool CanToggle()
+            => HasAlternateState();
 
         public bool HasAlternateState()
             => this.Direction switch
@@ -91,6 +99,8 @@ namespace Trains.NET.Engine
                 }
             }
         }
+
+        public virtual bool IsBlocked() => false;
 
         private void MoveLeftUpDown(TrainPosition position)
         {

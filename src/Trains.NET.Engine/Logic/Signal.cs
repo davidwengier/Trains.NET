@@ -12,17 +12,16 @@
             this.SignalState = SignalState.Go;
         }
 
-        public void SwitchSignal()
+        public override void TryToggle()
         {
             this.SignalState = this.SignalState == SignalState.Go ? SignalState.Stop : SignalState.Go;
+
+            OnChanged();
         }
 
-        public bool IsValidSignalDirection()
-            => this.Direction == TrackDirection.Horizontal ||
-                this.Direction == TrackDirection.Vertical;
+        public override bool CanToggle() => true;
 
-        public bool ShouldBlockTrain()
-            => IsValidSignalDirection() &&
-                this.SignalState == SignalState.Stop;
+        public override bool IsBlocked()
+            => this.SignalState == SignalState.Stop;
     }
 }

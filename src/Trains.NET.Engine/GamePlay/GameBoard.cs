@@ -101,11 +101,11 @@ namespace Trains.NET.Engine
             Dictionary<Track, (Train, float)> takenTracks = new();
 
             // Reserve any pre-taken tracks
-            foreach (Signal signal in _layout.OfType<Signal>())
+            foreach (Track track in _layout.OfType<Track>())
             {
-                if (signal.ShouldBlockTrain())
+                if (track.IsBlocked())
                 {
-                    takenTracks.Add(signal, (_reservedTrain, -1));
+                    takenTracks.Add(track, (_reservedTrain, -1));
                 }
             }
 

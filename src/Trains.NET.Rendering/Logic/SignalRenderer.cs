@@ -60,11 +60,6 @@ namespace Trains.NET.Rendering.Logic
                 _trackRenderer.Render(canvas, item);
             }
 
-            if (!item.IsValidSignalDirection())
-            {
-                return;
-            }
-
             using (canvas.Scope())
             {
                 if (item.Direction == TrackDirection.Vertical)

@@ -65,21 +65,23 @@ namespace Trains.NET.Rendering.Logic
                 _trackRenderer.Render(canvas, item);
             }
 
+            var signalState = item.SignalState;
+            var direction = item.Direction;
             using (canvas.Scope())
             {
-                if (item.Direction == TrackDirection.Vertical)
+                if (direction == TrackDirection.Vertical)
                 {
                     canvas.RotateDegrees(90, CanvasSize / 2, CanvasSize / 2);
                 }
 
                 canvas.Translate(CanvasSize / 2, 0);
 
-                DrawSignal(canvas, item.SignalState);
+                DrawSignal(canvas, signalState);
 
                 canvas.Translate(0, CanvasSize);
                 canvas.RotateDegrees(180);
 
-                DrawSignal(canvas, item.SignalState);
+                DrawSignal(canvas, signalState);
             }
         }
 

@@ -2,7 +2,7 @@
 {
     public class Signal : Track
     {
-        public SignalState SignalState { get; private set; }
+        public SignalState SignalState { get; set; }
 
         public override string Identifier
             => $"{base.Identifier}.{this.SignalState}";

@@ -12,6 +12,8 @@ namespace Trains.NET.Rendering.UI
         private readonly IGameManager _gameManager;
         private IInteractionHandler? _capturedHandler;
         private ITool? _capturedTool;
+        private int _lastToolColumn;
+        private int _lastToolRow;
 
         public InteractionManager(IEnumerable<IInteractionHandler> handlers, IGame game, IPixelMapper pixelMapper, IGameManager gameManager)
         {
@@ -39,6 +41,8 @@ namespace Trains.NET.Rendering.UI
 
         public bool PointerRelease(int x, int y)
         {
+            _lastToolColumn = -1;
+            _lastToolRow = -1;
             if (_capturedHandler != null || _capturedTool != null)
             {
                 _capturedTool = null;
@@ -99,7 +103,16 @@ namespace Trains.NET.Rendering.UI
         {
             (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
-            if (tool.IsValid(column, row) && action is PointerAction.Click or PointerAction.Drag)
+
+            var inSameCell = (column == _lastToolColumn && row == _lastToolRow);
+
+            if (action is PointerAction.Click or PointerAction.Drag)
+            {
+                _lastToolColumn = column;
+                _lastToolRow = row;
+            }
+
+            if (!inSameCell && tool.IsValid(column, row) && action is PointerAction.Click or PointerAction.Drag)
             {
                 tool.Execute(column, row);
                 return true;

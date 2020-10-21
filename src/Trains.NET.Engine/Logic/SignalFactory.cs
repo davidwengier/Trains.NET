@@ -18,8 +18,10 @@ namespace Trains.NET.Engine.Tracks
         {
             if (!_terrainMap.Get(column, row).IsWater &&
                 _layout.TryGet(column, row, out Track? track) &&
-                track.Direction is TrackDirection.Horizontal or TrackDirection.Vertical &&
-                track.Happy)
+                (
+                    track is Signal ||
+                    track.Direction is TrackDirection.Horizontal or TrackDirection.Vertical && track.Happy)
+                )
             {
                 entity = new Signal();
                 return true;

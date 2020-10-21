@@ -11,7 +11,7 @@ namespace Trains.NET.Engine
 
         bool TryGet(int column, int row, [NotNullWhen(true)] out T? entity);
         void Clear();
-        void Add(int column, int row);
+        void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories);
         bool IsAvailable(int column, int row);
     }
 }

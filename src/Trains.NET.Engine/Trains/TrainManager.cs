@@ -50,5 +50,33 @@ namespace Trains.NET.Engine
         {
             CurrentTrainPropertyChanged?.Invoke(sender, e);
         }
+
+        public void PreviousTrain()
+        {
+            var trains = _gameBoard.GetMovables();
+            int index = _currentTrain == null ? -1 : trains.IndexOf(_currentTrain);
+            if (index == -1 || index == 0)
+            {
+                this.CurrentTrain = trains[^1] as Train;
+            }
+            else
+            {
+                this.CurrentTrain = trains[index - 1] as Train;
+            }
+        }
+
+        public void NextTrain()
+        {
+            var trains = _gameBoard.GetMovables();
+            int index = _currentTrain == null ? -1 : trains.IndexOf(_currentTrain);
+            if (index == -1 || index == trains.Count - 1)
+            {
+                this.CurrentTrain = trains[0] as Train;
+            }
+            else
+            {
+                this.CurrentTrain = trains[index + 1] as Train;
+            }
+        }
     }
 }

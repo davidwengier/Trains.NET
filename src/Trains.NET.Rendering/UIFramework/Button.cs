@@ -6,14 +6,20 @@ namespace Trains.NET.Rendering.UI
     {
         private const int ButtonHeight = 20;
 
-        private readonly string _label;
-        private readonly Func<bool> _isActive;
-        private readonly Action _onClick;
+        private readonly string? _label;
+        private readonly Func<bool>? _isActive;
+        private readonly Action? _onClick;
         private bool _isHovered;
 
         public int Width { get; set; }
         public int Height { get; set; } = ButtonHeight;
         public int PaddingX { get; set; } = 10;
+        public bool TransparentBackground { get; set; }
+        public PaintBrush LabelBrush { get; set; } = Brushes.Label;
+
+        protected Button()
+        {
+        }
 
         public Button(string label, Func<bool> isActive, Action onClick)
         {
@@ -22,7 +28,7 @@ namespace Trains.NET.Rendering.UI
             _onClick = onClick;
         }
 
-        public bool HandleMouseAction(int x, int y, PointerAction action)
+        public virtual bool HandleMouseAction(int x, int y, PointerAction action)
         {
             if (x is >= 0 && x <= this.Width && y >= 0 && y <= this.Height)
             {
@@ -40,29 +46,39 @@ namespace Trains.NET.Rendering.UI
             return false;
         }
 
-        public int GetMinimumWidth(ICanvas canvas)
-            => (int)canvas.MeasureText(_label, Brushes.Label) + (this.PaddingX * 2);
+        public virtual int GetMinimumWidth(ICanvas canvas)
+        {
+            var label = _label ?? throw new InvalidOperationException("No label set, but also not doing custom drawing.");
 
-        public void Render(ICanvas canvas)
+            return (int)canvas.MeasureText(label, this.LabelBrush) + (this.PaddingX * 2);
+        }
+
+        public virtual void Render(ICanvas canvas)
         {
             if (this.Width == 0)
             {
                 this.Width = GetMinimumWidth(canvas);
             }
 
+            var label = _label ?? throw new InvalidOperationException("No label set, but also not doing custom drawing.");
+
             var isActive = _isActive?.Invoke() ?? false;
 
             PaintBrush brush = isActive ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
-
-            canvas.DrawRect(0, 0, this.Width, this.Height, brush);
+            if (!this.TransparentBackground || isActive)
+            {
+                canvas.DrawRect(0, 0, this.Width, this.Height, brush);
+            }
             if (_isHovered)
             {
                 canvas.DrawRect(0, 0, this.Width, this.Height, Brushes.ButtonHoverBackground);
             }
 
-            var textWidth = canvas.MeasureText(_label, Brushes.Label);
+            var textWidth = canvas.MeasureText(label, this.LabelBrush);
 
-            canvas.DrawText(_label, 0 + ((this.Width - textWidth) / 2), (float)Brushes.Label.TextSize!, Brushes.Label);
+            int textHeight = this.LabelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
+
+            canvas.DrawText(label, (this.Width - textWidth) / 2, textHeight + (float)(this.Height - textHeight) / 2 - 2, this.LabelBrush);
         }
     }
 }

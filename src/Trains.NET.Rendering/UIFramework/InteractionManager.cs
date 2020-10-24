@@ -103,7 +103,6 @@ namespace Trains.NET.Rendering.UI
         {
             (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
-
             var inSameCell = (column == _lastToolColumn && row == _lastToolRow);
 
             if (action is PointerAction.Click or PointerAction.Drag)

@@ -4,11 +4,14 @@ namespace Trains.NET.Rendering.UI
 {
     public abstract class PanelBase : IScreen, IInteractionHandler
     {
+        private const string CloseButtonText = " {{fa-times}} ";
         private const int TitleAreaWidth = 20;
 
         private bool _collapsed = true;
         private int _titleWidth;
+        private int _closeButtonWidth;
 
+        protected virtual bool CanClose { get; }
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }
         protected abstract int Top { get; }
@@ -17,12 +20,17 @@ namespace Trains.NET.Rendering.UI
         protected virtual PanelPosition Position { get; } = PanelPosition.Left;
         protected virtual int Left { get; }
 
-        protected int InnerWidth { get; set; } = 100;
-        protected int InnerHeight { get; set; } = 100;
+        protected virtual int InnerWidth { get; set; } = 100;
+        protected virtual int InnerHeight { get; set; } = 100;
 
         public bool Visible { get; set; } = true;
 
         public event EventHandler? Changed;
+
+        private int GetLeft(int width)
+            => this.Left < 0
+                ? width - (-1 * this.Left)
+                : this.Left;
 
         public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
@@ -61,13 +69,21 @@ namespace Trains.NET.Rendering.UI
             }
             else
             {
-                x -= this.Left;
+                x -= GetLeft(width);
             }
 
-            if (IsCollapsed() && x >= -TitleAreaWidth && x <= 0 && y >= 10 && y <= 10 + _titleWidth)
+            if (x >= -TitleAreaWidth && x <= 0 && y >= 10 && y <= 10 + _titleWidth)
             {
-                _collapsed = !_collapsed;
-                OnChanged();
+                if (IsCollapsed())
+                {
+                    _collapsed = !_collapsed;
+                    OnChanged();
+                }
+                else if (action == PointerAction.Click && y <= 10 + _closeButtonWidth && this.CanClose)
+                {
+                    this.Visible = false;
+                    Close();
+                }
                 return true;
             }
             else if (!IsCollapsed() && x is >= 0 && x <= panelWidth && y >= 0 && y <= panelHeight)
@@ -93,6 +109,10 @@ namespace Trains.NET.Rendering.UI
             return false;
         }
 
+        protected virtual void Close()
+        {
+        }
+
         public void Render(ICanvas canvas, int width, int height)
         {
             if (!this.Visible)
@@ -108,6 +128,11 @@ namespace Trains.NET.Rendering.UI
             if (this.Title is { Length: > 0 })
             {
                 _titleWidth = (int)canvas.MeasureText(this.Title, Brushes.Label);
+            }
+            if (this.CanClose)
+            {
+                _closeButtonWidth = (int)canvas.MeasureText(CloseButtonText, Brushes.Label);
+                _titleWidth += _closeButtonWidth;
             }
 
             var panelHeight = GetPanelHeight();
@@ -141,16 +166,16 @@ namespace Trains.NET.Rendering.UI
             }
             else
             {
-                canvas.Translate(this.Left, 0);
+                canvas.Translate(GetLeft(width), 0);
             }
 
             canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, 10, 10, Brushes.PanelBackground);
 
-            if (this.Title is { Length: > 0 })
+            if (this.Title is { Length: > 0 } || this.CanClose)
             {
                 canvas.Save();
 
-                if (this.Position != PanelPosition.Right)
+                if (this.Position == PanelPosition.Left)
                 {
                     canvas.Save();
                     canvas.RotateDegrees(180, panelWidth / 2, 10 + ((_titleWidth + 10) / 2));
@@ -163,14 +188,19 @@ namespace Trains.NET.Rendering.UI
                     canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, _titleWidth + 10, 5, 5, Brushes.PanelBorder);
                 }
 
-                using (var _ = canvas.Scope())
+                var title = this.Title ?? "";
+                if (this.CanClose)
                 {
-                    //canvas.Translate(0, yPos);
-                    canvas.RotateDegrees(270);
-                    canvas.DrawText(this.Title, -15 - _titleWidth, -5, Brushes.Label);
+                    title += CloseButtonText;
                 }
 
-                if (this.Position == PanelPosition.Right)
+                using (var _ = canvas.Scope())
+                {
+                    canvas.RotateDegrees(270);
+                    canvas.DrawText(title, -15 - _titleWidth, -5, Brushes.Label);
+                }
+
+                if (this.Position != PanelPosition.Left)
                 {
                     canvas.ClipRect(new Rectangle(-2, 10, TitleAreaWidth / 2, _titleWidth + 20), true, true);
                 }
@@ -195,6 +225,11 @@ namespace Trains.NET.Rendering.UI
             else
             {
                 canvas.Translate(10, this.TopPadding);
+            }
+
+            if (IsCollapsed())
+            {
+                return;
             }
 
             Render(canvas);
@@ -224,10 +259,10 @@ namespace Trains.NET.Rendering.UI
         private bool CanCollapse()
             => this.IsCollapsable && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
 
-        private int GetPanelHeight()
+        protected int GetPanelHeight()
             => Math.Max(_titleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
 
-        private int GetPanelWidth()
+        protected int GetPanelWidth()
             => this.InnerWidth + 20;
     }
 }

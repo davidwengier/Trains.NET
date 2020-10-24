@@ -10,7 +10,7 @@ namespace Trains.NET.Rendering.Skia
     {
         private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
 
-        private static readonly SKPaint s_noAntialiasPaint = new SKPaint
+        private static readonly SKPaint s_noAntialiasPaint = new()
         {
             IsAntialias = false,
             IsDither = false

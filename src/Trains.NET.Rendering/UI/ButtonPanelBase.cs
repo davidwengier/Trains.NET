@@ -39,7 +39,10 @@ namespace Trains.NET.Rendering.UI
             {
                 button.Width = _buttonWidth;
 
-                button.Render(canvas);
+                using (canvas.Scope())
+                {
+                    button.Render(canvas);
+                }
 
                 canvas.Translate(0, button.Height + ButtonGap);
             }

@@ -197,6 +197,11 @@ namespace Trains.NET.Rendering.UI
                 canvas.Translate(10, this.TopPadding);
             }
 
+            if (IsCollapsed())
+            {
+                return;
+            }
+
             Render(canvas);
         }
 

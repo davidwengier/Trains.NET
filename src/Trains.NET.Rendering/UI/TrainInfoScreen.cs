@@ -41,18 +41,18 @@ namespace Trains.NET.Rendering.UI
             _gameManager.Changed += (s, e) => OnChanged();
             _trainManager.CurrentTrainPropertyChanged += (s, e) => OnChanged();
 
-            _controlButton = new MultiButton(16, 20, new Button[]
+            _controlButton = new MultiButton(20, new Button[]
                 {
-                    new Button("{{fa-backward}}", () => false, () => _trainManager.CurrentTrain?.Slower()),
-                    new Button("{{fa-play}}", () => _trainManager.CurrentTrain?.Stopped != true, () => _trainManager.CurrentTrain?.Start()),
-                    new Button("{{fa-pause}}", () => _trainManager.CurrentTrain?.Stopped == true, () => _trainManager.CurrentTrain?.Stop()),
-                    new Button("{{fa-forward}}", () => false, () => _trainManager.CurrentTrain?.Faster()),
+                    CreateButton("{{fa-backward}}", () => false, () => _trainManager.CurrentTrain?.Slower()),
+                    CreateButton("{{fa-play}}", () => _trainManager.CurrentTrain?.Stopped != true, () => _trainManager.CurrentTrain?.Start()),
+                    CreateButton("{{fa-pause}}", () => _trainManager.CurrentTrain?.Stopped == true, () => _trainManager.CurrentTrain?.Stop()),
+                    CreateButton("{{fa-forward}}", () => false, () => _trainManager.CurrentTrain?.Faster()),
                 });
 
-            _actionButton = new MultiButton(16, 20, new Button[]
+            _actionButton = new MultiButton(20, new Button[]
                 {
-                    new Button("{{fa-eye}}", () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
-                    new Button("{{fa-trash}}", () => false, () =>
+                    CreateButton("{{fa-eye}}", () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
+                    CreateButton("{{fa-trash}}", () => false, () =>
                     {
                         _gameBoard.RemoveMovable(_trainManager.CurrentTrain!);
                         Close();
@@ -61,6 +61,12 @@ namespace Trains.NET.Rendering.UI
 
             this.Visible = _trainManager.CurrentTrain is not null;
         }
+
+        private static Button CreateButton(string label, Func<bool> isActive, Action onClick)
+            => new Button(label, isActive, onClick)
+            {
+                TransparentBackground = true,
+            };
 
         protected override void Close()
         {

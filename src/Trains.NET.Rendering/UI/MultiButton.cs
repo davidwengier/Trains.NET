@@ -3,17 +3,11 @@
     public class MultiButton : Button
     {
         private readonly int _buttonSize;
-        private readonly PaintBrush _labelBrush;
         private readonly Button[] _buttons;
 
-        public MultiButton(int textSize, int buttonSize, params Button[] buttons)
+        public MultiButton(int buttonSize, params Button[] buttons)
         {
             _buttonSize = buttonSize;
-            _labelBrush = Brushes.Label with
-            {
-                TextSize = textSize
-            };
-
             _buttons = buttons;
 
             this.Height = _buttonSize;

@@ -14,6 +14,8 @@ namespace Trains.NET.Rendering.UI
         public int Width { get; set; }
         public int Height { get; set; } = ButtonHeight;
         public int PaddingX { get; set; } = 10;
+        public bool TransparentBackground { get; set; }
+        public PaintBrush LabelBrush { get; set; } = Brushes.Label;
 
         protected Button()
         {
@@ -48,7 +50,7 @@ namespace Trains.NET.Rendering.UI
         {
             var label = _label ?? throw new InvalidOperationException("No label set, but also not doing custom drawing.");
 
-            return (int)canvas.MeasureText(label, Brushes.Label) + (this.PaddingX * 2);
+            return (int)canvas.MeasureText(label, this.LabelBrush) + (this.PaddingX * 2);
         }
 
         public virtual void Render(ICanvas canvas)
@@ -62,24 +64,21 @@ namespace Trains.NET.Rendering.UI
 
             var isActive = _isActive?.Invoke() ?? false;
 
-            DrawButton(canvas, this.Width, this.Height, label, isActive, _isHovered, Brushes.Label);
-        }
-
-        protected static void DrawButton(ICanvas canvas, int width, int height, string label, bool active, bool hovered, PaintBrush labelBrush)
-        {
-            PaintBrush brush = active ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
-
-            canvas.DrawRect(0, 0, width, height, brush);
-            if (hovered)
+            PaintBrush brush = isActive ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
+            if (!this.TransparentBackground || isActive)
             {
-                canvas.DrawRect(0, 0, width, height, Brushes.ButtonHoverBackground);
+                canvas.DrawRect(0, 0, this.Width, this.Height, brush);
+            }
+            if (_isHovered)
+            {
+                canvas.DrawRect(0, 0, this.Width, this.Height, Brushes.ButtonHoverBackground);
             }
 
-            var textWidth = canvas.MeasureText(label, labelBrush);
+            var textWidth = canvas.MeasureText(label, this.LabelBrush);
 
-            int textHeight = labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
+            int textHeight = this.LabelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
 
-            canvas.DrawText(label, (width - textWidth) / 2, textHeight + (float)(height - textHeight) / 2 - 2, labelBrush);
+            canvas.DrawText(label, (this.Width - textWidth) / 2, textHeight + (float)(this.Height - textHeight) / 2 - 2, this.LabelBrush);
         }
     }
 }

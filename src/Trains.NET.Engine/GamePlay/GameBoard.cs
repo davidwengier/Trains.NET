@@ -323,12 +323,9 @@ namespace Trains.NET.Engine
             _movables = _movables.Remove(movable);
         }
 
-        public IEnumerable<IMovable> GetMovables()
+        public ImmutableList<IMovable> GetMovables()
         {
-            foreach (IMovable movable in _movables)
-            {
-                yield return movable;
-            }
+            return _movables;
         }
 
         public IEnumerable<T> GetMovables<T>() where T : IMovable

@@ -8,7 +8,7 @@ namespace Trains.NET.Rendering.UI
     public class TrainInfoScreen : PanelBase
     {
         private const int TrainDisplayAreaWidth = 50;
-        private const int PanelWidth = 230 + TrainDisplayAreaWidth;
+        private const int PanelWidth = 280 + TrainDisplayAreaWidth;
 
         private readonly ITrainManager _trainManager;
         private readonly IGameManager _gameManager;
@@ -17,9 +17,10 @@ namespace Trains.NET.Rendering.UI
         private readonly ITrainPainter _trainPainter;
         private readonly MultiButton _controlButton;
         private readonly MultiButton _actionButton;
+        private readonly MultiButton _trainSelectionButton;
 
         protected override PanelPosition Position => PanelPosition.Floating;
-        protected override int Left => (PanelWidth + 50) * -1;
+        protected override int Left => (PanelWidth + 75) * -1;
         protected override int Top => 50;
         protected override int InnerHeight => 30;
         protected override int InnerWidth => PanelWidth;
@@ -59,6 +60,12 @@ namespace Trains.NET.Rendering.UI
                     }),
                 });
 
+            _trainSelectionButton = new MultiButton(20, new Button[]
+                {
+                    CreateButton("{{fa-caret-left}}", () => false, () => _trainManager.PreviousTrain()),
+                    CreateButton("{{fa-caret-right}}", () => false, () => _trainManager.NextTrain())
+                });
+
             this.Visible = _trainManager.CurrentTrain is not null;
         }
 
@@ -82,7 +89,13 @@ namespace Trains.NET.Rendering.UI
             }
 
             x -= PanelWidth - 40;
-            _actionButton.HandleMouseAction(x, y, action);
+            if (_actionButton.HandleMouseAction(x, y, action))
+            {
+                return true;
+            }
+
+            y += 40;
+            _trainSelectionButton.HandleMouseAction(x, y, action);
 
             return true;
         }
@@ -117,6 +130,9 @@ namespace Trains.NET.Rendering.UI
 
             canvas.Translate(PanelWidth - 40, 0);
             _actionButton.Render(canvas);
+
+            canvas.Translate(0, -40);
+            _trainSelectionButton.Render(canvas);
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Trains.NET.Engine
         Train? CurrentTrain { get; set; }
 
         void ToggleFollow(Train train);
+        void PreviousTrain();
+        void NextTrain();
     }
 }

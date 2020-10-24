@@ -28,7 +28,7 @@ namespace Trains.NET.Rendering.UI
                     y -= button.Height + ButtonGap;
                 }
             }
-            return false;
+            return true;
         }
 
         protected override void Render(ICanvas canvas)

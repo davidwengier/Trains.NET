@@ -127,6 +127,15 @@ namespace Trains.NET.Rendering.Skia
             => _canvas.Translate(x, y);
 
         public float MeasureText(string text, PaintBrush paint)
-            => GetSKPaint(paint).MeasureText(text);
+        {
+            var runs = SKTextRun.Create(text, SKTextRunLookup.Instance);
+            var skPaint = GetSKPaint(paint);
+            float width = 0;
+            foreach (var run in runs)
+            {
+                width += skPaint.MeasureText(run.Text);
+            }
+            return width;
+        }
     }
 }

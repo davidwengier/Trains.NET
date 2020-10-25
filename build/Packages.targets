@@ -21,6 +21,7 @@
 
     <!-- SkiaSharp -->
     <PackageReference Update="SkiaSharp"                    Version="2.80.2" />
+    <PackageReference Update="SkiaSharp.Views"              Version="2.80.2" />
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.2" />
     

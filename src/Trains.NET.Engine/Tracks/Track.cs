@@ -357,7 +357,7 @@ namespace Trains.NET.Engine
             _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
             return new TrackNeighbors(
-                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedRight() && left.IsConnectedRight() ? left : null,
+                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedLeft() && left.IsConnectedRight() ? left : null,
                 _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && IsConnectedUp() && up.IsConnectedDown() ? up : null,
                 _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && IsConnectedRight() && right.IsConnectedLeft() ? right : null,
                 _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && IsConnectedDown() && down.IsConnectedUp() ? down : null

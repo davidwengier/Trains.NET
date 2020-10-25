@@ -14,7 +14,7 @@ namespace Trains.NET.Tests
 
         public void Add(int column, int row, IStaticEntity entityToAdd)
         {
-            entityToAdd.SetOwner(this);
+            entityToAdd.Stored(this);
             _layout.Add((column, row), entityToAdd);
         }
 

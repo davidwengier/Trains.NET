@@ -18,14 +18,15 @@ namespace Trains.NET.Rendering
         void DrawPath(IPath trackPath, PaintBrush straightTrackPaint);
         void RotateDegrees(float degrees);
         void Clear(Color color);
-        void GradientRect(float x, float y, float width, float height, Color start, Color end);
+        void DrawGradientRect(float x, float y, float width, float height, Color start, Color end);
         void Scale(float scaleX, float scaleY);
         void Scale(float scaleX, float scaleY, float x, float y);
         void DrawImage(IImage cachedImage, int x, int y);
         float MeasureText(string text, PaintBrush paint);
         void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle);
-        void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours);
-        void GradientRect(float x, float y, float width, float height, IEnumerable<Color> colours);
+        void DrawGradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours);
+        void DrawVerticalGradientRect(float x, float y, float width, float height, IEnumerable<Color> colours);
+        void DrawHorizontalGradientRect(float x, float y, float width, float height, IEnumerable<Color> colours);
         void DrawRoundRect(float x, float y, float width, float height, float radiusX, float radiusY, PaintBrush paint);
     }
 }

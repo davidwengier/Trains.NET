@@ -17,7 +17,7 @@ namespace Trains.NET.Engine
         private readonly ITimer? _gameLoopTimer;
         private readonly ITerrainMap _terrainMap;
         private readonly IGameStorage? _storage;
-        private readonly Train _reservedTrain = new Train();
+        private readonly Train _reservedTrain = new();
         private int _terrainSeed;
 
         private int _columns;

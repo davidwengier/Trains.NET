@@ -45,7 +45,6 @@ namespace Trains.NET.Engine
         /// <param name="position">The trains position</param>
         /// <param name="quadrantPositionX">The distance between the center of the circle, and the left hand side of the cell</param>
         /// <param name="quadrantPositionY">The distance between the center of the circle, and the top of the cell</param>
-        /// <param name="midpointAngle">The angle at the middle of the arc you want to move</param>
         public static void MoveAroundCorner(TrainPosition position, int quadrantPositionX, int quadrantPositionY, int minTrainAngleCCW, int maxTrainAngleCCW, int minimumAngle, int maximumAngle)
         {
             // Find the angle within the tracks circle using the current position

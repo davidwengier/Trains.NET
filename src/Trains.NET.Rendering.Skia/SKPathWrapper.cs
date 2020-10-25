@@ -5,7 +5,7 @@ namespace Trains.NET.Rendering.Skia
 {
     public class SKPathWrapper : IPath, IDisposable
     {
-        private readonly SKPath _path = new SKPath();
+        private readonly SKPath _path = new();
 
         public SKPath Path => _path;
 

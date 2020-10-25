@@ -7,7 +7,17 @@
     <Nullable>enable</Nullable>
     <NoWarn>NU1701</NoWarn>
     <WarningLevel>5</WarningLevel>
-    <TreatWarningsAsErrors Condition="'$(CI)' != ''">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- I have no idea which one of these works, but sometimes one of them does -->
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzers>true</RunAnalyzers>
+    <UseRoslynAnalyzers>true</UseRoslynAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>

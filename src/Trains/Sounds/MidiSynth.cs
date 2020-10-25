@@ -6,7 +6,7 @@ namespace Trains.Sounds
 {
     internal sealed class MidiSynth : IDisposable
     {
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
         private Win32API.HMIDIOUT _handle;
 
         public void Init()
@@ -131,7 +131,6 @@ namespace Trains.Sounds
         /// Sends a System Exclusive (sysex) message to this MIDI output device.
         /// </summary>
         /// <param name="data">The message to send (as byte array)</param>
-        /// <exception cref="DeviceException">The message cannot be sent.</exception>
         private void SendSysEx(byte[] data)
         {
             if (_handle.handle == IntPtr.Zero)
@@ -142,13 +141,15 @@ namespace Trains.Sounds
                 //Win32API.MMRESULT result;
                 IntPtr ptr;
                 uint size = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(Win32API.MIDIHDR));
-                Win32API.MIDIHDR header = new Win32API.MIDIHDR();
-                header.lpData = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length);
+                var header = new Win32API.MIDIHDR
+                {
+                    lpData = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length),
+                    dwBufferLength = data.Length,
+                    dwBytesRecorded = data.Length,
+                    dwFlags = 0
+                };
                 for (int i = 0; i < data.Length; i++)
                     System.Runtime.InteropServices.Marshal.WriteByte(header.lpData, i, data[i]);
-                header.dwBufferLength = data.Length;
-                header.dwBytesRecorded = data.Length;
-                header.dwFlags = 0;
 
                 try
                 {

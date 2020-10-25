@@ -299,7 +299,7 @@ namespace Trains.NET.Engine
 
         private class BitWriter
         {
-            private readonly List<byte> _bytes = new List<byte>();
+            private readonly List<byte> _bytes = new();
             private byte _currentByte;
             private int _bitIndex;
 

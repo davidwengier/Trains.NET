@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering
     public class HappinessRenderer : ILayerRenderer
     {
         private readonly ILayout<Track> _trackLayout;
-        private readonly PaintBrush _paint = new PaintBrush
+        private readonly PaintBrush _paint = new()
         {
             Color = Colors.Cyan,
             Style = PaintStyle.Fill

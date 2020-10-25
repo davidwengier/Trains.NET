@@ -6,18 +6,18 @@ namespace Trains.NET.Rendering.UI
     [Order(10)]
     public class MiniMapScreen : IScreen, IInteractionHandler, ITogglable
     {
-        private readonly PaintBrush _border = new PaintBrush
+        private readonly PaintBrush _border = new()
         {
             Color = Colors.Black,
             StrokeWidth = 2,
             Style = PaintStyle.Stroke
         };
-        private readonly PaintBrush _paint = new PaintBrush()
+        private readonly PaintBrush _paint = new()
         {
             Style = PaintStyle.Fill,
             Color = Colors.Black
         };
-        private readonly PaintBrush _viewPortPaint = new PaintBrush()
+        private readonly PaintBrush _viewPortPaint = new()
         {
             Style = PaintStyle.Stroke,
             Color = Colors.White,

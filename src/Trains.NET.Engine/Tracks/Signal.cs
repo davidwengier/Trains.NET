@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine
 {
     public class Signal : Track, IUpdatableEntity
     {
-        private const int TemporaryStopTime = 5 * 60;
+        private const int _temporaryStopTime = 5 * 60;
 
         public SignalState SignalState { get; set; }
 
@@ -38,7 +36,7 @@ namespace Trains.NET.Engine
         public void Update()
         {
             if (this.SignalState == SignalState.TemporaryStop &&
-                ++this.TemporaryStopCounter >= TemporaryStopTime)
+                ++this.TemporaryStopCounter >= _temporaryStopTime)
             {
                 this.SignalState = SignalState.Go;
 

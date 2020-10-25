@@ -6,9 +6,9 @@ namespace Trains.NET.Rendering.Drawing
 {
     public partial class ImageCache : IImageCache
     {
-        private readonly object _cacheLock = new object();
+        private readonly object _cacheLock = new();
 
-        private readonly Dictionary<object, IImage> _disposeBuffer = new();
+        private Dictionary<object, IImage> _disposeBuffer = new();
         private readonly Dictionary<object, IImage> _imageBuffer = new();
         private readonly Dictionary<object, bool> _dirtyState = new();
         private SuspendSetDirtyCallsTracker? _setDirtyCallsTracker;

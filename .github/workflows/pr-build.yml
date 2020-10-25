@@ -53,15 +53,24 @@ jobs:
           dotnet-version: 5.0.100-rc.2.20479.15
 
       - name: Build Debug
-        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Debug
-    
-      - name: Build Release
-        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Release /bl
-  
-      - name: Upload binary log
+        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Debug /bl:debug.binlog
+        continue-on-error: true
+
+      - name: Upload debug binary log
         uses: actions/upload-artifact@v2
         with:
-          name: binlog
-          path: msbuild.binlog
+          name: debug-binlog
+          path: debug.binlog
           retention-days: 5
-    
+
+
+      - name: Build Release
+        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Release /bl:release.binlog
+        continue-on-error: true
+
+      - name: Upload release binary log
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-binlog
+          path: release.binlog
+          retention-days: 5

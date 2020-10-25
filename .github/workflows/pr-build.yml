@@ -48,9 +48,9 @@ jobs:
           xamarin-mac-version: latest
 
       - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100-rc.2.20479.15
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-rc.2.20479.15
 
       - name: Build Debug
         run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Debug

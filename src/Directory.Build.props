@@ -1,6 +1,6 @@
 <Project>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <Compile Include="$(MSBuildThisFileDirectory)/Nullable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)/Records.cs" />
   </ItemGroup>

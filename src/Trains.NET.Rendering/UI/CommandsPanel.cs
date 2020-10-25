@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering.UI
 {
     public class CommandsPanel : ButtonPanelBase
     {
-        private readonly List<TextButton> _buttons;
+        private readonly List<ButtonBase> _buttons;
 
         protected override bool IsCollapsable => true;
         protected override string? Title => "Commands";
@@ -14,10 +14,10 @@ namespace Trains.NET.Rendering.UI
 
         public CommandsPanel(IEnumerable<ICommand> commands)
         {
-            _buttons = commands.Select(c => new TextButton(c.Name, () => false, () => c.Execute())).ToList();
+            _buttons = commands.Select(c => new TextButton(c.Name, () => false, () => c.Execute())).ToList<ButtonBase>();
         }
 
-        protected override IEnumerable<TextButton> GetButtons()
+        protected override IEnumerable<ButtonBase> GetButtons()
             => _buttons;
     }
 }

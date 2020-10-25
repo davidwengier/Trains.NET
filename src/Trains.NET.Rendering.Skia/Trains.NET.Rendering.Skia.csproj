@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <NoWarn>$(NoWarn);CS1591;CA1707;CA1052;CA1062;CA1063;CA1816</NoWarn>
   </PropertyGroup>
 

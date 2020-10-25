@@ -48,10 +48,10 @@ jobs:
           xamarin-mac-version: latest
           
       - name: Build Debug
-        run: msbuild Trains.NET.Mac.sln /p:CI=true /p:Configuration=Debug
+        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Debug
     
       - name: Build Release
-        run: msbuild Trains.NET.Mac.sln /p:CI=true /p:Configuration=Release /bl
+        run: msbuild Trains.NET.Mac.sln /r /p:CI=true /p:Configuration=Release /bl
   
       - name: Upload binary log
         uses: actions/upload-artifact@v2

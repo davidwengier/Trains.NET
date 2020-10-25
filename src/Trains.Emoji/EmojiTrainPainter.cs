@@ -10,7 +10,7 @@ namespace Trains.Emoji
     [Order(-1)]
     public class EmojiTrainPainter : ITrainPainter
     {
-        private static Random s_random = new Random(100);
+        private static Random s_random = new(100);
 
         public static void Reset() => s_random = new Random(100);
 
@@ -45,6 +45,6 @@ namespace Trains.Emoji
         }
 
         private static Color RGBToColor(byte r, byte g, byte b)
-            => new Color("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
+            => new("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
     }
 }

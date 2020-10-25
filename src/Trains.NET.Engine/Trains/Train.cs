@@ -11,7 +11,7 @@ namespace Trains.NET.Engine
         private const int MaximumSpeed = 200;
         private const float MinimumLookaheadSpeed = 5.0f;
         private const float DefaultSpeed = 20.0f;
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
         private float? _lookaheadOverride;
         private bool _collisionAhead;
 
@@ -109,7 +109,7 @@ namespace Trains.NET.Engine
 
         public override string ToString() => $"Train {this.UniqueID} [Column: {this.Column} | Row: {this.Row} | Left: {this.RelativeLeft} | Top: {this.RelativeTop} | Angle: {this.Angle} | Speed: {this.CurrentSpeed}]";
 
-        internal TrainPosition GetPosition() => new TrainPosition(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, 0);
+        internal TrainPosition GetPosition() => new(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, 0);
 
         internal void AdjustSpeed()
         {

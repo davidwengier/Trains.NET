@@ -7,9 +7,9 @@ namespace Trains.NET.Rendering.Trains
     public class TrainPainter : ITrainPainter
     {
         private readonly Dictionary<Train, TrainPalette> _paletteMap = new();
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
-        private static readonly TrainPalette s_baseTrainPalette = new TrainPalette(
+        private static readonly TrainPalette s_baseTrainPalette = new(
             Colors.Black,
             Colors.VeryDarkGray,
             Colors.Gray,
@@ -44,6 +44,6 @@ namespace Trains.NET.Rendering.Trains
         }
 
         private static Color RGBToColor(byte r, byte g, byte b)
-            => new Color("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
+            => new("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
     }
 }

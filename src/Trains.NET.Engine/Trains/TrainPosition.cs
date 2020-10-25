@@ -24,6 +24,6 @@
             this.Row = row;
         }
 
-        internal TrainPosition Clone() => new TrainPosition(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, this.Distance);
+        internal TrainPosition Clone() => new(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, this.Distance);
     }
 }

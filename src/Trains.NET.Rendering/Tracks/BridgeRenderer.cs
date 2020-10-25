@@ -21,19 +21,19 @@ namespace Trains.NET.Rendering
         private readonly TrackRenderer _trackRenderer;
         private readonly IPath _cornerPlankPath;
         private readonly IPath _cornerRailPath;
-        private static readonly PaintBrush s_waterWashPaint = new PaintBrush
+        private static readonly PaintBrush s_waterWashPaint = new()
         {
             Color = new Color("#D1EEEE"),
             Style = PaintStyle.Fill,
             IsAntialias = true
         };
-        private static readonly PaintBrush s_darkBrownWood = new PaintBrush
+        private static readonly PaintBrush s_darkBrownWood = new()
         {
             Color = new Color("#5F380F"),
             Style = PaintStyle.Fill,
             IsAntialias = true
         };
-        private static readonly PaintBrush s_plankWood = new PaintBrush
+        private static readonly PaintBrush s_plankWood = new()
         {
             Color = new Color("#C29A69"),
             Style = PaintStyle.Fill,

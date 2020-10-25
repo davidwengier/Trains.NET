@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Trains.NET.Engine;
 
@@ -7,7 +8,7 @@ namespace Trains.NET.Rendering.Trains
     public class TrainPainter : ITrainPainter
     {
         private readonly Dictionary<Train, TrainPalette> _paletteMap = new();
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
         private static readonly TrainPalette s_baseTrainPalette = new TrainPalette(
             Colors.Black,
@@ -44,6 +45,6 @@ namespace Trains.NET.Rendering.Trains
         }
 
         private static Color RGBToColor(byte r, byte g, byte b)
-            => new Color("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
+            => new("#" + BitConverter.ToString(new[] { r, g, b }).Replace("-", string.Empty));
     }
 }

@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 5.0.100-rc.2.20479.15
 
     - name: Build
-      run: dotnet build
+      run: dotnet build src/Trains/Trains.csproj -p:CI=true -c Release
 
     - name: Run tests
       run: dotnet test

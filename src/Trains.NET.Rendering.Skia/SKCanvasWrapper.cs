@@ -78,17 +78,21 @@ namespace Trains.NET.Rendering.Skia
         public void DrawText(string text, float x, float y, PaintBrush paint)
             => _canvas.DrawText(text, x, y, GetSKPaint(paint));
 
-        public void GradientRect(float x, float y, float width, float height, Color start, Color end)
-        {
-            GradientRect(x, y, width, height, new[] { start, end, start });
-        }
+        public void DrawGradientRect(float x, float y, float width, float height, Color start, Color end)
+            => DrawVerticalGradientRect(x, y, width, height, new[] { start, end, start });
 
-        public void GradientRect(float x, float y, float width, float height, IEnumerable<Color> colours)
+        public void DrawVerticalGradientRect(float x, float y, float width, float height, IEnumerable<Color> colours)
+            => DrawGradientRect(x, y, x, y + height, width, height, colours);
+
+        public void DrawHorizontalGradientRect(float x, float y, float width, float height, IEnumerable<Color> colours)
+            => DrawGradientRect(x, y, x + width, y, width, height, colours);
+
+        private void DrawGradientRect(float x, float y, float endX, float endY, float width, float height, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
-                                                       new SKPoint(x, y + height),
-                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
-                                                       SKShaderTileMode.Clamp);
+                                                     new SKPoint(endX, endY),
+                                                     colours.Select(RenderingExtensions.ToSkia).ToArray(),
+                                                     SKShaderTileMode.Clamp);
             using var paint = new SKPaint
             {
                 Shader = shader
@@ -96,24 +100,11 @@ namespace Trains.NET.Rendering.Skia
             _canvas.DrawRect(x, y, width, height, paint);
         }
 
-        public void GradientRectLeftRight(float x, float y, float width, float height, IEnumerable<Color> colours)
-        {
-            var shader = SKShader.CreateLinearGradient(new SKPoint(x, y),
-                                                       new SKPoint(x + width, y),
-                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
-                                                       SKShaderTileMode.Clamp);
-            using var paint = new SKPaint
-            {
-                Shader = shader
-            };
-            _canvas.DrawRect(x, y, width, height, paint);
-        }
-
-        public void GradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours)
+        public void DrawGradientCircle(float x, float y, float width, float height, float circleX, float circleY, float radius, IEnumerable<Color> colours)
         {
             var shader = SKShader.CreateRadialGradient(new SKPoint(circleX, circleY),
                                                        radius,
-                                                       colours.Select(colour => colour.ToSkia()).ToArray(),
+                                                       colours.Select(RenderingExtensions.ToSkia).ToArray(),
                                                        SKShaderTileMode.Clamp);
 
             using var paint = new SKPaint

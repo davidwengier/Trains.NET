@@ -43,14 +43,14 @@ namespace Trains.NET.Rendering
 
             float startPos = -((trainParameters.HeadWidth + trainParameters.RearWidth) / 2);
 
-            canvas.GradientRect(startPos,
+            canvas.DrawGradientRect(startPos,
                             -(trainParameters.RearHeight / 2),
                             trainParameters.RearWidth,
                             trainParameters.RearHeight,
 
                             palette.RearSectionStartColor, palette.RearSectionEndColor);
 
-            canvas.GradientRect(startPos + trainParameters.RearWidth,
+            canvas.DrawGradientRect(startPos + trainParameters.RearWidth,
                             -(trainParameters.HeadHeight / 2),
                             trainParameters.HeadWidth,
                             trainParameters.HeadHeight,

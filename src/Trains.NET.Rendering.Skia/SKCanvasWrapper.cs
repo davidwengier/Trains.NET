@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkiaSharp;
-using SkiaSharp.Extended.Iconify;
 
 namespace Trains.NET.Rendering.Skia
 {
@@ -15,11 +14,6 @@ namespace Trains.NET.Rendering.Skia
             IsAntialias = false,
             IsDither = false
         };
-
-        static SKCanvasWrapper()
-        {
-            SKTextRunLookup.Instance.AddFontAwesome();
-        }
 
         private readonly SkiaSharp.SKCanvas _canvas;
 
@@ -48,6 +42,17 @@ namespace Trains.NET.Rendering.Skia
             ((IDisposable)_canvas).Dispose();
         }
 
+        public void DrawPicture(Picture picture, float x, float y, float size)
+        {
+            var skPicture = picture.ToSkia();
+
+            _canvas.Save();
+            float scaleFactor = size / Math.Max(skPicture.CullRect.Width, skPicture.CullRect.Height);
+            _canvas.Scale(scaleFactor, scaleFactor, x, y);
+            _canvas.DrawPicture(picture.ToSkia());
+            _canvas.Restore();
+        }
+
         public void DrawImage(IImage image, int x, int y)
             => _canvas.DrawImage(image.ToSkia(), x, y);
 
@@ -71,7 +76,7 @@ namespace Trains.NET.Rendering.Skia
             => _canvas.DrawRoundRect(x, y, width, height, radiusX, radiusY, GetSKPaint(paint));
 
         public void DrawText(string text, float x, float y, PaintBrush paint)
-            => _canvas.DrawIconifiedText(text, x, y, GetSKPaint(paint));
+            => _canvas.DrawText(text, x, y, GetSKPaint(paint));
 
         public void GradientRect(float x, float y, float width, float height, Color start, Color end)
         {
@@ -127,15 +132,6 @@ namespace Trains.NET.Rendering.Skia
             => _canvas.Translate(x, y);
 
         public float MeasureText(string text, PaintBrush paint)
-        {
-            var runs = SKTextRun.Create(text, SKTextRunLookup.Instance);
-            var skPaint = GetSKPaint(paint);
-            float width = 0;
-            foreach (var run in runs)
-            {
-                width += skPaint.MeasureText(run.Text);
-            }
-            return width;
-        }
+            => GetSKPaint(paint).MeasureText(text);
     }
 }

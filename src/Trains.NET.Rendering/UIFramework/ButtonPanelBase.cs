@@ -10,7 +10,7 @@ namespace Trains.NET.Rendering.UI
         private const int ButtonLeft = 5;
         private int _buttonWidth = 60;
 
-        protected abstract IEnumerable<Button> GetButtons();
+        protected abstract IEnumerable<ButtonBase> GetButtons();
 
         protected override bool HandlePointerAction(int x, int y, PointerAction action)
         {
@@ -35,7 +35,7 @@ namespace Trains.NET.Rendering.UI
         {
             canvas.Translate(ButtonLeft, 0);
 
-            foreach (Button button in GetButtons().ToArray())
+            foreach (var button in GetButtons().ToArray())
             {
                 button.Width = _buttonWidth;
 
@@ -52,7 +52,7 @@ namespace Trains.NET.Rendering.UI
         {
             _buttonWidth = 0;
             base.InnerHeight = 0;
-            foreach (Button button in GetButtons().ToArray())
+            foreach (var button in GetButtons().ToArray())
             {
                 _buttonWidth = Math.Max(_buttonWidth, button.GetMinimumWidth(canvas));
                 base.InnerHeight += button.Height + ButtonGap;

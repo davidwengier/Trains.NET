@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering.UI
     [Order(150)]
     public class Toggles : ButtonPanelBase
     {
-        private readonly Button[] _buttons;
+        private readonly TextButton[] _buttons;
 
         protected override string? Title => "Configuration";
         protected override bool IsCollapsable => true;
@@ -16,10 +16,10 @@ namespace Trains.NET.Rendering.UI
 
         public Toggles(IEnumerable<ITogglable> togglables)
         {
-            _buttons = togglables.Select(t => new Button(t.Name, () => t.Enabled, () => t.Enabled = !t.Enabled)).ToArray();
+            _buttons = togglables.Select(t => new TextButton(t.Name, () => t.Enabled, () => t.Enabled = !t.Enabled)).ToArray();
         }
 
-        protected override IEnumerable<Button> GetButtons()
+        protected override IEnumerable<TextButton> GetButtons()
             => _buttons;
     }
 }

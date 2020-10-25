@@ -23,7 +23,6 @@
     <PackageReference Update="SkiaSharp"                    Version="2.80.2" />
     <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.2" />
-    <PackageReference Update="SkiaSharp.Extended.Iconify.FontAwesome" Version="5.0.0" />
     
     <!-- Latest C# compiler -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.8.0-4.final">

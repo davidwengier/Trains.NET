@@ -9,17 +9,11 @@ namespace Trains.NET.Rendering.UI
         {
         }
 
-        private static Button[] GetButtons(IGameManager gameManager)
+        private static ButtonBase[] GetButtons(IGameManager gameManager)
         {
-            return new Button[]{
-                new Button("{{fa-wrench}}", () => gameManager.BuildMode, () => gameManager.BuildMode = true)
-                {
-                    LabelBrush = Brushes.Label with { TextSize = 20 }
-                },
-                new Button("{{fa-play}}", () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
-                {
-                    LabelBrush = Brushes.Label with { TextSize = 20 }
-                }
+            return new ButtonBase[]{
+                new PictureButton(Picture.Tools,20, () => gameManager.BuildMode, () => gameManager.BuildMode = true),
+                new PictureButton(Picture.Play,20, () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
                 };
         }
     }

@@ -4,12 +4,12 @@ namespace Trains.NET.Rendering.UI
 {
     public abstract class PanelBase : IScreen, IInteractionHandler
     {
-        private const string CloseButtonText = " {{fa-times}} ";
+        private const int CloseButtonWidth = 24;
+        private const int CloseButtonSize = 16;
         private const int TitleAreaWidth = 20;
 
         private bool _collapsed = true;
         private int _titleWidth;
-        private int _closeButtonWidth;
 
         protected virtual bool CanClose { get; }
         protected virtual bool IsCollapsable { get; }
@@ -79,7 +79,7 @@ namespace Trains.NET.Rendering.UI
                     _collapsed = !_collapsed;
                     OnChanged();
                 }
-                else if (action == PointerAction.Click && y <= 10 + _closeButtonWidth && this.CanClose)
+                else if (action == PointerAction.Click && y <= 10 + CloseButtonWidth && this.CanClose)
                 {
                     this.Visible = false;
                     Close();
@@ -131,8 +131,7 @@ namespace Trains.NET.Rendering.UI
             }
             if (this.CanClose)
             {
-                _closeButtonWidth = (int)canvas.MeasureText(CloseButtonText, Brushes.Label);
-                _titleWidth += _closeButtonWidth;
+                _titleWidth += CloseButtonWidth;
             }
 
             var panelHeight = GetPanelHeight();
@@ -181,7 +180,7 @@ namespace Trains.NET.Rendering.UI
                     canvas.RotateDegrees(180, panelWidth / 2, 10 + ((_titleWidth + 10) / 2));
                 }
 
-                using (var _ = canvas.Scope())
+                using (canvas.Scope())
                 {
                     canvas.ClipRect(new Rectangle(0, 10, TitleAreaWidth / 2, _titleWidth + 20), true, true);
                     canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, _titleWidth + 10, 5, 5, Brushes.PanelBackground);
@@ -189,15 +188,14 @@ namespace Trains.NET.Rendering.UI
                 }
 
                 var title = this.Title ?? "";
-                if (this.CanClose)
-                {
-                    title += CloseButtonText;
-                }
-
-                using (var _ = canvas.Scope())
+                using (canvas.Scope())
                 {
                     canvas.RotateDegrees(270);
                     canvas.DrawText(title, -15 - _titleWidth, -5, Brushes.Label);
+                }
+                if (this.CanClose)
+                {
+                    canvas.DrawPicture(Picture.Cross, -TitleAreaWidth + 5, 10 + (CloseButtonWidth - CloseButtonSize) / 2, CloseButtonSize);
                 }
 
                 if (this.Position != PanelPosition.Left)

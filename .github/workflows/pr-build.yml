@@ -76,4 +76,5 @@ jobs:
         with:
           name: release-binlog
           path: release.binlog
+          if-no-files-found: ignore
           retention-days: 5

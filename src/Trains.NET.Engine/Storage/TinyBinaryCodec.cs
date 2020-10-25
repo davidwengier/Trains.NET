@@ -34,7 +34,7 @@ namespace Trains.NET.Engine
 
         public IEnumerable<IStaticEntity> Decode(string input)
         {
-            if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<IStaticEntity>();
+                             if (string.IsNullOrWhiteSpace(input)) return Enumerable.Empty<IStaticEntity>();
 
             string[] parts = input.Split("!");
 
@@ -299,7 +299,7 @@ namespace Trains.NET.Engine
 
         private class BitWriter
         {
-            private readonly List<byte> _bytes = new List<byte>();
+            private readonly List<byte> _bytes = new();
             private byte _currentByte;
             private int _bitIndex;
 

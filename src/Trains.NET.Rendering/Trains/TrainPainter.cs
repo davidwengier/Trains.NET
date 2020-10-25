@@ -20,7 +20,7 @@ namespace Trains.NET.Rendering.Trains
 
         public TrainPalette GetPalette(Train train)
         {
-            if (!_paletteMap.ContainsKey(train))
+                          if (!_paletteMap.ContainsKey(train))
             {
                 _paletteMap.Add(train, GetRandomPalette());
             }

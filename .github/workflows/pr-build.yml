@@ -25,7 +25,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: binlog
+        name: win-debug-binlog
         path: debug.binlog
         retention-days: 5
 
@@ -36,7 +36,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: binlog
+        name: win-release-binlog
         path: release.binlog
         retention-days: 5
 
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: debug-binlog
+          name: mac-debug-binlog
           path: debug.binlog
           retention-days: 5
 
@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: release-binlog
+          name: mac-release-binlog
           path: release.binlog
           if-no-files-found: ignore
           retention-days: 5

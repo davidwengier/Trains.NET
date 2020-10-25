@@ -18,8 +18,17 @@ jobs:
       with:
         dotnet-version: 5.0.100-rc.2.20479.15
 
-    - name: Build
-      run: dotnet build src/Trains/Trains.csproj -p:CI=true -c Release
+    - name: Build Debug
+      run: dotnet build src/Trains/Trains.csproj -p:CI=true -c Debug
+
+    - name: Build Release
+      run: dotnet build src/Trains/Trains.csproj -p:CI=true -c Release -bl
+
+    - name: Upload binary log
+      uses: actions/upload-artifact@v2
+      with:
+        name: binlog
+        path: msbuild.binlog
 
     - name: Run tests
       run: dotnet test

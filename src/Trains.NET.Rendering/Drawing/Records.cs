@@ -11,8 +11,6 @@ namespace Trains.NET.Rendering
         public bool? IsAntialias { get; init; }
     }
 
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable format
     public record Color(int A, int R, int G, int B)
     {
         public Color(string hexCode)
@@ -42,6 +40,4 @@ namespace Trains.NET.Rendering
     }
 
     public record Rectangle(float Left, float Top, float Right, float Bottom);
-#pragma warning restore IDE1006 // Naming Styles
-#pragma warning restore format
 }

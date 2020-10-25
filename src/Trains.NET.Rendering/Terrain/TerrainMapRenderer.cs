@@ -49,7 +49,7 @@ namespace Trains.NET.Rendering
             return _imageCache.Get(this)!;
         }
         private static PaintBrush GetPaint(Color colour)
-            => new PaintBrush
+            => new()
             {
                 Style = PaintStyle.Fill,
                 Color = colour

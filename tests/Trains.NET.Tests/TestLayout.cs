@@ -8,7 +8,7 @@ namespace Trains.NET.Tests
 {
     internal class TestLayout : ILayout
     {
-        private readonly Dictionary<(int, int), IStaticEntity> _layout = new Dictionary<(int, int), IStaticEntity>();
+        private readonly Dictionary<(int, int), IStaticEntity> _layout = new();
 
         public event EventHandler CollectionChanged;
 

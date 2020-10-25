@@ -2,7 +2,7 @@
 {
     public class Signal : Track, IUpdatableEntity
     {
-        private const int _temporaryStopTime = 5 * 60;
+        private const int TemporaryStopTime = 5 * 60;
 
         public SignalState SignalState { get; set; }
 
@@ -36,7 +36,7 @@
         public void Update()
         {
             if (this.SignalState == SignalState.TemporaryStop &&
-                ++this.TemporaryStopCounter >= _temporaryStopTime)
+                ++this.TemporaryStopCounter >= TemporaryStopTime)
             {
                 this.SignalState = SignalState.Go;
 

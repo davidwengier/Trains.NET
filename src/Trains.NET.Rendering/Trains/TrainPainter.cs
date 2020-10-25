@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Trains.NET.Engine;
 
@@ -10,7 +9,7 @@ namespace Trains.NET.Rendering.Trains
         private readonly Dictionary<Train, TrainPalette> _paletteMap = new();
         private readonly Random _random = new();
 
-        private static readonly TrainPalette s_baseTrainPalette = new TrainPalette(
+        private static readonly TrainPalette s_baseTrainPalette = new(
             Colors.Black,
             Colors.VeryDarkGray,
             Colors.Gray,
@@ -20,7 +19,7 @@ namespace Trains.NET.Rendering.Trains
 
         public TrainPalette GetPalette(Train train)
         {
-                          if (!_paletteMap.ContainsKey(train))
+            if (!_paletteMap.ContainsKey(train))
             {
                 _paletteMap.Add(train, GetRandomPalette());
             }

@@ -7,7 +7,7 @@ namespace Trains.NET.Tests
 {
     public class ImageCacheTests : IDisposable
     {
-        private readonly ImageCache _imageCache = new ImageCache();
+        private readonly ImageCache _imageCache = new();
 
         [Fact]
         public void Set()

@@ -5,7 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <PlatformTarget>x64</PlatformTarget>
-    <NoWarn>$(NoWarn);MSB3245</NoWarn>
+    <NoWarn>$(NoWarn);MSB3245;CS1591;CA1062</NoWarn>
     <ApplicationIcon>RedTrain.ico</ApplicationIcon>
   </PropertyGroup>
 

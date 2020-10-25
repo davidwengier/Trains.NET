@@ -27,7 +27,7 @@ namespace Trains.NET.Tests
             // Check image is cached
             Assert.Equal(image, _imageCache.Get(key));
 
-            /// set doesn't dispose
+            // set doesn't dispose
             _imageCache.Set(key, new TestImage());
             Assert.False(image.IsDisposed);
 

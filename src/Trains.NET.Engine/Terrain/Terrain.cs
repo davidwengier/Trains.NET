@@ -11,12 +11,12 @@ namespace Trains.NET.Engine
         public const int NumberLandLevels = 5;
         public const int NumberMountainLevels = 3;
 
-        private const int TotalLevels = NumberWaterLevels + NumberSandLevels + NumberLandLevels + NumberMountainLevels;
-        private const int HeightPerLevel = MaxHeight / TotalLevels + 1;
-        private const int LastWaterHeight = NumberWaterLevels * HeightPerLevel - 1;
-        private const int FirstLandHeight = LastWaterHeight + 1;
-        private const int FirstMountainHeight = (TotalLevels - NumberMountainLevels) * HeightPerLevel;
-        private const int TotalLandLevels = TotalLevels - NumberWaterLevels;
+        public const int TotalLevels = NumberWaterLevels + NumberSandLevels + NumberLandLevels + NumberMountainLevels;
+        public const int HeightPerLevel = MaxHeight / TotalLevels + 1;
+        public const int LastWaterHeight = NumberWaterLevels * HeightPerLevel - 1;
+        public const int FirstLandHeight = LastWaterHeight + 1;
+        public const int FirstMountainHeight = (TotalLevels - NumberMountainLevels) * HeightPerLevel;
+        public const int TotalLandLevels = TotalLevels - NumberWaterLevels;
 
         public int Column { get; set; }
         public int Row { get; set; }

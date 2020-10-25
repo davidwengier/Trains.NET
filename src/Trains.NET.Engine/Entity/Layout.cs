@@ -16,13 +16,12 @@ namespace Trains.NET.Engine
         {
             if (_entities.TryGetValue((column, row), out IStaticEntity? track))
             {
-                track.Refresh(false);
+                track.Updated();
             }
             else
             {
                 StoreEntity(column, row, entity);
-
-                entity.Refresh(true);
+                entity.Created();
             }
 
             CollectionChanged?.Invoke(this, EventArgs.Empty);
@@ -30,7 +29,7 @@ namespace Trains.NET.Engine
 
         private void StoreEntity(int column, int row, IStaticEntity entity)
         {
-            entity.SetOwner(this);
+            entity.Stored(this);
             entity.Column = column;
             entity.Row = row;
             _entities = _entities.Add((column, row), entity);
@@ -41,7 +40,7 @@ namespace Trains.NET.Engine
             if (_entities.TryGetValue((column, row), out IStaticEntity? track))
             {
                 _entities = _entities.Remove((column, row));
-                track.SetOwner(null);
+                track.Removed();
             }
 
             CollectionChanged?.Invoke(this, EventArgs.Empty);

@@ -388,7 +388,22 @@ namespace Trains.NET.Engine
                 );
         }
 
-        public void SetOwner(ILayout? collection)
+        public void Stored(ILayout? collection)
+        {
+            _trackLayout = collection;
+        }
+
+        public void Created()
+        {
+            SetBestTrackDirection(false);
+        }
+
+        public void Updated()
+        {
+            SetBestTrackDirection(true);
+        }
+
+        public void Removed()
         {
             // We need to assume that we've already been removed from our parent, but before we go,
             // tell the neighbours we won't be back in the morning
@@ -396,12 +411,6 @@ namespace Trains.NET.Engine
             {
                 RefreshNeighbors(true);
             }
-            _trackLayout = collection;
-        }
-
-        public void Refresh(bool justAdded)
-        {
-            SetBestTrackDirection(!justAdded);
         }
     }
 }

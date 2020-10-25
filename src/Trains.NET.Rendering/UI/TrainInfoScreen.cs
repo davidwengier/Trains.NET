@@ -5,18 +5,27 @@ using Trains.NET.Rendering.Trains;
 namespace Trains.NET.Rendering.UI
 {
     [Order(20)]
-    public class TrainInfoScreen : IScreen, IInteractionHandler
+    public class TrainInfoScreen : PanelBase
     {
-        private const int TrainDisplayAreaWidth = 75;
-        private const int PanelWidth = 250 + TrainDisplayAreaWidth;
+        private const int TrainDisplayAreaWidth = 50;
+        private const int PanelWidth = 280 + TrainDisplayAreaWidth;
 
         private readonly ITrainManager _trainManager;
         private readonly IGameManager _gameManager;
         private readonly IGameBoard _gameBoard;
         private readonly ITrainParameters _trainParameters;
         private readonly ITrainPainter _trainPainter;
+        private readonly MultiButton _controlButton;
+        private readonly MultiButton _actionButton;
+        private readonly MultiButton _trainSelectionButton;
 
-        public event EventHandler? Changed;
+        protected override PanelPosition Position => PanelPosition.Floating;
+        protected override int Left => (PanelWidth + 75) * -1;
+        protected override int Top => 50;
+        protected override int InnerHeight => 30;
+        protected override int InnerWidth => PanelWidth;
+        protected override bool CanClose => true;
+        protected override string? Title => "Info";
 
         public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IGameBoard gameBoard, ITrainParameters trainParameters, ITrainPainter trainPainter)
         {
@@ -25,110 +34,75 @@ namespace Trains.NET.Rendering.UI
             _gameBoard = gameBoard;
             _trainParameters = trainParameters;
             _trainPainter = trainPainter;
-            _trainManager.Changed += (s, e) => Changed?.Invoke(s, e);
-            _gameManager.Changed += (s, e) => Changed?.Invoke(s, e);
-            _trainManager.CurrentTrainPropertyChanged += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
+            _trainManager.Changed += (s, e) =>
+            {
+                this.Visible = _trainManager.CurrentTrain is not null;
+                OnChanged();
+            };
+            _gameManager.Changed += (s, e) => OnChanged();
+            _trainManager.CurrentTrainPropertyChanged += (s, e) => OnChanged();
+
+            _controlButton = new MultiButton(20, new ButtonBase[]
+                {
+                    CreateButton(Picture.Backward, () => false, () => _trainManager.CurrentTrain?.Slower()),
+                    CreateButton(Picture.Play, () => _trainManager.CurrentTrain?.Stopped != true, () => _trainManager.CurrentTrain?.Start()),
+                    CreateButton(Picture.Pause, () => _trainManager.CurrentTrain?.Stopped == true, () => _trainManager.CurrentTrain?.Stop()),
+                    CreateButton(Picture.Forward, () => false, () => _trainManager.CurrentTrain?.Faster()),
+                });
+
+            _actionButton = new MultiButton(20, new ButtonBase[]
+                {
+                    CreateButton(Picture.Eye, () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
+                    CreateButton(Picture.Trash, () => false, () =>
+                    {
+                        _gameBoard.RemoveMovable(_trainManager.CurrentTrain!);
+                        Close();
+                    }),
+                });
+
+            _trainSelectionButton = new MultiButton(20, new ButtonBase[]
+                {
+                    CreateButton(Picture.Left, () => false, () => _trainManager.PreviousTrain()),
+                    CreateButton(Picture.Right, () => false, () => _trainManager.NextTrain())
+                });
+
+            this.Visible = _trainManager.CurrentTrain is not null;
         }
 
-        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
+        private static ButtonBase CreateButton(Picture picture, Func<bool> isActive, Action onClick)
+            => new PictureButton(picture, 16, isActive, onClick)
+            {
+                TransparentBackground = true,
+            };
+
+        protected override void Close()
         {
-            if (action != Rendering.PointerAction.Click)
+            _trainManager.CurrentTrain = null;
+        }
+
+        protected override bool HandlePointerAction(int x, int y, PointerAction action)
+        {
+            y -= 30;
+            if (_controlButton.HandleMouseAction(x, y, action))
             {
-                return false;
-            }
-
-            if (_trainManager.CurrentTrain == null)
-            {
-                return false;
-            }
-
-            Train train = _trainManager.CurrentTrain;
-
-            if (x >= width - (PanelWidth + 50) - 5 && x <= width - 50 && y >= 50 - 5 && y <= 100)
-            {
-                x -= width - (PanelWidth + 50);
-                y -= 50;
-
-                if (x < 5 && y < 5)
-                {
-                    _trainManager.CurrentTrain = null;
-                }
-                else if (x < 0 || y < 0)
-                {
-                    // filter out the thin border that isn't the X button, but isn't the panel either
-                    return false;
-                }
-
-                x -= 10;
-
-                // text is drawn from the baseline, but easier to track from the top
-                y -= 20 - Brushes.Label.TextSize.GetValueOrDefault();
-                if (y >= 0 && y <= 20 && x >= PanelWidth - 40 && x <= PanelWidth - 20)
-                {
-                    _trainManager.ToggleFollow(train);
-                }
-
-                x -= TrainDisplayAreaWidth;
-                y -= 20;
-                if (y >= 0 && y <= 20)
-                {
-                    if (x is >= (PanelWidth - TrainDisplayAreaWidth) - 40)
-                    {
-                        _trainManager.CurrentTrain = null;
-                        _gameBoard.RemoveMovable(train);
-                    }
-                    else if (_gameManager.BuildMode)
-                    {
-                        return true;
-                    }
-                    else if (x is >= 0 and < 18)
-                    {
-                        train.Slower();
-                    }
-                    else if (x is >= 20 and < 38)
-                    {
-                        train.Start();
-                        Changed?.Invoke(this, EventArgs.Empty);
-                    }
-                    else if (x is >= 40 and < 58)
-                    {
-                        train.Stop();
-                        Changed?.Invoke(this, EventArgs.Empty);
-                    }
-                    else if (x is >= 60 and < 78)
-                    {
-                        train.Faster();
-                    }
-                }
                 return true;
             }
-            return false;
+
+            x -= PanelWidth - 40;
+            if (_actionButton.HandleMouseAction(x, y, action))
+            {
+                return true;
+            }
+
+            y += 40;
+            _trainSelectionButton.HandleMouseAction(x, y, action);
+
+            return true;
         }
 
-        public void Render(ICanvas canvas, int width, int height)
+        protected override void Render(ICanvas canvas)
         {
-            if (_trainManager.CurrentTrain == null)
-            {
-                return;
-            }
-
-            Train train = _trainManager.CurrentTrain;
-
-            canvas.Translate(width - (PanelWidth + 50), 50);
-
-            canvas.DrawRoundRect(0, 0, PanelWidth, 50, 10, 10, Brushes.PanelBorder);
-            canvas.DrawRoundRect(0, 0, PanelWidth, 50, 10, 10, Brushes.PanelBackground);
-
-            using (var _ = canvas.Scope())
-            {
-                canvas.Translate(2, 2);
-
-                canvas.DrawCircle(0, 0, 7, Brushes.PanelBorder with { StrokeWidth = 1 });
-                canvas.DrawCircle(0, 0, 7, Brushes.PanelBackground);
-                canvas.DrawText("x", -4, 5, Brushes.Label);
-            }
-
-            canvas.Translate(10, 20);
+            Train train = _trainManager.CurrentTrain ?? throw new NullReferenceException("Current train is null so we shouldn't be rendering");
 
             using (canvas.Scope())
             {
@@ -138,24 +112,27 @@ namespace Trains.NET.Rendering.UI
                 TrainRenderer.RenderTrain(canvas, palette, _trainParameters, false);
             }
 
-            canvas.DrawText("{{fa-eye}}", PanelWidth - 40, 0, train.Follow ? Brushes.Active : Brushes.Label);
-            canvas.DrawText("{{fa-trash}}", PanelWidth - 40, 20, Brushes.Label);
+            using (canvas.Scope())
+            {
+                canvas.Translate(TrainDisplayAreaWidth + 10, 10);
 
-            canvas.Translate(TrainDisplayAreaWidth, 0);
+                canvas.DrawText(train.Name, 0, 0, Brushes.Label);
+            }
 
-            canvas.DrawText(train.Name, 0, 0, Brushes.Label);
-
-            canvas.Translate(0, 20);
+            canvas.Translate(0, 45);
 
             var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
-            canvas.DrawText("{{fa-backward}}", 0, 0, brush);
-            canvas.DrawText("{{fa-forward}}", 60, 0, brush);
             canvas.DrawText($"{train.CurrentSpeed:0} km/h", 90, 0, brush);
 
-            brush = _gameManager.BuildMode || !train.Stopped ? Brushes.Disabled : Brushes.Label;
-            canvas.DrawText("{{fa-play}}", 20, 0, brush);
-            brush = _gameManager.BuildMode || train.Stopped ? Brushes.Disabled : Brushes.Label;
-            canvas.DrawText("{{fa-pause}}", 40, 0, brush);
+            canvas.Translate(0, -15);
+
+            _controlButton.Render(canvas);
+
+            canvas.Translate(PanelWidth - 40, 0);
+            _actionButton.Render(canvas);
+
+            canvas.Translate(0, -40);
+            _trainSelectionButton.Render(canvas);
         }
     }
 }

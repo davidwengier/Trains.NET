@@ -1,16 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <NoWarn>CA1707;CA1052;CA1062</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="svg\*.svg" />
+    <AdditionalFiles Include="svg\*.svg" NamespaceName="Trains.NET.Rendering.Skia.Assets" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="SkiaSharp.Extended.Iconify.FontAwesome" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <PackageReference Include="Svg.Skia.SourceGenerator" Version="0.1.0-preview6" />
+  </ItemGroup>
+
 </Project>

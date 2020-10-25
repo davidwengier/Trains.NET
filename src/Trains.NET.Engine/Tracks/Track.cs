@@ -43,15 +43,23 @@ namespace Trains.NET.Engine
             }
         }
 
-        public void TryToggle()
+        public virtual void TryToggle()
         {
             if (HasAlternateState())
             {
                 this.AlternateState = !this.AlternateState;
             }
 
+            OnChanged();
+        }
+
+        protected void OnChanged()
+        {
             _trackLayout?.RaiseCollectionChanged();
         }
+
+        public virtual bool CanToggle()
+            => HasAlternateState();
 
         public bool HasAlternateState()
             => this.Direction switch
@@ -91,6 +99,8 @@ namespace Trains.NET.Engine
                 }
             }
         }
+
+        public virtual bool IsBlocked() => false;
 
         private void MoveLeftUpDown(TrainPosition position)
         {
@@ -347,7 +357,7 @@ namespace Trains.NET.Engine
             _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
             return new TrackNeighbors(
-                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedRight() && left.IsConnectedRight() ? left : null,
+                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedLeft() && left.IsConnectedRight() ? left : null,
                 _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && IsConnectedUp() && up.IsConnectedDown() ? up : null,
                 _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && IsConnectedRight() && right.IsConnectedLeft() ? right : null,
                 _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && IsConnectedDown() && down.IsConnectedUp() ? down : null
@@ -378,7 +388,22 @@ namespace Trains.NET.Engine
                 );
         }
 
-        public void SetOwner(ILayout? collection)
+        public void Stored(ILayout? collection)
+        {
+            _trackLayout = collection;
+        }
+
+        public void Created()
+        {
+            SetBestTrackDirection(false);
+        }
+
+        public void Updated()
+        {
+            SetBestTrackDirection(true);
+        }
+
+        public void Removed()
         {
             // We need to assume that we've already been removed from our parent, but before we go,
             // tell the neighbours we won't be back in the morning
@@ -386,12 +411,6 @@ namespace Trains.NET.Engine
             {
                 RefreshNeighbors(true);
             }
-            _trackLayout = collection;
-        }
-
-        public void Refresh(bool justAdded)
-        {
-            SetBestTrackDirection(!justAdded);
         }
     }
 }

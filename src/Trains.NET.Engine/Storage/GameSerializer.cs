@@ -13,6 +13,7 @@ namespace Trains.NET.Engine.Storage
             _serializers = serializer;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public IEnumerable<IEntity> Deserialize(string[] lines)
         {
             List<IEntity> entities = new();
@@ -22,11 +23,17 @@ namespace Trains.NET.Engine.Storage
                 string[] bits = line.Split(new[] { '|' }, 3);
                 foreach (var serializer in _serializers)
                 {
-                    if (serializer.TryDeserialize(bits[2], out var entity))
+                    try
                     {
-                        entity.Column = Convert.ToInt32(bits[0]);
-                        entity.Row = Convert.ToInt32(bits[1]);
-                        entities.Add(entity);
+                        if (serializer.TryDeserialize(bits[2], out var entity))
+                        {
+                            entity.Column = Convert.ToInt32(bits[0]);
+                            entity.Row = Convert.ToInt32(bits[1]);
+                            entities.Add(entity);
+                        }
+                    }
+                    catch
+                    {
                     }
                 }
             }

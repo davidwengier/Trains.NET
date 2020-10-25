@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <NoWarn>NU1701</NoWarn>
     <WarningLevel>5</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(CI)' != ''">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

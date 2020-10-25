@@ -25,6 +25,11 @@ namespace Trains.NET.Rendering.Logic
             Style = PaintStyle.Fill,
             Color = new Color(128, 255, 0, 0)
         };
+        private static readonly PaintBrush s_signalLightAmber = new()
+        {
+            Style = PaintStyle.Fill,
+            Color = new Color(128, 255, 191, 0)
+        };
         private static readonly PaintBrush s_signalLightGreen = new()
         {
             Style = PaintStyle.Fill,
@@ -60,26 +65,23 @@ namespace Trains.NET.Rendering.Logic
                 _trackRenderer.Render(canvas, item);
             }
 
-            if (!item.IsValidSignalDirection())
-            {
-                return;
-            }
-
+            var signalState = item.SignalState;
+            var direction = item.Direction;
             using (canvas.Scope())
             {
-                if (item.Direction == TrackDirection.Vertical)
+                if (direction == TrackDirection.Vertical)
                 {
                     canvas.RotateDegrees(90, CanvasSize / 2, CanvasSize / 2);
                 }
 
                 canvas.Translate(CanvasSize / 2, 0);
 
-                DrawSignal(canvas, item.SignalState);
+                DrawSignal(canvas, signalState);
 
                 canvas.Translate(0, CanvasSize);
                 canvas.RotateDegrees(180);
 
-                DrawSignal(canvas, item.SignalState);
+                DrawSignal(canvas, signalState);
             }
         }
 
@@ -94,7 +96,15 @@ namespace Trains.NET.Rendering.Logic
                 using (canvas.Scope())
                 {
                     canvas.Translate(SignalLightHousingWidth, SignalHeight / 2);
-                    canvas.DrawPath(_lightPath, state == SignalState.Go ? s_signalLightGreen : s_signalLightRed);
+
+                    var signalColor = state switch
+                    {
+                        SignalState.Stop => s_signalLightRed,
+                        SignalState.TemporaryStop => s_signalLightAmber,
+                        _ => s_signalLightGreen
+                    };
+
+                    canvas.DrawPath(_lightPath, signalColor);
                 }
 
                 // Housing

@@ -53,6 +53,6 @@ namespace Trains.NET.Rendering
 
         public bool IsValid(int column, int row)
             => _gameBoard.GetMovableAt(column, row) is Train
-                || (_trackLayout.TryGet(column, row, out Track? track) && track.HasAlternateState());
+                || (_trackLayout.TryGet(column, row, out Track? track) && track.CanToggle());
     }
 }

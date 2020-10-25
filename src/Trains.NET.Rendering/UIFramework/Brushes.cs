@@ -19,7 +19,7 @@
         public static readonly PaintBrush ButtonActiveBackground = PanelBackground with { Color = Colors.LightBlue };
         public static readonly PaintBrush ButtonHoverBackground = PanelBackground with { Color = Colors.LightBlue with { A = 85 } };
 
-        public static readonly PaintBrush Label = new PaintBrush
+        public static readonly PaintBrush Label = new()
         {
             TextSize = 15,
             IsAntialias = true,

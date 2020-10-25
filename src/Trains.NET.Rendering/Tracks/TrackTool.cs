@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -6,18 +7,20 @@ namespace Trains.NET.Rendering
     public class TrackTool : ITool
     {
         private readonly ILayout<Track> _entityCollection;
+        private readonly IEnumerable<IStaticEntityFactory<Track>> _entityFactories;
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Track";
 
-        public TrackTool(ILayout<Track> trackLayout)
+        public TrackTool(ILayout<Track> trackLayout, IEnumerable<IStaticEntityFactory<Track>> entityFactories)
         {
             _entityCollection = trackLayout;
+            _entityFactories = entityFactories;
         }
 
         public void Execute(int column, int row)
         {
-            _entityCollection.Add(column, row);
+            _entityCollection.Add(column, row, _entityFactories);
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row);

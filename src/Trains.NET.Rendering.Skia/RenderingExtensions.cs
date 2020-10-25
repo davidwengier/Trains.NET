@@ -5,6 +5,22 @@ namespace Trains.NET.Rendering.Skia
 {
     public static class RenderingExtensions
     {
+        public static SKPicture ToSkia(this Picture picture)
+            => picture switch
+            {
+                Picture.Left => Assets.Svg_caret_left.Picture,
+                Picture.Right => Assets.Svg_caret_right.Picture,
+                Picture.Backward => Assets.Svg_backward.Picture,
+                Picture.Forward => Assets.Svg_forward.Picture,
+                Picture.Eye => Assets.Svg_eye.Picture,
+                Picture.Trash => Assets.Svg_trash_alt.Picture,
+                Picture.Play => Assets.Svg_play.Picture,
+                Picture.Pause => Assets.Svg_pause.Picture,
+                Picture.Cross => Assets.Svg_times.Picture,
+                Picture.Tools => Assets.Svg_tools.Picture,
+                _ => throw new InvalidOperationException($"No idea what picture you want me to draw: {picture}")
+            };
+
         public static SKImage ToSkia(this IImage image) => ((SKImageWrapper)image).Image;
 
         public static SKColor ToSkia(this Color color) => color switch
@@ -20,7 +36,7 @@ namespace Trains.NET.Rendering.Skia
             _ => throw new NotImplementedException(),
         };
 
-        public static SKRect ToSkia(this Rectangle rect) => new SKRect(rect.Left, rect.Top, rect.Right, rect.Bottom);
+        public static SKRect ToSkia(this Rectangle rect) => new(rect.Left, rect.Top, rect.Right, rect.Bottom);
 
         public static SKPaint ToSkia(this PaintBrush brush)
         {

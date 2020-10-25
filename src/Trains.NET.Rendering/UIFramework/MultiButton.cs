@@ -1,11 +1,13 @@
-﻿namespace Trains.NET.Rendering.UI
+﻿using System;
+
+namespace Trains.NET.Rendering.UI
 {
-    public class MultiButton : Button
+    public class MultiButton : ButtonBase
     {
         private readonly int _buttonSize;
-        private readonly Button[] _buttons;
+        private readonly ButtonBase[] _buttons;
 
-        public MultiButton(int buttonSize, params Button[] buttons)
+        public MultiButton(int buttonSize, params ButtonBase[] buttons)
         {
             _buttonSize = buttonSize;
             _buttons = buttons;
@@ -46,6 +48,11 @@
                     canvas.Translate(_buttonSize, 0);
                 }
             }
+        }
+
+        protected override void RenderButtonLabel(ICanvas canvas)
+        {
+            throw new InvalidOperationException("This should never be hit");
         }
     }
 }

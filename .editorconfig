@@ -188,7 +188,7 @@ csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 
 # Code block
-csharp_prefer_braces = when_multiline:error
+csharp_prefer_braces = when_multiline:warning
 
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
@@ -203,7 +203,7 @@ dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.CA1062.severity = none
 
 # IDE0005: Using directive is unnecessary.
-dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.IDE0005.severity = warning
 
 # CA1710: Identifiers should have correct suffix
 dotnet_diagnostic.CA1710.severity = none
@@ -235,6 +235,6 @@ dotnet_diagnostic.CA1030.severity = none
 # CA1724: Type names should not match namespaces
 dotnet_diagnostic.CA1724.severity = none
 
-dotnet_diagnostic.IDE0055.severity = error
+dotnet_diagnostic.IDE0055.severity = warning
 
 dotnet_diagnostic.CA1062.severity = none

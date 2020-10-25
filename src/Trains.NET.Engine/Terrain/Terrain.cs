@@ -6,10 +6,10 @@ namespace Trains.NET.Engine
     {
         public const int MaxHeight = 100;
 
-        public const int NumberWaterLevels = 2;
+        public const int NumberWaterLevels = 4;
         public const int NumberSandLevels = 1; // Not really important, but good to remember
-        public const int NumberLandLevels = 3;
-        public const int NumberMountainLevels = 2;
+        public const int NumberLandLevels = 5;
+        public const int NumberMountainLevels = 3;
 
         private const int TotalLevels = NumberWaterLevels + NumberSandLevels + NumberLandLevels + NumberMountainLevels;
         private const int HeightPerLevel = MaxHeight / TotalLevels + 1;

@@ -1,20 +1,11 @@
 <Project>
 
-  <!-- Only applies to Comet -->
-  <PropertyGroup Condition="'$(IsTrains)' == ''">
-    <!-- Turn off various things for comet to be happy in CI and not bother us in Visual Studio -->
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>CS1998;NU1605</NoWarn>
-    <EnableSourceLink>false</EnableSourceLink>
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-
   <!-- Only applies to Trains.NET things -->
-  <ItemGroup Condition="'$(IsTrains)' == 'true'">
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
   </ItemGroup>
 
-  <Import Project="build\Packages.targets" Condition="'$(IsTrains)' == 'true'" />
+  <Import Project="build\Packages.targets" />
 
 </Project>

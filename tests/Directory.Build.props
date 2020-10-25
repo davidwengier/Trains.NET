@@ -1,9 +1,5 @@
 <Project>
 
-  <PropertyGroup>
-    <IsTrains>true</IsTrains>
-  </PropertyGroup>
-
   <Import Project="..\Directory.Build.props" />
 
   <PropertyGroup>

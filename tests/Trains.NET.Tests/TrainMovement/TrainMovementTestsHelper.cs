@@ -6,7 +6,7 @@ namespace Trains.NET.Tests
     {
         internal const float CornerRadius = 0.5f;
 
-        
+
         // 0.5 * cos(45) =
         internal const float Cos45ByRadius = 0.35355339059327376220042218105242f;
 
@@ -34,7 +34,6 @@ namespace Trains.NET.Tests
         internal const double Angle270InRads = 3.0 * Math.PI / 2.0;
         internal const double Angle360InRads = 2.0 * Math.PI;
 
-        
         internal const double StraightTrackDistance = 1.0;
         internal const double HalfStraightTrackDistance = StraightTrackDistance / 2.0;
 

@@ -1,15 +1,15 @@
-﻿using Trains.NET.Engine;
+﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     [Order(450)]
-    public class NatureLayoutRenderer : CachableLayoutRenderer<Tree>
+    public class NatureLayoutRenderer : StaticEntityCollectionRenderer<Tree>
     {
-        public NatureLayoutRenderer(ILayout<Tree> layout, IRenderer<Tree> renderer, IImageFactory imageFactory, ITerrainMap terrainMap, IImageCache imageCache)
-                : base(layout, renderer, imageFactory, terrainMap, imageCache)
+        public NatureLayoutRenderer(ILayout<Tree> layout, IEnumerable<IStaticEntityRenderer<Tree>> renderers, IImageFactory imageFactory, IImageCache imageCache)
+                : base(layout, renderers, imageFactory, imageCache)
         {
             this.Name = "Nature";
-            this.Enabled = true;
             this.IsScaledByHeight = true;
         }
     }

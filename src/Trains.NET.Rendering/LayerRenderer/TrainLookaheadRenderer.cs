@@ -3,7 +3,7 @@ using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering.LayerRenderer
 {
-    [Order(425)]
+    [Order(470)]
     public class TrainLookaheadRenderer : ILayerRenderer
     {
         private readonly IGameBoard _gameBoard;
@@ -25,7 +25,7 @@ namespace Trains.NET.Rendering.LayerRenderer
             {
                 var _paint = new PaintBrush
                 {
-                    Color = _painter.GetPalette(train).FrontSectionEndColor,
+                    Color = _painter.GetPalette(train).FrontSectionEndColor with { A = 200 },
                     Style = PaintStyle.Fill
                 };
 

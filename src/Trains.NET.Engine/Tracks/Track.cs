@@ -15,13 +15,8 @@ namespace Trains.NET.Engine
         /// <summary>
         /// Gets a string that represents the current tracks state
         /// </summary>
-        public string Identifier
-        {
-            get
-            {
-                return this.Direction.ToString() + this.AlternateState.ToString();
-            }
-        }
+        public virtual string Identifier
+            => $"{this.Direction}.{this.AlternateState}";
 
         public int Column { get; set; }
         public int Row { get; set; }
@@ -48,15 +43,23 @@ namespace Trains.NET.Engine
             }
         }
 
-        public void TryToggle()
+        public virtual void TryToggle()
         {
             if (HasAlternateState())
             {
                 this.AlternateState = !this.AlternateState;
             }
 
+            OnChanged();
+        }
+
+        protected void OnChanged()
+        {
             _trackLayout?.RaiseCollectionChanged();
         }
+
+        public virtual bool CanToggle()
+            => HasAlternateState();
 
         public bool HasAlternateState()
             => this.Direction switch
@@ -96,6 +99,8 @@ namespace Trains.NET.Engine
                 }
             }
         }
+
+        public virtual bool IsBlocked() => false;
 
         private void MoveLeftUpDown(TrainPosition position)
         {

@@ -6,28 +6,18 @@ namespace Trains.NET.Rendering.UI
 {
     public class CommandsPanel : ButtonPanelBase
     {
-        private readonly List<Button> _buttons;
-        private readonly IGameManager _gameManager;
+        private readonly List<TextButton> _buttons;
 
+        protected override bool IsCollapsable => true;
+        protected override string? Title => "Commands";
         protected override int Top => 250;
 
-        public CommandsPanel(IEnumerable<ICommand> commands, IGameManager gameManager)
+        public CommandsPanel(IEnumerable<ICommand> commands)
         {
-            _buttons = commands.Select(c => new Button(c.Name, c, () => false, () => c.Execute())).ToList();
-            _gameManager = gameManager;
-
-            _gameManager.Changed += (s, e) => OnChanged();
+            _buttons = commands.Select(c => new TextButton(c.Name, () => false, () => c.Execute())).ToList();
         }
 
-        protected override IEnumerable<Button> GetButtons()
+        protected override IEnumerable<TextButton> GetButtons()
             => _buttons;
-
-        public override void Render(ICanvas canvas, int width, int height)
-        {
-            if (_gameManager.BuildMode)
-            {
-                base.Render(canvas, width, height);
-            }
-        }
     }
 }

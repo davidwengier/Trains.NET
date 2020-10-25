@@ -93,7 +93,7 @@ namespace Trains.NET.Rendering
             => (this.ViewPortWidth / scale,
                 this.ViewPortHeight / scale);
 
-        public void AdjustGameScale(float delta)
+        public bool AdjustGameScale(float delta)
         {
             float newGameScale = this.GameScale * delta;
 
@@ -102,7 +102,16 @@ namespace Trains.NET.Rendering
                 this.MaxGridWidth / this.GameScale * newGameScale < this.ViewPortWidth ||
                 this.MaxGridHeight / this.GameScale * newGameScale < this.ViewPortHeight)
             {
-                return;
+                return false;
+            }
+            else if (newGameScale > 5)
+            {
+                newGameScale = 5.0f;
+            }
+
+            if (this.GameScale == newGameScale)
+            {
+                return false;
             }
 
             // Viewport X & Y will be negative, as they are canvas transations, so swap em!
@@ -127,6 +136,8 @@ namespace Trains.NET.Rendering
             AdjustViewPort(0, 0);
 
             ViewPortChanged?.Invoke(this, EventArgs.Empty);
+
+            return true;
         }
     }
 }

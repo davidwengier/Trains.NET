@@ -1,4 +1,5 @@
-﻿using Trains.NET.Engine;
+﻿using System.Collections.Generic;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
@@ -7,20 +8,22 @@ namespace Trains.NET.Rendering
     {
         private readonly ILayout<Tree> _entityCollection;
         private readonly ITerrainMap _terrainMap;
+        private readonly IEnumerable<IStaticEntityFactory<Tree>> _entityFactories;
 
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Tree";
 
 
-        public TreeTool(ILayout<Tree> trackLayout, ITerrainMap terrainMap)
+        public TreeTool(ILayout<Tree> trackLayout, ITerrainMap terrainMap, IEnumerable<IStaticEntityFactory<Tree>> entityFactories)
         {
             _entityCollection = trackLayout;
             _terrainMap = terrainMap;
+            _entityFactories = entityFactories;
         }
 
         public void Execute(int column, int row)
         {
-            _entityCollection.Add(column, row, new Tree());
+            _entityCollection.Add(column, row, _entityFactories);
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row) &&

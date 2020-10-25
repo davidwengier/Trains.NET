@@ -5,7 +5,4 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/RedTrain.png">
-    <Frame x:Name="MainFrame">
-
-    </Frame>
 </Window>

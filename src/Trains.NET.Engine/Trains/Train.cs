@@ -43,10 +43,10 @@ namespace Trains.NET.Engine
         public float RelativeLeft { get; set; } = 0.5f;
         public float RelativeTop { get; set; } = 0.5f;
 
-        public string Name { get; private set; }
-        public float CurrentSpeed { get; private set; }
-        public float DesiredSpeed { get; private set; }
-        public bool Stopped { get; private set; }
+        public string Name { get; set; }
+        public float CurrentSpeed { get; set; }
+        public float DesiredSpeed { get; set; }
+        public bool Stopped { get; set; }
 
         public bool Follow { get; set; }
 

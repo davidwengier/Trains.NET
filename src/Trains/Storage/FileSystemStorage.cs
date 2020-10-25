@@ -19,29 +19,33 @@ namespace Trains.Storage
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Trains.NET", fileName);
         }
 
-        private readonly ITrackSerializer _trackSerializer;
+        private readonly IEntityCollectionSerializer _entityCollectionSerializer;
         private readonly ITerrainSerializer _terrainSerializer;
 
-        public FileSystemStorage(ITrackSerializer serializer, ITerrainSerializer terrainSerializer)
+        public FileSystemStorage(IEntityCollectionSerializer serializer, ITerrainSerializer terrainSerializer)
         {
-            _trackSerializer = serializer;
+            _entityCollectionSerializer = serializer;
             _terrainSerializer = terrainSerializer;
         }
 
-        public IEnumerable<IStaticEntity> ReadStaticEntities()
+        public IEnumerable<IEntity> ReadEntities()
         {
             if (!File.Exists(_tracksFilePath))
             {
-                return Enumerable.Empty<IStaticEntity>();
+                return Enumerable.Empty<IEntity>();
             }
 
-            return _trackSerializer.Deserialize(File.ReadAllLines(_tracksFilePath));
+            return _entityCollectionSerializer.Deserialize(File.ReadAllLines(_tracksFilePath));
         }
 
-        public void WriteStaticEntities(IEnumerable<IStaticEntity> tracks)
+        public void WriteEntities(IEnumerable<IEntity> entities)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_tracksFilePath));
-            File.WriteAllText(_tracksFilePath, _trackSerializer.Serialize(tracks));
+            var tracksFileDirectory = Path.GetDirectoryName(_tracksFilePath);
+            if (tracksFileDirectory != null)
+            {
+                Directory.CreateDirectory(tracksFileDirectory);
+                File.WriteAllText(_tracksFilePath, _entityCollectionSerializer.Serialize(entities));
+            }
         }
 
         public IEnumerable<Terrain> ReadTerrain()
@@ -56,8 +60,12 @@ namespace Trains.Storage
 
         public void WriteTerrain(IEnumerable<Terrain> terrainList)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_terrainFilePath));
-            File.WriteAllText(_terrainFilePath, _terrainSerializer.Serialize(terrainList));
+            var terrainFileDirectory = Path.GetDirectoryName(_terrainFilePath);
+            if (terrainFileDirectory != null)
+            {
+                Directory.CreateDirectory(terrainFileDirectory);
+                File.WriteAllText(_terrainFilePath, _terrainSerializer.Serialize(terrainList));
+            }
         }
     }
 }

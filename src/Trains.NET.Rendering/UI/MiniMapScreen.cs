@@ -4,7 +4,7 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering.UI
 {
     [Order(10)]
-    public class MiniMapScreen : IScreen, ITogglable
+    public class MiniMapScreen : IScreen, IInteractionHandler, ITogglable
     {
         private readonly PaintBrush _border = new PaintBrush
         {
@@ -54,14 +54,14 @@ namespace Trains.NET.Rendering.UI
             _terrainMapRenderer.Changed += (s, e) => Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool HandleInteraction(int x, int y, int width, int height, MouseAction action)
+        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
             if (!this.Enabled)
             {
                 return false;
             }
 
-            if (action == MouseAction.Move)
+            if (action == Rendering.PointerAction.Move)
             {
                 return false;
             }

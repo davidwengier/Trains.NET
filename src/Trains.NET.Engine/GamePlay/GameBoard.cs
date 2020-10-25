@@ -17,6 +17,7 @@ namespace Trains.NET.Engine
         private readonly ITimer? _gameLoopTimer;
         private readonly ITerrainMap _terrainMap;
         private readonly IGameStorage? _storage;
+        private readonly Train _reservedTrain = new Train();
         private int _terrainSeed;
 
         private int _columns;
@@ -56,17 +57,21 @@ namespace Trains.NET.Engine
 
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;
+            IEnumerable<IMovable>? trains = null;
             try
             {
-                tracks = _storage?.ReadStaticEntities();
+                var entities = _storage?.ReadEntities();
+                tracks = entities!.OfType<IStaticEntity>();
+                trains = entities.OfType<IMovable>();
                 terrain = _storage?.ReadTerrain();
             }
             catch { }
 
-            if (tracks is not null && terrain is not null && terrain.Any())
+            if (tracks is not null && terrain is not null && terrain.Any() && trains is not null)
             {
                 _layout.Set(tracks);
                 _terrainMap.Set(terrain);
+                _movables = ImmutableList.CreateRange(trains);
             }
             else
             {
@@ -79,20 +84,36 @@ namespace Trains.NET.Engine
         {
             if (!this.Enabled) return;
 
-            _gameUpdateTime.Start();
-            try
+            using (_gameUpdateTime.Measure())
             {
-                DoGameLoopStep();
+                try
+                {
+                    DoGameLoopStep();
+                }
+                catch (Exception)
+                {
+                }
             }
-            catch (Exception)
-            {
-            }
-            _gameUpdateTime.Stop();
         }
 
         private void DoGameLoopStep()
         {
+            foreach (IUpdatableEntity entity in _layout.OfType<IUpdatableEntity>())
+            {
+                entity.Update();
+            }
+
             Dictionary<Track, (Train, float)> takenTracks = new();
+
+            // Reserve any pre-taken tracks
+            foreach (Track track in _layout.OfType<Track>())
+            {
+                if (track.IsBlocked())
+                {
+                    takenTracks.Add(track, (_reservedTrain, -1));
+                }
+            }
+
             foreach (Train train in _movables)
             {
                 // Claim the track we are currently on, distance of 0
@@ -241,7 +262,7 @@ namespace Trains.NET.Engine
             return result;
         }
 
-        private void GameLoopTimerElapsed(object sender, EventArgs e) => GameLoopStep();
+        private void GameLoopTimerElapsed(object? sender, EventArgs e) => GameLoopStep();
 
         private TrainPosition? GetNextPosition(TrainPosition currentPosition, float distance)
         {
@@ -302,12 +323,9 @@ namespace Trains.NET.Engine
             _movables = _movables.Remove(movable);
         }
 
-        public IEnumerable<IMovable> GetMovables()
+        public ImmutableList<IMovable> GetMovables()
         {
-            foreach (IMovable movable in _movables)
-            {
-                yield return movable;
-            }
+            return _movables;
         }
 
         public IEnumerable<T> GetMovables<T>() where T : IMovable
@@ -331,6 +349,11 @@ namespace Trains.NET.Engine
         public void Dispose()
         {
             _gameLoopTimer?.Dispose();
+            if (_storage is not null)
+            {
+                _storage.WriteEntities(_layout.OfType<IEntity>().Concat(_movables));
+                _storage.WriteTerrain(_terrainMap);
+            }
         }
 
         public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t is not null && t.Column == column && t.Row == row);

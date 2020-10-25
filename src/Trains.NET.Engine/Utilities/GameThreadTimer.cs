@@ -50,7 +50,7 @@ namespace Trains.NET.Engine
                     long time = _stopwatch.ElapsedMilliseconds;
                     this.TimeSinceLastTick = time - _lastTick;
                     _lastTick = time;
-                    Elapsed?.Invoke(null, null);
+                    Elapsed?.Invoke(this, EventArgs.Empty);
 
                     _nextInvoke = time + (int)this.Interval;
                 }

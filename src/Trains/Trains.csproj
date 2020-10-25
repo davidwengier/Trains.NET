@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <PlatformTarget>x64</PlatformTarget>
     <NoWarn>$(NoWarn);MSB3245</NoWarn>
@@ -14,20 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\comet\src\Comet.Skia.WPF\Comet.Skia.WPF.csproj" />
-    <ProjectReference Include="..\..\comet\src\Comet.Skia\Comet.Skia.csproj" />
-    <ProjectReference Include="..\..\comet\src\Comet.WPF\Comet.WPF.csproj" />
-    <ProjectReference Include="..\..\comet\src\Comet\Comet.csproj" />
+    <PackageReference Include="SkiaSharp.Views.WPF" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\Trains.NET.Comet\Trains.NET.Comet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
+    <ProjectReference Include="..\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj" />
+    <ProjectReference Include="..\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
+    <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+    <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

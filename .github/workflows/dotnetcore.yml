@@ -6,7 +6,6 @@ on:
     - master
     paths-ignore:
     - '*.md'
-    - '.github/**'
 
 jobs:
   build:
@@ -22,13 +21,13 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.401
+        dotnet-version: 5.0.100-rc.2.20479.15
 
     - name: Run tests
       run: dotnet test
 
     - name: publish
-      run: dotnet publish -o ./publish -f netcoreapp3.1 -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true src/Trains/Trains.csproj
+      run: dotnet publish -o ./publish -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesInSingleFile=true -p:IncludeAllContentForSelfExtract=true src/Trains/Trains.csproj
 
     - name: GitVersion
       id: nbgv

@@ -2,32 +2,23 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using Comet;
-using Comet.WPF;
-using Trains.Handlers;
-using Trains.NET.Comet;
+using Trains.NET.Rendering;
 using Trains.Storage;
 
 namespace Trains
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly string _windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
+        private readonly IGame _game;
+        private readonly GameElement _gameElement;
+        private readonly IInteractionManager _interactionManager;
 
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             InitializeComponent();
-
-            global::Comet.WPF.UI.Init();
-            global::Comet.Skia.UI.Init();
-
-            Registrar.Handlers.Register<RadioButton, RadioButtonHandler>();
-            Registrar.Handlers.Register<ToggleButton, ToggleButtonHandler>();
 
             if (File.Exists(_windowSizeFileName))
             {
@@ -43,36 +34,83 @@ namespace Trains
                 }
             }
 
-            MainFrame.NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden;
-            MainPage? mainPage = DI.ServiceLocator.GetService<MainPage>();
+            _game = DI.ServiceLocator.GetService<IGame>();
+            _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
-            var page = new CometPage(MainFrame, mainPage);
-            MainFrame.Content = page;
+            _gameElement = new GameElement(_game);
 
-            this.Title = page.View.GetTitle();
+            _gameElement.MouseDown += SKElement_MouseDown;
+            _gameElement.MouseMove += SKElement_MouseMove;
+            _gameElement.MouseUp += SKElement_MouseUp;
+            _gameElement.MouseWheel += SKElement_MouseWheel;
 
-            SizeChanged += MainWindow_SizeChanged;
+            this.Content = _gameElement;
+
+            this.Title = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
+
+            _gameElement.SizeChanged += SKElement_SizeChanged;
+        }
+
+        private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            var mousePos = e.GetPosition(_gameElement);
+            if (e.Delta > 0)
+            {
+                _interactionManager.PointerZoomIn((int)mousePos.X, (int)mousePos.Y);
+            }
+            else
+            {
+                _interactionManager.PointerZoomOut((int)mousePos.X, (int)mousePos.Y);
+            }
+        }
+
+        private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var mousePos = e.GetPosition(_gameElement);
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                _interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
+            }
+            else
+            {
+                _interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
+            }
+        }
+
+        private void SKElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
+            {
+                return;
+            }
+
+            var mousePos = e.GetPosition(_gameElement);
+            _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
+        }
+
+        private void SKElement_MouseUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != System.Windows.Input.MouseButton.Left)
+            {
+                return;
+            }
+
+            var mousePos = e.GetPosition(_gameElement);
+            _interactionManager.PointerRelease((int)mousePos.X, (int)mousePos.Y);
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (MainFrame.Content is CometPage cometPage && cometPage.View is MainPage mainPage)
-            {
-                mainPage.Save();
-                mainPage.Dispose();
-            }
+            _game.Dispose();
             File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
         }
 
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void SKElement_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
-            if (MainFrame.Content is CometPage cometPage && cometPage.View is MainPage mainPage)
-            {
-                mainPage.Redraw();
-            }
+            _game.SetSize((int)e.NewSize.Width, (int)e.NewSize.Height);
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void CurrentDomain_UnhandledException(object? sender, UnhandledExceptionEventArgs e)
         {
             MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
         }

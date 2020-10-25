@@ -13,6 +13,7 @@ namespace Trains.NET.Rendering
         void DrawText(string text, float x, float y, PaintBrush paint);
         void DrawLine(float x1, float y1, float x2, float y2, PaintBrush grid);
         void ClipRect(Rectangle sKRect, bool antialias, bool exclude);
+        void DrawPicture(Picture picture, float x, float y, float size);
         void RotateDegrees(float degrees, float x, float y);
         void DrawPath(IPath trackPath, PaintBrush straightTrackPaint);
         void RotateDegrees(float degrees);

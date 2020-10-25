@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering
 {
     [Order(700)]
-    public class TunnelRenderer : ILayerRenderer
+    public partial class TunnelRenderer : ILayerRenderer
     {
         private const int BuildModeAlpha = 170;
 
@@ -13,29 +14,8 @@ namespace Trains.NET.Rendering
         private readonly ILayout<Track> _trackLayout;
         private readonly IGameBoard _gameBoard;
 
-        private enum Tunnel
-        {
-            NoTunnels = 0,
-            Top = 1,
-            Right = 2,
-            Bottom = 4,
-            Left = 8,
-
-            TopRightCorner = Top | Right,
-            BottomRightCorner = Bottom | Right,
-            TopLeftCorner = Top | Left,
-            BottomLeftCorner = Bottom | Left,
-
-            StraightHorizontal = Left | Right,
-            StraightVertical = Top | Bottom,
-
-            ThreewayNoLeft = Right | Top | Bottom,
-            ThreewayNoUp = Left | Bottom | Right,
-            ThreewayNoRight = Left | Top | Bottom,
-            ThreewayNoDown = Left | Top | Right,
-
-            FourWayIntersection = Left | Top | Bottom | Right
-        }
+        public bool Enabled { get; set; } = true;
+        public string Name => "Tunnels";
 
         public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameBoard gameBoard)
         {
@@ -44,145 +24,154 @@ namespace Trains.NET.Rendering
             _gameBoard = gameBoard;
         }
 
-        public bool Enabled { get; set; } = true;
-        public string Name => "Tunnels";
-
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            Dictionary<(int column, int row), Tunnel> neighbourTunnels = new();
+            var tunnelRoofColour = BuildModeAwareColour(Colors.LightGray);
+            var firstMountain = new Terrain()
+            {
+                Height = Terrain.FirstMountainHeight
+            };
+            var tunnelBaseColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(firstMountain));
+            var entranceColourArray = new[] { tunnelBaseColour, tunnelRoofColour, tunnelBaseColour };
 
-            var lightColour = BuildModeAwareColour(Colors.LightGray);
-            var darkColour = BuildModeAwareColour(Colors.Gray);
+            Dictionary<(int column, int row), Tunnel> entrances = new();
 
             foreach (Track track in _trackLayout)
             {
-                Terrain terrain = _terrainMap.Get(track.Column, track.Row);
+                var terrain = _terrainMap.Get(track.Column, track.Row);
                 if (!terrain.IsMountain) continue;
 
                 (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+
+                // Paint over the tracks with the colour of the terrain. Would be awesome to remove this in future somehow
+                var terrainColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(terrain));
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize,
                                 new PaintBrush
                                 {
                                     Style = PaintStyle.Fill,
-                                    Color = darkColour,
+                                    Color = terrainColour,
                                 });
 
                 TrackNeighbors trackNeighbours = track.GetConnectedNeighbors();
 
-                var currentCellTunnels = Tunnel.NoTunnels;
-                var neighbourTrackConfigs = new List<(Track? neighbourTrack, Tunnel currentCellTunnel, Tunnel neighbourTunnel)>
-                {
-                    (trackNeighbours.Up, Tunnel.Top, Tunnel.Bottom),
-                    (trackNeighbours.Right, Tunnel.Right,Tunnel. Left),
-                    (trackNeighbours.Down, Tunnel.Bottom, Tunnel.Top),
-                    (trackNeighbours.Left, Tunnel.Left, Tunnel.Right)
-                };
+                BuildEntrances(trackNeighbours.Up, Tunnel.Bottom, entrances);
+                BuildEntrances(trackNeighbours.Right, Tunnel.Left, entrances);
+                BuildEntrances(trackNeighbours.Down, Tunnel.Top, entrances);
+                BuildEntrances(trackNeighbours.Left, Tunnel.Right, entrances);
 
-                foreach (var neighbourTrackConfig in neighbourTrackConfigs)
-                {
-                    if (!IsTunnelEntrance(neighbourTrackConfig.neighbourTrack)) continue;
+                var currentCellTunnels = (IsEntrance(trackNeighbours.Up) ? Tunnel.Top : Tunnel.NoTunnels) |
+                                         (IsEntrance(trackNeighbours.Right) ? Tunnel.Right : Tunnel.NoTunnels) |
+                                         (IsEntrance(trackNeighbours.Down) ? Tunnel.Bottom : Tunnel.NoTunnels) |
+                                         (IsEntrance(trackNeighbours.Left) ? Tunnel.Left : Tunnel.NoTunnels);
 
-                    currentCellTunnels += (int)neighbourTrackConfig.currentCellTunnel;
-                    var neighbourTrack = neighbourTrackConfig.neighbourTrack is not null
-                        ? neighbourTrackConfig.neighbourTrack
-                        : new Track();
-                    var key = (neighbourTrack.Column, neighbourTrack.Row);
-
-
-                    neighbourTunnels.TryGetValue(key, out var currentValue);
-                    currentValue += (int)neighbourTrackConfig.neighbourTunnel;
-                    neighbourTunnels[key] = currentValue;
-                }
-
-                switch (currentCellTunnels)
-                {
-                    case Tunnel.Top:
-                    case Tunnel.Right:
-                    case Tunnel.Bottom:
-                    case Tunnel.Left:
-                    {
-                        DrawSingleTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour);
-                        break;
-                    }
-                    case Tunnel.StraightVertical:
-                    case Tunnel.StraightHorizontal:
-                    {
-                        DrawStraightTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour);
-                        break;
-                    }
-                    case Tunnel.TopRightCorner:
-                    case Tunnel.BottomRightCorner:
-                    case Tunnel.TopLeftCorner:
-                    case Tunnel.BottomLeftCorner:
-                    {
-                        DrawCornerIntersection(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour);
-                        break;
-                    }
-                    case Tunnel.ThreewayNoUp:
-                    case Tunnel.ThreewayNoRight:
-                    case Tunnel.ThreewayNoDown:
-                    case Tunnel.ThreewayNoLeft:
-                    {
-                        DrawThreeWayTunnel(currentCellTunnels, canvas, pixelMapper, x, y, lightColour, darkColour);
-                        break;
-                    }
-                    case Tunnel.FourWayIntersection:
-                    {
-                        DrawFourWayIntersection(canvas, pixelMapper, x, y, lightColour, darkColour);
-                        break;
-                    }
-                }
+                DrawTunnel(canvas, pixelMapper, tunnelRoofColour, tunnelBaseColour, x, y, currentCellTunnels);
             }
 
-            var colours = new[] { darkColour, lightColour, darkColour };
-            foreach (var kv in neighbourTunnels)
+            foreach (var (col, row, tunnels) in entrances)
             {
-                (int col, int row) = kv.Key;
-                var tunnels = kv.Value;
+                DrawEntrance(canvas, pixelMapper, entranceColourArray, col, row, tunnels);
+            }
+        }
 
-                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(col, row);
-
-                switch (tunnels)
+        private static void DrawTunnel(ICanvas canvas, IPixelMapper pixelMapper, Color tunnelRoofColour, Color tunnelBaseColour, int x, int y, Tunnel currentCellTunnels)
+        {
+            switch (currentCellTunnels)
+            {
+                case Tunnel.Top:
+                case Tunnel.Right:
+                case Tunnel.Bottom:
+                case Tunnel.Left:
                 {
-                    case Tunnel.Top:
-                    case Tunnel.Right:
-                    case Tunnel.Bottom:
-                    case Tunnel.Left:
-                    {
-                        DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, colours);
-                        break;
-                    }
-                    case Tunnel.StraightVertical:
-                    case Tunnel.StraightHorizontal:
-                    {
-                        DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, colours);
-                        break;
-                    }
-                    case Tunnel.TopRightCorner:
-                    case Tunnel.BottomRightCorner:
-                    case Tunnel.TopLeftCorner:
-                    case Tunnel.BottomLeftCorner:
-                    {
-                        DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, colours);
-                        break;
-                    }
-                    case Tunnel.ThreewayNoUp:
-                    case Tunnel.ThreewayNoRight:
-                    case Tunnel.ThreewayNoDown:
-                    case Tunnel.ThreewayNoLeft:
-                    {
-                        DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, colours);
-                        break;
-                    }
-                    case Tunnel.FourWayIntersection:
-                    {
-                        DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, colours);
-                        break;
-                    }
-
+                    DrawSingleTunnel(currentCellTunnels, canvas, pixelMapper, x, y, tunnelRoofColour, tunnelBaseColour);
+                    break;
+                }
+                case Tunnel.StraightVertical:
+                case Tunnel.StraightHorizontal:
+                {
+                    DrawStraightTunnel(currentCellTunnels, canvas, pixelMapper, x, y, tunnelRoofColour, tunnelBaseColour);
+                    break;
+                }
+                case Tunnel.TopRightCorner:
+                case Tunnel.BottomRightCorner:
+                case Tunnel.TopLeftCorner:
+                case Tunnel.BottomLeftCorner:
+                {
+                    DrawCornerIntersection(currentCellTunnels, canvas, pixelMapper, x, y, tunnelRoofColour, tunnelBaseColour);
+                    break;
+                }
+                case Tunnel.ThreewayNoUp:
+                case Tunnel.ThreewayNoRight:
+                case Tunnel.ThreewayNoDown:
+                case Tunnel.ThreewayNoLeft:
+                {
+                    DrawThreeWayTunnel(currentCellTunnels, canvas, pixelMapper, x, y, tunnelRoofColour, tunnelBaseColour);
+                    break;
+                }
+                case Tunnel.FourWayIntersection:
+                {
+                    DrawFourWayIntersection(canvas, pixelMapper, x, y, tunnelRoofColour, tunnelBaseColour);
+                    break;
                 }
             }
         }
+
+        private static void DrawEntrance(ICanvas canvas, IPixelMapper pixelMapper, Color[] entranceColourArray, int col, int row, Tunnel tunnels)
+        {
+            (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(col, row);
+
+            switch (tunnels)
+            {
+                case Tunnel.Top:
+                case Tunnel.Right:
+                case Tunnel.Bottom:
+                case Tunnel.Left:
+                {
+                    DrawSingleEntrance(tunnels, canvas, pixelMapper, x, y, entranceColourArray);
+                    break;
+                }
+                case Tunnel.StraightVertical:
+                case Tunnel.StraightHorizontal:
+                {
+                    DrawStraightEntrance(tunnels, canvas, pixelMapper, x, y, entranceColourArray);
+                    break;
+                }
+                case Tunnel.TopRightCorner:
+                case Tunnel.BottomRightCorner:
+                case Tunnel.TopLeftCorner:
+                case Tunnel.BottomLeftCorner:
+                {
+                    DrawTwoWayEntranceIntersection(tunnels, canvas, pixelMapper, x, y, entranceColourArray);
+                    break;
+                }
+                case Tunnel.ThreewayNoUp:
+                case Tunnel.ThreewayNoRight:
+                case Tunnel.ThreewayNoDown:
+                case Tunnel.ThreewayNoLeft:
+                {
+                    DrawThreeWayEntrance(tunnels, canvas, pixelMapper, x, y, entranceColourArray);
+                    break;
+                }
+                case Tunnel.FourWayIntersection:
+                {
+                    DrawFourWayEntranceIntersection(canvas, pixelMapper, x, y, entranceColourArray);
+                    break;
+                }
+            }
+        }
+
+        private void BuildEntrances(Track? neighbour, Tunnel neighbourCellTunnel, Dictionary<(int column, int row), Tunnel> entrances)
+        {
+            if (!IsEntrance(neighbour)) return;
+
+            var key = (neighbour.Column, neighbour.Row);
+
+            entrances.TryGetValue(key, out var neighbourCellTunnels);
+            neighbourCellTunnels |= neighbourCellTunnel;
+            entrances[key] = neighbourCellTunnels;
+        }
+
+        private bool IsEntrance([NotNullWhen(returnValue: true)] Track? track)
+            => track is not null && !_terrainMap.Get(track.Column, track.Row).IsMountain;
 
         private static void DrawStraightEntrance(Tunnel tunnels, ICanvas canvas, IPixelMapper pixelMapper, int x, int y, Color[] colours)
         {
@@ -411,9 +400,6 @@ namespace Trains.NET.Rendering
                 drawAction(canvas);
             }
         }
-
-        private bool IsTunnelEntrance(Track? track)
-            => track is not null && !_terrainMap.Get(track.Column, track.Row).IsMountain;
 
         private Color BuildModeAwareColour(Color color)
             => !_gameBoard.Enabled

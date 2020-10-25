@@ -3,7 +3,7 @@ name: PR Build
 on: [pull_request]
 
 jobs:
-  build:
+  build-windows:
 
     runs-on: windows-latest
 
@@ -33,3 +33,30 @@ jobs:
 
     - name: Run tests
       run: dotnet test
+
+  build-mac:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v1
+    
+      - name: setup-xamarin
+        uses: maxim-lobanov/setup-xamarin@v1
+        with:
+          xamarin-mac-version: latest
+          
+      - name: Build Debug
+        run: msbuild Trains.NET.Mac.sln /p:CI=true /c Debug
+    
+      - name: Build Release
+        run: msbuild Trains.NET.Mac.sln /p:CI=true /c Release -bl
+  
+      - name: Upload binary log
+        uses: actions/upload-artifact@v2
+        with:
+          name: binlog
+          path: msbuild.binlog
+          retention-days: 5
+    

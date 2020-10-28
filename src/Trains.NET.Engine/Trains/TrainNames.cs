@@ -20,7 +20,8 @@
             "The Mountain Mort",
             "Blue Train, South Africa",
             "The Little Train That Could",
-            "The Little Sprite That Could"
+            "The Little Sprite That Could",
+            "The Howling Phantom"
         };
     }
 }

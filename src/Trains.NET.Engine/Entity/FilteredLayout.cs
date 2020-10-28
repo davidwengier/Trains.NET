@@ -9,9 +9,26 @@ namespace Trains.NET.Engine
     public class FilteredLayout<T> : ILayout<T>
         where T : class, IStaticEntity
     {
+        private T? _selectedEntity;
         private readonly ILayout _layout;
 
+        public event EventHandler? SelectionChanged;
+
         public event EventHandler? CollectionChanged;
+
+        public T? SelectedEntity
+        {
+            get
+            {
+                return _selectedEntity;
+            }
+            set
+            {
+                _selectedEntity = value;
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
 
         public FilteredLayout(ILayout layout)
         {
@@ -43,53 +60,21 @@ namespace Trains.NET.Engine
             _layout.Clear();
         }
 
+        public void Set(int column, int row, T entity)
+        {
+            _layout.Remove(column, row);
+            _layout.Add(column, row, entity);
+        }
+
         public void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories)
         {
-            T? entity;
-            if (TryGet(column, row, out T? existing))
-            {
-                entity = FindNextEntity(column, row, existing, entityFactories);
-                if (entity is not null)
-                {
-                    _layout.Remove(column, row);
-                }
-            }
-            else
-            {
-                entity = CreateNewStaticEntity(column, row, entityFactories);
-            }
+            T? entity = CreateNewStaticEntity(column, row, entityFactories);
 
             if (entity is null)
             {
                 return;
             }
             _layout.Add(column, row, entity);
-        }
-
-        public T? FindNextEntity(int column, int row, T existing, IEnumerable<IStaticEntityFactory<T>> entityFactories)
-        {
-            T? firstEntity = null;
-            bool returnNext = false;
-            foreach (var factory in entityFactories)
-            {
-                if (factory.TryCreateEntity(column, row, out var newEntity))
-                {
-                    firstEntity ??= newEntity;
-                    if (returnNext)
-                    {
-                        return newEntity;
-                    }
-                    if (newEntity.GetType().Equals(existing.GetType()))
-                    {
-                        returnNext = true;
-                    }
-                }
-            }
-            if (returnNext)
-            {
-                return firstEntity;
-            }
-            return null;
         }
 
         private static T? CreateNewStaticEntity(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories)

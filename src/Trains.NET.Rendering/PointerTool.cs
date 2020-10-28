@@ -2,15 +2,13 @@
 
 namespace Trains.NET.Rendering
 {
-    [Order(1)]
-    public class PointerTool : IDraggableTool
+    [Order(2)]
+    public class PointerTool : ITool
     {
         private readonly ITrainManager _trainManager;
         private readonly IGameBoard _gameBoard;
         private readonly IPixelMapper _pixelMapper;
         private readonly ILayout<Track> _trackLayout;
-        private int _lastX;
-        private int _lastY;
 
         public ToolMode Mode => ToolMode.All;
         public PointerTool(ITrainManager trainManager, IGameBoard gameBoard, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
@@ -23,19 +21,6 @@ namespace Trains.NET.Rendering
 
         public string Name => "Pointer";
 
-        public void StartDrag(int x, int y)
-        {
-            _lastX = x;
-            _lastY = y;
-        }
-
-        public void ContinueDrag(int x, int y)
-        {
-            _pixelMapper.AdjustViewPort(x - _lastX, y - _lastY);
-            _lastX = x;
-            _lastY = y;
-        }
-
         public void Execute(int column, int row)
         {
             if (_gameBoard.GetMovableAt(column, row) is Train train)
@@ -46,13 +31,17 @@ namespace Trains.NET.Rendering
             {
                 if (_trackLayout.TryGet(column, row, out Track? track))
                 {
-                    track.TryToggle();
+                    _trackLayout.SelectedEntity = track;
+                }
+                else
+                {
+                    _trackLayout.SelectedEntity = null;
                 }
             }
         }
 
         public bool IsValid(int column, int row)
             => _gameBoard.GetMovableAt(column, row) is Train
-                || (_trackLayout.TryGet(column, row, out Track? track) && track.CanToggle());
+               || _trackLayout.TryGet(column, row, out _);
     }
 }

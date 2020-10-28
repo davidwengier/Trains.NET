@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
@@ -21,6 +22,14 @@ namespace Trains.NET.Engine.Tracks
 
             entity = new Track();
             return true;
+        }
+
+        public IEnumerable<Track> GetAllPossibleEntities(int column, int row)
+        {
+            if (!_terrainMap.Get(column, row).IsWater)
+            {
+                yield return new Track();
+            }
         }
     }
 }

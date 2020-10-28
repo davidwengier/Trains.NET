@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
@@ -12,6 +13,19 @@ namespace Trains.NET.Engine.Tracks
         {
             _terrainMap = terrainMap;
             _layout = layout;
+        }
+
+        public IEnumerable<Track> GetAllPossibleEntities(int column, int row)
+        {
+            if (!_terrainMap.Get(column, row).IsWater &&
+                _layout.TryGet(column, row, out Track? track) &&
+                track.Direction is TrackDirection.Horizontal or TrackDirection.Vertical)
+            {
+
+                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.Go };
+                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.TemporaryStop };
+                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.Stop };
+            }
         }
 
         public bool TryCreateEntity(int column, int row, [NotNullWhen(returnValue: true)] out Track? entity)
@@ -30,5 +44,7 @@ namespace Trains.NET.Engine.Tracks
             entity = null;
             return false;
         }
+
+
     }
 }

@@ -54,6 +54,7 @@ namespace Trains.NET.Rendering
         {
             switch (track.Direction)
             {
+                case TrackDirection.Undefined:
                 case TrackDirection.Horizontal:
                     DrawHorizontal(canvas);
                     break;
@@ -73,7 +74,6 @@ namespace Trains.NET.Rendering
                 case TrackDirection.LeftUp_RightUp:
                     DrawCorner(canvas, track);
                     break;
-                case TrackDirection.Undefined:
                 default:
                     break;
             }

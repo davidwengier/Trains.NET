@@ -14,11 +14,11 @@ namespace Trains.NET.Rendering.UI
         protected virtual bool CanClose { get; }
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }
-        protected abstract int Top { get; }
+        protected virtual int Top { get; set; }
         protected virtual int TopPadding { get; } = 15;
         protected virtual int BottomPadding { get; } = 15;
         protected virtual PanelPosition Position { get; } = PanelPosition.Left;
-        protected virtual int Left { get; }
+        protected virtual int Left { get; set; }
 
         protected virtual int InnerWidth { get; set; } = 100;
         protected virtual int InnerHeight { get; set; } = 100;

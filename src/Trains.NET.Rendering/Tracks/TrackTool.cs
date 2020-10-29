@@ -20,7 +20,15 @@ namespace Trains.NET.Rendering
 
         public void Execute(int column, int row)
         {
-            _entityCollection.Add(column, row, _entityFactories);
+            if (_entityCollection.TryGet(column, row, out Track? track))
+            {
+                _entityCollection.SelectedEntity = track;
+            }
+            else
+            {
+                _entityCollection.Add(column, row, _entityFactories);
+                _entityCollection.SelectedEntity = null;
+            }
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row);

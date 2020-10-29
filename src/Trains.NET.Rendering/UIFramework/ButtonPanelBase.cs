@@ -48,7 +48,7 @@ namespace Trains.NET.Rendering.UI
             }
         }
 
-        protected override void CalculateSize(ICanvas canvas)
+        protected override void PreRender(ICanvas canvas)
         {
             _buttonWidth = 0;
             base.InnerHeight = 0;

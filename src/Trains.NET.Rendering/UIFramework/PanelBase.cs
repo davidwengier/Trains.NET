@@ -120,7 +120,10 @@ namespace Trains.NET.Rendering.UI
                 return;
             }
 
-            CalculateSize(canvas);
+            using (canvas.Scope())
+            {
+                PreRender(canvas);
+            }
 
             canvas.Translate(0, this.Top);
 
@@ -238,7 +241,7 @@ namespace Trains.NET.Rendering.UI
             return true;
         }
 
-        protected virtual void CalculateSize(ICanvas canvas)
+        protected virtual void PreRender(ICanvas canvas)
         {
         }
 

@@ -7,17 +7,20 @@ namespace Trains.NET.Rendering
     [Order(200)]
     public class TrackSelectionPanel : PanelBase
     {
+        private static readonly PaintBrush s_trackHighlightBrush = Brushes.PanelBorder with { Color = Colors.LightYellow };
+
         private readonly ILayout<Track> _layout;
+        private readonly IPixelMapper _pixelMapper;
         private readonly IEnumerable<IStaticEntityFactory<Track>> _entityFactories;
         private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers;
         private MultiButton? _multiButton;
 
         protected override PanelPosition Position => PanelPosition.Floating;
-        protected override bool CanClose => true;
 
         public TrackSelectionPanel(ILayout<Track> layout, IPixelMapper pixelMapper, IEnumerable<IStaticEntityFactory<Track>> entityFactories, IEnumerable<IStaticEntityRenderer<Track>> renderers)
         {
             _layout = layout;
+            _pixelMapper = pixelMapper;
             _entityFactories = entityFactories;
             _renderers = renderers;
             this.InnerHeight = 40;
@@ -30,19 +33,19 @@ namespace Trains.NET.Rendering
                 var track = _layout.SelectedEntity;
                 if (track is not null)
                 {
-                    DisplayTrackSelection(pixelMapper, track);
+                    CreateMultiButton(track);
                 }
 
                 OnChanged();
             };
         }
 
-        private void DisplayTrackSelection(IPixelMapper pixelMapper, Track track)
+        private void CreateMultiButton(Track track)
         {
             var buttons = new List<ButtonBase>();
             var column = track.Column;
             var row = track.Row;
-            var (x, y, _) = pixelMapper.CoordsToViewPortPixels(column, row + 1);
+            var (x, y, _) = _pixelMapper.CoordsToViewPortPixels(column, row + 1);
 
             foreach (var factory in _entityFactories)
             {
@@ -57,10 +60,7 @@ namespace Trains.NET.Rendering
 
             _multiButton = new MultiButton(40, buttons.ToArray());
 
-            this.Top = y;
             this.InnerWidth = buttons.Count * 40;
-            this.Left = x - this.InnerWidth / 2;
-
             this.Visible = buttons.Count > 1;
         }
 
@@ -83,6 +83,27 @@ namespace Trains.NET.Rendering
                 this.Visible = false;
             }
             return true;
+        }
+
+        protected override void PreRender(ICanvas canvas)
+        {
+            // Normally this method is just used to set position etc. but we are also 
+            // going to cheat and draw the track highlight before the panel has a chance
+            // to translate to the right position
+
+            var track = _layout.SelectedEntity;
+            if (track is not null)
+            {
+                var (x, y, onScreen) = _pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+                if (!onScreen)
+                {
+                    return;
+                }
+                canvas.DrawRect(x, y, _pixelMapper.CellSize, _pixelMapper.CellSize, s_trackHighlightBrush);
+
+                this.Top = y + _pixelMapper.CellSize + 5;
+                this.Left = x - this.InnerWidth / 2 + _pixelMapper.CellSize / 2 - (GetPanelWidth() - this.InnerWidth) / 2;
+            }
         }
 
         protected override void Render(ICanvas canvas)

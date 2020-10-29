@@ -7,12 +7,10 @@ namespace Trains.NET.Engine.Tracks
     public class SignalFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
-        private readonly ILayout<Track> _layout;
 
-        public SignalFactory(ITerrainMap terrainMap, ILayout<Track> layout)
+        public SignalFactory(ITerrainMap terrainMap)
         {
             _terrainMap = terrainMap;
-            _layout = layout;
         }
 
         public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)

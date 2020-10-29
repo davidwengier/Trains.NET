@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI
@@ -27,12 +24,11 @@ namespace Trains.NET.Rendering.UI
             {
                 if (renderer.ShouldRender(_track))
                 {
-                    float scale = 40f / 100.0f;
-
+                    float scale = 32 / 100.0f;
                     using (canvas.Scope())
                     {
+                        canvas.Translate(4, 4);
                         canvas.Scale(scale, scale);
-
                         renderer.Render(canvas, _track);
                     }
                 }

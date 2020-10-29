@@ -17,7 +17,6 @@
         public static readonly Color LightGreen = new("#66d174");
         public static readonly Color DarkPurple = new("#44096d");
         public static readonly Color LightPurple = new("#8644b5");
-        public static readonly Color DarkYellow = new("#8644b5");
         public static readonly Color LightYellow = new("#f4ef53");
         public static readonly Color VeryDarkGray = new("#111111");
         public static readonly Color Gray = new("#5d5d5d");

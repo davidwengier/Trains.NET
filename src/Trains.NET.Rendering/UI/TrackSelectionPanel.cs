@@ -49,7 +49,7 @@ namespace Trains.NET.Rendering
 
             foreach (var factory in _entityFactories)
             {
-                foreach (Track newEntity in factory.GetAllPossibleEntities(column, row))
+                foreach (Track newEntity in factory.GetPossibleReplacements(column, row, track))
                 {
                     buttons.Add(new TrackButton(newEntity, () => IsActive(track, newEntity), () => OnClick(column, row, newEntity), _renderers)
                     {

@@ -5,7 +5,7 @@ namespace Trains.NET.Engine.Nature
 {
     public class TreeNursery : IStaticEntityFactory<Tree>
     {
-        public IEnumerable<Tree> GetAllPossibleEntities(int column, int row)
+        public IEnumerable<Tree> GetPossibleReplacements(int column, int row, Tree track)
         {
             yield return new Tree();
         }

@@ -12,7 +12,7 @@ namespace Trains.NET.Engine.Tracks
             _terrainMap = terrainMap;
         }
 
-        public IEnumerable<Track> GetAllPossibleEntities(int column, int row)
+        public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {

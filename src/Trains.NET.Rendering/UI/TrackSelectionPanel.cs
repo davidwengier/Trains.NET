@@ -15,6 +15,7 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers;
         private MultiButton? _multiButton;
 
+        protected override bool AutoCloseOnMouseOut => true;
         protected override PanelPosition Position => PanelPosition.Floating;
 
         public TrackSelectionPanel(ILayout<Track> layout, IPixelMapper pixelMapper, IEnumerable<IStaticEntityFactory<Track>> entityFactories, IEnumerable<IStaticEntityRenderer<Track>> renderers)

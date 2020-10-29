@@ -8,9 +8,11 @@ namespace Trains.NET.Rendering.UI
         private const int CloseButtonSize = 16;
         private const int TitleAreaWidth = 20;
 
+        private bool _mouseHasBeenWithin;
         private bool _collapsed = true;
         private int _titleWidth;
 
+        protected virtual bool AutoCloseOnMouseOut { get; }
         protected virtual bool CanClose { get; }
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }
@@ -22,6 +24,7 @@ namespace Trains.NET.Rendering.UI
 
         protected virtual int InnerWidth { get; set; } = 100;
         protected virtual int InnerHeight { get; set; } = 100;
+
 
         public bool Visible { get; set; } = true;
 
@@ -98,12 +101,20 @@ namespace Trains.NET.Rendering.UI
                 }
                 y -= this.TopPadding;
 
+                _mouseHasBeenWithin = true;
+
                 return HandlePointerAction(x, y, action);
             }
             else if (this.IsCollapsable && !_collapsed)
             {
                 _collapsed = true;
                 OnChanged();
+            }
+
+            if (_mouseHasBeenWithin && this.AutoCloseOnMouseOut)
+            {
+                _mouseHasBeenWithin = false;
+                this.Visible = false;
             }
 
             return false;

@@ -145,7 +145,7 @@ namespace Trains.Emoji
             // TODO: This needs to be way smarter about track types
             var track = new Bridge() { Direction = direction };
             Draw(prefix + direction, folderName, pixelMapper, canvas => RenderTrack(canvas, trackRenderer, track));
-            if (track.HasAlternateState())
+            if (track.HasMultipleStates)
             {
                 track.AlternateState = true;
                 Draw(prefix + direction + "Alt", folderName, pixelMapper, canvas => RenderTrack(canvas, trackRenderer, track));

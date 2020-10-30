@@ -12,6 +12,7 @@ namespace Trains.NET.Rendering.UI
         private readonly IGameManager _gameManager;
         private IInteractionHandler? _capturedHandler;
         private ITool? _capturedTool;
+        private bool _hasDragged;
         private int _lastToolColumn;
         private int _lastToolRow;
 
@@ -24,14 +25,7 @@ namespace Trains.NET.Rendering.UI
         }
 
         public bool PointerClick(int x, int y)
-        {
-            if (HandleInteraction(x, y, PointerAction.Click))
-            {
-                return true;
-            }
-
-            return false;
-        }
+            => HandleInteraction(x, y, PointerAction.Click);
 
         public bool PointerMove(int x, int y)
             => HandleInteraction(x, y, PointerAction.Move);
@@ -39,8 +33,23 @@ namespace Trains.NET.Rendering.UI
         public bool PointerDrag(int x, int y)
             => HandleInteraction(x, y, PointerAction.Drag);
 
+        public bool PointerZoomIn(int x, int y)
+            => HandleInteraction(x, y, PointerAction.ZoomIn);
+
+        public bool PointerZoomOut(int x, int y)
+            => HandleInteraction(x, y, PointerAction.ZoomOut);
+
         public bool PointerRelease(int x, int y)
         {
+            (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+
+            if (!_hasDragged &&
+                _gameManager.CurrentTool is not null &&
+                _gameManager.CurrentTool.IsValid(column, row))
+            {
+                _gameManager.CurrentTool.Execute(column, row, false);
+            }
+
             _lastToolColumn = -1;
             _lastToolRow = -1;
             if (_capturedHandler != null || _capturedTool != null)
@@ -51,12 +60,6 @@ namespace Trains.NET.Rendering.UI
             }
             return false;
         }
-
-        public bool PointerZoomIn(int x, int y)
-            => HandleInteraction(x, y, PointerAction.ZoomIn);
-
-        public bool PointerZoomOut(int x, int y)
-            => HandleInteraction(x, y, PointerAction.ZoomOut);
 
         private bool HandleInteraction(int x, int y, PointerAction action)
         {
@@ -105,15 +108,20 @@ namespace Trains.NET.Rendering.UI
 
             var inSameCell = (column == _lastToolColumn && row == _lastToolRow);
 
+            if (action is PointerAction.Click)
+            {
+                _hasDragged = false;
+            }
             if (action is PointerAction.Click or PointerAction.Drag)
             {
                 _lastToolColumn = column;
                 _lastToolRow = row;
             }
 
-            if (!inSameCell && action is PointerAction.Click or PointerAction.Drag && tool.IsValid(column, row))
+            if (!inSameCell && action is PointerAction.Drag && tool.IsValid(column, row))
             {
-                tool.Execute(column, row, action is PointerAction.Drag);
+                _hasDragged = true;
+                tool.Execute(column, row, true);
                 return true;
             }
             else if (tool is IDraggableTool draggableTool)
@@ -125,6 +133,7 @@ namespace Trains.NET.Rendering.UI
                 }
                 else if (action == PointerAction.Drag)
                 {
+                    _hasDragged = true;
                     draggableTool.ContinueDrag(x, y);
                     return true;
                 }

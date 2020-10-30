@@ -6,7 +6,7 @@
 
         string Name { get; }
 
-        void Execute(int column, int row);
+        void Execute(int column, int row, bool isPartOfDrag);
 
         bool IsValid(int column, int row);
     }

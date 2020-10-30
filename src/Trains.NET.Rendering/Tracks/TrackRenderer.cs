@@ -115,7 +115,7 @@ namespace Trains.NET.Rendering
             {
                 canvas.RotateDegrees(track.Direction.TrackRotationAngle(), 50.0f, 50.0f);
 
-                if (track.HasAlternateState() && track.AlternateState)
+                if (track.HasMultipleStates && track.AlternateState)
                 {
                     canvas.Scale(-1, 1);
                     canvas.Translate(-100.0f, 0);
@@ -123,7 +123,7 @@ namespace Trains.NET.Rendering
 
                 canvas.DrawPath(_cornerPlankPath, _plankPaint);
 
-                if (track.HasAlternateState())
+                if (track.HasMultipleStates)
                 {
                     using (canvas.Scope())
                     {

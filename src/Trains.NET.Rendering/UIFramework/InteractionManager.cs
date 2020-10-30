@@ -111,9 +111,9 @@ namespace Trains.NET.Rendering.UI
                 _lastToolRow = row;
             }
 
-            if (!inSameCell && tool.IsValid(column, row) && action is PointerAction.Click or PointerAction.Drag)
+            if (!inSameCell && action is PointerAction.Click or PointerAction.Drag && tool.IsValid(column, row))
             {
-                tool.Execute(column, row);
+                tool.Execute(column, row, action is PointerAction.Drag);
                 return true;
             }
             else if (tool is IDraggableTool draggableTool)

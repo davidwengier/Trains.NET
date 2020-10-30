@@ -19,7 +19,7 @@ namespace Trains.NET.Rendering
             _trainManager = gameState;
         }
 
-        public void Execute(int column, int row)
+        public void Execute(int column, int row, bool isPartOfDrag)
         {
             if (_gameBoard.AddTrain(column, row) is Train train)
             {

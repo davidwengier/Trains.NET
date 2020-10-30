@@ -13,7 +13,7 @@
             _collection = trackLayout;
         }
 
-        public void Execute(int column, int row)
+        public void Execute(int column, int row, bool isPartOfDrag)
         {
             _collection.Remove(column, row);
         }

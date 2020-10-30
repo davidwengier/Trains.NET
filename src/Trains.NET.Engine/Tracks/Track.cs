@@ -23,6 +23,15 @@ namespace Trains.NET.Engine
         public TrackDirection Direction { get; set; }
         public bool Happy { get; set; }
         public bool AlternateState { get; set; }
+        public virtual bool HasMultipleStates
+            => this.Direction switch
+            {
+                TrackDirection.RightUp_RightDown => true,
+                TrackDirection.RightDown_LeftDown => true,
+                TrackDirection.LeftDown_LeftUp => true,
+                TrackDirection.LeftUp_RightUp => true,
+                _ => false
+            };
 
         internal void Move(TrainPosition position)
         {
@@ -43,20 +52,20 @@ namespace Trains.NET.Engine
             }
         }
 
+        public virtual void NextState()
+        {
+            if (this.HasMultipleStates)
+            {
+                this.AlternateState = !this.AlternateState;
+
+                OnChanged();
+            }
+        }
+
         protected void OnChanged()
         {
             _trackLayout?.RaiseCollectionChanged();
         }
-
-        public bool HasAlternateState()
-            => this.Direction switch
-            {
-                TrackDirection.RightUp_RightDown => true,
-                TrackDirection.RightDown_LeftDown => true,
-                TrackDirection.LeftDown_LeftUp => true,
-                TrackDirection.LeftUp_RightUp => true,
-                _ => false
-            };
 
         private void MoveLeftRightDown(TrainPosition position)
         {

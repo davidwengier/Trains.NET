@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering
             _entityFactories = entityFactories;
         }
 
-        public void Execute(int column, int row)
+        public void Execute(int column, int row, bool isPartOfDrag)
         {
             _entityCollection.Add(column, row, _entityFactories);
         }

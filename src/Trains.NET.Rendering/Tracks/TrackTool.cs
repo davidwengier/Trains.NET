@@ -18,9 +18,9 @@ namespace Trains.NET.Rendering
             _entityFactories = entityFactories;
         }
 
-        public void Execute(int column, int row)
+        public void Execute(int column, int row, bool isPartOfDrag)
         {
-            if (_entityCollection.TryGet(column, row, out Track? track))
+            if (!isPartOfDrag && _entityCollection.TryGet(column, row, out Track? track))
             {
                 _entityCollection.SelectedEntity = track;
             }

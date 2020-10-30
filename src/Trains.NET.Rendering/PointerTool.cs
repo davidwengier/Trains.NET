@@ -24,8 +24,13 @@ namespace Trains.NET.Rendering
 
         public string Name => "Pointer";
 
-        public void Execute(int column, int row)
+        public void Execute(int column, int row, bool isPartOfDrag)
         {
+            if (isPartOfDrag)
+            {
+                return;
+            }
+
             if (_gameBoard.GetMovableAt(column, row) is Train train)
             {
                 _trainManager.CurrentTrain = train;
@@ -34,11 +39,7 @@ namespace Trains.NET.Rendering
             {
                 if (_trackLayout.TryGet(column, row, out Track? track))
                 {
-                    _trackLayout.SelectedEntity = track;
-                }
-                else
-                {
-                    _trackLayout.SelectedEntity = null;
+                    track.NextState();
                 }
             }
         }
@@ -57,6 +58,7 @@ namespace Trains.NET.Rendering
         }
 
         public bool IsValid(int column, int row)
-            => _gameBoard.GetMovableAt(column, row) is Train;
+            => _gameBoard.GetMovableAt(column, row) is Train ||
+            (_trackLayout.TryGet(column, row, out var track) && track.HasMultipleStates);
     }
 }

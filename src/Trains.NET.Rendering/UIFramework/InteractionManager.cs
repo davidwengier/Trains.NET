@@ -43,13 +43,15 @@ namespace Trains.NET.Rendering.UI
         {
             (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
-            if (!_hasDragged &&
+            if (_capturedHandler is null &&
+                !_hasDragged &&
                 _gameManager.CurrentTool is not null &&
                 _gameManager.CurrentTool.IsValid(column, row))
             {
                 _gameManager.CurrentTool.Execute(column, row, false);
             }
 
+            _hasDragged = false;
             _lastToolColumn = -1;
             _lastToolRow = -1;
             if (_capturedHandler != null || _capturedTool != null)
@@ -112,15 +114,15 @@ namespace Trains.NET.Rendering.UI
             {
                 _hasDragged = false;
             }
-            if (action is PointerAction.Click or PointerAction.Drag)
+            if (action is PointerAction.Drag)
             {
+                _hasDragged = true;
                 _lastToolColumn = column;
                 _lastToolRow = row;
             }
 
             if (!inSameCell && action is PointerAction.Drag && tool.IsValid(column, row))
             {
-                _hasDragged = true;
                 tool.Execute(column, row, true);
                 return true;
             }
@@ -133,7 +135,6 @@ namespace Trains.NET.Rendering.UI
                 }
                 else if (action == PointerAction.Drag)
                 {
-                    _hasDragged = true;
                     draggableTool.ContinueDrag(x, y);
                     return true;
                 }

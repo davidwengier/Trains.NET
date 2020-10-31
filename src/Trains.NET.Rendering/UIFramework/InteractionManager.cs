@@ -78,6 +78,23 @@ namespace Trains.NET.Rendering.UI
                 return true;
             }
 
+            if (action is PointerAction.Click)
+            {
+                bool preHandled = false;
+                foreach (IInteractionHandler handler in _handler)
+                {
+                    if (handler.PreHandleNextClick && action is PointerAction.Click)
+                    {
+                        _capturedHandler = handler;
+                        preHandled |= handler.HandlePointerAction(x, y, width, height, action);
+                    }
+                }
+                if (preHandled)
+                {
+                    return true;
+                }
+            }
+
             foreach (IInteractionHandler handler in _handler)
             {
                 if (handler.HandlePointerAction(x, y, width, height, action))

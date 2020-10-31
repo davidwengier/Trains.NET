@@ -43,6 +43,8 @@ namespace Trains.NET.Rendering.UI
             }
         }
 
+        public bool PreHandleNextClick => false;
+
         public MiniMapScreen(ITerrainMapRenderer terrainMapRenderer, ILayout<Track> trackLayout, IPixelMapper pixelMapper)
         {
             _terrainMapRenderer = terrainMapRenderer;

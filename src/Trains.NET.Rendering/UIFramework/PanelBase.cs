@@ -11,8 +11,11 @@ namespace Trains.NET.Rendering.UI
         private bool _mouseHasBeenWithin;
         private bool _collapsed = true;
         private int _titleWidth;
+        private bool _visible = true;
 
-        protected virtual bool AutoCloseOnMouseOut { get; }
+        public virtual bool PreHandleNextClick { get; set; }
+
+        protected virtual bool AutoClose { get; }
         protected virtual bool CanClose { get; }
         protected virtual bool IsCollapsable { get; }
         protected virtual string? Title { get; }
@@ -26,7 +29,16 @@ namespace Trains.NET.Rendering.UI
         protected virtual int InnerHeight { get; set; } = 100;
 
 
-        public bool Visible { get; set; } = true;
+        public bool Visible
+        {
+
+            get => _visible;
+            set
+            {
+                _visible = value;
+                this.PreHandleNextClick = value && this.AutoClose;
+            }
+        }
 
         public event EventHandler? Changed;
 
@@ -39,6 +51,7 @@ namespace Trains.NET.Rendering.UI
         {
             if (!this.Visible)
             {
+                this.PreHandleNextClick = false;
                 return false;
             }
 
@@ -111,7 +124,7 @@ namespace Trains.NET.Rendering.UI
                 OnChanged();
             }
 
-            if (_mouseHasBeenWithin && this.AutoCloseOnMouseOut)
+            if ((_mouseHasBeenWithin || action is PointerAction.Click) && this.AutoClose)
             {
                 _mouseHasBeenWithin = false;
                 this.Visible = false;

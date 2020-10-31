@@ -12,6 +12,8 @@
             _pixelMapper = pixelMapper;
         }
 
+        public bool PreHandleNextClick => false;
+
         public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
         {
             bool didAdjust = false;

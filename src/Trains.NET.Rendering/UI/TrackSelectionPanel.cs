@@ -15,7 +15,7 @@ namespace Trains.NET.Rendering
         private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers;
         private MultiButton? _multiButton;
 
-        protected override bool AutoCloseOnMouseOut => true;
+        protected override bool AutoClose => true;
         protected override PanelPosition Position => PanelPosition.Floating;
 
         public TrackSelectionPanel(ILayout<Track> layout, IPixelMapper pixelMapper, IEnumerable<IStaticEntityFactory<Track>> entityFactories, IEnumerable<IStaticEntityRenderer<Track>> renderers)
@@ -71,10 +71,8 @@ namespace Trains.NET.Rendering
         }
 
         private static bool IsActive(Track track, Track newEntity)
-        {
-            return newEntity.GetType() == track.GetType() &&
+            => newEntity.GetType() == track.GetType() &&
                 newEntity.Identifier.Equals(track.Identifier);
-        }
 
         protected override bool HandlePointerAction(int x, int y, PointerAction action)
         {

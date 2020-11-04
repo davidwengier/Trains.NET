@@ -37,6 +37,7 @@ namespace Trains.NET.Rendering.UI
             {
                 _visible = value;
                 this.PreHandleNextClick = value && this.AutoClose;
+                _mouseHasBeenWithin = false;
             }
         }
 
@@ -114,7 +115,10 @@ namespace Trains.NET.Rendering.UI
                 }
                 y -= this.TopPadding;
 
-                _mouseHasBeenWithin = true;
+                if (this.AutoClose)
+                {
+                    _mouseHasBeenWithin = true;
+                }
 
                 return HandlePointerAction(x, y, action);
             }
@@ -126,7 +130,6 @@ namespace Trains.NET.Rendering.UI
 
             if ((_mouseHasBeenWithin || action is PointerAction.Click) && this.AutoClose)
             {
-                _mouseHasBeenWithin = false;
                 this.Visible = false;
             }
 

@@ -59,5 +59,10 @@ namespace Trains.NET.Tests
             entity = (T)staticEntity;
             return result;
         }
+
+        public void Set(int column, int row, IStaticEntity entity)
+        {
+            _layout[(column, row)] = entity;
+        }
     }
 }

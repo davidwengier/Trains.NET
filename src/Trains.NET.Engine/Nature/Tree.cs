@@ -26,6 +26,10 @@ namespace Trains.NET.Engine
         {
         }
 
+        public void Replaced()
+        {
+        }
+
         public void Stored(ILayout? collection)
         {
         }

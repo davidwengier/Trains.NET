@@ -10,5 +10,6 @@
         void Created();
         void Updated();
         void Removed();
+        void Replaced();
     }
 }

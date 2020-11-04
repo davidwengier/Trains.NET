@@ -29,7 +29,6 @@ namespace Trains.NET.Engine
             }
         }
 
-
         public FilteredLayout(ILayout layout)
         {
             _layout = layout;
@@ -60,10 +59,14 @@ namespace Trains.NET.Engine
             _layout.Clear();
         }
 
-        public void Set(int column, int row, T entity)
+        public void Remove(int column, int row)
         {
             _layout.Remove(column, row);
-            _layout.Add(column, row, entity);
+        }
+
+        public void Set(int column, int row, T entity)
+        {
+            _layout.Set(column, row, entity);
         }
 
         public void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories)

@@ -12,8 +12,8 @@ namespace Trains.NET.Rendering.UI
         private static ButtonBase[] GetButtons(IGameManager gameManager)
         {
             return new ButtonBase[]{
-                new PictureButton(Picture.Tools,20, () => gameManager.BuildMode, () => gameManager.BuildMode = true),
-                new PictureButton(Picture.Play,20, () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
+                new PictureButton(Picture.Tools, 20, () => gameManager.BuildMode, () => gameManager.BuildMode = true),
+                new PictureButton(Picture.Play, 20, () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
                 };
         }
     }

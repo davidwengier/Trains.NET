@@ -18,5 +18,6 @@ namespace Trains.NET.Engine
         void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories);
         bool IsAvailable(int column, int row);
         void Set(int column, int row, T entity);
+        void Remove(int column, int row);
     }
 }

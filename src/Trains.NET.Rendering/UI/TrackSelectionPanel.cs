@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Trains.NET.Engine;
 using Trains.NET.Rendering.UI;
 
@@ -13,7 +14,7 @@ namespace Trains.NET.Rendering
         private readonly IPixelMapper _pixelMapper;
         private readonly IEnumerable<IStaticEntityFactory<Track>> _entityFactories;
         private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers;
-        private MultiButton? _multiButton;
+        private readonly List<ButtonBase> _multiButtons = new();
 
         protected override bool AutoClose => true;
         protected override PanelPosition Position => PanelPosition.Floating;
@@ -35,6 +36,7 @@ namespace Trains.NET.Rendering
                 if (track is not null)
                 {
                     CreateMultiButton(track);
+                    this.Visible = true;
                 }
 
                 OnChanged();
@@ -43,13 +45,15 @@ namespace Trains.NET.Rendering
 
         private void CreateMultiButton(Track track)
         {
-            var buttons = new List<ButtonBase>();
             var column = track.Column;
             var row = track.Row;
             var (x, y, _) = _pixelMapper.CoordsToViewPortPixels(column, row + 1);
 
+            int maxButtons = 0;
+            _multiButtons.Clear();
             foreach (var factory in _entityFactories)
             {
+                var buttons = new List<ButtonBase>();
                 foreach (Track newEntity in factory.GetPossibleReplacements(column, row, track))
                 {
                     buttons.Add(new TrackButton(newEntity, () => IsActive(track, newEntity), () => OnClick(column, row, newEntity), _renderers)
@@ -57,12 +61,25 @@ namespace Trains.NET.Rendering
                         TransparentBackground = true
                     });
                 }
+                if (buttons.Count > 0)
+                {
+                    maxButtons = Math.Max(maxButtons, buttons.Count);
+                    _multiButtons.Add(new MultiButton(40, buttons.ToArray()));
+                }
             }
 
-            _multiButton = new MultiButton(40, buttons.ToArray());
+            _multiButtons.Add(new MultiButton(40, new PictureButton(Picture.Eraser, 20, () => false, () => Erase(column, row))
+            {
+                TransparentBackground = true
+            }));
 
-            this.InnerWidth = buttons.Count * 40;
-            this.Visible = buttons.Count > 1;
+            this.InnerWidth = maxButtons * 40;
+            this.InnerHeight = _multiButtons.Count * 40;
+        }
+
+        private void Erase(int column, int row)
+        {
+            _layout.Remove(column, row);
         }
 
         private void OnClick(int column, int row, Track newEntity)
@@ -76,7 +93,14 @@ namespace Trains.NET.Rendering
 
         protected override bool HandlePointerAction(int x, int y, PointerAction action)
         {
-            _multiButton?.HandleMouseAction(x, y, action);
+            foreach (var button in _multiButtons)
+            {
+                if (button.HandleMouseAction(x, y, action))
+                {
+                    break;
+                }
+                y -= 40;
+            }
             if (action == PointerAction.Click)
             {
                 this.Visible = false;
@@ -107,7 +131,11 @@ namespace Trains.NET.Rendering
 
         protected override void Render(ICanvas canvas)
         {
-            _multiButton?.Render(canvas);
+            foreach (var button in _multiButtons)
+            {
+                button.Render(canvas);
+                canvas.Translate(0, 40);
+            }
         }
     }
 }

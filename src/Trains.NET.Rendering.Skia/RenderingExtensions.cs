@@ -18,6 +18,7 @@ namespace Trains.NET.Rendering.Skia
                 Picture.Pause => Assets.Svg_pause.Picture,
                 Picture.Cross => Assets.Svg_times.Picture,
                 Picture.Tools => Assets.Svg_tools.Picture,
+                Picture.Eraser => Assets.Svg_eraser.Picture,
                 _ => throw new InvalidOperationException($"No idea what picture you want me to draw: {picture}")
             };
 

@@ -336,7 +336,7 @@ namespace Trains.NET.Engine
 
         public void ReevaluateHappiness()
         {
-            this.Happy = GetNeighbors().Count > 1;
+            this.Happy = GetConnectedNeighbors().Count > 1;
         }
 
         public void RefreshNeighbors(bool ignoreHappyness)
@@ -397,6 +397,16 @@ namespace Trains.NET.Engine
         public void Updated()
         {
             SetBestTrackDirection(true);
+        }
+
+        public void Replaced()
+        {
+            ReevaluateHappiness();
+            var neighbours = GetAllNeighbors();
+            foreach (var n in neighbours.All)
+            {
+                n.ReevaluateHappiness();
+            }
         }
 
         public void Removed()

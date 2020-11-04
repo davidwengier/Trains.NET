@@ -11,6 +11,7 @@
         Play,
         Pause,
         Cross,
-        Tools
+        Tools,
+        Eraser
     }
 }

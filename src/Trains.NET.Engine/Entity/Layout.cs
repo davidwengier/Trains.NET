@@ -12,6 +12,18 @@ namespace Trains.NET.Engine
 
         private ImmutableDictionary<(int, int), IStaticEntity> _entities = ImmutableDictionary<(int, int), IStaticEntity>.Empty;
 
+        public void Set(int column, int row, IStaticEntity entity)
+        {
+            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
+            {
+                _entities = _entities.Remove((column, row));
+            }
+            StoreEntity(column, row, entity);
+            entity.Replaced();
+
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void Add(int column, int row, IStaticEntity entity)
         {
             if (_entities.TryGetValue((column, row), out IStaticEntity? track))

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
-    [Order(1000)]
+    [Order(4)]
     public class SignalFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
@@ -15,12 +15,21 @@ namespace Trains.NET.Engine.Tracks
 
         public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
         {
-            if (!_terrainMap.Get(column, row).IsWater &&
-                track.Direction is TrackDirection.Horizontal or TrackDirection.Vertical)
+            if (!_terrainMap.Get(column, row).IsWater)
             {
-                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.Go };
-                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.TemporaryStop };
-                yield return new Signal() { Direction = track.Direction, SignalState = SignalState.Stop };
+                var neighbours = track.GetAllNeighbors();
+                if (neighbours.Left is not null || neighbours.Right is not null)
+                {
+                    yield return new Signal() { Direction = TrackDirection.Horizontal, SignalState = SignalState.Go };
+                    yield return new Signal() { Direction = TrackDirection.Horizontal, SignalState = SignalState.TemporaryStop };
+                    yield return new Signal() { Direction = TrackDirection.Horizontal, SignalState = SignalState.Stop };
+                }
+                if (neighbours.Up is not null || neighbours.Down is not null)
+                {
+                    yield return new Signal() { Direction = TrackDirection.Vertical, SignalState = SignalState.Go };
+                    yield return new Signal() { Direction = TrackDirection.Vertical, SignalState = SignalState.TemporaryStop };
+                    yield return new Signal() { Direction = TrackDirection.Vertical, SignalState = SignalState.Stop };
+                }
             }
         }
 
@@ -31,7 +40,5 @@ namespace Trains.NET.Engine.Tracks
             entity = null;
             return false;
         }
-
-
     }
 }

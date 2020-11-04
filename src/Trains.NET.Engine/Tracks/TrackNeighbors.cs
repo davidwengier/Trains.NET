@@ -1,4 +1,6 @@
-﻿namespace Trains.NET.Engine
+﻿using System.Collections.Generic;
+
+namespace Trains.NET.Engine
 {
     public class TrackNeighbors
     {
@@ -6,6 +8,17 @@
         public Track? Up { get; }
         public Track? Right { get; }
         public Track? Down { get; }
+
+        public IEnumerable<Track> All
+        {
+            get
+            {
+                if (this.Up is not null) yield return this.Up;
+                if (this.Left is not null) yield return this.Left;
+                if (this.Right is not null) yield return this.Right;
+                if (this.Down is not null) yield return this.Down;
+            }
+        }
 
         public int Count => (this.Up == null ? 0 : 1) +
                 (this.Down == null ? 0 : 1) +

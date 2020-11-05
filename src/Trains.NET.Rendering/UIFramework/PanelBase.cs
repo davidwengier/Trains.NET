@@ -152,6 +152,14 @@ namespace Trains.NET.Rendering.UI
                 PreRender(canvas);
             }
 
+            if (this.Position == PanelPosition.Floating)
+            {
+                this.Left = Math.Max(10, this.Left);
+                this.Left = Math.Min(width - GetPanelWidth() - 10, this.Left);
+                this.Top = Math.Max(10, this.Top);
+                this.Top = Math.Min(height - GetPanelHeight() - 10, this.Top);
+            }
+
             canvas.Translate(0, this.Top);
 
             _titleWidth = 0;

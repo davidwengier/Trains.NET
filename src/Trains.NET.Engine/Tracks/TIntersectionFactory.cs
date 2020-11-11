@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
@@ -7,8 +6,20 @@ namespace Trains.NET.Engine.Tracks
     [Order(2)]
     public class TIntersectionFactory : IStaticEntityFactory<Track>
     {
+        private readonly ITerrainMap _terrainMap;
+
+        public TIntersectionFactory(ITerrainMap terrainMap)
+        {
+            _terrainMap = terrainMap;
+        }
+
         public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
         {
+            if (_terrainMap.Get(column, row).IsWater)
+            {
+                yield break;
+            }
+
             var neighbours = track.GetAllNeighbors();
             if (neighbours.Count < 3)
             {

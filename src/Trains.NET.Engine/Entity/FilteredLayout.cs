@@ -69,9 +69,9 @@ namespace Trains.NET.Engine
             _layout.Set(column, row, entity);
         }
 
-        public void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories)
+        public void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories, bool isPartOfDrag)
         {
-            T? entity = CreateNewStaticEntity(column, row, entityFactories);
+            T? entity = CreateNewStaticEntity(column, row, entityFactories, isPartOfDrag);
 
             if (entity is null)
             {
@@ -80,11 +80,11 @@ namespace Trains.NET.Engine
             _layout.Add(column, row, entity);
         }
 
-        private static T? CreateNewStaticEntity(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories)
+        private static T? CreateNewStaticEntity(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories, bool isPartOfDrag)
         {
             foreach (var factory in entityFactories)
             {
-                if (factory.TryCreateEntity(column, row, out var entity))
+                if (factory.TryCreateEntity(column, row, isPartOfDrag, out var entity))
                 {
                     return entity;
                 }
@@ -96,6 +96,11 @@ namespace Trains.NET.Engine
         {
             _layout.TryGet(column, row, out IStaticEntity? entity);
             return entity == null || entity is T;
+        }
+
+        public ILayout ToLayout()
+        {
+            return _layout;
         }
     }
 }

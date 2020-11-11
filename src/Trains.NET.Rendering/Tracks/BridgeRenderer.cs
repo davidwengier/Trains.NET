@@ -58,9 +58,6 @@ namespace Trains.NET.Rendering
                     case TrackDirection.Vertical:
                         DrawHorizontalBridge(canvas);
                         break;
-                    case TrackDirection.Cross:
-                        DrawCrossBridge(canvas);
-                        break;
                     case TrackDirection.LeftDown:
                     case TrackDirection.LeftUp:
                     case TrackDirection.RightDown:
@@ -165,7 +162,6 @@ namespace Trains.NET.Rendering
         {
             TrackDirection.Undefined => 0,
             TrackDirection.Horizontal => 0,
-            TrackDirection.Cross => 0,
             TrackDirection.Vertical => 90,
 
             TrackDirection.LeftUp => 0,

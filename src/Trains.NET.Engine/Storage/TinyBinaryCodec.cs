@@ -251,8 +251,7 @@ namespace Trains.NET.Engine
             { TrackEncoding.RightUpDown, TrackDirection.RightUp_RightDown },
             { TrackEncoding.LeftRightDown, TrackDirection.RightDown_LeftDown },
             { TrackEncoding.LeftUpDown, TrackDirection.LeftDown_LeftUp },
-            { TrackEncoding.LeftRightUp, TrackDirection.LeftUp_RightUp },
-            { TrackEncoding.Cross, TrackDirection.Cross }
+            { TrackEncoding.LeftRightUp, TrackDirection.LeftUp_RightUp }
         };
 
         private enum TrackEncoding : ushort

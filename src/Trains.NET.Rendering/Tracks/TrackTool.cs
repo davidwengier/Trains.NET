@@ -26,7 +26,7 @@ namespace Trains.NET.Rendering
             }
             else
             {
-                _entityCollection.Add(column, row, _entityFactories);
+                _entityCollection.Add(column, row, _entityFactories, isPartOfDrag);
                 _entityCollection.SelectedEntity = null;
             }
         }

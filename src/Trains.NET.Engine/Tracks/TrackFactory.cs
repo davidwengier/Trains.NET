@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
-    [Order(1)]
+    [Order(3)]
     public class TrackFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
@@ -13,7 +13,7 @@ namespace Trains.NET.Engine.Tracks
             _terrainMap = terrainMap;
         }
 
-        public bool TryCreateEntity(int column, int row, [NotNullWhen(returnValue: true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(returnValue: true)] out Track? entity)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {

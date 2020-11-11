@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
 using Trains.NET.Rendering.UI;
 
@@ -51,7 +52,7 @@ namespace Trains.NET.Rendering
 
             int maxButtons = 0;
             _multiButtons.Clear();
-            foreach (var factory in _entityFactories)
+            foreach (var factory in _entityFactories.Reverse())
             {
                 var buttons = new List<ButtonBase>();
                 foreach (Track newEntity in factory.GetPossibleReplacements(column, row, track))

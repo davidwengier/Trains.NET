@@ -61,9 +61,6 @@ namespace Trains.NET.Rendering
                 case TrackDirection.Vertical:
                     DrawVertical(canvas);
                     break;
-                case TrackDirection.Cross:
-                    DrawCross(canvas);
-                    break;
                 case TrackDirection.LeftUp:
                 case TrackDirection.RightUp:
                 case TrackDirection.RightDown:
@@ -95,7 +92,7 @@ namespace Trains.NET.Rendering
 
             }
         }
-        private void DrawCross(ICanvas canvas)
+        public void DrawCross(ICanvas canvas)
         {
             canvas.DrawPath(_horizontalPlankPath, _plankPaint);
 

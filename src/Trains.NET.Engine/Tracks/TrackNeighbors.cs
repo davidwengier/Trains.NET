@@ -41,5 +41,36 @@ namespace Trains.NET.Engine
             this.Right = right;
             this.Down = down;
         }
+
+        public static TrackNeighbors GetConnectedNeighbours(ILayout trackLayout, int column, int row, bool emptyIsConsideredConnected = false)
+        {
+            trackLayout.TryGet(column, row, out Track? current);
+
+            bool isConnectedLeft;
+            bool isConnectedUp;
+            bool isConnectedRight;
+            bool isConnectedDown;
+            if (current is null)
+            {
+                isConnectedLeft = emptyIsConsideredConnected;
+                isConnectedUp = emptyIsConsideredConnected;
+                isConnectedRight = emptyIsConsideredConnected;
+                isConnectedDown = emptyIsConsideredConnected;
+            }
+            else
+            {
+                isConnectedLeft = current.IsConnectedLeft();
+                isConnectedUp = current.IsConnectedUp();
+                isConnectedRight = current.IsConnectedRight();
+                isConnectedDown = current.IsConnectedDown();
+            }
+
+            return new TrackNeighbors(
+                trackLayout.TryGet(column - 1, row, out Track? left) && isConnectedLeft && left.IsConnectedRight() ? left : null,
+                trackLayout.TryGet(column, row - 1, out Track? up) && isConnectedUp && up.IsConnectedDown() ? up : null,
+                trackLayout.TryGet(column + 1, row, out Track? right) && isConnectedRight && right.IsConnectedLeft() ? right : null,
+                trackLayout.TryGet(column, row + 1, out Track? down) && isConnectedDown && down.IsConnectedUp() ? down : null
+                );
+        }
     }
 }

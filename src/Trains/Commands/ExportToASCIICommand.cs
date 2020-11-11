@@ -19,7 +19,6 @@ namespace Trains.NET.Engine
             { TrackDirection.RightDown_LeftDown, '╦' },
             { TrackDirection.LeftDown_LeftUp, '╣' },
             { TrackDirection.LeftUp_RightUp, '╩' },
-            { TrackDirection.Cross, '╬' },
 
             { TrackDirection.Undefined, '?' }
         };

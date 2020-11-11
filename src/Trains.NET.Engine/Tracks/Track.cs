@@ -33,7 +33,7 @@ namespace Trains.NET.Engine
                 _ => false
             };
 
-        internal void Move(TrainPosition position)
+        internal virtual void Move(TrainPosition position)
         {
             switch (this.Direction)
             {
@@ -47,7 +47,6 @@ namespace Trains.NET.Engine
                 case TrackDirection.RightDown_LeftDown: MoveLeftRightDown(position); break;
                 case TrackDirection.LeftDown_LeftUp: MoveLeftUpDown(position); break;
                 case TrackDirection.LeftUp_RightUp: MoveLeftRightUp(position); break;
-                case TrackDirection.Cross: MoveCross(position); break;
                 default: throw new InvalidOperationException("I don't know what that track is!");
             }
         }
@@ -182,19 +181,6 @@ namespace Trains.NET.Engine
             }
         }
 
-        private static void MoveCross(TrainPosition position)
-        {
-            if ((position.Angle > 45.0f && position.Angle < 135.0f) ||
-                (position.Angle > 225.0f && position.Angle < 315.0f))
-            {
-                TrainMovement.MoveVertical(position);
-            }
-            else
-            {
-                TrainMovement.MoveHorizontal(position);
-            }
-        }
-
         private bool CanConnectRight()
             => !this.Happy || IsConnectedRight();
         private bool CanConnectDown()
@@ -204,52 +190,48 @@ namespace Trains.NET.Engine
         private bool CanConnectUp()
             => !this.Happy || IsConnectedUp();
 
-        private bool IsConnectedRight()
+        public virtual bool IsConnectedRight()
             => this.Direction switch
             {
                 TrackDirection.RightDown => true,
                 TrackDirection.RightUp => true,
                 TrackDirection.Horizontal => true,
-                TrackDirection.Cross => true,
                 TrackDirection.RightDown_LeftDown => true,
                 TrackDirection.LeftUp_RightUp => true,
                 TrackDirection.RightUp_RightDown => true,
                 _ => false
             };
 
-        private bool IsConnectedDown()
+        public virtual bool IsConnectedDown()
             => this.Direction switch
             {
                 TrackDirection.RightDown => true,
                 TrackDirection.LeftDown => true,
                 TrackDirection.Vertical => true,
-                TrackDirection.Cross => true,
                 TrackDirection.RightDown_LeftDown => true,
                 TrackDirection.LeftDown_LeftUp => true,
                 TrackDirection.RightUp_RightDown => true,
                 _ => false
             };
 
-        private bool IsConnectedLeft()
+        public virtual bool IsConnectedLeft()
             => this.Direction switch
             {
                 TrackDirection.LeftDown => true,
                 TrackDirection.LeftUp => true,
                 TrackDirection.Horizontal => true,
-                TrackDirection.Cross => true,
                 TrackDirection.RightDown_LeftDown => true,
                 TrackDirection.LeftUp_RightUp => true,
                 TrackDirection.LeftDown_LeftUp => true,
                 _ => false
             };
 
-        private bool IsConnectedUp()
+        public virtual bool IsConnectedUp()
             => this.Direction switch
             {
                 TrackDirection.LeftUp => true,
                 TrackDirection.RightUp => true,
                 TrackDirection.Vertical => true,
-                TrackDirection.Cross => true,
                 TrackDirection.LeftDown_LeftUp => true,
                 TrackDirection.LeftUp_RightUp => true,
                 TrackDirection.RightUp_RightDown => true,
@@ -270,7 +252,7 @@ namespace Trains.NET.Engine
             ReevaluateHappiness();
         }
 
-        public TrackDirection GetBestTrackDirection(bool ignoreHappyness)
+        public virtual TrackDirection GetBestTrackDirection(bool ignoreHappyness)
         {
             TrackNeighbors neighbors = GetNeighbors();
             TrackDirection newDirection = this.Direction;
@@ -279,10 +261,6 @@ namespace Trains.NET.Engine
             if (neighbors.Count == 0)
             {
                 newDirection = TrackDirection.Horizontal;
-            }
-            else if (neighbors.Count == 4)
-            {
-                newDirection = TrackDirection.Cross;
             }
             else if (!this.Happy || ignoreHappyness)
             {
@@ -352,12 +330,7 @@ namespace Trains.NET.Engine
         {
             _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
-            return new TrackNeighbors(
-                _trackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && IsConnectedLeft() && left.IsConnectedRight() ? left : null,
-                _trackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && IsConnectedUp() && up.IsConnectedDown() ? up : null,
-                _trackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && IsConnectedRight() && right.IsConnectedLeft() ? right : null,
-                _trackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && IsConnectedDown() && down.IsConnectedUp() ? down : null
-                );
+            return TrackNeighbors.GetConnectedNeighbours(_trackLayout, this.Column, this.Row);
         }
 
         public TrackNeighbors GetNeighbors()

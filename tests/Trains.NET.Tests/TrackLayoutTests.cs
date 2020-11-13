@@ -114,6 +114,7 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 2, true);
             TrackTool.Execute(2, 3, true);
             TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(2, 2, true);
             TrackTool.Execute(3, 2, true);
 
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
@@ -130,6 +131,7 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 2, true);
             TrackTool.Execute(3, 2, true);
             TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 2, true);
             TrackTool.Execute(2, 3, true);
 
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
@@ -142,17 +144,20 @@ namespace Trains.NET.Tests
         [Fact]
         public void CrossMiddleLast()
         {
-            TrackTool.Execute(1, 2, true);
-            TrackTool.Execute(3, 2, true);
+            TrackTool.Execute(1, 3, true);
             TrackTool.Execute(2, 1, true);
-            TrackTool.Execute(2, 3, true);
             TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(3, 3, true);
+            TrackTool.Execute(2, 4, true);
+            TrackTool.Execute(2, 5, true);
 
-            Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt(2, 2));
-            Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 3).Direction);
-            Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 2).Direction);
-            Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 2).Direction);
+            TrackTool.Execute(2, 3, false);
+
+            Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 2).Direction);
+            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt(2, 3));
+            Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 4).Direction);
+            Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(1, 3).Direction);
+            Assert.Equal(TrackDirection.Horizontal, TrackLayout.GetTrackAt(3, 3).Direction);
         }
 
         [Fact]
@@ -161,14 +166,16 @@ namespace Trains.NET.Tests
             TrackTool.Execute(1, 2, true);
             TrackTool.Execute(2, 2, true);
             TrackTool.Execute(3, 2, true);
-            TrackTool.Execute(2, 1, true);
 
             TrackTool.Execute(1, 4, true);
             TrackTool.Execute(2, 4, true);
             TrackTool.Execute(3, 4, true);
-            TrackTool.Execute(2, 5, true);
 
+            TrackTool.Execute(2, 5, true);
+            TrackTool.Execute(2, 4, true);
             TrackTool.Execute(2, 3, true);
+            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(2, 1, true);
 
             Assert.Equal(TrackDirection.Vertical, TrackLayout.GetTrackAt(2, 1).Direction);
             Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt(2, 2));

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
+using Trains.NET.Rendering;
 using Xunit;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
@@ -36,13 +39,26 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         private const int MovementPrecision = 4;
         private readonly ILayout _trackLayout;
         private readonly GameBoard _gameBoard;
+        private readonly TrackTool _trackTool;
 
         public PointToPoint(int movementSteps)
         {
             _movementSteps = movementSteps;
             _trackLayout = new Layout();
             var terrainMap = new TerrainMap();
+            terrainMap.Reset(1, 100, 100);
             _gameBoard = new GameBoard(_trackLayout, terrainMap, null, null);
+            var filteredLayout = new FilteredLayout<Track>(_trackLayout);
+
+            var entityFactories = new List<IStaticEntityFactory<Track>>
+            {
+                new CrossTrackFactory(terrainMap, filteredLayout),
+                new TIntersectionFactory(terrainMap),
+                new BridgeFactory(terrainMap),
+                new TrackFactory(terrainMap)
+            };
+
+            _trackTool = new TrackTool(filteredLayout, entityFactories);
         }
 
         [Theory]
@@ -272,19 +288,19 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         }
 
         [Theory]
-        [InlineData(2, 1, 90.0f, 2, 3)] // Down
-        [InlineData(2, 3, 270.0f, 2, 1)] // Up
-        [InlineData(1, 2, 0.0f, 3, 2)] // Right
-        [InlineData(3, 2, 180.0f, 1, 2)] // Left
+        [InlineData(2, 2, 90.0f, 2, 4)] // Down
+        [InlineData(2, 4, 270.0f, 2, 2)] // Up
+        [InlineData(1, 3, 0.0f, 3, 3)] // Right
+        [InlineData(3, 3, 180.0f, 1, 3)] // Left
         public void MovementTest_PointToPoint_HorizontalVertical_Cross_HorizontalVertical(int startingColumn, int startingRow, float angle, int expectedColumn, int expectedRow)
         {
-
-
-            _trackLayout.AddTrack(2, 1); // Vertical
-            _trackLayout.AddTrack(1, 2); // Horizontal
-            _trackLayout.AddTrack(2, 2); // Cross
-            _trackLayout.AddTrack(3, 2); // Horizontal
-            _trackLayout.AddTrack(2, 3); // Vertical
+            _trackTool.Execute(2, 1, true); // Vertical
+            _trackTool.Execute(2, 2, true); // Vertical
+            _trackTool.Execute(1, 3, true); // Horizontal
+            _trackTool.Execute(3, 3, true); // Horizontal
+            _trackTool.Execute(2, 4, true); // Vertical
+            _trackTool.Execute(2, 5, true); // Vertical
+            _trackTool.Execute(2, 3, false); // Cross
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 

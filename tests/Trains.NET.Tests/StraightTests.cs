@@ -43,6 +43,7 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 2, true);
             TrackTool.Execute(2, 3, true);
             TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(2, 2, true);
             TrackTool.Execute(3, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);

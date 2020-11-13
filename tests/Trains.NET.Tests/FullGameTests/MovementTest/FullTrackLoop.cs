@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Tracks;
+using Trains.NET.Rendering;
 using Xunit;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
@@ -91,31 +94,45 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         public void MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
         {
             var trackLayout = new Layout();
+            var filteredLayout = new FilteredLayout<Track>(trackLayout);
             var terrainMap = new TerrainMap();
+            terrainMap.Reset(1, 100, 100);
             var board = new GameBoard(trackLayout, terrainMap, null, null);
+            var entityFactories = new List<IStaticEntityFactory<Track>>
+            {
+                new CrossTrackFactory(terrainMap, filteredLayout),
+                new TIntersectionFactory(terrainMap),
+                new BridgeFactory(terrainMap),
+                new TrackFactory(terrainMap)
+            };
 
-            trackLayout.AddTrack(3, 2);
-            trackLayout.AddTrack(4, 2);
-            trackLayout.AddTrack(5, 2);
-            trackLayout.AddTrack(5, 1);
-            trackLayout.AddTrack(4, 1);
-            trackLayout.AddTrack(4, 3);
-            trackLayout.AddTrack(4, 4);
-            trackLayout.AddTrack(4, 5);
-            trackLayout.AddTrack(5, 5);
-            trackLayout.AddTrack(5, 4);
-            trackLayout.AddTrack(3, 4);
-            trackLayout.AddTrack(2, 4);
-            trackLayout.AddTrack(1, 4);
-            trackLayout.AddTrack(1, 5);
-            trackLayout.AddTrack(2, 5);
-            trackLayout.AddTrack(2, 3);
-            // Skip until end!
-            trackLayout.AddTrack(2, 1);
-            trackLayout.AddTrack(1, 1);
-            trackLayout.AddTrack(1, 2);
-            // Finish it off
-            trackLayout.AddTrack(2, 2);
+            var trackTool = new TrackTool(filteredLayout, entityFactories);
+
+            trackTool.Execute(3, 2, true);
+            trackTool.Execute(4, 2, true);
+            trackTool.Execute(5, 2, true);
+            trackTool.Execute(5, 1, true);
+            trackTool.Execute(4, 1, true);
+            trackTool.Execute(4, 2, true);
+            trackTool.Execute(4, 3, true);
+            trackTool.Execute(4, 4, true);
+            trackTool.Execute(4, 5, true);
+            trackTool.Execute(5, 5, true);
+            trackTool.Execute(5, 4, true);
+            trackTool.Execute(4, 4, true);
+            trackTool.Execute(3, 4, true);
+            trackTool.Execute(2, 4, true);
+            trackTool.Execute(1, 4, true);
+            trackTool.Execute(1, 5, true);
+            trackTool.Execute(2, 5, true);
+            trackTool.Execute(2, 4, true);
+            trackTool.Execute(2, 3, true);
+            trackTool.Execute(2, 2, true);
+            trackTool.Execute(2, 1, true);
+            trackTool.Execute(1, 1, true);
+            trackTool.Execute(1, 2, true);
+            trackTool.Execute(2, 2, true);
+            trackTool.Execute(3, 2, true);
 
             board.AddTrain(3, 2);
 

@@ -25,7 +25,7 @@ namespace Trains.NET.Tests
             Timer = new TestTimer();
             TrackLayout = new Layout();
             TerrainMap = new TerrainMap();
-            TerrainMap.Reset(0, 100, 100);
+            TerrainMap.Reset(1, 100, 100);
             GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer);
 
             FilteredLayout = new FilteredLayout<Track>(TrackLayout);
@@ -34,12 +34,31 @@ namespace Trains.NET.Tests
             {
                 new CrossTrackFactory(TerrainMap, FilteredLayout),
                 new TIntersectionFactory(TerrainMap),
+                new BridgeFactory(TerrainMap),
                 new TrackFactory(TerrainMap)
             };
 
             TrackTool = new TrackTool(FilteredLayout, entityFactories);
 
             _output = output;
+        }
+
+        protected void FlattenTerrain()
+        {
+            List<Terrain> terrain = new();
+            for (int c = 0; c < 100; c++)
+            {
+                for (int r = 0; r < 100; r++)
+                {
+                    terrain.Add(new Terrain
+                    {
+                        Column = c,
+                        Row = r,
+                        Height = Terrain.FirstLandHeight
+                    });
+                }
+            }
+            TerrainMap.Set(terrain);
         }
 
         protected void AssertTrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)

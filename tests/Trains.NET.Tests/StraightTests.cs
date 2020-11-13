@@ -13,9 +13,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingDown, 1, 1, 1, 3)]
         public void Vertical_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(1, 1);
-            TrackLayout.AddTrack(1, 2);
-            TrackLayout.AddTrack(1, 3);
+            TrackTool.Execute(1, 1, true);
+            TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(1, 3, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -25,9 +25,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingLeft, 3, 1, 1, 1)]
         public void Horizontal_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(1, 1);
-            TrackLayout.AddTrack(2, 1);
-            TrackLayout.AddTrack(3, 1);
+            TrackTool.Execute(1, 1, true);
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(3, 1, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -39,11 +39,11 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingDown, 2, 1, 2, 3)]
         public void Cross_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(2, 1);
-            TrackLayout.AddTrack(2, 2);
-            TrackLayout.AddTrack(2, 3);
-            TrackLayout.AddTrack(1, 2);
-            TrackLayout.AddTrack(3, 2);
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(2, 3, true);
+            TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(3, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }

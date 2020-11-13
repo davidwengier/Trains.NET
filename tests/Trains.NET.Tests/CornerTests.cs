@@ -13,9 +13,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingDown, 1, 1, 2, 2)]
         public void RightUp_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(1, 1);
-            TrackLayout.AddTrack(1, 2);
-            TrackLayout.AddTrack(2, 2);
+            TrackTool.Execute(1, 1, true);
+            TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(2, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -25,9 +25,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingDown, 2, 1, 1, 2)]
         public void LeftUp_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(2, 1);
-            TrackLayout.AddTrack(2, 2);
-            TrackLayout.AddTrack(1, 2);
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(1, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -37,9 +37,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingLeft, 2, 1, 1, 2)]
         public void RightDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(2, 1);
-            TrackLayout.AddTrack(1, 1);
-            TrackLayout.AddTrack(1, 2);
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(1, 1, true);
+            TrackTool.Execute(1, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }
@@ -49,9 +49,9 @@ namespace Trains.NET.Tests
         [InlineData(TrainAngleHelper.TrainFacingUp, 2, 2, 1, 1)]
         public void LeftDown_TrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
         {
-            TrackLayout.AddTrack(1, 1);
-            TrackLayout.AddTrack(2, 1);
-            TrackLayout.AddTrack(2, 2);
+            TrackTool.Execute(1, 1, true);
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 2, true);
 
             AssertTrainMovement(startAngle, startColumn, startRow, endColumn, endRow);
         }

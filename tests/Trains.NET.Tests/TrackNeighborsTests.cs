@@ -9,8 +9,6 @@ namespace Trains.NET.Tests
         [InlineData(TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, false, false, false, false)]
         [InlineData(TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, false, false, false, false)]
         [InlineData(TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, false, true, false, true)]
-        [InlineData(TrackDirection.Cross, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, true, true, true, true)]
-        [InlineData(TrackDirection.Cross, TrackDirection.RightUp_RightDown, TrackDirection.RightDown_LeftDown, TrackDirection.LeftDown_LeftUp, TrackDirection.LeftUp_RightUp, true, true, true, true)]
         [InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
         [InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
         public void GetConnectedNeighbors(TrackDirection centerDir, TrackDirection leftDir, TrackDirection upDir, TrackDirection rightDir, TrackDirection downDir, bool left, bool up, bool right, bool down)

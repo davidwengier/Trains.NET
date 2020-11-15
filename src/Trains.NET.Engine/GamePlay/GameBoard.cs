@@ -192,7 +192,8 @@ namespace Trains.NET.Engine
                     break;
                 }
 
-                if (track != nextTrack && !track.GetNeighbors().Contains(nextTrack)) // next track is not connected
+                var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, track.Column, track.Row, false, false);
+                if (track != nextTrack && !neighbours.Contains(nextTrack)) // next track is not connected
                 {
                     break;
                 }

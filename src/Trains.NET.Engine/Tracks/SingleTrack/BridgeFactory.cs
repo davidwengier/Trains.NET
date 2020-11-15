@@ -6,10 +6,12 @@ namespace Trains.NET.Engine.Tracks
     public class BridgeFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
+        private readonly ILayout<Track> _trackLayout;
 
-        public BridgeFactory(ITerrainMap terrainMap)
+        public BridgeFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout)
         {
             _terrainMap = terrainMap;
+            _trackLayout = trackLayout;
         }
 
         public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
@@ -19,35 +21,42 @@ namespace Trains.NET.Engine.Tracks
                 yield break;
             }
 
-            yield return new Bridge() { Direction = TrackDirection.Horizontal };
+            yield return new Bridge() { Direction = SingleTrackDirection.Horizontal };
             var neighbours = track.GetAllNeighbors();
             if (neighbours.Up is not null || neighbours.Down is not null)
             {
-                yield return new Bridge() { Direction = TrackDirection.Vertical };
+                yield return new Bridge() { Direction = SingleTrackDirection.Vertical };
             }
             if (neighbours.Up is not null && neighbours.Left is not null)
             {
-                yield return new Bridge() { Direction = TrackDirection.LeftUp };
+                yield return new Bridge() { Direction = SingleTrackDirection.LeftUp };
             }
             if (neighbours.Up is not null && neighbours.Right is not null)
             {
-                yield return new Bridge() { Direction = TrackDirection.RightUp };
+                yield return new Bridge() { Direction = SingleTrackDirection.RightUp };
             }
             if (neighbours.Down is not null && neighbours.Left is not null)
             {
-                yield return new Bridge() { Direction = TrackDirection.LeftDown };
+                yield return new Bridge() { Direction = SingleTrackDirection.LeftDown };
             }
             if (neighbours.Down is not null && neighbours.Right is not null)
             {
-                yield return new Bridge() { Direction = TrackDirection.RightDown };
+                yield return new Bridge() { Direction = SingleTrackDirection.RightDown };
             }
         }
 
         public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(returnValue: true)] out Track? entity)
         {
+            entity = null;
+
             if (!_terrainMap.Get(column, row).IsWater)
             {
-                entity = null;
+                return false;
+            }
+
+            // this factory is never used to override
+            if (_trackLayout.TryGet(column, row, out _))
+            {
                 return false;
             }
 

@@ -4,9 +4,9 @@ namespace Trains.NET.Rendering.Tracks
 {
     public class CrossTrackRenderer : SpecializedEntityRenderer<CrossTrack, Track>
     {
-        private readonly TrackRenderer _trackRenderer;
+        private readonly SingleTrackRenderer _trackRenderer;
 
-        public CrossTrackRenderer(TrackRenderer trackRenderer)
+        public CrossTrackRenderer(SingleTrackRenderer trackRenderer)
         {
             _trackRenderer = trackRenderer;
         }

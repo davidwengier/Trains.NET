@@ -52,7 +52,7 @@ namespace Trains.NET.Rendering
                                     Color = terrainColour,
                                 });
 
-                TrackNeighbors trackNeighbours = track.GetConnectedNeighbors();
+                var trackNeighbours = TrackNeighbors.GetConnectedNeighbours(_trackLayout.ToLayout(), track.Column, track.Row, false, false);
 
                 BuildEntrances(trackNeighbours.Up, Tunnel.Bottom, entrances);
                 BuildEntrances(trackNeighbours.Right, Tunnel.Left, entrances);

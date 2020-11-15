@@ -100,10 +100,10 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             var board = new GameBoard(trackLayout, terrainMap, null, null);
             var entityFactories = new List<IStaticEntityFactory<Track>>
             {
-                new CrossTrackFactory(terrainMap, filteredLayout),
-                new TIntersectionFactory(terrainMap),
+                new CrossTrackFactory(terrainMap, trackLayout),
+                new TIntersectionFactory(terrainMap, trackLayout),
                 new BridgeFactory(terrainMap),
-                new TrackFactory(terrainMap)
+                new SingleTrackFactory(terrainMap, filteredLayout)
             };
 
             var trackTool = new TrackTool(filteredLayout, entityFactories);

@@ -18,7 +18,7 @@ namespace Trains.NET.Rendering
         private const float WaterWashHeight = SupportHeight + SupportTopInset;
         private const float WaterWashLeftPosition = (CanvasSize - WaterWashWidth) / 2.0f;
 
-        private readonly TrackRenderer _trackRenderer;
+        private readonly SingleTrackRenderer _trackRenderer;
         private readonly IPath _cornerPlankPath;
         private readonly IPath _cornerRailPath;
         private static readonly PaintBrush s_waterWashPaint = new()
@@ -40,7 +40,7 @@ namespace Trains.NET.Rendering
             IsAntialias = true
         };
 
-        public BridgeRenderer(IPathFactory pathFactory, TrackRenderer trackRenderer)
+        public BridgeRenderer(IPathFactory pathFactory, SingleTrackRenderer trackRenderer)
         {
             _trackRenderer = trackRenderer;
             _cornerPlankPath = BuildCornerPlankPath(pathFactory);
@@ -54,27 +54,21 @@ namespace Trains.NET.Rendering
                 canvas.RotateDegrees(GetDirectionRotation(track.Direction), CanvasSize / 2, CanvasSize / 2);
                 switch (track.Direction)
                 {
-                    case TrackDirection.Horizontal:
-                    case TrackDirection.Vertical:
+                    case SingleTrackDirection.Horizontal:
+                    case SingleTrackDirection.Vertical:
                         DrawHorizontalBridge(canvas);
                         break;
-                    case TrackDirection.LeftDown:
-                    case TrackDirection.LeftUp:
-                    case TrackDirection.RightDown:
-                    case TrackDirection.RightUp:
+                    case SingleTrackDirection.LeftDown:
+                    case SingleTrackDirection.LeftUp:
+                    case SingleTrackDirection.RightDown:
+                    case SingleTrackDirection.RightUp:
                         DrawCornerBridge(canvas);
-                        break;
-                    case TrackDirection.RightUp_RightDown:
-                    case TrackDirection.RightDown_LeftDown:
-                    case TrackDirection.LeftDown_LeftUp:
-                    case TrackDirection.LeftUp_RightUp:
-                        DrawIntersectionBridge(canvas);
                         break;
                 }
             }
             using (canvas.Scope())
             {
-                _trackRenderer.Render(canvas, track);
+                _trackRenderer.DrawSingleTrack(canvas, track);
             }
         }
 
@@ -83,17 +77,6 @@ namespace Trains.NET.Rendering
             // Drawn from the perspective of Horizontal left-to-right
             DrawHorizontalSupports(canvas);
             DrawHorizontalRails(canvas);
-            DrawHorizontalPlanks(canvas);
-        }
-        private static void DrawCrossBridge(ICanvas canvas)
-        {
-            DrawHorizontalRails(canvas);
-            using (canvas.Scope())
-            {
-                canvas.RotateDegrees(90, CanvasSize / 2, CanvasSize / 2);
-                DrawHorizontalRails(canvas);
-                DrawHorizontalPlanks(canvas);
-            }
             DrawHorizontalPlanks(canvas);
         }
         private void DrawCornerBridge(ICanvas canvas)
@@ -144,38 +127,21 @@ namespace Trains.NET.Rendering
 
             return path;
         }
-        private static void DrawIntersectionBridge(ICanvas canvas)
-        {
-            // Drawn from the perspective of a LeftUp_RightUp intersection
-            DrawHorizontalSupports(canvas);
-            DrawHorizontalRails(canvas);
-            using (canvas.Scope())
-            {
-                canvas.RotateDegrees(90, CanvasSize / 2, CanvasSize / 2);
-                DrawHorizontalSupports(canvas);
-                DrawHorizontalRails(canvas, CanvasSize - RailingInset);
-                DrawHorizontalPlanks(canvas, CanvasSize - BridgeInset);
-            }
-            DrawHorizontalPlanks(canvas);
-        }
-        private static int GetDirectionRotation(TrackDirection direction) => direction switch
-        {
-            TrackDirection.Undefined => 0,
-            TrackDirection.Horizontal => 0,
-            TrackDirection.Vertical => 90,
 
-            TrackDirection.LeftUp => 0,
-            TrackDirection.RightUp => 90,
-            TrackDirection.RightDown => 180,
-            TrackDirection.LeftDown => 270,
+        private static int GetDirectionRotation(SingleTrackDirection direction) => direction switch
+        {
+            SingleTrackDirection.Undefined => 0,
+            SingleTrackDirection.Horizontal => 0,
+            SingleTrackDirection.Vertical => 90,
 
-            TrackDirection.LeftUp_RightUp => 0,
-            TrackDirection.RightUp_RightDown => 90,
-            TrackDirection.RightDown_LeftDown => 180,
-            TrackDirection.LeftDown_LeftUp => 270,
+            SingleTrackDirection.LeftUp => 0,
+            SingleTrackDirection.RightUp => 90,
+            SingleTrackDirection.RightDown => 180,
+            SingleTrackDirection.LeftDown => 270,
 
             _ => 0,
         };
+
         private static void DrawHorizontalSupports(ICanvas canvas)
         {
             // Support 1
@@ -186,6 +152,7 @@ namespace Trains.NET.Rendering
             canvas.DrawRect(WaterWashLeftPosition, CanvasSize - WaterWashHeight, WaterWashWidth, WaterWashHeight, s_waterWashPaint);
             canvas.DrawRect(SupportLeftPosition, CanvasSize - SupportHeight - SupportTopInset, SupportWidth, SupportHeight, s_darkBrownWood);
         }
+
         private static void DrawCornerSupports(ICanvas canvas)
         {
             using (canvas.Scope())
@@ -199,6 +166,7 @@ namespace Trains.NET.Rendering
                 canvas.DrawRect(-SupportWidth / 2.0f, CanvasSize - SupportHeight - SupportTopInset, SupportWidth, SupportHeight, s_darkBrownWood);
             }
         }
+
         private static void DrawHorizontalRails(ICanvas canvas, float width = CanvasSize)
         {
             // Railing base 1
@@ -207,15 +175,18 @@ namespace Trains.NET.Rendering
             // Railing base 2
             canvas.DrawRect(0, CanvasSize - RailingInset - RailingBaseWidth, width, RailingBaseWidth, s_darkBrownWood);
         }
+
         private void DrawCornerRails(ICanvas canvas)
         {
             canvas.DrawPath(_cornerRailPath, s_darkBrownWood);
         }
+
         private static void DrawHorizontalPlanks(ICanvas canvas, float width = CanvasSize)
         {
             // Bridge Planks
             canvas.DrawRect(0, BridgeInset, width, BridgeWidth, s_plankWood);
         }
+
         private void DrawCornerPlanks(ICanvas canvas)
         {
             canvas.DrawPath(_cornerPlankPath, s_plankWood);

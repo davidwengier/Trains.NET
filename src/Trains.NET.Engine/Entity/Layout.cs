@@ -28,15 +28,15 @@ namespace Trains.NET.Engine
         {
             if (_entities.TryGetValue((column, row), out IStaticEntity? track))
             {
-                track.Updated();
+                Set(column, row, entity);
             }
             else
             {
                 StoreEntity(column, row, entity);
                 entity.Created();
-            }
 
-            CollectionChanged?.Invoke(this, EventArgs.Empty);
+                CollectionChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void StoreEntity(int column, int row, IStaticEntity entity)

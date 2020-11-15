@@ -2,7 +2,7 @@
 {
     public class CrossTrack : Track
     {
-        internal override void Move(TrainPosition position)
+        public override void Move(TrainPosition position)
         {
             if ((position.Angle > 45.0f && position.Angle < 135.0f) ||
                 (position.Angle > 225.0f && position.Angle < 315.0f))

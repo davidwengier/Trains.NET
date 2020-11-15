@@ -105,9 +105,9 @@ namespace Trains.Emoji
 
         private void DrawTracks(string folderName, IPixelMapper pixelMapper)
         {
-            foreach (TrackDirection direction in (TrackDirection[])Enum.GetValues(typeof(TrackDirection)))
+            foreach (SingleTrackDirection direction in (SingleTrackDirection[])Enum.GetValues(typeof(SingleTrackDirection)))
             {
-                if (direction == TrackDirection.Undefined) continue;
+                if (direction == SingleTrackDirection.Undefined) continue;
 
                 foreach (var trackRenderer in _trackRenderers)
                 {
@@ -140,14 +140,15 @@ namespace Trains.Emoji
             bitmap.Encode(s, SKEncodedImageFormat.Png, 100);
         }
 
-        public static void DrawTracks(string prefix, TrackDirection direction, string folderName, IPixelMapper pixelMapper, IRenderer<Track> trackRenderer)
+        public static void DrawTracks(string prefix, SingleTrackDirection direction, string folderName, IPixelMapper pixelMapper, IRenderer<Track> trackRenderer)
         {
             // TODO: This needs to be way smarter about track types
             var track = new Bridge() { Direction = direction };
             Draw(prefix + direction, folderName, pixelMapper, canvas => RenderTrack(canvas, trackRenderer, track));
             if (track.HasMultipleStates)
             {
-                track.AlternateState = true;
+                // TODO: This is broken
+                track.NextState();
                 Draw(prefix + direction + "Alt", folderName, pixelMapper, canvas => RenderTrack(canvas, trackRenderer, track));
             }
         }
@@ -162,13 +163,13 @@ namespace Trains.Emoji
 
         public void DrawTrains(Train train, string prefix, string folderName, IPixelMapper pixelMapper, IRenderer<Track>? trackRenderer)
         {
-            DrawTrain(train, $"{prefix}Up", folderName, pixelMapper, TrackDirection.Vertical, 270, trackRenderer);
-            DrawTrain(train, $"{prefix}Down", folderName, pixelMapper, TrackDirection.Vertical, 90, trackRenderer);
-            DrawTrain(train, $"{prefix}Left", folderName, pixelMapper, TrackDirection.Horizontal, 180, trackRenderer);
-            DrawTrain(train, $"{prefix}Right", folderName, pixelMapper, TrackDirection.Horizontal, 0, trackRenderer);
+            DrawTrain(train, $"{prefix}Up", folderName, pixelMapper, SingleTrackDirection.Vertical, 270, trackRenderer);
+            DrawTrain(train, $"{prefix}Down", folderName, pixelMapper, SingleTrackDirection.Vertical, 90, trackRenderer);
+            DrawTrain(train, $"{prefix}Left", folderName, pixelMapper, SingleTrackDirection.Horizontal, 180, trackRenderer);
+            DrawTrain(train, $"{prefix}Right", folderName, pixelMapper, SingleTrackDirection.Horizontal, 0, trackRenderer);
         }
 
-        public void DrawTrain(Train train, string name, string folderName, IPixelMapper pixelMapper, TrackDirection trackDirection, float angle, IRenderer<Track>? trackRenderer) =>
+        public void DrawTrain(Train train, string name, string folderName, IPixelMapper pixelMapper, SingleTrackDirection trackDirection, float angle, IRenderer<Track>? trackRenderer) =>
             Draw(name, folderName, pixelMapper, canvas =>
             {
                 if (trackRenderer != null)

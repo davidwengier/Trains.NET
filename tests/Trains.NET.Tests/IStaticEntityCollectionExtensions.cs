@@ -6,7 +6,7 @@ namespace Trains.NET.Tests
     {
         public static void AddTrack(this ILayout col, int column, int row)
         {
-            var track = new Track()
+            var track = new SingleTrack()
             {
                 Column = column,
                 Row = row
@@ -14,9 +14,9 @@ namespace Trains.NET.Tests
             col.Add(column, row, track);
         }
 
-        public static void AddTrack(this ILayout col, int column, int row, TrackDirection direction)
+        public static void AddTrack(this ILayout col, int column, int row, SingleTrackDirection direction)
         {
-            var track = new Track()
+            var track = new SingleTrack()
             {
                 Column = column,
                 Row = row,
@@ -25,9 +25,9 @@ namespace Trains.NET.Tests
             col.Add(column, row, track);
         }
 
-        public static Track GetTrackAt(this ILayout trackLayout, int column, int row)
+        public static T GetTrackAt<T>(this ILayout trackLayout, int column, int row) where T : Track
         {
-            trackLayout.TryGet(column, row, out Track track);
+            trackLayout.TryGet(column, row, out T track);
             return track;
         }
     }

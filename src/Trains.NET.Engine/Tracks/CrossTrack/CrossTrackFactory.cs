@@ -7,9 +7,9 @@ namespace Trains.NET.Engine.Tracks
     public class CrossTrackFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
-        private readonly ILayout<Track> _layout;
+        private readonly ILayout _layout;
 
-        public CrossTrackFactory(ITerrainMap terrainMap, ILayout<Track> layout)
+        public CrossTrackFactory(ITerrainMap terrainMap, ILayout layout)
         {
             _terrainMap = terrainMap;
             _layout = layout;
@@ -31,10 +31,16 @@ namespace Trains.NET.Engine.Tracks
 
         public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(true)] out Track? entity)
         {
-            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout.ToLayout(), column, row, emptyIsConsideredConnected: true);
+            if (_terrainMap.Get(column, row).IsWater)
+            {
+                entity = null;
+                return false;
+            }
+
+            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: isPartOfDrag);
 
             // if they click and its the perfect spot for a cross track, just do it
-            if (!isPartOfDrag && neighbours.Count == 4)
+            if (neighbours.Count == 4)
             {
                 entity = new CrossTrack();
                 return true;
@@ -42,41 +48,35 @@ namespace Trains.NET.Engine.Tracks
 
             if (isPartOfDrag)
             {
-                if (neighbours.Count == 4)
-                {
-                    entity = new CrossTrack();
-                    return true;
-                }
-
                 // if they're dragging, we're looking for them to complete an intersection
-                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout.ToLayout(), column - 1, row);
+                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column - 1, row);
                 if (neighbours.Count == 3 && neighbours.Right is null)
                 {
-                    entity = new Track() { Direction = TrackDirection.Horizontal };
+                    entity = new SingleTrack() { Direction = SingleTrackDirection.Horizontal };
                     _layout.Set(column - 1, row, new CrossTrack());
                     return true;
                 }
 
-                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout.ToLayout(), column, row - 1);
+                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row - 1);
                 if (neighbours.Count == 3 && neighbours.Down is null)
                 {
-                    entity = new Track() { Direction = TrackDirection.Vertical };
+                    entity = new SingleTrack() { Direction = SingleTrackDirection.Vertical };
                     _layout.Set(column, row - 1, new CrossTrack());
                     return true;
                 }
 
-                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout.ToLayout(), column + 1, row);
+                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column + 1, row);
                 if (neighbours.Count == 3 && neighbours.Left is null)
                 {
-                    entity = new Track() { Direction = TrackDirection.Horizontal };
+                    entity = new SingleTrack() { Direction = SingleTrackDirection.Horizontal };
                     _layout.Set(column + 1, row, new CrossTrack());
                     return true;
                 }
 
-                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout.ToLayout(), column, row + 1);
+                neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row + 1);
                 if (neighbours.Count == 3 && neighbours.Up is null)
                 {
-                    entity = new Track() { Direction = TrackDirection.Vertical };
+                    entity = new SingleTrack() { Direction = SingleTrackDirection.Vertical };
                     _layout.Set(column, row + 1, new CrossTrack());
                     return true;
                 }

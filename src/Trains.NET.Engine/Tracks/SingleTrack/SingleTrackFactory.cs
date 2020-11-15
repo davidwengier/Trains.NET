@@ -4,24 +4,33 @@ using System.Diagnostics.CodeAnalysis;
 namespace Trains.NET.Engine.Tracks
 {
     [Order(3)]
-    public class TrackFactory : IStaticEntityFactory<Track>
+    public class SingleTrackFactory : IStaticEntityFactory<Track>
     {
         private readonly ITerrainMap _terrainMap;
+        private readonly ILayout<Track> _trackLayout;
 
-        public TrackFactory(ITerrainMap terrainMap)
+        public SingleTrackFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout)
         {
             _terrainMap = terrainMap;
+            _trackLayout = trackLayout;
         }
 
         public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(returnValue: true)] out Track? entity)
         {
+            entity = null;
+
             if (_terrainMap.Get(column, row).IsWater)
             {
-                entity = null;
                 return false;
             }
 
-            entity = new Track();
+            // this factory is never used to override
+            if (_trackLayout.TryGet(column, row, out _))
+            {
+                return false;
+            }
+
+            entity = new SingleTrack();
             return true;
         }
 
@@ -32,27 +41,27 @@ namespace Trains.NET.Engine.Tracks
                 yield break;
             }
 
-            yield return new Track() { Direction = TrackDirection.Horizontal };
+            yield return new SingleTrack() { Direction = SingleTrackDirection.Horizontal };
             var neighbours = track.GetAllNeighbors();
             if (neighbours.Up is not null || neighbours.Down is not null)
             {
-                yield return new Track() { Direction = TrackDirection.Vertical };
+                yield return new SingleTrack() { Direction = SingleTrackDirection.Vertical };
             }
             if (neighbours.Up is not null && neighbours.Left is not null)
             {
-                yield return new Track() { Direction = TrackDirection.LeftUp };
+                yield return new SingleTrack() { Direction = SingleTrackDirection.LeftUp };
             }
             if (neighbours.Up is not null && neighbours.Right is not null)
             {
-                yield return new Track() { Direction = TrackDirection.RightUp };
+                yield return new SingleTrack() { Direction = SingleTrackDirection.RightUp };
             }
             if (neighbours.Down is not null && neighbours.Left is not null)
             {
-                yield return new Track() { Direction = TrackDirection.LeftDown };
+                yield return new SingleTrack() { Direction = SingleTrackDirection.LeftDown };
             }
             if (neighbours.Down is not null && neighbours.Right is not null)
             {
-                yield return new Track() { Direction = TrackDirection.RightDown };
+                yield return new SingleTrack() { Direction = SingleTrackDirection.RightDown };
             }
         }
     }

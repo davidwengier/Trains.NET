@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering
 {
     [Order(100)]
-    public class TrackRenderer : IStaticEntityRenderer<Track>
+    public class SingleTrackRenderer : SpecializedEntityRenderer<SingleTrack, Track>
     {
         private readonly ITrackParameters _trackParameters;
 
@@ -17,7 +17,7 @@ namespace Trains.NET.Rendering
         private readonly IPath _horizontalTrackPath;
         private readonly IPath _horizontalPlankPath;
 
-        public TrackRenderer(ITrackParameters trackParameters, ITrackPathBuilder trackPathBuilder)
+        public SingleTrackRenderer(ITrackParameters trackParameters, ITrackPathBuilder trackPathBuilder)
         {
             _trackParameters = trackParameters;
 
@@ -50,25 +50,26 @@ namespace Trains.NET.Rendering
             };
         }
 
-        public void Render(ICanvas canvas, Track track)
+        protected override void Render(ICanvas canvas, SingleTrack track)
+        {
+            DrawSingleTrack(canvas, track);
+        }
+
+        public void DrawSingleTrack(ICanvas canvas, SingleTrack track)
         {
             switch (track.Direction)
             {
-                case TrackDirection.Undefined:
-                case TrackDirection.Horizontal:
+                case SingleTrackDirection.Undefined:
+                case SingleTrackDirection.Horizontal:
                     DrawHorizontal(canvas);
                     break;
-                case TrackDirection.Vertical:
+                case SingleTrackDirection.Vertical:
                     DrawVertical(canvas);
                     break;
-                case TrackDirection.LeftUp:
-                case TrackDirection.RightUp:
-                case TrackDirection.RightDown:
-                case TrackDirection.LeftDown:
-                case TrackDirection.RightUp_RightDown:
-                case TrackDirection.RightDown_LeftDown:
-                case TrackDirection.LeftDown_LeftUp:
-                case TrackDirection.LeftUp_RightUp:
+                case SingleTrackDirection.LeftUp:
+                case SingleTrackDirection.RightUp:
+                case SingleTrackDirection.RightDown:
+                case SingleTrackDirection.LeftDown:
                     DrawCorner(canvas, track);
                     break;
                 default:
@@ -106,39 +107,33 @@ namespace Trains.NET.Rendering
             DrawHorizontalTracks(canvas);
         }
 
-        private void DrawCorner(ICanvas canvas, Track track)
+        private void DrawCorner(ICanvas canvas, SingleTrack track)
         {
             using (canvas.Scope())
             {
-                canvas.RotateDegrees(track.Direction.TrackRotationAngle(), 50.0f, 50.0f);
-
-                if (track.HasMultipleStates && track.AlternateState)
+                var rotationAndgle = track.Direction switch
                 {
-                    canvas.Scale(-1, 1);
-                    canvas.Translate(-100.0f, 0);
-                }
+                    SingleTrackDirection.LeftUp => 0,
+                    SingleTrackDirection.RightUp => 90,
+                    SingleTrackDirection.RightDown => 180,
+                    SingleTrackDirection.LeftDown => 270,
+                    _ => 0
+                };
 
-                canvas.DrawPath(_cornerPlankPath, _plankPaint);
+                canvas.RotateDegrees(rotationAndgle, 50.0f, 50.0f);
 
-                if (track.HasMultipleStates)
-                {
-                    using (canvas.Scope())
-                    {
-                        canvas.RotateDegrees(90, 50.0f, 50.0f);
-
-                        canvas.DrawPath(_cornerSinglePlankPath, _plankPaint);
-
-                        canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
-
-                        DrawCornerTrack(canvas);
-                    }
-                }
+                DrawCornerPlankPath(canvas, false);
 
                 DrawCornerTrack(canvas);
             }
         }
 
-        private void DrawCornerTrack(ICanvas canvas)
+        public void DrawCornerPlankPath(ICanvas canvas, bool singlePlank)
+        {
+            canvas.DrawPath(singlePlank ? _cornerSinglePlankPath : _cornerPlankPath, _plankPaint);
+        }
+
+        public void DrawCornerTrack(ICanvas canvas)
         {
             canvas.DrawPath(_cornerTrackPath, _trackEdge);
             canvas.DrawPath(_cornerTrackPath, _trackClear);

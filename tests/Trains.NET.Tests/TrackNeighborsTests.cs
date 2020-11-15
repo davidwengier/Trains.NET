@@ -6,12 +6,12 @@ namespace Trains.NET.Tests
     public class TrackNeighborsTests
     {
         [Theory]
-        [InlineData(TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, false, false, false, false)]
-        [InlineData(TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, false, false, false, false)]
-        [InlineData(TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, TrackDirection.Vertical, false, true, false, true)]
-        [InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
-        [InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
-        public void GetConnectedNeighbors(TrackDirection centerDir, TrackDirection leftDir, TrackDirection upDir, TrackDirection rightDir, TrackDirection downDir, bool left, bool up, bool right, bool down)
+        [InlineData(SingleTrackDirection.Horizontal, SingleTrackDirection.Vertical, SingleTrackDirection.Horizontal, SingleTrackDirection.Vertical, SingleTrackDirection.Horizontal, false, false, false, false)]
+        [InlineData(SingleTrackDirection.Horizontal, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, false, false, false, false)]
+        [InlineData(SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, SingleTrackDirection.Vertical, false, true, false, true)]
+        //[InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Vertical, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
+        //[InlineData(TrackDirection.RightDown_LeftDown, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Horizontal, TrackDirection.Vertical, true, false, true, true)]
+        public void GetConnectedNeighbors(SingleTrackDirection centerDir, SingleTrackDirection leftDir, SingleTrackDirection upDir, SingleTrackDirection rightDir, SingleTrackDirection downDir, bool left, bool up, bool right, bool down)
         {
             // The real layout evaluates the best direction, so we can't use it. We just want storage
             var layout = new TestLayout();
@@ -23,8 +23,8 @@ namespace Trains.NET.Tests
             layout.AddTrack(6, 5, rightDir);
             layout.AddTrack(5, 6, downDir);
 
-            var track = layout.GetTrackAt(5, 5);
-            var neighbors = track.GetConnectedNeighbors();
+            var track = layout.GetTrackAt<SingleTrack>(5, 5);
+            var neighbors = TrackNeighbors.GetConnectedNeighbours(layout, track.Column, track.Row, false, false);
 
             Assert.Equal(left, neighbors.Left != null);
             Assert.Equal(up, neighbors.Up != null);
@@ -76,7 +76,7 @@ namespace Trains.NET.Tests
                 layout.AddTrack(5, 6);
             }
 
-            var track = layout.GetTrackAt(5, 5);
+            var track = layout.GetTrackAt<SingleTrack>(5, 5);
             var neighbors = track.GetAllNeighbors();
 
             Assert.Equal(expected, neighbors.Count);

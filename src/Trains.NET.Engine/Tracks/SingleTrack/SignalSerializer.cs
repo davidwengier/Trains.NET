@@ -21,7 +21,7 @@ namespace Trains.NET.Engine.Tracks
 
             var track = new Signal()
             {
-                Direction = Enum.Parse<TrackDirection>(bits[1]),
+                Direction = Enum.Parse<SingleTrackDirection>(bits[1]),
                 SignalState = Enum.Parse<SignalState>(bits[2]),
                 Happy = bool.Parse(bits[3]),
                 TemporaryStopCounter = int.Parse(bits[4])

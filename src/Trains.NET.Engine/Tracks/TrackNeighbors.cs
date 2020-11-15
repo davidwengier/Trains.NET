@@ -42,7 +42,7 @@ namespace Trains.NET.Engine
             this.Down = down;
         }
 
-        public static TrackNeighbors GetConnectedNeighbours(ILayout trackLayout, int column, int row, bool emptyIsConsideredConnected = false)
+        public static TrackNeighbors GetConnectedNeighbours(ILayout trackLayout, int column, int row, bool emptyIsConsideredConnected = false, bool ignoreCurrent = false)
         {
             trackLayout.TryGet(column, row, out Track? current);
 
@@ -50,7 +50,7 @@ namespace Trains.NET.Engine
             bool isConnectedUp;
             bool isConnectedRight;
             bool isConnectedDown;
-            if (current is null)
+            if (ignoreCurrent || current is null)
             {
                 isConnectedLeft = emptyIsConsideredConnected;
                 isConnectedUp = emptyIsConsideredConnected;

@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Engine
 {
-    public class Signal : Track, IUpdatableEntity
+    public class Signal : SingleTrack, IUpdatableEntity
     {
         private const int TemporaryStopTime = 5 * 60;
 

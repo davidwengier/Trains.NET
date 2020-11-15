@@ -37,9 +37,9 @@ namespace Trains.NET.Rendering.Logic
         };
 
         private readonly IPath _lightPath;
-        private readonly TrackRenderer _trackRenderer;
+        private readonly SingleTrackRenderer _trackRenderer;
 
-        public SignalRenderer(IPathFactory pathFactory, TrackRenderer trackRenderer)
+        public SignalRenderer(IPathFactory pathFactory, SingleTrackRenderer trackRenderer)
         {
             _lightPath = BuildLightPath(pathFactory);
             _trackRenderer = trackRenderer;
@@ -62,14 +62,14 @@ namespace Trains.NET.Rendering.Logic
         {
             using (canvas.Scope())
             {
-                _trackRenderer.Render(canvas, item);
+                _trackRenderer.DrawSingleTrack(canvas, item);
             }
 
             var signalState = item.SignalState;
             var direction = item.Direction;
             using (canvas.Scope())
             {
-                if (direction == TrackDirection.Vertical)
+                if (direction == SingleTrackDirection.Vertical)
                 {
                     canvas.RotateDegrees(90, CanvasSize / 2, CanvasSize / 2);
                 }

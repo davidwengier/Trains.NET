@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine.Tracks
 {
-    public class BridgeSerializer : IEntitySerializer
+    public class TIntersectionSerializer : IEntitySerializer
     {
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
@@ -14,14 +14,14 @@ namespace Trains.NET.Engine.Tracks
                 return false;
             }
 
-            if (!bits[0].Equals(nameof(Bridge)))
+            if (!bits[0].Equals(nameof(TIntersection)))
             {
                 return false;
             }
 
-            var track = new Bridge()
+            var track = new TIntersection()
             {
-                Direction = Enum.Parse<TrackDirection>(bits[1]),
+                Direction = Enum.Parse<TIntersectionDirection>(bits[1]),
                 AlternateState = bool.Parse(bits[2]),
                 Happy = bool.Parse(bits[3])
             };
@@ -32,12 +32,14 @@ namespace Trains.NET.Engine.Tracks
         public bool TrySerialize(IEntity entity, [NotNullWhen(true)] out string? data)
         {
             data = null;
-            if (entity is not Bridge track)
+            if (entity.GetType() != typeof(TIntersection))
             {
                 return false;
             }
 
-            data = $"{nameof(Bridge)}.{track.Direction}.{track.AlternateState}.{track.Happy}";
+            var track = (TIntersection)entity;
+
+            data = $"{nameof(TIntersection)}.{track.Direction}.{track.AlternateState}.{track.Happy}";
             return true;
         }
     }

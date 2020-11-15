@@ -32,10 +32,10 @@ namespace Trains.NET.Tests
 
             var entityFactories = new List<IStaticEntityFactory<Track>>
             {
-                new CrossTrackFactory(TerrainMap, FilteredLayout),
-                new TIntersectionFactory(TerrainMap),
+                new CrossTrackFactory(TerrainMap, TrackLayout),
+                new TIntersectionFactory(TerrainMap, TrackLayout),
                 new BridgeFactory(TerrainMap),
-                new TrackFactory(TerrainMap)
+                new SingleTrackFactory(TerrainMap, FilteredLayout)
             };
 
             TrackTool = new TrackTool(FilteredLayout, entityFactories);

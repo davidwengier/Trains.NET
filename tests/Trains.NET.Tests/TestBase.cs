@@ -34,7 +34,7 @@ namespace Trains.NET.Tests
             {
                 new CrossTrackFactory(TerrainMap, TrackLayout),
                 new TIntersectionFactory(TerrainMap, TrackLayout),
-                new BridgeFactory(TerrainMap),
+                new BridgeFactory(TerrainMap, FilteredLayout),
                 new SingleTrackFactory(TerrainMap, FilteredLayout)
             };
 

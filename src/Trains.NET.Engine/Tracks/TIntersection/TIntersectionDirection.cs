@@ -7,4 +7,13 @@
         LeftDown_LeftUp,
         LeftUp_RightUp,
     }
+
+    public enum TIntersectionStyle
+    {
+        CornerAndPrimary,
+        CornerAndSecondary,
+        StraightAndPrimary,
+        StraightAndSecondary
+
+    }
 }

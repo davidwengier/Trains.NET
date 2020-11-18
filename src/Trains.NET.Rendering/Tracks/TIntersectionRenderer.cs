@@ -26,29 +26,46 @@ namespace Trains.NET.Rendering
 
                 canvas.RotateDegrees(rotationAngle, 50.0f, 50.0f);
 
-                if (track.HasMultipleStates && track.AlternateState)
+                if (track.Style is TIntersectionStyle.CornerAndSecondary or TIntersectionStyle.StraightAndPrimary)
                 {
                     canvas.Scale(-1, 1);
                     canvas.Translate(-100.0f, 0);
                 }
 
-                _trackRenderer.DrawCornerPlankPath(canvas, singlePlank: false);
-
-                if (track.HasMultipleStates)
+                if (track.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
                 {
-                    using (canvas.Scope())
-                    {
-                        canvas.RotateDegrees(90, 50.0f, 50.0f);
-
-                        _trackRenderer.DrawCornerPlankPath(canvas, singlePlank: true);
-
-                        canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
-
-                        _trackRenderer.DrawCornerTrack(canvas);
-                    }
+                    _trackRenderer.DrawHorizontalPlankPath(canvas);
+                }
+                else
+                {
+                    _trackRenderer.DrawCornerPlankPath(canvas, singlePlank: false);
                 }
 
-                _trackRenderer.DrawCornerTrack(canvas);
+                using (canvas.Scope())
+                {
+                    if (track.Style is not TIntersectionStyle.StraightAndPrimary and not TIntersectionStyle.StraightAndSecondary)
+                    {
+                        canvas.RotateDegrees(90, 50.0f, 50.0f);
+                    }
+
+                    _trackRenderer.DrawCornerPlankPath(canvas, singlePlank: true);
+
+                    if (track.Style is not TIntersectionStyle.StraightAndPrimary and not TIntersectionStyle.StraightAndSecondary)
+                    {
+                        canvas.ClipRect(new Rectangle(0, 0, 100.0f, 50.0f), false, false);
+                    }
+
+                    _trackRenderer.DrawCornerTrack(canvas);
+                }
+
+                if (track.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
+                {
+                    _trackRenderer.DrawHorizontalTracks(canvas);
+                }
+                else
+                {
+                    _trackRenderer.DrawCornerTrack(canvas);
+                }
             }
         }
     }

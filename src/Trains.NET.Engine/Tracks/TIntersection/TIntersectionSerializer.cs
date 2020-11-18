@@ -22,7 +22,7 @@ namespace Trains.NET.Engine.Tracks
             var track = new TIntersection()
             {
                 Direction = Enum.Parse<TIntersectionDirection>(bits[1]),
-                AlternateState = bool.Parse(bits[2]),
+                Style = Enum.Parse<TIntersectionStyle>(bits[2]),
                 Happy = bool.Parse(bits[3])
             };
             entity = track;
@@ -39,7 +39,7 @@ namespace Trains.NET.Engine.Tracks
 
             var track = (TIntersection)entity;
 
-            data = $"{nameof(TIntersection)}.{track.Direction}.{track.AlternateState}.{track.Happy}";
+            data = $"{nameof(TIntersection)}.{track.Direction}.{track.Style}.{track.Happy}";
             return true;
         }
     }

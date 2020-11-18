@@ -30,23 +30,31 @@ namespace Trains.NET.Engine
 
             if (AreAllPresent(neighbours.Up, neighbours.Left, neighbours.Right))
             {
-                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp };
-                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, AlternateState = true };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.CornerAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.CornerAndSecondary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.StraightAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.StraightAndSecondary };
             }
             if (AreAllPresent(neighbours.Up, neighbours.Left, neighbours.Down))
             {
-                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp };
-                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, AlternateState = true };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.CornerAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.CornerAndSecondary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.StraightAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.StraightAndSecondary };
             }
             if (AreAllPresent(neighbours.Up, neighbours.Right, neighbours.Down))
             {
-                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown };
-                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, AlternateState = true };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.CornerAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.CornerAndSecondary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.StraightAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.StraightAndSecondary };
             }
             if (AreAllPresent(neighbours.Down, neighbours.Left, neighbours.Right))
             {
-                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown };
-                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, AlternateState = true };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, Style = TIntersectionStyle.CornerAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, Style = TIntersectionStyle.CornerAndSecondary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, Style = TIntersectionStyle.StraightAndPrimary };
+                yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, Style = TIntersectionStyle.StraightAndSecondary };
             }
         }
 

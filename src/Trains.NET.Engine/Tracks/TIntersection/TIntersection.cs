@@ -6,16 +6,20 @@ namespace Trains.NET.Engine
     {
         public override bool HasMultipleStates => true;
 
-        public bool AlternateState { get; set; }
+        public TIntersectionStyle Style { get; set; }
 
         public TIntersectionDirection Direction { get; set; }
 
-        public override string Identifier => $"{this.Direction}.{this.AlternateState}";
-
+        public override string Identifier => $"{this.Direction}.{this.Style}";
 
         public override void NextState()
         {
-            this.AlternateState = !this.AlternateState;
+            this.Style = this.Style + 1;
+
+            if (this.Style > TIntersectionStyle.StraightAndSecondary)
+            {
+                this.Style = TIntersectionStyle.CornerAndPrimary;
+            }
 
             OnChanged();
         }
@@ -24,10 +28,10 @@ namespace Trains.NET.Engine
         {
             switch (this.Direction)
             {
-                case TIntersectionDirection.RightUp_RightDown: MoveRightUpDown(position); break;
-                case TIntersectionDirection.RightDown_LeftDown: MoveLeftRightDown(position); break;
-                case TIntersectionDirection.LeftDown_LeftUp: MoveLeftUpDown(position); break;
-                case TIntersectionDirection.LeftUp_RightUp: MoveLeftRightUp(position); break;
+                case TIntersectionDirection.RightUp_RightDown: MoveRightUp_RightDown(position); break;
+                case TIntersectionDirection.RightDown_LeftDown: MoveRightDown_LeftDown(position); break;
+                case TIntersectionDirection.LeftDown_LeftUp: MoveLeftDown_LeftUp(position); break;
+                case TIntersectionDirection.LeftUp_RightUp: MoveLeftUp_RightUp(position); break;
                 default: throw new InvalidOperationException("I don't know what that track is!");
             }
         }
@@ -68,11 +72,24 @@ namespace Trains.NET.Engine
                 _ => false
             };
 
-        private void MoveLeftRightDown(TrainPosition position)
+        private void MoveRightDown_LeftDown(TrainPosition position)
         {
-            // Check single track extremes, as there are 2 places where the
-            //  train angle could be at 0 degrees
-            if (position.RelativeLeft < 0.4f)
+            if (this.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
+            {
+                if (position.Angle is 0 or 180)
+                {
+                    TrainMovement.MoveHorizontal(position);
+                }
+                else if (this.Style is TIntersectionStyle.StraightAndPrimary)
+                {
+                    TrainMovement.MoveLeftDown(position);
+                }
+                else
+                {
+                    TrainMovement.MoveRightDown(position);
+                }
+            }
+            else if (position.RelativeLeft < 0.4f)
             {
                 TrainMovement.MoveLeftDown(position);
             }
@@ -86,7 +103,7 @@ namespace Trains.NET.Engine
             }
             else
             {
-                if (this.AlternateState)
+                if (this.Style is TIntersectionStyle.CornerAndSecondary)
                 {
                     TrainMovement.MoveLeftDown(position);
                 }
@@ -97,9 +114,24 @@ namespace Trains.NET.Engine
             }
         }
 
-        private void MoveLeftUpDown(TrainPosition position)
+        private void MoveLeftDown_LeftUp(TrainPosition position)
         {
-            if (position.RelativeTop < 0.4f)
+            if (this.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
+            {
+                if (position.Angle is 90 or 270)
+                {
+                    TrainMovement.MoveVertical(position);
+                }
+                else if (this.Style is TIntersectionStyle.StraightAndPrimary)
+                {
+                    TrainMovement.MoveLeftUp(position);
+                }
+                else
+                {
+                    TrainMovement.MoveLeftDown(position);
+                }
+            }
+            else if (position.RelativeTop < 0.4f)
             {
                 TrainMovement.MoveLeftUp(position);
             }
@@ -113,7 +145,7 @@ namespace Trains.NET.Engine
             }
             else
             {
-                if (this.AlternateState)
+                if (this.Style == TIntersectionStyle.CornerAndSecondary)
                 {
                     TrainMovement.MoveLeftUp(position);
                 }
@@ -124,9 +156,24 @@ namespace Trains.NET.Engine
             }
         }
 
-        private void MoveLeftRightUp(TrainPosition position)
+        private void MoveLeftUp_RightUp(TrainPosition position)
         {
-            if (position.RelativeLeft < 0.4f)
+            if (this.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
+            {
+                if (position.Angle is 0 or 180)
+                {
+                    TrainMovement.MoveHorizontal(position);
+                }
+                else if (this.Style is TIntersectionStyle.StraightAndPrimary)
+                {
+                    TrainMovement.MoveRightUp(position);
+                }
+                else
+                {
+                    TrainMovement.MoveLeftUp(position);
+                }
+            }
+            else if (position.RelativeLeft < 0.4f)
             {
                 TrainMovement.MoveLeftUp(position);
             }
@@ -140,7 +187,7 @@ namespace Trains.NET.Engine
             }
             else
             {
-                if (this.AlternateState)
+                if (this.Style == TIntersectionStyle.CornerAndSecondary)
                 {
                     TrainMovement.MoveRightUp(position);
                 }
@@ -151,12 +198,24 @@ namespace Trains.NET.Engine
             }
         }
 
-        private void MoveRightUpDown(TrainPosition position)
+        private void MoveRightUp_RightDown(TrainPosition position)
         {
-            // Right -> Up, Enters 180, Leaves 270
-            // Up -> Right, Enters 90, Leaves 0
-            // Down -> Right, Enters 270, Leaves 0
-            if (position.RelativeTop < 0.4f)
+            if (this.Style is TIntersectionStyle.StraightAndPrimary or TIntersectionStyle.StraightAndSecondary)
+            {
+                if (position.Angle is 90 or 270)
+                {
+                    TrainMovement.MoveVertical(position);
+                }
+                else if (this.Style is TIntersectionStyle.StraightAndPrimary)
+                {
+                    TrainMovement.MoveRightDown(position);
+                }
+                else
+                {
+                    TrainMovement.MoveRightUp(position);
+                }
+            }
+            else if (position.RelativeTop < 0.4f)
             {
                 TrainMovement.MoveRightUp(position);
             }
@@ -170,7 +229,7 @@ namespace Trains.NET.Engine
             }
             else
             {
-                if (this.AlternateState)
+                if (this.Style == TIntersectionStyle.CornerAndSecondary)
                 {
                     TrainMovement.MoveRightDown(position);
                 }

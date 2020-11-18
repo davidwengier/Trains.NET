@@ -102,7 +102,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             {
                 new CrossTrackFactory(terrainMap, trackLayout),
                 new TIntersectionFactory(terrainMap, trackLayout),
-                new BridgeFactory(terrainMap),
+                new BridgeFactory(terrainMap, filteredLayout),
                 new SingleTrackFactory(terrainMap, filteredLayout)
             };
 

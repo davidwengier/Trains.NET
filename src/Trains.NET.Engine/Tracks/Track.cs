@@ -76,5 +76,9 @@ namespace Trains.NET.Engine
         public virtual void Removed()
         {
         }
+
+        public virtual void EnterTrack(Train train)
+        {
+        }
     }
 }

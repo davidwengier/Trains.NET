@@ -173,6 +173,8 @@ namespace Trains.NET.Engine
 
             TrainPosition? lastPosition = null;
 
+            bool firstTimeInNewTrack = false;
+
             int numSteps = 0;
             foreach (TrainPosition newPosition in steps)
             {
@@ -228,6 +230,13 @@ namespace Trains.NET.Engine
                 }
 
                 lastPosition = newPosition;
+
+                if (firstTimeInNewTrack)
+                {
+                    nextTrack.EnterTrack(train);
+                }
+
+                firstTimeInNewTrack = (train.Column != newPosition.Column || train.Row != newPosition.Row);
 
                 train.Column = newPosition.Column;
                 train.Row = newPosition.Row;

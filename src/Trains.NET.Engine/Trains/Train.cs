@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Trains.NET.Engine
@@ -7,6 +8,8 @@ namespace Trains.NET.Engine
     {
         // only used for tests??
         internal const float SpeedScaleModifier = 0.005f;
+
+        private readonly List<Carriage> _carriages = new();
 
         private const int MaximumSpeed = 200;
         private const float MinimumLookaheadSpeed = 5.0f;
@@ -35,7 +38,7 @@ namespace Trains.NET.Engine
             }
         }
 
-        public Guid UniqueID { get; private set; } = Guid.NewGuid();
+        public virtual Guid UniqueID { get; private set; } = Guid.NewGuid();
 
         public int Column { get; set; }
         public int Row { get; set; }
@@ -44,12 +47,13 @@ namespace Trains.NET.Engine
         public float RelativeTop { get; set; } = 0.5f;
 
         public string Name { get; set; }
-        public float CurrentSpeed { get; set; }
-        public float DesiredSpeed { get; set; }
-        public bool Stopped { get; set; }
+        public virtual float CurrentSpeed { get; set; }
+        public virtual float DesiredSpeed { get; set; }
+        public virtual bool Stopped { get; set; }
 
         public bool Follow { get; set; }
 
+        public IEnumerable<Carriage> GetCarriages() => _carriages.ToArray();
 
         public void SetAngle(float angle)
         {
@@ -75,6 +79,14 @@ namespace Trains.NET.Engine
             result._lookaheadOverride = _lookaheadOverride;
 
             return result;
+        }
+
+        public void RemoveCarriage()
+        {
+            if (_carriages.Count > 0)
+            {
+                _carriages.RemoveAt(_carriages.Count - 1);
+            }
         }
 
         internal void ForceSpeed(float speed)
@@ -126,6 +138,11 @@ namespace Trains.NET.Engine
                 this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
+        }
+
+        internal void AddCarriage(Carriage carriage)
+        {
+            _carriages.Add(carriage);
         }
     }
 }

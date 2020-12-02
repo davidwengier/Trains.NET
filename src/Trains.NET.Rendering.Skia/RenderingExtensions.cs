@@ -19,6 +19,8 @@ namespace Trains.NET.Rendering.Skia
                 Picture.Cross => Assets.Svg_times.Picture,
                 Picture.Tools => Assets.Svg_tools.Picture,
                 Picture.Eraser => Assets.Svg_eraser.Picture,
+                Picture.Plus => Assets.Svg_plus_square.Picture,
+                Picture.Minus => Assets.Svg_minus_square.Picture,
                 _ => throw new InvalidOperationException($"No idea what picture you want me to draw: {picture}")
             };
 

@@ -52,6 +52,14 @@ namespace Trains.NET.Rendering.UI
 
             _actionButton = new MultiButton(20, new ButtonBase[]
                 {
+                    CreateButton(Picture.Plus, () => false, () =>
+                    {
+                        if (_trainManager.CurrentTrain is not null)
+                        {
+                            _gameBoard.AddCarriageToTrain(_trainManager.CurrentTrain);
+                        }
+                    }),
+                    CreateButton(Picture.Minus, () => false, () => _trainManager.CurrentTrain?.RemoveCarriage()),
                     CreateButton(Picture.Eye, () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
                     CreateButton(Picture.Trash, () => false, () =>
                     {
@@ -88,7 +96,7 @@ namespace Trains.NET.Rendering.UI
                 return true;
             }
 
-            x -= PanelWidth - 40;
+            x -= PanelWidth - 80;
             if (_actionButton.HandleMouseAction(x, y, action))
             {
                 return true;
@@ -128,7 +136,7 @@ namespace Trains.NET.Rendering.UI
 
             _controlButton.Render(canvas);
 
-            canvas.Translate(PanelWidth - 40, 0);
+            canvas.Translate(PanelWidth - 80, 0);
             _actionButton.Render(canvas);
 
             canvas.Translate(0, -40);

@@ -12,6 +12,8 @@
         Pause,
         Cross,
         Tools,
-        Eraser
+        Eraser,
+        Plus,
+        Minus
     }
 }

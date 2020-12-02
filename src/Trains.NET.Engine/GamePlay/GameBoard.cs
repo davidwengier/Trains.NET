@@ -114,6 +114,9 @@ namespace Trains.NET.Engine
                 }
             }
 
+            var timeSinceLastGameTick = (_gameLoopTimer?.TimeSinceLastTick / 16f);
+            float speedModifier = 0.005f * (timeSinceLastGameTick ?? 1);
+
             foreach (Train train in _movables)
             {
                 // Claim the track we are currently on, distance of 0
@@ -138,20 +141,29 @@ namespace Trains.NET.Engine
                 dummyTrain.SetAngle(dummyTrain.Angle - 180);
 
                 // Move the actual train by the required distance
-                MoveTrain(train, train, train.CurrentSpeed, takenTracks);
+                MoveTrain(train, train, train.CurrentSpeed * speedModifier, takenTracks);
 
                 // If we can't even move the required ammount, we have hit an edge case
                 //  we should deal with it here! Maybe call stop?
 
                 // Claim behind us & set our parent as the dummy 
                 //  to abuse the fact no one can pause it
-                MoveTrain(dummyTrain, dummyTrain, 1.0f, takenTracks);
+                MoveTrain(dummyTrain, dummyTrain, train.GetCarriages().Count(), takenTracks, 0);
 
                 // Clone our train for look-ahead purposes
                 dummyTrain = train.Clone();
 
+                foreach (var carriage in train.GetCarriages())
+                {
+                    List<TrainPosition>? steps = GetNextSteps(carriage, carriage.CurrentSpeed * speedModifier);
+                    foreach (var step in steps)
+                    {
+                        ApplyStep(carriage, step);
+                    }
+                }
+
                 // Move our lookahead train clone, claiming the tracks we cover
-                if (MoveTrain(dummyTrain, train, train.LookaheadDistance - train.CurrentSpeed, takenTracks))
+                if (MoveTrain(dummyTrain, train, (train.LookaheadDistance - train.CurrentSpeed) * speedModifier, takenTracks))
                 {
                     train.Resume();
                 }
@@ -162,12 +174,30 @@ namespace Trains.NET.Engine
             }
         }
 
-        private bool MoveTrain(Train train, Train parentTrain, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks)
+        public void AddCarriageToTrain(Train trainToAddTo)
+        {
+            var numberOfCarriages = trainToAddTo.GetCarriages().Count() + 1;
+
+            Train dummyTrain = trainToAddTo.Clone();
+            dummyTrain.SetAngle(dummyTrain.Angle - 180);
+
+            MoveTrain(dummyTrain, dummyTrain, numberOfCarriages, new());
+
+            var carriage = new Carriage(trainToAddTo)
+            {
+                RelativeTop = dummyTrain.RelativeTop,
+                RelativeLeft = dummyTrain.RelativeLeft,
+                Column = dummyTrain.Column,
+                Row = dummyTrain.Row
+            };
+            carriage.SetAngle(dummyTrain.Angle - 180);
+
+            trainToAddTo.AddCarriage(carriage);
+        }
+
+        private bool MoveTrain(Train train, Train parentTrain, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks, int? timeAwayOverride = null)
         {
             if (distanceToMove <= 0) return true;
-
-            float speedModifier = 0.005f * ((_gameLoopTimer?.TimeSinceLastTick / 16f) ?? 1);
-            distanceToMove = distanceToMove * speedModifier;
 
             List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
 
@@ -219,14 +249,14 @@ namespace Trains.NET.Engine
                         else
                         {
                             otherTrains.Train.Pause();
-                            takenTracks[nextTrack] = (parentTrain, timeAway);
+                            takenTracks[nextTrack] = (parentTrain, timeAwayOverride ?? timeAway);
                         }
                     }
                 }
                 // No claim, we take it!
                 else
                 {
-                    takenTracks[nextTrack] = (parentTrain, timeAway);
+                    takenTracks[nextTrack] = (parentTrain, timeAwayOverride ?? timeAway);
                 }
 
                 lastPosition = newPosition;
@@ -238,14 +268,19 @@ namespace Trains.NET.Engine
 
                 firstTimeInNewTrack = (train.Column != newPosition.Column || train.Row != newPosition.Row);
 
-                train.Column = newPosition.Column;
-                train.Row = newPosition.Row;
-                train.Angle = newPosition.Angle;
-                train.RelativeLeft = newPosition.RelativeLeft;
-                train.RelativeTop = newPosition.RelativeTop;
+                ApplyStep(train, newPosition);
             }
 
             return lastPosition?.Distance <= 0.0f;
+        }
+
+        private static void ApplyStep(Train train, TrainPosition newPosition)
+        {
+            train.Column = newPosition.Column;
+            train.Row = newPosition.Row;
+            train.Angle = newPosition.Angle;
+            train.RelativeLeft = newPosition.RelativeLeft;
+            train.RelativeTop = newPosition.RelativeTop;
         }
 
         public List<TrainPosition> GetNextSteps(Train train, float distanceToMove)

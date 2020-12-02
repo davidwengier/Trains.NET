@@ -47,14 +47,12 @@ namespace Trains.NET.Rendering
                             -(trainParameters.RearHeight / 2),
                             trainParameters.RearWidth,
                             trainParameters.RearHeight,
-
                             palette.RearSectionStartColor, palette.RearSectionEndColor);
 
             canvas.DrawGradientRect(startPos + trainParameters.RearWidth,
                             -(trainParameters.HeadHeight / 2),
                             trainParameters.HeadWidth,
                             trainParameters.HeadHeight,
-
                             palette.FrontSectionStartColor, palette.FrontSectionEndColor);
 
             canvas.DrawRect(startPos,

@@ -401,6 +401,23 @@ namespace Trains.NET.Engine
             }
         }
 
-        public IMovable? GetMovableAt(int column, int row) => _movables.FirstOrDefault(t => t is not null && t.Column == column && t.Row == row);
+        public IMovable? GetMovableAt(int column, int row)
+        {
+            foreach (var train in _movables.OfType<Train>())
+            {
+                if (train.Column == column && train.Row == row)
+                {
+                    return train;
+                }
+                foreach (var carriage in train.GetCarriages())
+                {
+                    if (carriage.Column == column && carriage.Row == row)
+                    {
+                        return carriage.Train;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

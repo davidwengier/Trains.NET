@@ -22,6 +22,7 @@ namespace Trains.NET.Engine
 
         private int _columns;
         private int _rows;
+        public Dictionary<Track, (Train, float)> LastTrackLeases { get; set; }
 
         public bool Enabled { get; set; } = true;
 
@@ -146,9 +147,8 @@ namespace Trains.NET.Engine
                 // If we can't even move the required ammount, we have hit an edge case
                 //  we should deal with it here! Maybe call stop?
 
-                // Claim behind us & set our parent as the dummy 
-                //  to abuse the fact no one can pause it
-                MoveTrain(dummyTrain, dummyTrain, train.GetCarriages().Count(), takenTracks, 0);
+                // Claim behind us for the number of carriages we have
+                MoveTrain(dummyTrain, train, train.GetCarriages().Count(), takenTracks, 0);
 
                 // Clone our train for look-ahead purposes
                 dummyTrain = train.Clone();
@@ -172,6 +172,8 @@ namespace Trains.NET.Engine
                     train.Pause();
                 }
             }
+
+            this.LastTrackLeases = takenTracks;
         }
 
         public void AddCarriageToTrain(Train trainToAddTo)
@@ -195,7 +197,7 @@ namespace Trains.NET.Engine
             trainToAddTo.AddCarriage(carriage);
         }
 
-        private bool MoveTrain(Train train, Train parentTrain, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks, int? timeAwayOverride = null)
+        private bool MoveTrain(Train train, Train trainToLease, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks, int? timeAwayOverride = null)
         {
             if (distanceToMove <= 0) return true;
 
@@ -249,14 +251,14 @@ namespace Trains.NET.Engine
                         else
                         {
                             otherTrains.Train.Pause();
-                            takenTracks[nextTrack] = (parentTrain, timeAwayOverride ?? timeAway);
+                            takenTracks[nextTrack] = (trainToLease, timeAwayOverride ?? timeAway);
                         }
                     }
                 }
                 // No claim, we take it!
                 else
                 {
-                    takenTracks[nextTrack] = (parentTrain, timeAwayOverride ?? timeAway);
+                    takenTracks[nextTrack] = (trainToLease, timeAwayOverride ?? timeAway);
                 }
 
                 lastPosition = newPosition;

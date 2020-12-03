@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.LayerRenderer
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (Train train in _gameBoard.GetMovables())
+            foreach (var (track, (train, _)) in _gameBoard.LastTrackLeases)
             {
                 var _paint = new PaintBrush
                 {
@@ -29,17 +29,9 @@ namespace Trains.NET.Rendering.LayerRenderer
                     Style = PaintStyle.Fill
                 };
 
-                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
+                (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
                 canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
-
-                float speedModifier = 0.005f; // * ((_gameTimer?.TimeSinceLastTick / 16f) ?? 1);
-                foreach (TrainPosition? position in _gameBoard.GetNextSteps(train, train.LookaheadDistance * speedModifier))
-                {
-                    (x, y, _) = pixelMapper.CoordsToViewPortPixels(position.Column, position.Row);
-
-                    canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
-                }
             }
         }
     }

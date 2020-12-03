@@ -8,6 +8,7 @@ namespace Trains.NET.Engine
     {
         bool Enabled { get; set; }
         int TerrainSeed { get; set; }
+        Dictionary<Track, (Train, float)> LastTrackLeases { get; }
 
         void ClearAll();
         IMovable? AddTrain(int column, int row);

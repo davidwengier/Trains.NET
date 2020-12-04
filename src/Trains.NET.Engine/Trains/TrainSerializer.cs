@@ -7,8 +7,8 @@ namespace Trains.NET.Engine.Trains
         public bool TryDeserialize(string data, [NotNullWhen(true)] out IEntity? entity)
         {
             entity = null;
-            var bits = data.Split('|', 9);
-            if (bits.Length != 9)
+            var bits = data.Split('|', 10);
+            if (bits.Length != 10)
             {
                 return false;
             }
@@ -28,7 +28,8 @@ namespace Trains.NET.Engine.Trains
                 RelativeLeft = float.Parse(bits[i++]),
                 RelativeTop = float.Parse(bits[i++]),
                 Name = bits[i++],
-                Stopped = bool.Parse(bits[i++])
+                Stopped = bool.Parse(bits[i++]),
+                Carriages = int.Parse(bits[i++])
             };
             entity = track;
             return true;
@@ -44,7 +45,7 @@ namespace Trains.NET.Engine.Trains
 
             var train = (Train)entity;
 
-            data = $"{nameof(Train)}|{train.CurrentSpeed}|{train.Angle}|{train.DesiredSpeed}|{train.Follow}|{train.RelativeLeft}|{train.RelativeTop}|{train.Name}|{train.Stopped}";
+            data = $"{nameof(Train)}|{train.CurrentSpeed}|{train.Angle}|{train.DesiredSpeed}|{train.Follow}|{train.RelativeLeft}|{train.RelativeTop}|{train.Name}|{train.Stopped}|{train.Carriages}";
             return true;
         }
     }

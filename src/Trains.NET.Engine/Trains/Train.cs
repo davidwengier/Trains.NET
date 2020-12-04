@@ -71,11 +71,20 @@ namespace Trains.NET.Engine
                 RelativeLeft = this.RelativeLeft,
                 RelativeTop = this.RelativeTop,
                 CurrentSpeed = this.CurrentSpeed,
-                DesiredSpeed = this.DesiredSpeed
+                DesiredSpeed = this.DesiredSpeed,
+                Carriages = this.Carriages
             };
             result._lookaheadOverride = _lookaheadOverride;
 
             return result;
+        }
+
+        public void AddCarriage()
+        {
+            if (this.Carriages < 10)
+            {
+                this.Carriages += 1;
+            }
         }
 
         public void RemoveCarriage()
@@ -135,11 +144,6 @@ namespace Trains.NET.Engine
                 this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
-        }
-
-        internal void AddCarriage()
-        {
-            this.Carriages += 1;
         }
 
         public void ApplyStep(TrainPosition newPosition)

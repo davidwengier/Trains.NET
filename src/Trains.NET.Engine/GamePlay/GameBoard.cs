@@ -168,11 +168,6 @@ namespace Trains.NET.Engine
             _lastTrackLeases = takenTracks;
         }
 
-        public void AddCarriageToTrain(Train trainToAddTo)
-        {
-            trainToAddTo.AddCarriage();
-        }
-
         private bool MoveTrain(Train train, Train trainToLease, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks, int? timeAwayOverride = null)
         {
             if (distanceToMove <= 0) return true;

@@ -52,13 +52,7 @@ namespace Trains.NET.Rendering.UI
 
             _actionButton = new MultiButton(20, new ButtonBase[]
                 {
-                    CreateButton(Picture.Plus, () => false, () =>
-                    {
-                        if (_trainManager.CurrentTrain is not null)
-                        {
-                            _gameBoard.AddCarriageToTrain(_trainManager.CurrentTrain);
-                        }
-                    }),
+                    CreateButton(Picture.Plus, () => false, () => _trainManager.CurrentTrain?.AddCarriage()),
                     CreateButton(Picture.Minus, () => false, () => _trainManager.CurrentTrain?.RemoveCarriage()),
                     CreateButton(Picture.Eye, () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
                     CreateButton(Picture.Trash, () => false, () =>

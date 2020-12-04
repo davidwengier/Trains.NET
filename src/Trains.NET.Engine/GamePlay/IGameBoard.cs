@@ -18,6 +18,5 @@ namespace Trains.NET.Engine
         IMovable? GetMovableAt(int column, int row);
         List<TrainPosition> GetNextSteps(Train train, float distanceToMove);
         void Initialize(int columns, int rows);
-        void AddCarriageToTrain(Train trainToAddTo);
     }
 }

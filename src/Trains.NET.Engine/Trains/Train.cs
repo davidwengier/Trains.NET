@@ -21,6 +21,7 @@ namespace Trains.NET.Engine
         {
             this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
             this.DesiredSpeed = DefaultSpeed;
+            this.Carriages = _random.Next(0, 6);
         }
 
         public float LookaheadDistance

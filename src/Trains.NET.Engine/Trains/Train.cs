@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Trains.NET.Engine
@@ -8,8 +7,6 @@ namespace Trains.NET.Engine
     {
         // only used for tests??
         internal const float SpeedScaleModifier = 0.005f;
-
-        private readonly List<Carriage> _carriages = new();
 
         private const int MaximumSpeed = 200;
         private const float MinimumLookaheadSpeed = 5.0f;
@@ -53,7 +50,7 @@ namespace Trains.NET.Engine
 
         public bool Follow { get; set; }
 
-        public IEnumerable<Carriage> GetCarriages() => _carriages.ToArray();
+        public int Carriages { get; set; }
 
         public void SetAngle(float angle)
         {
@@ -62,7 +59,7 @@ namespace Trains.NET.Engine
             this.Angle = angle;
         }
 
-        internal Train Clone()
+        public Train Clone()
         {
             var result = new Train()
             {
@@ -83,9 +80,9 @@ namespace Trains.NET.Engine
 
         public void RemoveCarriage()
         {
-            if (_carriages.Count > 0)
+            if (this.Carriages > 0)
             {
-                _carriages.RemoveAt(_carriages.Count - 1);
+                this.Carriages -= 1;
             }
         }
 
@@ -140,9 +137,18 @@ namespace Trains.NET.Engine
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
         }
 
-        internal void AddCarriage(Carriage carriage)
+        internal void AddCarriage()
         {
-            _carriages.Add(carriage);
+            this.Carriages += 1;
+        }
+
+        public void ApplyStep(TrainPosition newPosition)
+        {
+            this.Column = newPosition.Column;
+            this.Row = newPosition.Row;
+            this.Angle = newPosition.Angle;
+            this.RelativeLeft = newPosition.RelativeLeft;
+            this.RelativeTop = newPosition.RelativeTop;
         }
     }
 }

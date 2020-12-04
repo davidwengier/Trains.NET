@@ -7,13 +7,13 @@ namespace Trains.NET.Rendering
     {
         private readonly IGameBoard _gameBoard;
         private readonly IRenderer<Train> _trainRenderer;
-        private readonly IRenderer<Carriage> _carriageRenderer;
+        private readonly CarriageRenderer _carriageRenderer;
 
         public bool Enabled { get; set; } = true;
 
         public string Name => "Trains";
 
-        public TrainsRenderer(IGameBoard gameBoard, IRenderer<Train> trainRenderer, IRenderer<Carriage> carriageRenderer)
+        public TrainsRenderer(IGameBoard gameBoard, IRenderer<Train> trainRenderer, CarriageRenderer carriageRenderer)
         {
             _gameBoard = gameBoard;
             _trainRenderer = trainRenderer;
@@ -40,11 +40,20 @@ namespace Trains.NET.Rendering
 
                 }
 
-                foreach (var carriage in train.GetCarriages())
+                // Create a fake train pointing backwards, to represent our carriage
+                var fakeTrain = train.Clone();
+                fakeTrain.SetAngle(fakeTrain.Angle - 180);
+                for (var i = 0; i < train.Carriages; i++)
                 {
+                    var steps = _gameBoard.GetNextSteps(fakeTrain, 1.0f);
+                    foreach (var step in steps)
+                    {
+                        fakeTrain.ApplyStep(step);
+                    }
+
                     using (canvas.Scope())
                     {
-                        (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(carriage.Column, carriage.Row);
+                        (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(fakeTrain.Column, fakeTrain.Row);
 
                         if (!onScreen) continue;
 
@@ -54,7 +63,7 @@ namespace Trains.NET.Rendering
 
                         canvas.Scale(scale, scale);
 
-                        _carriageRenderer.Render(canvas, carriage);
+                        _carriageRenderer.Render(canvas, fakeTrain, train);
                     }
                 }
             }

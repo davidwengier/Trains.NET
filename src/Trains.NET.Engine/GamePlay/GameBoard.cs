@@ -149,19 +149,10 @@ namespace Trains.NET.Engine
                 //  we should deal with it here! Maybe call stop?
 
                 // Claim behind us for the number of carriages we have
-                MoveTrain(dummyTrain, train, train.GetCarriages().Count(), takenTracks, 0);
+                MoveTrain(dummyTrain, train, train.Carriages, takenTracks, 0);
 
                 // Clone our train for look-ahead purposes
                 dummyTrain = train.Clone();
-
-                foreach (var carriage in train.GetCarriages())
-                {
-                    List<TrainPosition>? steps = GetNextSteps(carriage, carriage.CurrentSpeed * speedModifier);
-                    foreach (var step in steps)
-                    {
-                        ApplyStep(carriage, step);
-                    }
-                }
 
                 // Move our lookahead train clone, claiming the tracks we cover
                 if (MoveTrain(dummyTrain, train, (train.LookaheadDistance - train.CurrentSpeed) * speedModifier, takenTracks))
@@ -179,23 +170,7 @@ namespace Trains.NET.Engine
 
         public void AddCarriageToTrain(Train trainToAddTo)
         {
-            var numberOfCarriages = trainToAddTo.GetCarriages().Count() + 1;
-
-            Train dummyTrain = trainToAddTo.Clone();
-            dummyTrain.SetAngle(dummyTrain.Angle - 180);
-
-            MoveTrain(dummyTrain, dummyTrain, numberOfCarriages, new());
-
-            var carriage = new Carriage(trainToAddTo)
-            {
-                RelativeTop = dummyTrain.RelativeTop,
-                RelativeLeft = dummyTrain.RelativeLeft,
-                Column = dummyTrain.Column,
-                Row = dummyTrain.Row
-            };
-            carriage.SetAngle(dummyTrain.Angle - 180);
-
-            trainToAddTo.AddCarriage(carriage);
+            trainToAddTo.AddCarriage();
         }
 
         private bool MoveTrain(Train train, Train trainToLease, float distanceToMove, Dictionary<Track, (Train train, float timeAway)> takenTracks, int? timeAwayOverride = null)
@@ -271,19 +246,10 @@ namespace Trains.NET.Engine
 
                 firstTimeInNewTrack = (train.Column != newPosition.Column || train.Row != newPosition.Row);
 
-                ApplyStep(train, newPosition);
+                train.ApplyStep(newPosition);
             }
 
             return lastPosition?.Distance <= 0.0f;
-        }
-
-        private static void ApplyStep(Train train, TrainPosition newPosition)
-        {
-            train.Column = newPosition.Column;
-            train.Row = newPosition.Row;
-            train.Angle = newPosition.Angle;
-            train.RelativeLeft = newPosition.RelativeLeft;
-            train.RelativeTop = newPosition.RelativeTop;
         }
 
         public List<TrainPosition> GetNextSteps(Train train, float distanceToMove)
@@ -412,11 +378,21 @@ namespace Trains.NET.Engine
                 {
                     return train;
                 }
-                foreach (var carriage in train.GetCarriages())
+
+                var fakeTrain = train.Clone();
+                fakeTrain.SetAngle(fakeTrain.Angle - 180);
+
+                for (var i = 0; i < train.Carriages; i++)
                 {
-                    if (carriage.Column == column && carriage.Row == row)
+                    var steps = GetNextSteps(fakeTrain, 1.0f);
+                    foreach (var step in steps)
                     {
-                        return carriage.Train;
+                        fakeTrain.ApplyStep(step);
+
+                        if (fakeTrain.Column == column && fakeTrain.Row == row)
+                        {
+                            return train;
+                        }
                     }
                 }
             }

@@ -21,7 +21,7 @@ namespace Trains.NET.Rendering.LayerRenderer
 
         public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
         {
-            foreach (var (track, (train, _)) in _gameBoard.LastTrackLeases)
+            foreach (var (track, train, _) in _gameBoard.LastTrackLeases)
             {
                 var _paint = new PaintBrush
                 {

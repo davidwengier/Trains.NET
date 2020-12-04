@@ -22,8 +22,9 @@ namespace Trains.NET.Engine
 
         private int _columns;
         private int _rows;
-        public Dictionary<Track, (Train, float)> LastTrackLeases { get; set; }
+        private Dictionary<Track, (Train, float)> _lastTrackLeases = new();
 
+        public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
         public bool Enabled { get; set; } = true;
 
         public int TerrainSeed
@@ -173,7 +174,7 @@ namespace Trains.NET.Engine
                 }
             }
 
-            this.LastTrackLeases = takenTracks;
+            _lastTrackLeases = takenTracks;
         }
 
         public void AddCarriageToTrain(Train trainToAddTo)

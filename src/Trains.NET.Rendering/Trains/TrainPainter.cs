@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering.Trains
 {
     public class TrainPainter : ITrainPainter
     {
-        private readonly Dictionary<Train, TrainPalette> _paletteMap = new();
+        private readonly Dictionary<Guid, TrainPalette> _paletteMap = new();
         private readonly Random _random = new();
 
         private static readonly TrainPalette s_baseTrainPalette = new(
@@ -19,11 +19,11 @@ namespace Trains.NET.Rendering.Trains
 
         public TrainPalette GetPalette(Train train)
         {
-            if (!_paletteMap.ContainsKey(train))
+            if (!_paletteMap.ContainsKey(train.UniqueID))
             {
-                _paletteMap.Add(train, GetRandomPalette());
+                _paletteMap.Add(train.UniqueID, GetRandomPalette());
             }
-            return _paletteMap[train];
+            return _paletteMap[train.UniqueID];
         }
 
         private TrainPalette GetRandomPalette()

@@ -140,15 +140,11 @@ namespace Trains.NET.Engine
                 // Move the actual train by the required distance
                 MoveTrain(train, train, train.CurrentSpeed * speedModifier, takenTracks);
 
-                // Claim behind us for the number of carriages we have
-                Train dummyTrain = train.Clone();
-                dummyTrain.SetAngle(dummyTrain.Angle - 180);
+                // Claim in front of us for the number of carriages we have
+                var dummyTrain = train.Clone();
                 MoveTrain(dummyTrain, train, train.Carriages, takenTracks, 0);
 
-                // Re-claim to look in front of us
-                dummyTrain = train.Clone();
-
-                // Move our lookahead train clone, claiming the tracks we cover. If we can't move
+                // Move ahead some more, claiming the tracks we cover. If we can't move
                 // then pause the train
                 if (MoveTrain(dummyTrain, train, (train.LookaheadDistance - train.CurrentSpeed) * speedModifier, takenTracks))
                 {
@@ -370,7 +366,6 @@ namespace Trains.NET.Engine
                 }
 
                 var fakeTrain = train.Clone();
-                fakeTrain.SetAngle(fakeTrain.Angle - 180);
 
                 for (var i = 0; i < train.Carriages; i++)
                 {

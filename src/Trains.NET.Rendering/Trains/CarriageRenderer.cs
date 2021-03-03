@@ -5,7 +5,7 @@ namespace Trains.NET.Rendering
 {
     public class CarriageRenderer
     {
-        private const float CarriageWidth = 80f;
+        private readonly float _carriageWidth;
         private readonly ITrainParameters _trainParameters;
         private readonly ITrainPainter _trainPainter;
 
@@ -13,13 +13,15 @@ namespace Trains.NET.Rendering
         {
             _trainParameters = trainParameters;
             _trainPainter = trainPainter;
+
+            _carriageWidth = _trainParameters.HeadWidth + _trainParameters.RearWidth;
         }
 
-        public void Render(ICanvas canvas, Train carriage, Train owner)
+        public void Render(ICanvas canvas, Train carriage)
         {
             TrainRenderer.SetupCanvasToDrawTrain(canvas, carriage);
 
-            TrainPalette? palette = _trainPainter.GetPalette(owner);
+            TrainPalette? palette = _trainPainter.GetPalette(carriage);
 
             var outline = new PaintBrush
             {
@@ -32,13 +34,13 @@ namespace Trains.NET.Rendering
 
             canvas.DrawGradientRect(startPos,
                             -(_trainParameters.HeadHeight / 2),
-                            CarriageWidth,
+                            _carriageWidth,
                             _trainParameters.HeadHeight,
                             palette.FrontSectionStartColor, palette.FrontSectionEndColor);
 
             canvas.DrawRect(startPos,
                             -(_trainParameters.HeadHeight / 2),
-                            CarriageWidth,
+                            _carriageWidth,
                             _trainParameters.HeadHeight,
                             outline);
         }

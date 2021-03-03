@@ -90,13 +90,13 @@ namespace DI
 
             foreach (Service? service in services)
             {
-                sourceBuilder.AppendLine("if (typeof(T) == typeof(" + service.Type + "))");
-                sourceBuilder.AppendLine("{");
-                sourceBuilder.AppendLine($"    return (T)(object){GetTypeConstruction(service, service.IsTransient ? new List<Service>() : fields)};");
-                sourceBuilder.AppendLine("}");
+                sourceBuilder.AppendLine("        if (typeof(T) == typeof(" + service.Type + "))");
+                sourceBuilder.AppendLine("        {");
+                sourceBuilder.AppendLine($"            return (T)(object){GetTypeConstruction(service, service.IsTransient ? new List<Service>() : fields)};");
+                sourceBuilder.AppendLine("        }");
             }
 
-            sourceBuilder.AppendLine("throw new System.InvalidOperationException(\"Don't know how to initialize type: \" + typeof(T).Name);");
+            sourceBuilder.AppendLine("        throw new System.InvalidOperationException(\"Don't know how to initialize type: \" + typeof(T).Name);");
             sourceBuilder.AppendLine(@"
         }
     }
@@ -117,7 +117,7 @@ namespace DI
                         continue;
                     }
                     service.VariableName = GetVariableName(service, fields);
-                    sourceBuilder.AppendLine($"private static {service.Type} {service.VariableName} = {GetTypeConstruction(service, fields)};");
+                    sourceBuilder.AppendLine($"        private static {service.Type} {service.VariableName} = {GetTypeConstruction(service, fields)};");
                     fields.Add(service);
                 }
             }

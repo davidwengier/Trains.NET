@@ -28,16 +28,16 @@ namespace Trains.NET.Rendering
                 {
                     (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(train.Column, train.Row);
 
-                    if (!onScreen) continue;
+                    if (onScreen)
+                    {
+                        canvas.Translate(x, y);
 
-                    canvas.Translate(x, y);
+                        float scale = pixelMapper.CellSize / 100.0f;
 
-                    float scale = pixelMapper.CellSize / 100.0f;
+                        canvas.Scale(scale, scale);
 
-                    canvas.Scale(scale, scale);
-
-                    _trainRenderer.Render(canvas, train);
-
+                        _trainRenderer.Render(canvas, train);
+                    }
                 }
 
                 // Create a fake train pointing backwards, to represent our carriage

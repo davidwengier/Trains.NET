@@ -22,7 +22,7 @@ namespace Trains.NET.Engine.Tracks
             var track = new Bridge()
             {
                 Direction = Enum.Parse<SingleTrackDirection>(bits[1]),
-                Happy = bool.Parse(bits[3])
+                Happy = bool.Parse(bits[2])
             };
             entity = track;
             return true;

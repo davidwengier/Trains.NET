@@ -57,17 +57,21 @@ namespace Trains.NET.Engine
             _columns = columns;
             _rows = rows;
 
+            IEnumerable<IEntity>? entities = null;
             IEnumerable<IStaticEntity>? tracks = null;
             IEnumerable<Terrain>? terrain = null;
             IEnumerable<IMovable>? trains = null;
             try
             {
-                var entities = _storage?.ReadEntities();
-                tracks = entities!.OfType<IStaticEntity>();
-                trains = entities.OfType<IMovable>();
+                entities = _storage?.ReadEntities();
                 terrain = _storage?.ReadTerrain();
             }
             catch { }
+            if (entities is not null)
+            {
+                tracks = entities.OfType<IStaticEntity>();
+                trains = entities.OfType<IMovable>();
+            }
 
             if (tracks is not null && terrain is not null && terrain.Any() && trains is not null)
             {

@@ -11,9 +11,5 @@
   <ItemGroup>
      <InternalsVisibleTo Include="Trains.NET.Tests" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" />
-  </ItemGroup>
   
 </Project>

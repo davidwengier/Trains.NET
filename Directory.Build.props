@@ -7,18 +7,21 @@
     <Nullable>enable</Nullable>
     <NoWarn>NU1701</NoWarn>
     <WarningLevel>5</WarningLevel>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <!-- I have no idea which one of these works, but sometimes one of them does -->
   <PropertyGroup Condition="'$(CI)' == 'true'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzers>true</RunAnalyzers>
     <UseRoslynAnalyzers>true</UseRoslynAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>preview</AnalysisLevel>
 
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <!-- <AnalysisMode>AllEnabledByDefault</AnalysisMode> -->
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>

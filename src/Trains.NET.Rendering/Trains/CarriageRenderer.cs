@@ -30,7 +30,7 @@ namespace Trains.NET.Rendering
                 StrokeWidth = _trainParameters.StrokeWidth
             };
 
-            float startPos = -(_trainParameters.HeadWidth / 2);
+            float startPos = -(_carriageWidth / 2);
 
             canvas.DrawGradientRect(startPos,
                             -(_trainParameters.HeadHeight / 2),

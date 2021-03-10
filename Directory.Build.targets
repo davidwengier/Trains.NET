@@ -2,7 +2,6 @@
 
   <!-- Only applies to Trains.NET things -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
   </ItemGroup>
 

@@ -10,7 +10,7 @@ using System;
 
 namespace Trains
 {
-    public class GameElement : FrameworkElement
+    public class GameElement : FrameworkElement, IDisposable
     {
         private readonly bool _designMode;
         private readonly IGame _game;
@@ -46,7 +46,6 @@ namespace Trains
             _wpfFps.Update();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -87,6 +86,11 @@ namespace Trains
                 drawingContext.DrawImage(_bitmap, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
             }
             _fps.Update();
+        }
+
+        public void Dispose()
+        {
+            _game.Dispose();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace Midi
 
     [SuppressMessage("Design", "CA1069:Enums values should not be duplicated")]
     [SuppressMessage("Style", "IDE1006:Naming Styles")]
+    [SuppressMessage("Interoperability", "CA1401:P/Invokes should not be visible.")]
     internal static class Win32API
     {
         #region Constants

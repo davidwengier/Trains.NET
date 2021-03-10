@@ -1,9 +1,9 @@
-name: Master
+name: Real Build
 
 on:
   push:
     branches:
-    - master
+    - main
     paths-ignore:
     - '*.md'
 

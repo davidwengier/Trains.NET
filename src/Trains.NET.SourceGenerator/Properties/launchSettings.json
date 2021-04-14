@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Trains.NET.SourceGenerator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Trains\\Trains.csproj"
+    }
+  }
+}

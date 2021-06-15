@@ -221,7 +221,6 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 2, true);
             TrackTool.Execute(2, 3, true);
 
-
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
@@ -284,7 +283,6 @@ namespace Trains.NET.Tests
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
             Assert.Equal(TIntersectionDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
         }
-
 
         [Fact]
         public void RightUpDown()
@@ -384,7 +382,6 @@ namespace Trains.NET.Tests
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
         }
-
 
         [Fact]
         public void LeftUpDown_DrawOver()

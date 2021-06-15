@@ -67,7 +67,6 @@ namespace Trains.NET.Tests.EngineUtilityTests
                 while (sw.ElapsedMilliseconds < target) ;
             }).ConfigureAwait(false);
 
-
             Assert.True(enoughSamples, "Didn't collect enough samples to average");
             Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
         }

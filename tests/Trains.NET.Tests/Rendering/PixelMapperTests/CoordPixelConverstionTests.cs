@@ -251,7 +251,6 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests
             Assert.Equal(row, actualRow);
         }
 
-
         [Theory]
         [InlineData(0, -1)]
         [InlineData(-1, 0)]

@@ -28,7 +28,6 @@ namespace Trains.NET.Rendering.UI
         protected virtual int InnerWidth { get; set; } = 100;
         protected virtual int InnerHeight { get; set; } = 100;
 
-
         public bool Visible
         {
 

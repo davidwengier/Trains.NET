@@ -59,7 +59,6 @@ namespace Trains.NET.Rendering.Skia
         public void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle)
             => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), s_noAntialiasPaint);
 
-
         public void DrawCircle(float x, float y, float radius, PaintBrush paint)
             => _canvas.DrawCircle(x, y, radius, GetSKPaint(paint));
 

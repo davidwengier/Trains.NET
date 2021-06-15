@@ -13,7 +13,6 @@ namespace Trains.NET.Rendering
         public ToolMode Mode => ToolMode.Build;
         public string Name => "Tree";
 
-
         public TreeTool(ILayout<Tree> trackLayout, ITerrainMap terrainMap, IEnumerable<IStaticEntityFactory<Tree>> entityFactories)
         {
             _entityCollection = trackLayout;

@@ -59,7 +59,6 @@ namespace Midi
         /// </summary>
         public const uint MAXPNAMELEN = 32;
 
-
         /// <summary>
         /// Status type returned from most functions in the Win32 API.
         /// </summary>

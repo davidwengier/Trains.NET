@@ -86,8 +86,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(angle, train.Angle, MovementPrecision);
 
-
-
             // Move it!
             for (int i = 0; i < _movementSteps; i++)
                 _gameBoard.GameLoopStep();
@@ -104,8 +102,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(3, 1, 180.0f, 1, 1)]
         public void MovementTest_PointToPoint_3HorizontalTracks(int startingColumn, int startingRow, float angle, int expectedColumn, int expectedRow)
         {
-
-
             _trackLayout.AddTrack(1, 1);
             _trackLayout.AddTrack(2, 1);
             _trackLayout.AddTrack(3, 1);
@@ -136,7 +132,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(0.5f, train.RelativeTop, MovementPrecision);
             Assert.Equal(angle, train.Angle, MovementPrecision);
         }
-
 
         [Theory]
         [InlineData(1, 2, 270.0f, 2, 1, 0.0f)]
@@ -210,14 +205,11 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(expectedAngle, train.Angle, MovementPrecision);
         }
 
-
         [Theory]
         [InlineData(1, 1, 0.0f, 2, 2, 90.0)]
         [InlineData(2, 2, 270.0f, 1, 1, 180.0f)]
         public void MovementTest_PointToPoint_Horizontal_LeftDown_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 1); // Horizontal
             _trackLayout.AddTrack(2, 1); // Corner
             _trackLayout.AddTrack(2, 2); // Vertical
@@ -254,8 +246,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(2, 1, 90.0f, 1, 2, 180.0f)]
         public void MovementTest_PointToPoint_Horizontal_LeftUp_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 2); // Horizontal
             _trackLayout.AddTrack(2, 2); // Corner
             _trackLayout.AddTrack(2, 1); // Vertical
@@ -335,8 +325,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(2, 3, 270.0f, 1, 2, 180.0f)] // Down to Left
         public void MovementTest_PointToPoint_Horizontal_LeftUpDown_VerticalVertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 2); // Horizontal
             _trackLayout.AddTrack(2, 1); // Vertical
             _trackLayout.AddTrack(2, 3); // Vertical
@@ -375,8 +363,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(1, 3, 270.0f, 2, 2, 0.0f)] // Down to Right
         public void MovementTest_PointToPoint_VerticalVertical_RightUpDown_Horizontal(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 1); // Vertical
             _trackLayout.AddTrack(1, 3); // Vertical
             _trackLayout.AddTrack(2, 2); // Horizontal
@@ -415,8 +401,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(3, 1, 180.0f, 2, 2, 90.0f)] // Right to Down
         public void MovementTest_PointToPoint_HorizontalHorizontal_LeftRightDown_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 1); // Horizontal
             _trackLayout.AddTrack(3, 1); // Horizontal
             _trackLayout.AddTrack(2, 2); // Vertical
@@ -455,8 +439,6 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(3, 2, 180.0f, 2, 1, 270.0f)] // Right to Up
         public void MovementTest_PointToPoint_HorizontalHorizontal_LeftRightUp_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-
-
             _trackLayout.AddTrack(1, 2); // Horizontal
             _trackLayout.AddTrack(3, 2); // Horizontal
             _trackLayout.AddTrack(2, 1); // Vertical

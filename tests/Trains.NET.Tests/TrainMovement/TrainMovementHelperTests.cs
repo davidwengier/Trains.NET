@@ -54,7 +54,6 @@ namespace Trains.NET.Tests
         [InlineData(0.0f, -1.0f, -Math.PI / 2)]
         public void PointsToAngle(float x, float y, double expected) => Assert.Equal(expected, TrainMovement.PointsToAngle(x, y), 1);
 
-
         [Theory]
         [InlineData(0.0, 1.0f, 1.0f, 0.0f)]
         [InlineData(0.0, 5.0f, 5.0f, 0.0f)]

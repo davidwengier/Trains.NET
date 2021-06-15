@@ -15,7 +15,6 @@ namespace Trains.NET.Rendering.UI
         public int PaddingX { get; set; } = 10;
         public bool TransparentBackground { get; set; }
 
-
         protected ButtonBase()
         {
         }

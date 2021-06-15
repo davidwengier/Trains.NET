@@ -12,10 +12,10 @@
     <PackageReference Update="System.Collections.Immutable" Version="5.0.0" />
 
     <!-- Analyzers etc. -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.10.0-1.final" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.10.0" />
 
     <!-- For source generators -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.10.0-1.final" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.10.0" PrivateAssets="all" />
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
 
     <!-- SkiaSharp -->
@@ -24,7 +24,7 @@
     <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.3-preview.40" />
     
     <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.10.0-1.final">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.10.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

@@ -252,6 +252,5 @@ namespace Trains.NET.Engine
                 }
             }
         }
-
     }
 }

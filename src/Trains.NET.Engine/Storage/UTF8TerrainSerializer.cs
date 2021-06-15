@@ -29,8 +29,6 @@ namespace Trains.NET.Engine
                         Height = height,
                     });
                 }
-
-
             }
 
             return terrainList;

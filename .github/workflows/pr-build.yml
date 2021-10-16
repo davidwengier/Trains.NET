@@ -18,6 +18,9 @@ jobs:
       with:
         dotnet-version: 6.0.100-rc.2.21505.57
 
+    - name: Install workload
+      run: dotnet workload install wasm-tools 
+
     - name: Build Debug
       run: dotnet build Trains.NET.sln -p:CI=true -c Debug
 

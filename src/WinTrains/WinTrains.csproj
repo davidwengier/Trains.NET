@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.WindowsForms" />
+    <PackageReference Include="Nerdbank.GitVersioning" />
   </ItemGroup>
 
   <ItemGroup>

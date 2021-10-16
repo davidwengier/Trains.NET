@@ -31,7 +31,7 @@
     </PackageReference>
 
     <!-- Nerdbank GitVersioning -->
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.37-alpha">
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.5.37-alpha">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

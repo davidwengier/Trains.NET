@@ -18,10 +18,10 @@ jobs:
       with:
         submodules: true
       
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.100-preview.1.21103.13
+        dotnet-version: 6.0.100-rc.2.21505.57
 
     - name: Build Debug
       run: dotnet build Trains.NET.sln -p:CI=true -c Debug

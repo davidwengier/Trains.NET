@@ -12,6 +12,11 @@ jobs:
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
         
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.100-rc.2.21505.57
+
     - name: Publish app
       run: dotnet publish src/BlazingTrains/BlazingTrains.csproj -c Release
 

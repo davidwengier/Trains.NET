@@ -22,6 +22,7 @@ namespace Trains.NET.Rendering.UI
         protected virtual int Top { get; set; }
         protected virtual int TopPadding { get; } = 15;
         protected virtual int BottomPadding { get; } = 15;
+        protected virtual int CornerRadius { get; } = 10;
         protected virtual PanelPosition Position { get; } = PanelPosition.Left;
         protected virtual int Left { get; set; }
 
@@ -155,9 +156,10 @@ namespace Trains.NET.Rendering.UI
             {
                 this.Left = Math.Max(10, this.Left);
                 this.Left = Math.Min(width - GetPanelWidth() - 10, this.Left);
-                this.Top = Math.Max(10, this.Top);
-                this.Top = Math.Min(height - GetPanelHeight() - 10, this.Top);
             }
+
+            this.Top = Math.Max(10, this.Top);
+            this.Top = Math.Min(height - GetPanelHeight() - 10, this.Top);
 
             canvas.Translate(0, this.Top);
 
@@ -205,7 +207,7 @@ namespace Trains.NET.Rendering.UI
                 canvas.Translate(GetLeft(width), 0);
             }
 
-            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, 10, 10, Brushes.PanelBackground);
+            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, Brushes.PanelBackground);
 
             if (this.Title is { Length: > 0 } || this.CanClose)
             {
@@ -246,7 +248,7 @@ namespace Trains.NET.Rendering.UI
                 }
             }
 
-            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, 10, 10, Brushes.PanelBorder);
+            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, Brushes.PanelBorder);
 
             if (_titleWidth > 0)
             {

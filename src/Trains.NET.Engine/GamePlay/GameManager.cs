@@ -13,11 +13,17 @@ namespace Trains.NET.Engine
 
         public event EventHandler? Changed;
 
-        public GameManager(IEnumerable<ITool> tools, IGameBoard gameBoard)
+        public GameManager(IEnumerable<ITool> tools, IGameBoard gameBoard, ILayout layout)
         {
             _defaultTool = tools.First();
             _currentTool = _defaultTool;
             _gameBoard = gameBoard;
+
+            _buildMode = !layout.Any();
+            if (_buildMode)
+            {
+                _defaultTool = tools.Skip(1).First();
+            }
         }
 
         public bool BuildMode

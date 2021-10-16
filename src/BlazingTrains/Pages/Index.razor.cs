@@ -1,4 +1,5 @@
 ﻿using SkiaSharp.Views.Blazor;
+using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 
@@ -9,6 +10,10 @@ namespace BlazingTrains.Pages
         private SKCanvasView _skiaView = null!;
         private IGame _game = null!;
         private IInteractionManager _interactionManager = null!;
+
+        private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaSharp-OnPaintSurfaceFPS");
+        private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
+
         protected override void OnInitialized()
         {
             _game = DI.ServiceLocator.GetService<IGame>();
@@ -17,8 +22,13 @@ namespace BlazingTrains.Pages
 
         protected void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
-            _game.SetSize(e.Info.Width, e.Info.Height);
-            _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
+            using (_renderTime.Measure())
+            {
+                _game.SetSize(e.Info.Width, e.Info.Height);
+                _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
+            }
+
+            _fps.Update();
         }
     }
 }

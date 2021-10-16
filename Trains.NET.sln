@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{88B2DB4E
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		build\Packages.targets = build\Packages.targets
 		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
+		README.md = README.md
 		version.json = version.json
 	EndProjectSection
 EndProject

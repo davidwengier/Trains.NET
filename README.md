@@ -7,11 +7,14 @@
 
 ### Info
 
+Play the Blazor version in your browser here: [https://wengier.com/Trains.NET](https://wengier.com/Trains.NET)
+
 Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twitch.tv/davidwengier) at 8:30pm Wednesdays from [Melbourne, Australia](https://www.timeanddate.com/worldclock/australia/melbourne).
 
 Videos available on YouTube at [http://bit.ly/trains-net-videos](http://bit.ly/trains-net-videos).
 
 Join the Discord at [https://discord.gg/Yt5B58b](https://discord.gg/Yt5B58b)
+
 
 ### Background
 

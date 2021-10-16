@@ -1,0 +1,48 @@
+﻿@page "/"
+@using SkiaSharp
+@using SkiaSharp.Views.Blazor
+@using Trains.NET.Rendering
+@using Trains.NET.Rendering.Skia
+
+<PageTitle>Trains - @ThisAssembly.AssemblyInformationalVersion</PageTitle>
+
+<SKCanvasView style="position:absolute; left:0px; top:0px; width: 100vw; height: 100vh;"
+              @ref="_skiaView"
+              IgnorePixelScaling="true"
+              EnableRenderLoop="true"
+              OnPaintSurface="OnPaintSurface"
+              @onpointerdown="OnPointerDown"
+              @onpointermove="OnPointerMove"
+              @onpointerup="OnPointerUp" />
+
+@code
+{
+    private void OnPointerDown(PointerEventArgs e)
+    {
+//        if (e.Button != 1) return;
+
+        _interactionManager.PointerClick((int)e.OffsetX, (int)e.OffsetY);
+        _skiaView.Invalidate();
+    }
+
+    private void OnPointerMove(PointerEventArgs e)
+    {
+        if (e.Buttons > 0)
+        {
+            _interactionManager.PointerDrag((int)e.OffsetX, (int)e.OffsetY);
+        }
+        else
+        {
+            _interactionManager.PointerMove((int)e.OffsetX, (int)e.OffsetY);
+        }
+        _skiaView.Invalidate();
+    }
+
+    private void OnPointerUp(PointerEventArgs e)
+    {
+        //if (e.Buttons != 1) return;
+
+        _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
+        _skiaView.Invalidate();
+    }
+}

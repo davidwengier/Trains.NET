@@ -1,7 +1,7 @@
 # Trains.NET
 
 [![License: MIT](https://img.shields.io/github/license/davidwengier/Trains.NET?color=blue "License: MIT")](https://choosealicense.com/licenses/mit/)
-[![Build status](https://github.com/davidwengier/Trains.NET/workflows/Main/badge.svg "Build status")](https://github.com/davidwengier/Trains.NET/actions?query=workflow%3AMain)
+[![Build status](https://github.com/davidwengier/Trains.NET/workflows/Real%20Build/badge.svg "Build status")](https://github.com/davidwengier/Trains.NET/actions?query=workflow%3AReal%20Build)
 [![Join the Discord](https://img.shields.io/discord/709643112636612658?label=Discord "Join the Discord")](https://discord.gg/Yt5B58b)
 [![YouTube](https://img.shields.io/badge/YouTube-subscribe-red "YouTube")](https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N)
 

@@ -5,9 +5,10 @@
 [![Join the Discord](https://img.shields.io/discord/709643112636612658?label=Discord "Join the Discord")](https://discord.gg/Yt5B58b)
 [![YouTube](https://img.shields.io/badge/YouTube-subscribe-red "YouTube")](https://www.youtube.com/playlist?list=PLTF9e85S45hIKmP7VgV5eUxcoJUxoTs-N)
 
-### Info
+## Play the Blazor version in your browser!
+# [https://wengier.com/Trains.NET](https://wengier.com/Trains.NET)
 
-Play the Blazor version in your browser here: [https://wengier.com/Trains.NET](https://wengier.com/Trains.NET)
+### Info
 
 Developed live on stream at [https://www.twitch.tv/davidwengier](https://www.twitch.tv/davidwengier) at 8:30pm Wednesdays from [Melbourne, Australia](https://www.timeanddate.com/worldclock/australia/melbourne).
 

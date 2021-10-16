@@ -13,9 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorBeforeUnload" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.2.21480.10" PrivateAssets="all" />
 
+    <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
+    
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.Views.Blazor" />
   </ItemGroup>

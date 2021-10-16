@@ -18,6 +18,8 @@ namespace BlazingTrains.Pages
         {
             _game = DI.ServiceLocator.GetService<IGame>();
             _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
+
+            this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
         }
 
         protected void OnPaintSurface(SKPaintSurfaceEventArgs e)
@@ -29,6 +31,16 @@ namespace BlazingTrains.Pages
             }
 
             _fps.Update();
+        }
+
+        private void BeforeUnload_BeforeUnloadHandler(object? sender, blazejewicz.Blazor.BeforeUnload.BeforeUnloadArgs e)
+        {
+            _game.Dispose();
+        }
+
+        public void Dispose()
+        {
+            this.BeforeUnload.BeforeUnloadHandler -= BeforeUnload_BeforeUnloadHandler;
         }
     }
 }

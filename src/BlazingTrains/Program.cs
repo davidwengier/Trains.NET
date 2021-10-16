@@ -1,11 +1,24 @@
-using BlazingTrains;
+﻿using BlazingTrains;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Trains.NET.Engine;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddBeforeUnload();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+// Dodgy!!
+var storage = DI.ServiceLocator.GetService<IGameStorage>() as BlazorGameStorage;
+if (storage is not null)
+{
+    storage.LocalStorageService = host.Services.GetService<ILocalStorageService>();
+}
+
+await host.RunAsync();

@@ -9,34 +9,35 @@
   
   <ItemGroup>
 
-    <PackageReference Update="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Update="System.Collections.Immutable" Version="6.0.0-rc.2.21480.5" />
 
     <!-- Analyzers etc. -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.10.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.0-5.final" />
 
     <!-- For source generators -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.10.0" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.0-5.final" PrivateAssets="all" />
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
 
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="2.80.3-preview.40" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.80.3-preview.40" />
-    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.80.3-preview.40" />
-    
+    <PackageReference Update="SkiaSharp"                    Version="2.88.0-preview.150" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.150" />
+    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.88.0-preview.150" />
+    <PackageReference Update="SkiaSharp.Views.Blazor"       Version="2.88.0-preview.150" />
+
     <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.10.0">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.0-5.final">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
     <!-- Nerdbank GitVersioning -->
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.37-alpha">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
     <!-- Test dependencies -->
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
@@ -46,7 +47,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-
   </ItemGroup>
   
 </Project>

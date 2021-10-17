@@ -20,7 +20,7 @@ namespace Trains.NET.Rendering.UI
         private readonly MultiButton _trainSelectionButton;
 
         protected override PanelPosition Position => PanelPosition.Floating;
-        protected override int Left => (PanelWidth + 75) * -1;
+        protected override int Left => (PanelWidth + 55) * -1;
         protected override int Top => 50;
         protected override int InnerHeight => 30;
         protected override int InnerWidth => PanelWidth;

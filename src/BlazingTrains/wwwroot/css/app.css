@@ -1,6 +1,6 @@
 ﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    overscroll-behavior: contain;
+    overscroll-behavior: none;
 }
 
 h1:focus {

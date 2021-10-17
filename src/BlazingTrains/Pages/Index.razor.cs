@@ -7,7 +7,7 @@ namespace BlazingTrains.Pages
 {
     public partial class Index
     {
-        private SKCanvasView _skiaView = null!;
+        private SKGLView _skiaView = null!;
         private IGame _game = null!;
         private IInteractionManager _interactionManager = null!;
 
@@ -22,7 +22,7 @@ namespace BlazingTrains.Pages
             this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
         }
 
-        protected void OnPaintSurface(SKPaintSurfaceEventArgs e)
+        protected void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
         {
             using (_renderTime.Measure())
             {

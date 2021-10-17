@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering.UI;
@@ -20,7 +21,7 @@ namespace Trains.NET.Rendering
             var strings = new List<string>();
 
             float maxWidth = 0;
-            foreach ((string name, IStat stat) in InstrumentationBag.Stats)
+            foreach ((string name, IStat stat) in InstrumentationBag.Stats.OrderBy(i => i.Name))
             {
                 if (stat.ShouldShow())
                 {

@@ -1,2 +1,2 @@
 @echo off
-dotnet run -p src/Trains/Trains.csproj
+dotnet run --project src/Trains/Trains.csproj

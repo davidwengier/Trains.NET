@@ -46,7 +46,7 @@ namespace Trains
 
             this.Content = _gameElement;
 
-            this.Title = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
+            this.Title = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion;
 
             _gameElement.SizeChanged += SKElement_SizeChanged;
         }

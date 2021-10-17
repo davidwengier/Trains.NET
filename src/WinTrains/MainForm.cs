@@ -19,7 +19,7 @@ namespace WinTrains
         {
             InitializeComponent();
 
-            this.Text = "Trains - " + ThisAssembly.AssemblyInformationalVersion;
+            this.Text = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion;
 
             _game = DI.ServiceLocator.GetService<IGame>();
             _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();

@@ -7,7 +7,7 @@ namespace Trains.NET.Rendering.UI
     [Order(10)]
     public class CreditsScreen : PanelBase
     {
-        private const string Label = "Trains.NET - @davidwengier";
+        private const string Label = "https://github.com/davidwengier/Trains.NET";
 
         private readonly PaintBrush _labelBrush = Brushes.Label;
 

@@ -18,12 +18,6 @@ namespace Trains.NET.Engine
             _defaultTool = tools.First();
             _currentTool = _defaultTool;
             _gameBoard = gameBoard;
-
-            _buildMode = !layout.Any();
-            if (_buildMode)
-            {
-                _defaultTool = tools.Skip(1).First();
-            }
         }
 
         public bool BuildMode

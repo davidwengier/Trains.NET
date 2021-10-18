@@ -10,19 +10,20 @@
 <PageTitle>Trains - @@davidwengier - @ThisAssembly.AssemblyInformationalVersion</PageTitle>
 
 <SKGLView style="position:absolute; left:0px; top:0px; width: 100vw; height: 100vh; overflow: hidden;"
-              @ref="_skiaView"
-              IgnorePixelScaling="true"
-              EnableRenderLoop="true"
-              OnPaintSurface="OnPaintSurface"
-              @onpointerdown="OnPointerDown"
-              @onpointermove="OnPointerMove"
-              @onpointerup="OnPointerUp" />
+          @ref="_skiaView"
+          IgnorePixelScaling="true"
+          EnableRenderLoop="true"
+          OnPaintSurface="OnPaintSurface"
+          @onpointerdown="OnPointerDown"
+          @onpointermove="OnPointerMove"
+          @onpointerup="OnPointerUp"
+          @ontouchmove="OnTouchMove" />
 
 @code
 {
     private void OnPointerDown(PointerEventArgs e)
     {
-//        if (e.Button != 1) return;
+        //        if (e.Button != 1) return;
 
         _interactionManager.PointerClick((int)e.OffsetX, (int)e.OffsetY);
         _skiaView.Invalidate();
@@ -47,6 +48,16 @@
         //if (e.Buttons != 1) return;
 
         _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
+        _skiaView.Invalidate();
+    }
+
+    private void OnTouchMove(TouchEventArgs e)
+    {
+        var touch = e.Touches.FirstOrDefault();
+
+        if (touch is null) return;
+
+        _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
         _skiaView.Invalidate();
     }
 }

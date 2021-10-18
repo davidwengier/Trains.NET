@@ -43,7 +43,19 @@ jobs:
       run: dotnet test
       continue-on-error: true
 
-    - name: publish
+    - name: Publish Blazor app
+      run: dotnet publish src/BlazingTrains/BlazingTrains.csproj -c Release
+
+    - name: Deploy Blazor app to GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v2.2.0
+      with:
+        target_branch: gh-pages
+        build_dir: src/BlazingTrains/bin/Release/net6.0/publish/wwwroot
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish WPF app
       run: dotnet publish -o ./publish -r win-x64 -c Release --no-self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesInSingleFile=true -p:IncludeAllContentForSelfExtract=true src/Trains/Trains.csproj
 
     - name: GitVersion

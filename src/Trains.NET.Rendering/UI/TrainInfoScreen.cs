@@ -19,7 +19,7 @@ namespace Trains.NET.Rendering.UI
         private readonly MultiButton _actionButton;
         private readonly MultiButton _trainSelectionButton;
 
-        protected override PanelPosition Position => PanelPosition.Floating;
+        protected override PanelPosition Position => PanelPosition.Right;
         protected override int Left => (PanelWidth + 55) * -1;
         protected override int Top => 50;
         protected override int InnerHeight => 30;
@@ -96,6 +96,7 @@ namespace Trains.NET.Rendering.UI
                 return true;
             }
 
+            x -= 40;
             y += 40;
             _trainSelectionButton.HandleMouseAction(x, y, action);
 
@@ -133,7 +134,7 @@ namespace Trains.NET.Rendering.UI
             canvas.Translate(PanelWidth - 80, 0);
             _actionButton.Render(canvas);
 
-            canvas.Translate(0, -40);
+            canvas.Translate(40, -40);
             _trainSelectionButton.Render(canvas);
         }
     }

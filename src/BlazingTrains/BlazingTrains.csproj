@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishIISAssets>true</PublishIISAssets>
 
-    <RunAOTCompilation>true</RunAOTCompilation>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
     <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
   </PropertyGroup>

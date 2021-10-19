@@ -12,6 +12,8 @@
 
     height: -webkit-fill-available;
     min-height: -webkit-fill-available;
+
+    user-select: none;
 }
 
 h1:focus {

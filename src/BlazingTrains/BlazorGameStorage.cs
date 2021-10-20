@@ -5,7 +5,9 @@ namespace BlazingTrains
 {
     public class BlazorGameStorage : IGameStorage
     {
-        public ILocalStorageService? LocalStorageService { get; set; }
+        public IServiceProvider? AspNetCoreServices { get; set; }
+
+        private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
 
         public IEnumerable<IEntity> ReadEntities()
         {

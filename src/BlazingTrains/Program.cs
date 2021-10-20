@@ -18,7 +18,7 @@ var host = builder.Build();
 var storage = DI.ServiceLocator.GetService<IGameStorage>() as BlazorGameStorage;
 if (storage is not null)
 {
-    storage.LocalStorageService = host.Services.GetService<ILocalStorageService>();
+    storage.AspNetCoreServices = host.Services;
 }
 
 await host.RunAsync();

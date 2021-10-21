@@ -6,10 +6,12 @@ namespace Trains.NET.Rendering.Skia
     {
         private readonly SKSurface _surface;
 
-        public SKSurfaceWrapper(int width, int height)
+        public SKSurfaceWrapper(int width, int height, GRContext? context)
         {
             var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            _surface = SKSurface.Create(info);
+            _surface = context != null ?
+                        SKSurface.Create(context, true, info) :
+                        SKSurface.Create(info);
         }
 
         public ICanvas Canvas => new SKCanvasWrapper(_surface.Canvas);

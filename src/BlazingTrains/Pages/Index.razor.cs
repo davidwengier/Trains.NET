@@ -27,6 +27,8 @@ namespace BlazingTrains.Pages
 
         protected void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
         {
+            // Grab the context from the SKGLView and pass it to the ImageFactory if it is using an SKImageFactory.
+            //  This forces all drawing to happen within the same context, removing CPU to GPU copies.
             if (!_hasSetContext && DI.ServiceLocator.GetService<IImageFactory>() is SKImageFactory imageFactory)
             {
                 var field = typeof(SKGLView).GetField("context", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -37,6 +39,7 @@ namespace BlazingTrains.Pages
                     _hasSetContext = true;
                 }
             }
+
             using (_renderTime.Measure())
             {
                 _game.SetSize(e.Info.Width, e.Info.Height);

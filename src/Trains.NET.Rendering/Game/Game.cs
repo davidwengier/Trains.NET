@@ -9,8 +9,6 @@ namespace Trains.NET.Rendering
 {
     public class Game : IGame
     {
-        private const int RenderInterval = 16;
-
         private int _width;
         private int _height;
         private int _screenWidth;
@@ -123,6 +121,8 @@ namespace Trains.NET.Rendering
                 return;
             }
 
+            AdjustViewPortIfNecessary();
+
             canvas.Clear(Colors.White);
 
             IPixelMapper pixelMapper = _pixelMapper.Snapshot();
@@ -195,11 +195,26 @@ namespace Trains.NET.Rendering
 
         public void AdjustViewPortIfNecessary()
         {
+            if (!_gameBoard.Enabled) return;
+
             foreach (IMovable vehicle in _gameBoard.GetMovables())
             {
-                if (vehicle.Follow)
+                if (vehicle is Train { Follow: true } train)
                 {
-                    (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(vehicle.Column, vehicle.Row);
+                    int col, row;
+                    if (train.Carriages == 0)
+                    {
+                        col = train.Column;
+                        row = train.Row;
+                    }
+                    else
+                    {
+                        var locomotivePosition = _gameBoard.GetNextSteps(train, train.Carriages).Last();
+                        col = locomotivePosition.Column;
+                        row = locomotivePosition.Row;
+                    }
+
+                    (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
                     double easing = 10;
                     int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);

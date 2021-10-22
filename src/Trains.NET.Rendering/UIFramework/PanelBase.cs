@@ -29,6 +29,8 @@ namespace Trains.NET.Rendering.UI
         protected virtual int InnerWidth { get; set; } = 100;
         protected virtual int InnerHeight { get; set; } = 100;
 
+        protected virtual PaintBrush PanelBorderBrush => Brushes.PanelBorder;
+
         public bool Visible
         {
 
@@ -248,7 +250,7 @@ namespace Trains.NET.Rendering.UI
                 }
             }
 
-            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, Brushes.PanelBorder);
+            canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, this.PanelBorderBrush);
 
             if (_titleWidth > 0)
             {

@@ -24,7 +24,6 @@ namespace Trains.NET.Rendering
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderLayerDrawTimes;
         private readonly Dictionary<IScreen, ElapsedMillisecondsTimedStat> _screenDrawTimes;
         private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
-        private readonly ITimer _renderLoop;
         private readonly IEnumerable<IScreen> _screens;
         private readonly IImageCache _imageCache;
 
@@ -32,7 +31,6 @@ namespace Trains.NET.Rendering
                     IEnumerable<ILayerRenderer> boardRenderers,
                     IPixelMapper pixelMapper,
                     IImageFactory imageFactory,
-                    ITimer renderLoop,
                     IEnumerable<IScreen> screens,
                     IImageCache imageCache)
         {
@@ -40,7 +38,6 @@ namespace Trains.NET.Rendering
             _boardRenderers = boardRenderers;
             _pixelMapper = pixelMapper;
             _imageFactory = imageFactory;
-            _renderLoop = renderLoop;
             _screens = screens;
             _imageCache = imageCache;
 
@@ -57,10 +54,6 @@ namespace Trains.NET.Rendering
             _screenDrawTimes = _screens.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
             _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
             _pixelMapper.ViewPortChanged += (s, e) => _imageCache.SetDirtyAll(_boardRenderers);
-
-            _renderLoop.Elapsed += (s, e) => DrawFrame();
-            _renderLoop.Interval = RenderInterval;
-            _renderLoop.Start();
 
             _gameBoard.Initialize(_pixelMapper.Columns, _pixelMapper.Rows);
         }
@@ -132,42 +125,22 @@ namespace Trains.NET.Rendering
 
             canvas.Clear(Colors.White);
 
-            IImage? gameImage = _imageCache.Get(this);
-            if (gameImage != null)
+            IPixelMapper pixelMapper = _pixelMapper.Snapshot();
+
+            using (canvas.Scope())
             {
-                canvas.DrawImage(gameImage, 0, 0);
+                RenderFrame(canvas, pixelMapper);
             }
-        }
 
-        public void DrawFrame()
-        {
-            if (_width == 0 || _height == 0) return;
-
-            AdjustViewPortIfNecessary();
-
-            using (_ = _imageCache.SuspendSetDirtyCalls())
+            foreach (IScreen screen in _screens)
             {
-                IPixelMapper pixelMapper = _pixelMapper.Snapshot();
-
-                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
-
-                using (imageCanvas.Canvas.Scope())
+                using (_screenDrawTimes[screen].Measure())
                 {
-                    RenderFrame(imageCanvas.Canvas, pixelMapper);
-                }
-
-                foreach (IScreen screen in _screens)
-                {
-                    using (_screenDrawTimes[screen].Measure())
+                    using (canvas.Scope())
                     {
-                        using (imageCanvas.Canvas.Scope())
-                        {
-                            screen.Render(imageCanvas.Canvas, _screenWidth, _screenHeight);
-                        }
+                        screen.Render(canvas, _screenWidth, _screenHeight);
                     }
                 }
-
-                _imageCache.Set(this, imageCanvas.Render());
             }
         }
 
@@ -243,7 +216,6 @@ namespace Trains.NET.Rendering
 
         public void Dispose()
         {
-            _renderLoop.Dispose();
             _imageCache.Dispose();
             _gameBoard.Dispose();
         }

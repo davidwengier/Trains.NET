@@ -1,4 +1,5 @@
-﻿using SkiaSharp.Views.Blazor;
+﻿using SkiaSharp;
+using SkiaSharp.Views.Blazor;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -27,6 +28,11 @@ namespace BlazingTrains.Pages
             using (_renderTime.Measure())
             {
                 _game.SetSize(e.Info.Width, e.Info.Height);
+                if (e.Surface.Context is GRContext context && context != null)
+                {
+                    // Set the context so all rendering happens in the same place
+                    _game.SetContext(new SKContextWrapper(context));
+                }
                 _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
             }
 

@@ -10,5 +10,6 @@ namespace Trains.NET.Rendering
         void SetSize(int width, int height);
         (int Width, int Height) GetSize();
         (int Width, int Height) GetScreenSize();
+        void SetContext(IContext context);
     }
 }

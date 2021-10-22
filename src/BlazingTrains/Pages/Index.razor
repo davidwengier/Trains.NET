@@ -26,7 +26,6 @@
         //        if (e.Button != 1) return;
 
         _interactionManager.PointerClick((int)e.OffsetX, (int)e.OffsetY);
-        _skiaView.Invalidate();
     }
 
     private void OnPointerMove(PointerEventArgs e)
@@ -39,8 +38,6 @@
         {
             _interactionManager.PointerMove((int)e.OffsetX, (int)e.OffsetY);
         }
-
-        _skiaView.Invalidate();
     }
 
     private void OnPointerUp(PointerEventArgs e)
@@ -48,7 +45,6 @@
         //if (e.Buttons != 1) return;
 
         _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
-        _skiaView.Invalidate();
     }
 
     private void OnTouchMove(TouchEventArgs e)
@@ -58,6 +54,5 @@
         if (touch is null) return;
 
         _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
-        _skiaView.Invalidate();
     }
 }

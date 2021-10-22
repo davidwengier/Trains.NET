@@ -17,14 +17,11 @@ namespace Trains.NET.Rendering.UI
         protected override int BottomPadding => 3;
         protected override int CornerRadius => 5;
 
-        public CreditsScreen()
+        protected override void PreRender(ICanvas canvas)
         {
             // to stick to the bottom
             this.Top = int.MaxValue;
-        }
 
-        protected override void PreRender(ICanvas canvas)
-        {
             var textWidth = canvas.MeasureText(Label, _labelBrush);
 
             int textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");

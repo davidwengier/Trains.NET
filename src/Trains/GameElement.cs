@@ -56,6 +56,9 @@ namespace Trains
             int width = (int)this.ActualWidth;
             int height = (int)this.ActualHeight;
 
+            if (width == 0 || height == 0)
+                return;
+
             // Only resize if we need to
             if (_bitmap == null || width != _bitmap.PixelWidth || height != _bitmap.PixelHeight)
             {

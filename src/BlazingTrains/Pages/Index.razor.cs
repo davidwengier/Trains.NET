@@ -8,7 +8,6 @@ namespace BlazingTrains.Pages
 {
     public partial class Index
     {
-        private SKGLView _skiaView = null!;
         private IGame _game = null!;
         private IInteractionManager _interactionManager = null!;
 

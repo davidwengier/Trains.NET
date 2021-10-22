@@ -19,10 +19,10 @@
     <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
 
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="2.88.0-preview.150" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.150" />
-    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.88.0-preview.150" />
-    <PackageReference Update="SkiaSharp.Views.Blazor"       Version="2.88.0-preview.150" />
+    <PackageReference Update="SkiaSharp"                    Version="2.88.0-preview.152" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.152" />
+    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.88.0-preview.152" />
+    <PackageReference Update="SkiaSharp.Views.Blazor"       Version="2.88.0-preview.152" />
 
     <!-- Latest C# compiler -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.0-5.final">

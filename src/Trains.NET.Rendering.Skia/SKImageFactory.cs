@@ -11,9 +11,15 @@ namespace Trains.NET.Rendering.Skia
             return new SKSurfaceWrapper(width, height, _context);
         }
 
-        public void SetContext(GRContext? context)
+        public bool SetContext(IContext context)
         {
-            _context = context;
+            if (context is SKContextWrapper skContext)
+            {
+                bool initalSet = _context == null;
+                _context = skContext.Context;
+                return initalSet;
+            }
+            return false;
         }
     }
 }

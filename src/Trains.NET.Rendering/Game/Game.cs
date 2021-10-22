@@ -115,6 +115,14 @@ namespace Trains.NET.Rendering
 
         public (int Width, int Height) GetScreenSize() => (_screenWidth, _screenHeight);
 
+        public void SetContext(IContext context)
+        {
+            if (_imageFactory.SetContext(context))
+            {
+                _imageCache.Clear();
+            }
+        }
+
         public void Render(ICanvas canvas)
         {
             if (_width == 0 || _height == 0)

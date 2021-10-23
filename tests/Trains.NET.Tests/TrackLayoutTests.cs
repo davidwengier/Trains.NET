@@ -107,7 +107,7 @@ namespace Trains.NET.Tests
             Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(1, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
+        [Fact]
         public void CrossVerticalFirst()
         {
             TrackTool.Execute(2, 1, true);
@@ -118,13 +118,12 @@ namespace Trains.NET.Tests
             TrackTool.Execute(3, 2, true);
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 2));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
         public void CrossHortizontalFirst()
         {
             TrackTool.Execute(1, 2, true);
@@ -135,13 +134,13 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 3, true);
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 2));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
+        [Fact]
         public void CrossMiddleLast()
         {
             TrackTool.Execute(1, 3, true);
@@ -154,14 +153,45 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 3, false);
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 3));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 3));
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 4).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 3).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
-        public void TwoCrosses()
+        [Fact(Skip = "Crosses don't work like this any more :(")]
+        public void TwoCrosses_DragDown()
+        {
+            TrackTool.Execute(1, 2, true);
+            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(3, 2, true);
+
+            TrackTool.Execute(1, 4, true);
+            TrackTool.Execute(2, 4, true);
+            TrackTool.Execute(3, 4, true);
+
+            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(2, 3, true);
+            TrackTool.Execute(2, 4, true);
+            TrackTool.Execute(2, 5, true);
+
+            Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
+            Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
+            Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
+            Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
+
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 4));
+            Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 4).Direction);
+            Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 4).Direction);
+
+            Assert.True(TrackLayout.GetTrackAt<SingleTrack>(2, 3).Happy);
+        }
+
+
+        [Fact(Skip = "Crosses don't work like this any more :(")]
+        public void TwoCrosses_DragUp()
         {
             TrackTool.Execute(1, 2, true);
             TrackTool.Execute(2, 2, true);
@@ -178,12 +208,12 @@ namespace Trains.NET.Tests
             TrackTool.Execute(2, 1, true);
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 2));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
 
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 4));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 4));
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 4).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 4).Direction);
 
@@ -480,7 +510,7 @@ namespace Trains.NET.Tests
 
             Assert.Equal(SingleTrackDirection.RightDown, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
             Assert.Equal(SingleTrackDirection.RightUp, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
-            Assert.IsType<CrossTrack>(TrackLayout.GetTrackAt<SingleTrack>(2, 2));
+            Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
             Assert.Equal(SingleTrackDirection.LeftUp, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
             Assert.Equal(SingleTrackDirection.LeftDown, TrackLayout.GetTrackAt<SingleTrack>(3, 1).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);

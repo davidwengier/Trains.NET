@@ -5,13 +5,14 @@ namespace Trains.NET.Engine
 {
     public class Train : IMovable, INotifyPropertyChanged
     {
+        private static readonly Random s_random = new();
+
         // only used for tests??
         internal const float SpeedScaleModifier = 0.005f;
 
         private const int MaximumSpeed = 200;
         private const float MinimumLookaheadSpeed = 5.0f;
         private const float DefaultSpeed = 20.0f;
-        private readonly Random _random = new();
         private float? _lookaheadOverride;
         private bool _collisionAhead;
 
@@ -19,9 +20,27 @@ namespace Trains.NET.Engine
 
         public Train()
         {
-            this.Name = TrainNames.Names[_random.Next(0, TrainNames.Names.Length)];
+            this.UniqueID = Guid.NewGuid();
+            this.Name = TrainNames.Names[s_random.Next(0, TrainNames.Names.Length)];
+            this.Carriages = s_random.Next(0, 6);
             this.DesiredSpeed = DefaultSpeed;
-            this.Carriages = _random.Next(0, 6);
+            this.RelativeLeft = 0.5f;
+            this.RelativeTop = 0.5f;
+        }
+
+        private Train(Train other)
+        {
+            this.UniqueID = other.UniqueID;
+            this.Column = other.Column;
+            this.Name = other.Name;
+            this.Row = other.Row;
+            this.Angle = other.Angle;
+            this.RelativeLeft = other.RelativeLeft;
+            this.RelativeTop = other.RelativeTop;
+            this.CurrentSpeed = other.CurrentSpeed;
+            this.DesiredSpeed = other.DesiredSpeed;
+            this.Carriages = other.Carriages;
+            _lookaheadOverride = other._lookaheadOverride;
         }
 
         public float LookaheadDistance
@@ -36,13 +55,13 @@ namespace Trains.NET.Engine
             }
         }
 
-        public virtual Guid UniqueID { get; private set; } = Guid.NewGuid();
+        public virtual Guid UniqueID { get; }
 
         public int Column { get; set; }
         public int Row { get; set; }
         public float Angle { get; set; }
-        public float RelativeLeft { get; set; } = 0.5f;
-        public float RelativeTop { get; set; } = 0.5f;
+        public float RelativeLeft { get; set; }
+        public float RelativeTop { get; set; }
 
         public string Name { get; set; }
         public virtual float CurrentSpeed { get; set; }
@@ -62,22 +81,7 @@ namespace Trains.NET.Engine
 
         public Train Clone()
         {
-            var result = new Train()
-            {
-                UniqueID = this.UniqueID,
-                Column = this.Column,
-                Name = this.Name,
-                Row = this.Row,
-                Angle = this.Angle,
-                RelativeLeft = this.RelativeLeft,
-                RelativeTop = this.RelativeTop,
-                CurrentSpeed = this.CurrentSpeed,
-                DesiredSpeed = this.DesiredSpeed,
-                Carriages = this.Carriages
-            };
-            result._lookaheadOverride = _lookaheadOverride;
-
-            return result;
+            return new Train(this);
         }
 
         public void AddCarriage()

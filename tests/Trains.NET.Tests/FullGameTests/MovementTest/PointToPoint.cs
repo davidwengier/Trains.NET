@@ -319,16 +319,16 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(angle, train.Angle, MovementPrecision);
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(1, 2, 0.0f, 2, 3, 90.0f)] // Left to Down
         [InlineData(2, 1, 90.0f, 1, 2, 180.0f)] // Up to Left
         [InlineData(2, 3, 270.0f, 1, 2, 180.0f)] // Down to Left
         public void MovementTest_PointToPoint_Horizontal_LeftUpDown_VerticalVertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-            _trackLayout.AddTrack(1, 2); // Horizontal
-            _trackLayout.AddTrack(2, 1); // Vertical
-            _trackLayout.AddTrack(2, 3); // Vertical
-            _trackLayout.AddTrack(2, 2); // Y Track
+            _trackLayout.AddTrack(1, 2, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTrack(2, 1, SingleTrackDirection.Vertical);
+            _trackLayout.AddTrack(2, 3, SingleTrackDirection.Vertical);
+            _trackLayout.AddTIntersectionTrack(2, 2, TIntersectionDirection.LeftDown_LeftUp, TIntersectionStyle.CornerAndPrimary);
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 
@@ -337,7 +337,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             var train = (Train)_gameBoard.GetMovables().Single();
             train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
             train.Angle = startingAngle;
-            // We have an edge coming up, disable lookahead
+            // We have an edge coming up, disable lookaheadÏ
             train.LookaheadDistance = 0.0f;
 
             Assert.Equal(startingColumn, train.Column);
@@ -357,16 +357,16 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(expectedAngle, train.Angle, MovementPrecision);
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(2, 2, 180.0f, 1, 1, 270.0f)] // Right to Up
         [InlineData(1, 1, 90.0f, 2, 2, 0.0f)] // Up to Right
         [InlineData(1, 3, 270.0f, 2, 2, 0.0f)] // Down to Right
         public void MovementTest_PointToPoint_VerticalVertical_RightUpDown_Horizontal(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-            _trackLayout.AddTrack(1, 1); // Vertical
-            _trackLayout.AddTrack(1, 3); // Vertical
-            _trackLayout.AddTrack(2, 2); // Horizontal
-            _trackLayout.AddTrack(1, 2); // Y Track
+            _trackLayout.AddTrack(1, 1, SingleTrackDirection.Vertical);
+            _trackLayout.AddTrack(1, 3, SingleTrackDirection.Vertical);
+            _trackLayout.AddTrack(2, 2, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTIntersectionTrack(1, 2, TIntersectionDirection.RightUp_RightDown, TIntersectionStyle.CornerAndPrimary);
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 
@@ -395,16 +395,16 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(expectedAngle, train.Angle, MovementPrecision);
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(1, 1, 0.0f, 2, 2, 90.0f)] // Left to Down
         [InlineData(2, 2, 270.0f, 3, 1, 0.0f)] // Down to Left
         [InlineData(3, 1, 180.0f, 2, 2, 90.0f)] // Right to Down
         public void MovementTest_PointToPoint_HorizontalHorizontal_LeftRightDown_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-            _trackLayout.AddTrack(1, 1); // Horizontal
-            _trackLayout.AddTrack(3, 1); // Horizontal
-            _trackLayout.AddTrack(2, 2); // Vertical
-            _trackLayout.AddTrack(2, 1); // Y Track
+            _trackLayout.AddTrack(1, 1, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTrack(3, 1, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTrack(2, 2, SingleTrackDirection.Vertical);
+            _trackLayout.AddTIntersectionTrack(2, 1, TIntersectionDirection.RightDown_LeftDown, TIntersectionStyle.CornerAndPrimary);
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 
@@ -433,16 +433,16 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(expectedAngle, train.Angle, MovementPrecision);
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(1, 2, 0.0f, 2, 1, 270.0f)] // Left to Up
         [InlineData(2, 1, 90.0f, 1, 2, 180.0f)] // Up to Left
         [InlineData(3, 2, 180.0f, 2, 1, 270.0f)] // Right to Up
         public void MovementTest_PointToPoint_HorizontalHorizontal_LeftRightUp_Vertical(int startingColumn, int startingRow, float startingAngle, int expectedColumn, int expectedRow, float expectedAngle)
         {
-            _trackLayout.AddTrack(1, 2); // Horizontal
-            _trackLayout.AddTrack(3, 2); // Horizontal
-            _trackLayout.AddTrack(2, 1); // Vertical
-            _trackLayout.AddTrack(2, 2); // Y Track
+            _trackLayout.AddTrack(1, 2, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTrack(3, 2, SingleTrackDirection.Horizontal);
+            _trackLayout.AddTrack(2, 1, SingleTrackDirection.Vertical);
+            _trackLayout.AddTIntersectionTrack(2, 2, TIntersectionDirection.LeftUp_RightUp, TIntersectionStyle.CornerAndPrimary);
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 

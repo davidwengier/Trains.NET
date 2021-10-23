@@ -42,7 +42,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             _movementSteps = movementSteps;
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(0.0f)]
         [InlineData(180.0f)]
         public void MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
@@ -88,7 +88,7 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
             Assert.Equal(initialTrainAngle, train.Angle, MovementPrecision);
         }
 
-        [Theory(Skip = "These are broken and I don't know why")]
+        [Theory]
         [InlineData(0.0f)]
         [InlineData(180.0f)]
         public void MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
@@ -108,31 +108,30 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
 
             var trackTool = new TrackTool(filteredLayout, entityFactories);
 
-            trackTool.Execute(3, 2, true);
-            trackTool.Execute(4, 2, true);
-            trackTool.Execute(5, 2, true);
-            trackTool.Execute(5, 1, true);
-            trackTool.Execute(4, 1, true);
-            trackTool.Execute(4, 2, true);
-            trackTool.Execute(4, 3, true);
-            trackTool.Execute(4, 4, true);
-            trackTool.Execute(4, 5, true);
-            trackTool.Execute(5, 5, true);
-            trackTool.Execute(5, 4, true);
-            trackTool.Execute(4, 4, true);
-            trackTool.Execute(3, 4, true);
-            trackTool.Execute(2, 4, true);
-            trackTool.Execute(1, 4, true);
-            trackTool.Execute(1, 5, true);
-            trackTool.Execute(2, 5, true);
-            trackTool.Execute(2, 4, true);
-            trackTool.Execute(2, 3, true);
-            trackTool.Execute(2, 2, true);
-            trackTool.Execute(2, 1, true);
-            trackTool.Execute(1, 1, true);
-            trackTool.Execute(1, 2, true);
-            trackTool.Execute(2, 2, true);
-            trackTool.Execute(3, 2, true);
+            trackLayout.AddTrack(1, 1, SingleTrackDirection.RightDown);
+            trackLayout.AddTrack(2, 1, SingleTrackDirection.LeftDown);
+            trackLayout.AddTrack(4, 1, SingleTrackDirection.RightDown);
+            trackLayout.AddTrack(5, 1, SingleTrackDirection.LeftDown);
+
+            trackLayout.AddTrack(1, 2, SingleTrackDirection.RightUp);
+            trackLayout.AddCrossTrack(2, 2);
+            trackLayout.AddTrack(3, 2, SingleTrackDirection.Horizontal);
+            trackLayout.AddCrossTrack(4, 2);
+            trackLayout.AddTrack(5, 2, SingleTrackDirection.LeftUp);
+
+            trackLayout.AddTrack(2, 3, SingleTrackDirection.Vertical);
+            trackLayout.AddTrack(4, 3, SingleTrackDirection.Vertical);
+
+            trackLayout.AddTrack(1, 4, SingleTrackDirection.RightDown);
+            trackLayout.AddCrossTrack(2, 4);
+            trackLayout.AddTrack(3, 4, SingleTrackDirection.Horizontal);
+            trackLayout.AddCrossTrack(4, 4);
+            trackLayout.AddTrack(5, 4, SingleTrackDirection.LeftDown);
+
+            trackLayout.AddTrack(1, 5, SingleTrackDirection.RightUp);
+            trackLayout.AddTrack(2, 5, SingleTrackDirection.LeftUp);
+            trackLayout.AddTrack(4, 5, SingleTrackDirection.RightUp);
+            trackLayout.AddTrack(5, 5, SingleTrackDirection.LeftUp);
 
             board.AddTrain(3, 2);
 

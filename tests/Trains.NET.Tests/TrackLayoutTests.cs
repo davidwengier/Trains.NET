@@ -124,6 +124,7 @@ namespace Trains.NET.Tests
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
         }
 
+        [Fact(Skip = "Things don't work like this anymore :(")]
         public void CrossHortizontalFirst()
         {
             TrackTool.Execute(1, 2, true);
@@ -188,7 +189,6 @@ namespace Trains.NET.Tests
 
             Assert.True(TrackLayout.GetTrackAt<SingleTrack>(2, 3).Happy);
         }
-
 
         [Fact(Skip = "Crosses don't work like this any more :(")]
         public void TwoCrosses_DragUp()

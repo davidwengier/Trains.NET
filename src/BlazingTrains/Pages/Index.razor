@@ -16,7 +16,9 @@
           @onpointerdown="OnPointerDown"
           @onpointermove="OnPointerMove"
           @onpointerup="OnPointerUp"
-          @ontouchmove="OnTouchMove" />
+          @ontouchmove="OnTouchMove"
+          @onwheel="OnMouseWheel" />
+
 
 @code
 {
@@ -53,5 +55,17 @@
         if (touch is null) return;
 
         _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
+    }
+
+    private void OnMouseWheel(WheelEventArgs e)
+    {
+        if (e.DeltaY < 0)
+        {
+            _interactionManager.PointerZoomIn((int)e.ClientX, (int)e.ClientY);
+        }
+        else
+        {
+            _interactionManager.PointerZoomOut((int)e.ClientX, (int)e.ClientY);
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace Trains.NET.Engine.Tracks
             }
         }
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, int fromColumn, int fromRow, [NotNullWhen(true)] out Track? entity)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {
@@ -37,7 +37,7 @@ namespace Trains.NET.Engine.Tracks
                 return false;
             }
 
-            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: isPartOfDrag);
+            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: fromColumn != 0);
 
             // if they click and its the perfect spot for a cross track, just do it
             if (neighbours.Count == 4)
@@ -46,7 +46,7 @@ namespace Trains.NET.Engine.Tracks
                 return true;
             }
 
-            if (isPartOfDrag)
+            if (fromColumn != 0)
             {
                 // if they're dragging, we're looking for them to complete an intersection
                 neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column - 1, row);

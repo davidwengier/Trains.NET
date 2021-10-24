@@ -18,15 +18,15 @@ namespace Trains.NET.Rendering
             _entityFactories = entityFactories;
         }
 
-        public void Execute(int column, int row, bool isPartOfDrag)
+        public void Execute(int column, int row, ExecuteInfo info)
         {
-            if (!isPartOfDrag && _entityCollection.TryGet(column, row, out Track? track))
+            if (info.FromColumn == 0 && _entityCollection.TryGet(column, row, out Track? track))
             {
                 _entityCollection.SelectedEntity = track;
             }
             else
             {
-                _entityCollection.Add(column, row, _entityFactories, isPartOfDrag);
+                _entityCollection.Add(column, row, _entityFactories, info.FromColumn, info.FromRow);
                 _entityCollection.SelectedEntity = null;
             }
         }

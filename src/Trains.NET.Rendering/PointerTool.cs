@@ -24,9 +24,9 @@ namespace Trains.NET.Rendering
 
         public string Name => "Pointer";
 
-        public void Execute(int column, int row, bool isPartOfDrag)
+        public void Execute(int column, int row, ExecuteInfo info)
         {
-            if (isPartOfDrag)
+            if (info.FromColumn != 0)
             {
                 return;
             }

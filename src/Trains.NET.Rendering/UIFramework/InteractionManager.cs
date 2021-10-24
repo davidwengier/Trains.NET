@@ -48,7 +48,7 @@ namespace Trains.NET.Rendering.UI
                 _gameManager.CurrentTool is not null &&
                 _gameManager.CurrentTool.IsValid(column, row))
             {
-                _gameManager.CurrentTool.Execute(column, row, false);
+                _gameManager.CurrentTool.Execute(column, row, new ExecuteInfo());
             }
 
             _hasDragged = false;
@@ -134,29 +134,39 @@ namespace Trains.NET.Rendering.UI
             if (action is PointerAction.Drag)
             {
                 _hasDragged = true;
-                _lastToolColumn = column;
-                _lastToolRow = row;
             }
 
-            if (!inSameCell && action is PointerAction.Drag && tool.IsValid(column, row))
+            try
             {
-                tool.Execute(column, row, true);
-                return true;
-            }
-            else if (tool is IDraggableTool draggableTool)
-            {
-                if (action == PointerAction.Click)
+                if (!inSameCell && action is PointerAction.Drag && tool.IsValid(column, row))
                 {
-                    draggableTool.StartDrag(x, y);
+                    tool.Execute(column, row, new ExecuteInfo(
+                        fromColumn: _lastToolColumn,
+                        fromRow: _lastToolRow));
                     return true;
                 }
-                else if (action == PointerAction.Drag)
+                else if (tool is IDraggableTool draggableTool)
                 {
-                    draggableTool.ContinueDrag(x, y);
-                    return true;
+                    if (action == PointerAction.Click)
+                    {
+                        draggableTool.StartDrag(x, y);
+                        return true;
+                    }
+                    else if (action == PointerAction.Drag)
+                    {
+                        draggableTool.ContinueDrag(x, y);
+                        return true;
+                    }
                 }
             }
-
+            finally
+            {
+                if (_hasDragged)
+                {
+                    _lastToolColumn = column;
+                    _lastToolRow = row;
+                }
+            }
             return false;
         }
     }

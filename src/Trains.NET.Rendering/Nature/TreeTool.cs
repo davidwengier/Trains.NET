@@ -22,7 +22,7 @@ namespace Trains.NET.Rendering
 
         public void Execute(int column, int row, bool isPartOfDrag)
         {
-            _entityCollection.Add(column, row, _entityFactories, isPartOfDrag);
+            _entityCollection.Add(column, row, _entityFactories, isPartOfDrag, 0, 0);
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row) &&

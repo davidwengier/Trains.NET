@@ -63,7 +63,7 @@ namespace Trains.NET.Engine
             && track2 is not null
             && track3 is not null;
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, int fromColumn, int fromRow, [NotNullWhen(true)] out Track? entity)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {
@@ -91,6 +91,34 @@ namespace Trains.NET.Engine
                 else if (AreAllPresent(neighbours.Up, neighbours.Left, neighbours.Down))
                 {
                     entity = new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp };
+                }
+            }
+            // if where we have come from is unhappy, we can fix it, and create a t-intersection
+            else if (neighbours.Count == 2 &&
+                _layout.TryGet(fromColumn, fromRow, out Track? track) &&
+                !track.Happy)
+            {
+                if (neighbours.Down is not null && neighbours.Up is not null)
+                {
+                    if (track is SingleTrack singleTrack)
+                    {
+                        singleTrack.Direction = SingleTrackDirection.Horizontal;
+                    }
+                    entity = new TIntersection()
+                    {
+                        Direction = fromColumn < column ? TIntersectionDirection.LeftDown_LeftUp : TIntersectionDirection.RightUp_RightDown
+                    };
+                }
+                else if (neighbours.Left is not null && neighbours.Right is not null)
+                {
+                    if (track is SingleTrack singleTrack)
+                    {
+                        singleTrack.Direction = SingleTrackDirection.Vertical;
+                    }
+                    entity = new TIntersection()
+                    {
+                        Direction = fromRow < row ? TIntersectionDirection.LeftUp_RightUp : TIntersectionDirection.RightDown_LeftDown
+                    };
                 }
             }
 

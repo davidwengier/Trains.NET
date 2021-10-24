@@ -8,6 +8,11 @@
 
         void Execute(int column, int row, bool isPartOfDrag);
 
+        public void Execute(int column, int row, ExecuteInfo info)
+        {
+            Execute(column, row, info.IsPartOfDrag);
+        }
+
         bool IsValid(int column, int row);
     }
 }

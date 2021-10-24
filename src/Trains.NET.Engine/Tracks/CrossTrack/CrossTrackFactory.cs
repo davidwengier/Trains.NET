@@ -29,7 +29,7 @@ namespace Trains.NET.Engine.Tracks
             }
         }
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, int fromColumn, int fromRow, [NotNullWhen(true)] out Track? entity)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {

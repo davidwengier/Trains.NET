@@ -317,10 +317,26 @@ namespace Trains.NET.Tests
         [Fact(Skip = "These are broken and I don't know why")]
         public void RightUpDown()
         {
-            TrackTool.Execute(3, 2, true);
-            TrackTool.Execute(2, 1, true);
-            TrackTool.Execute(2, 3, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 2));
+            TrackTool.Execute(2, 1, new ExecuteInfo(true, 2, 2));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 2, 1));
+            TrackTool.Execute(2, 3, new ExecuteInfo(true, 2, 2));
+
+            Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
+            Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
+            Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
+            Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
+        }
+
+        [Fact]
+        public void RightUpDown_VerticalFirst()
+        {
+            TrackTool.Execute(2, 1, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 2, 1));
+            TrackTool.Execute(2, 3, new ExecuteInfo(true, 2, 2));
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 2));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
@@ -331,10 +347,10 @@ namespace Trains.NET.Tests
         [Fact(Skip = "These are broken and I don't know why")]
         public void LeftRightUp()
         {
-            TrackTool.Execute(1, 2, true);
-            TrackTool.Execute(2, 1, true);
-            TrackTool.Execute(3, 2, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(1, 2, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 1, new ExecuteInfo(true, 1, 2));
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 2, 1));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 2));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
@@ -342,13 +358,14 @@ namespace Trains.NET.Tests
             Assert.Equal(TIntersectionDirection.LeftUp_RightUp, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
+        [Fact]
         public void LeftRightDown()
         {
-            TrackTool.Execute(1, 2, true);
-            TrackTool.Execute(2, 3, true);
-            TrackTool.Execute(3, 2, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(1, 2, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 1, 2));
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 2, 2));
+            TrackTool.Execute(2, 3, new ExecuteInfo(true, 3, 2));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 2, 3));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
@@ -416,17 +433,17 @@ namespace Trains.NET.Tests
         [Fact]
         public void LeftUpDown_DrawOver()
         {
-            TrackTool.Execute(3, 1, true);
-            TrackTool.Execute(3, 2, true);
-            TrackTool.Execute(3, 3, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(3, 1, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 3, 1));
+            TrackTool.Execute(3, 3, new ExecuteInfo(true, 3, 2));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 3));
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(3, 1).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(3, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
 
-            TrackTool.Execute(3, 2, true);
+            TrackTool.Execute(3, 2, new ExecuteInfo(true, 2, 2));
 
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(3, 1).Direction);
             Assert.Equal(TIntersectionDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt<TIntersection>(3, 2).Direction);
@@ -434,20 +451,20 @@ namespace Trains.NET.Tests
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
+        [Fact]
         public void LeftRightDown_DrawOver()
         {
-            TrackTool.Execute(1, 1, true);
-            TrackTool.Execute(2, 1, true);
-            TrackTool.Execute(3, 1, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(1, 1, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 1, new ExecuteInfo(true, 1, 1));
+            TrackTool.Execute(3, 1, new ExecuteInfo(true, 2, 1));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 1));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 1).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
 
-            TrackTool.Execute(2, 1, true);
+            TrackTool.Execute(2, 1, new ExecuteInfo(true, 2, 2));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
             Assert.Equal(TIntersectionDirection.RightDown_LeftDown, TrackLayout.GetTrackAt<TIntersection>(2, 1).Direction);
@@ -455,20 +472,20 @@ namespace Trains.NET.Tests
             Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
         }
 
-        [Fact(Skip = "These are broken and I don't know why")]
+        [Fact]
         public void LeftRightUp_DrawOver()
         {
-            TrackTool.Execute(1, 3, true);
-            TrackTool.Execute(2, 3, true);
-            TrackTool.Execute(3, 3, true);
-            TrackTool.Execute(2, 2, true);
+            TrackTool.Execute(1, 3, new ExecuteInfo(true, 0, 0));
+            TrackTool.Execute(2, 3, new ExecuteInfo(true, 1, 3));
+            TrackTool.Execute(3, 3, new ExecuteInfo(true, 2, 3));
+            TrackTool.Execute(2, 2, new ExecuteInfo(true, 3, 3));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 3).Direction);
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
 
-            TrackTool.Execute(2, 3, true);
+            TrackTool.Execute(2, 3, new ExecuteInfo(true, 2, 2));
 
             Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
             Assert.Equal(TIntersectionDirection.LeftUp_RightUp, TrackLayout.GetTrackAt<TIntersection>(2, 3).Direction);

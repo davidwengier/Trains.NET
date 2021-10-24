@@ -10,7 +10,7 @@ namespace Trains.NET.Engine.Nature
             yield return new Tree();
         }
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, [NotNullWhen(true)] out Tree? entity)
+        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, int fromColumn, int fromRow, [NotNullWhen(true)] out Tree? entity)
         {
             entity = new Tree();
             return true;

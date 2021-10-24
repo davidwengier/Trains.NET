@@ -20,13 +20,18 @@ namespace Trains.NET.Rendering
 
         public void Execute(int column, int row, bool isPartOfDrag)
         {
-            if (!isPartOfDrag && _entityCollection.TryGet(column, row, out Track? track))
+            Execute(column, row, new ExecuteInfo(isPartOfDrag: isPartOfDrag, 0, 0));
+        }
+
+        public void Execute(int column, int row, ExecuteInfo info)
+        {
+            if (!info.IsPartOfDrag && _entityCollection.TryGet(column, row, out Track? track))
             {
                 _entityCollection.SelectedEntity = track;
             }
             else
             {
-                _entityCollection.Add(column, row, _entityFactories, isPartOfDrag);
+                _entityCollection.Add(column, row, _entityFactories, info.IsPartOfDrag, info.FromColumn, info.FromRow);
                 _entityCollection.SelectedEntity = null;
             }
         }

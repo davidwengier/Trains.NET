@@ -20,9 +20,9 @@ namespace Trains.NET.Rendering
             _entityFactories = entityFactories;
         }
 
-        public void Execute(int column, int row, bool isPartOfDrag)
+        public void Execute(int column, int row, ExecuteInfo info)
         {
-            _entityCollection.Add(column, row, _entityFactories, isPartOfDrag, 0, 0);
+            _entityCollection.Add(column, row, _entityFactories, info.FromColumn, info.FromRow);
         }
 
         public bool IsValid(int column, int row) => _entityCollection.IsAvailable(column, row) &&

@@ -63,7 +63,7 @@ namespace Trains.NET.Engine
             && track2 is not null
             && track3 is not null;
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, int fromColumn, int fromRow, [NotNullWhen(true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, int fromColumn, int fromRow, [NotNullWhen(true)] out Track? entity)
         {
             if (_terrainMap.Get(column, row).IsWater)
             {
@@ -71,7 +71,7 @@ namespace Trains.NET.Engine
                 return false;
             }
 
-            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: isPartOfDrag);
+            var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: fromColumn != 0);
 
             entity = null;
             if (neighbours.Count == 3)

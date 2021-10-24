@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Trains.NET.Engine;
 
@@ -48,7 +49,7 @@ namespace Trains.NET.Rendering.UI
                 _gameManager.CurrentTool is not null &&
                 _gameManager.CurrentTool.IsValid(column, row))
             {
-                _gameManager.CurrentTool.Execute(column, row, false);
+                _gameManager.CurrentTool.Execute(column, row, new ExecuteInfo());
             }
 
             _hasDragged = false;
@@ -141,7 +142,6 @@ namespace Trains.NET.Rendering.UI
                 if (!inSameCell && action is PointerAction.Drag && tool.IsValid(column, row))
                 {
                     tool.Execute(column, row, new ExecuteInfo(
-                        isPartOfDrag: true,
                         fromColumn: _lastToolColumn,
                         fromRow: _lastToolRow));
                     return true;

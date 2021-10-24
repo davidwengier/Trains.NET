@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
+using Trains.NET.Rendering.UI;
 using Xunit;
 using Xunit.Abstractions;
 

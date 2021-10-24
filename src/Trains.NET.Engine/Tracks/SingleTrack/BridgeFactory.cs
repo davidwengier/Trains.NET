@@ -45,7 +45,7 @@ namespace Trains.NET.Engine.Tracks
             }
         }
 
-        public bool TryCreateEntity(int column, int row, bool isPartOfDrag, int fromColumn, int fromRow, [NotNullWhen(returnValue: true)] out Track? entity)
+        public bool TryCreateEntity(int column, int row, int fromColumn, int fromRow, [NotNullWhen(returnValue: true)] out Track? entity)
         {
             entity = null;
 

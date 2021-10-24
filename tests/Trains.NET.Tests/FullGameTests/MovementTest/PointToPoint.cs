@@ -284,13 +284,13 @@ namespace Trains.NET.Tests.FullGameTests.MovementTest
         [InlineData(3, 3, 180.0f, 1, 3)] // Left
         public void MovementTest_PointToPoint_HorizontalVertical_Cross_HorizontalVertical(int startingColumn, int startingRow, float angle, int expectedColumn, int expectedRow)
         {
-            _trackTool.Execute(2, 1, true); // Vertical
-            _trackTool.Execute(2, 2, true); // Vertical
-            _trackTool.Execute(1, 3, true); // Horizontal
-            _trackTool.Execute(3, 3, true); // Horizontal
-            _trackTool.Execute(2, 4, true); // Vertical
-            _trackTool.Execute(2, 5, true); // Vertical
-            _trackTool.Execute(2, 3, false); // Cross
+            _trackTool.Execute(2, 1, new ExecuteInfo(0, 0)); // Vertical
+            _trackTool.Execute(2, 2, new ExecuteInfo(2, 1)); // Vertical
+            _trackTool.Execute(1, 3, new ExecuteInfo(2, 2)); // Horizontal
+            _trackTool.Execute(3, 3, new ExecuteInfo(1, 3)); // Horizontal
+            _trackTool.Execute(2, 4, new ExecuteInfo(3, 3)); // Vertical
+            _trackTool.Execute(2, 5, new ExecuteInfo(2, 4)); // Vertical
+            _trackTool.Execute(2, 3, new ExecuteInfo(2, 5)); // Cross
 
             _gameBoard.AddTrain(startingColumn, startingRow);
 

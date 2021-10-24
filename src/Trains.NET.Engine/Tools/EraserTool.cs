@@ -17,7 +17,7 @@
             _trainManager = trainManager;
         }
 
-        public void Execute(int column, int row, bool isPartOfDrag)
+        public void Execute(int column, int row, ExecuteInfo info)
         {
             _collection.Remove(column, row);
             if (_gameBoard.GetMovableAt(column, row) is { } moveable)

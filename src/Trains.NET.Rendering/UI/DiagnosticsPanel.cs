@@ -52,7 +52,7 @@ namespace Trains.NET.Rendering
             {
                 if (stat.ShouldShow())
                 {
-                    string line = name + " : " + stat.GetDescription();
+                    string line = name + "  : " + stat.GetDescription();
                     strings.Add(line);
                     maxWidth = Math.Max(maxWidth, canvas.MeasureText(line, Brushes.Label));
                 }

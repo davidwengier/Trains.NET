@@ -1,6 +1,7 @@
 name: PR Build
 
 on: [pull_request]
+  branches: [ main ]
 
 jobs:
   build:

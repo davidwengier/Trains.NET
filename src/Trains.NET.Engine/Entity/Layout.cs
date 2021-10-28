@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine
@@ -10,14 +9,24 @@ namespace Trains.NET.Engine
     {
         public event EventHandler? CollectionChanged;
 
-        private ImmutableDictionary<(int, int), IStaticEntity> _entities = ImmutableDictionary<(int, int), IStaticEntity>.Empty;
+        private readonly object _gate = new object();
+        private readonly IStaticEntity?[][] _entities;
+
+        public Layout()
+        {
+            _entities = new IStaticEntity[200][];
+            ResetArrays();
+        }
 
         public void Set(int column, int row, IStaticEntity entity)
         {
-            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
+            if (IsInvalid(column, row))
             {
-                _entities = _entities.Remove((column, row));
+                return;
             }
+
+            _entities[column][row] = null;
+
             StoreEntity(column, row, entity);
             entity.Replaced();
 
@@ -26,7 +35,12 @@ namespace Trains.NET.Engine
 
         public void Add(int column, int row, IStaticEntity entity)
         {
-            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
+            if (IsInvalid(column, row))
+            {
+                return;
+            }
+
+            if (_entities[column][row] is not null)
             {
                 Set(column, row, entity);
             }
@@ -41,18 +55,31 @@ namespace Trains.NET.Engine
 
         private void StoreEntity(int column, int row, IStaticEntity entity)
         {
+            if (IsInvalid(column, row))
+            {
+                return;
+            }
+
             entity.Stored(this);
             entity.Column = column;
             entity.Row = row;
-            _entities = _entities.Add((column, row), entity);
+            _entities[column][row] = entity;
         }
 
         public void Remove(int column, int row)
         {
-            if (_entities.TryGetValue((column, row), out IStaticEntity? track))
+            if (IsInvalid(column, row))
             {
-                _entities = _entities.Remove((column, row));
-                track.Removed();
+                return;
+            }
+
+            lock (_gate)
+            {
+                if (_entities[column][row] is { } track)
+                {
+                    _entities[column][row] = null;
+                    track.Removed();
+                }
             }
 
             CollectionChanged?.Invoke(this, EventArgs.Empty);
@@ -60,7 +87,7 @@ namespace Trains.NET.Engine
 
         public void Set(IEnumerable<IStaticEntity> tracks)
         {
-            _entities = _entities.Clear();
+            ResetArrays();
 
             foreach (IStaticEntity track in tracks)
             {
@@ -77,7 +104,19 @@ namespace Trains.NET.Engine
 
         public bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity? track)
         {
-            return _entities.TryGetValue((column, row), out track);
+            if (IsInvalid(column, row))
+            {
+                track = null;
+                return false;
+            }
+
+            track = _entities[column][row];
+            return track != null;
+        }
+
+        private static bool IsInvalid(int column, int row)
+        {
+            return column < 0 || row < 0 || column > 200 || row > 200;
         }
 
         public bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity)
@@ -97,16 +136,34 @@ namespace Trains.NET.Engine
 
         public void Clear()
         {
-            _entities = _entities.Clear();
+            ResetArrays();
 
             CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        private void ResetArrays()
+        {
+            lock (_gate)
+            {
+                for (int i = 0; i < 200; i++)
+                {
+                    _entities[i] = new IStaticEntity?[200];
+                }
+            }
+        }
+
         public IEnumerator<IStaticEntity> GetEnumerator()
         {
-            foreach ((_, _, IStaticEntity track) in _entities)
+            for (int i = 0; i < 200; i++)
             {
-                yield return track;
+                for (int j = 0; j < 200; j++)
+                {
+                    var track = _entities[i][j];
+                    if (track is not null)
+                    {
+                        yield return track;
+                    }
+                }
             }
         }
 

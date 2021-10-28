@@ -167,7 +167,7 @@ namespace Trains.NET.Engine
         {
             if (distanceToMove <= 0) return true;
 
-            List<TrainPosition>? steps = GetNextSteps(train, distanceToMove);
+            var steps = GetNextSteps(train, distanceToMove);
 
             TrainPosition? lastPosition = null;
 
@@ -242,28 +242,26 @@ namespace Trains.NET.Engine
             return lastPosition?.Distance <= 0.0f;
         }
 
-        public List<TrainPosition> GetNextSteps(Train train, float distanceToMove)
+        public IEnumerable<TrainPosition> GetNextSteps(Train train, float distanceToMove)
         {
-            var result = new List<TrainPosition>();
-
+            TrainPosition? last = null;
             float distance = distanceToMove;
             while (distance > 0.0f)
             {
-                TrainPosition position = result.LastOrDefault() ?? train.GetPosition();
+                TrainPosition position = last ?? train.GetPosition();
 
                 TrainPosition? newPosition = GetNextPosition(position, distance);
                 if (newPosition != null)
                 {
-                    result.Add(newPosition);
+                    last = newPosition;
+                    yield return newPosition;
                     distance = newPosition.Distance;
                 }
                 else
                 {
-                    break;
+                    yield break;
                 }
             }
-
-            return result;
         }
 
         private void GameLoopTimerElapsed(object? sender, EventArgs e) => GameLoopStep();
@@ -334,9 +332,10 @@ namespace Trains.NET.Engine
 
         public IEnumerable<T> GetMovables<T>() where T : IMovable
         {
-            foreach (T movable in _movables.OfType<T>())
+            foreach (var movable in _movables)
             {
-                yield return movable;
+                if (movable is T train)
+                    yield return train;
             }
         }
 
@@ -355,15 +354,32 @@ namespace Trains.NET.Engine
             _gameLoopTimer?.Dispose();
             if (_storage is not null)
             {
-                _storage.WriteEntities(_layout.OfType<IEntity>().Concat(_movables));
+                _storage.WriteEntities(GetAllEntities());
                 _storage.WriteTerrain(_terrainMap);
+            }
+        }
+
+        private IEnumerable<IEntity> GetAllEntities()
+        {
+            foreach (var entity in _layout)
+            {
+                yield return entity;
+            }
+            foreach (var entity in _movables)
+            {
+                yield return entity;
             }
         }
 
         public IMovable? GetMovableAt(int column, int row)
         {
-            foreach (var train in _movables.OfType<Train>())
+            foreach (var movable in _movables)
             {
+                if (movable is not Train train)
+                {
+                    continue;
+                }
+
                 if (train.Column == column && train.Row == row)
                 {
                     return train;

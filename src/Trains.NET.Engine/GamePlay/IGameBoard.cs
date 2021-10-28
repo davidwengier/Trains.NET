@@ -16,7 +16,7 @@ namespace Trains.NET.Engine
         void RemoveMovable(IMovable thing);
         IEnumerable<T> GetMovables<T>() where T : IMovable;
         IMovable? GetMovableAt(int column, int row);
-        List<TrainPosition> GetNextSteps(Train train, float distanceToMove);
+        IEnumerable<TrainPosition> GetNextSteps(Train train, float distanceToMove);
         void Initialize(int columns, int rows);
     }
 }

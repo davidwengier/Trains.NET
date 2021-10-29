@@ -72,6 +72,7 @@ namespace Trains.NET.Engine
             }
 
             var neighbours = TrackNeighbors.GetConnectedNeighbours(_layout, column, row, emptyIsConsideredConnected: true, ignoreCurrent: fromColumn != 0);
+            var allNeighbours = TrackNeighbors.GetAllNeighbours(_layout, column, row);
 
             entity = null;
             if (neighbours.Count == 3)
@@ -95,6 +96,7 @@ namespace Trains.NET.Engine
             }
             // if where we have come from is unhappy, we can fix it, and create a t-intersection
             else if (neighbours.Count == 2 &&
+                allNeighbours.Count == 3 &&
                 _layout.TryGet(fromColumn, fromRow, out Track? track) &&
                 !track.Happy)
             {

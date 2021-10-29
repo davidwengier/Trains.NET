@@ -10,6 +10,9 @@ namespace Trains.NET.Tests
 {
     public class TestBase : IDisposable
     {
+        private int _lastCol;
+        private int _lastRow;
+
         private readonly ITestOutputHelper _output;
         internal readonly IGameStorage Storage;
         internal readonly TestTimer Timer;
@@ -41,6 +44,29 @@ namespace Trains.NET.Tests
             TrackTool = new TrackTool(FilteredLayout, entityFactories);
 
             _output = output;
+        }
+
+        protected void StartDrawTrack(int startColumn, int startRow)
+        {
+            _lastCol = startColumn;
+            _lastRow = startRow;
+            TrackTool.Execute(startColumn, startRow, new ExecuteInfo(0, 0));
+        }
+
+        protected void DrawTrack(DrawDirection step)
+        {
+            var (nextCol, nextRow) = step switch
+            {
+                DrawDirection.Up => (_lastCol, _lastRow - 1),
+                DrawDirection.Down => (_lastCol, _lastRow + 1),
+                DrawDirection.Left => (_lastCol - 1, _lastRow),
+                DrawDirection.Right => (_lastCol + 1, _lastRow),
+                _ => throw new InvalidOperationException()
+            };
+
+            TrackTool.Execute(nextCol, nextRow, new ExecuteInfo(_lastCol, _lastRow));
+            _lastCol = nextCol;
+            _lastRow = nextRow;
         }
 
         protected void FlattenTerrain()

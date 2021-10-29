@@ -80,5 +80,14 @@ namespace Trains.NET.Engine
         public virtual void EnterTrack(Train train)
         {
         }
+
+        public bool CanConnectRight()
+            => !this.Happy || IsConnectedRight();
+        public bool CanConnectDown()
+            => !this.Happy || IsConnectedDown();
+        public bool CanConnectLeft()
+            => !this.Happy || IsConnectedLeft();
+        public bool CanConnectUp()
+            => !this.Happy || IsConnectedUp();
     }
 }

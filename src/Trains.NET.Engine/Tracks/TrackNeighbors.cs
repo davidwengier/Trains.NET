@@ -72,5 +72,15 @@ namespace Trains.NET.Engine
                 trackLayout.TryGet(column, row + 1, out Track? down) && isConnectedDown && down.IsConnectedUp() ? down : null
                 );
         }
+
+        public static TrackNeighbors GetAllNeighbours(ILayout trackLayout, int column, int row)
+        {
+            return new TrackNeighbors(
+                trackLayout.TryGet(column - 1, row, out Track? left) ? left : null,
+                trackLayout.TryGet(column, row - 1, out Track? up) ? up : null,
+                trackLayout.TryGet(column + 1, row, out Track? right) ? right : null,
+                trackLayout.TryGet(column, row + 1, out Track? down) ? down : null
+                );
+        }
     }
 }

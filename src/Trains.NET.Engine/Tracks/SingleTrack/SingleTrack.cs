@@ -130,24 +130,15 @@ namespace Trains.NET.Engine
             (neighbors.Left as SingleTrack)?.SetBestTrackDirection(ignoreHappyness);
         }
 
-        public bool CanConnectRight()
-            => !this.Happy || IsConnectedRight();
-        public bool CanConnectDown()
-            => !this.Happy || IsConnectedDown();
-        public bool CanConnectLeft()
-            => !this.Happy || IsConnectedLeft();
-        public bool CanConnectUp()
-            => !this.Happy || IsConnectedUp();
-
         private TrackNeighbors GetPotentialNeighbors()
         {
             _ = this.TrackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
             return new TrackNeighbors(
-                this.TrackLayout.TryGet(this.Column - 1, this.Row, out SingleTrack? left) && left.CanConnectRight() ? left : null,
-                this.TrackLayout.TryGet(this.Column, this.Row - 1, out SingleTrack? up) && up.CanConnectDown() ? up : null,
-                this.TrackLayout.TryGet(this.Column + 1, this.Row, out SingleTrack? right) && right.CanConnectLeft() ? right : null,
-                this.TrackLayout.TryGet(this.Column, this.Row + 1, out SingleTrack? down) && down.CanConnectUp() ? down : null
+                this.TrackLayout.TryGet(this.Column - 1, this.Row, out Track? left) && left.CanConnectRight() ? left : null,
+                this.TrackLayout.TryGet(this.Column, this.Row - 1, out Track? up) && up.CanConnectDown() ? up : null,
+                this.TrackLayout.TryGet(this.Column + 1, this.Row, out Track? right) && right.CanConnectLeft() ? right : null,
+                this.TrackLayout.TryGet(this.Column, this.Row + 1, out Track? down) && down.CanConnectUp() ? down : null
                 );
         }
 

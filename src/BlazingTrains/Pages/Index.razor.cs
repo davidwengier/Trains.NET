@@ -72,12 +72,31 @@ public partial class Index
         _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
     }
 
+    private void OnTouchStart(TouchEventArgs e)
+    {
+        var touch = e.Touches.FirstOrDefault();
+        if (touch is null)
+            return;
+
+        if (e.Touches.Length == 2)
+        {
+            _interactionManager.PointerAlternateClick((int)touch.ClientX, (int)touch.ClientY);
+        }
+    }
+
     private void OnTouchMove(TouchEventArgs e)
     {
         var touch = e.Touches.FirstOrDefault();
-        if (touch is not null)
+        if (touch is null)
+            return;
+
+        if (e.Touches.Length == 1)
         {
             _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
+        }
+        else if (e.Touches.Length == 2)
+        {
+            _interactionManager.PointerAlternateDrag((int)touch.ClientX, (int)touch.ClientY);
         }
     }
 

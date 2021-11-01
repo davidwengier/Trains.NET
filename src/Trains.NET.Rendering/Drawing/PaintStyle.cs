@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public enum PaintStyle
 {
-    public enum PaintStyle
-    {
-        Fill,
-        Stroke
-    }
+    Fill,
+    Stroke
 }

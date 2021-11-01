@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public interface IImageFactory
 {
-    public interface IImageFactory
-    {
-        IImageCanvas CreateImageCanvas(int width, int height);
-        bool SetContext(IContext context);
-    }
+    IImageCanvas CreateImageCanvas(int width, int height);
+    bool SetContext(IContext context);
 }

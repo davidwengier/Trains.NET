@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace Trains.NET.Engine
+namespace Trains.NET.Engine;
+
+[Transient]
+public interface ITimer : IDisposable
 {
-    [Transient]
-    public interface ITimer : IDisposable
-    {
-        double Interval { get; set; }
-        long TimeSinceLastTick { get; }
+    double Interval { get; set; }
+    long TimeSinceLastTick { get; }
 
-        event EventHandler Elapsed;
+    event EventHandler Elapsed;
 
-        void Start();
-        void Stop();
-    }
+    void Start();
+    void Stop();
 }

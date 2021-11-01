@@ -1,8 +1,8 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+internal static class TrainNames
 {
-    internal static class TrainNames
-    {
-        public static string[] Names = new string[]{
+    public static string[] Names = new string[]{
             "The Flying Scott",
             "The Falling Scott",
             "The Boolean Boiler",
@@ -24,5 +24,4 @@
             "The Howling Phantom",
             "Trainy McTrainFace"
         };
-    }
 }

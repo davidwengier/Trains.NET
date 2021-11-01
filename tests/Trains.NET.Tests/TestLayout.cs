@@ -4,65 +4,64 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Trains.NET.Engine;
 
-namespace Trains.NET.Tests
+namespace Trains.NET.Tests;
+
+internal class TestLayout : ILayout
 {
-    internal class TestLayout : ILayout
+    private readonly Dictionary<(int, int), IStaticEntity> _layout = new();
+
+    public event EventHandler CollectionChanged;
+
+    public void Add(int column, int row, IStaticEntity entityToAdd)
     {
-        private readonly Dictionary<(int, int), IStaticEntity> _layout = new();
+        entityToAdd.Stored(this);
+        _layout.Add((column, row), entityToAdd);
+    }
 
-        public event EventHandler CollectionChanged;
+    public void Clear()
+    {
+        _layout.Clear();
+    }
 
-        public void Add(int column, int row, IStaticEntity entityToAdd)
-        {
-            entityToAdd.Stored(this);
-            _layout.Add((column, row), entityToAdd);
-        }
+    public IEnumerator<IStaticEntity> GetEnumerator()
+    {
+        return _layout.Values.GetEnumerator();
+    }
 
-        public void Clear()
-        {
-            _layout.Clear();
-        }
+    public void RaiseCollectionChanged()
+    {
+        CollectionChanged?.Invoke(this, EventArgs.Empty);
+    }
 
-        public IEnumerator<IStaticEntity> GetEnumerator()
-        {
-            return _layout.Values.GetEnumerator();
-        }
+    public void Remove(int column, int row)
+    {
+        _layout.Remove((column, row));
+    }
 
-        public void RaiseCollectionChanged()
-        {
-            CollectionChanged?.Invoke(this, EventArgs.Empty);
-        }
+    public void Set(IEnumerable<IStaticEntity> entities)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void Remove(int column, int row)
-        {
-            _layout.Remove((column, row));
-        }
+    public bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity entity)
+    {
+        return _layout.TryGetValue((column, row), out entity);
+    }
 
-        public void Set(IEnumerable<IStaticEntity> entities)
-        {
-            throw new NotImplementedException();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _layout.Values.GetEnumerator();
+    }
 
-        public bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity entity)
-        {
-            return _layout.TryGetValue((column, row), out entity);
-        }
+    public bool TryGet<T>(int column, int row, out T entity) where T : class, IStaticEntity
+    {
+        bool result = _layout.TryGetValue((column, row), out IStaticEntity staticEntity);
+        entity = (T)staticEntity;
+        return result;
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _layout.Values.GetEnumerator();
-        }
-
-        public bool TryGet<T>(int column, int row, out T entity) where T : class, IStaticEntity
-        {
-            bool result = _layout.TryGetValue((column, row), out IStaticEntity staticEntity);
-            entity = (T)staticEntity;
-            return result;
-        }
-
-        public void Set(int column, int row, IStaticEntity entity)
-        {
-            _layout[(column, row)] = entity;
-        }
+    public void Set(int column, int row, IStaticEntity entity)
+    {
+        _layout[(column, row)] = entity;
     }
 }

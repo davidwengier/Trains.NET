@@ -1,19 +1,18 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public enum TIntersectionDirection
 {
-    public enum TIntersectionDirection
-    {
-        RightUp_RightDown,
-        RightDown_LeftDown,
-        LeftDown_LeftUp,
-        LeftUp_RightUp,
-    }
+    RightUp_RightDown,
+    RightDown_LeftDown,
+    LeftDown_LeftUp,
+    LeftUp_RightUp,
+}
 
-    public enum TIntersectionStyle
-    {
-        CornerAndPrimary,
-        CornerAndSecondary,
-        StraightAndPrimary,
-        StraightAndSecondary
+public enum TIntersectionStyle
+{
+    CornerAndPrimary,
+    CornerAndSecondary,
+    StraightAndPrimary,
+    StraightAndSecondary
 
-    }
 }

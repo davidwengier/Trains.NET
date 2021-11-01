@@ -1,23 +1,22 @@
 ﻿using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Rendering;
+
+public class ZoomOutCommand : ICommand
 {
-    public class ZoomOutCommand : ICommand
+    private const float ZoomOutDelta = 1f / ZoomInCommand.ZoomInDelta;
+
+    private readonly IPixelMapper _pixelMapper;
+
+    public string Name => "Zoom Out";
+
+    public ZoomOutCommand(IPixelMapper pixelMapper)
     {
-        private const float ZoomOutDelta = 1f / ZoomInCommand.ZoomInDelta;
+        _pixelMapper = pixelMapper;
+    }
 
-        private readonly IPixelMapper _pixelMapper;
-
-        public string Name => "Zoom Out";
-
-        public ZoomOutCommand(IPixelMapper pixelMapper)
-        {
-            _pixelMapper = pixelMapper;
-        }
-
-        public void Execute()
-        {
-            _pixelMapper.AdjustGameScale(ZoomOutDelta);
-        }
+    public void Execute()
+    {
+        _pixelMapper.AdjustGameScale(ZoomOutDelta);
     }
 }

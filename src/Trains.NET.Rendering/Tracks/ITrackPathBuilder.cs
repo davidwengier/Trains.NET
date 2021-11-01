@@ -1,11 +1,10 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public interface ITrackPathBuilder
 {
-    public interface ITrackPathBuilder
-    {
-        IPath BuildHorizontalTrackPath();
-        IPath BuildHorizontalPlankPath();
-        IPath BuildCornerTrackPath();
-        IPath BuildCornerPlankPath();
-        IPath BuildCornerPlankPath(int plankCount);
-    }
+    IPath BuildHorizontalTrackPath();
+    IPath BuildHorizontalPlankPath();
+    IPath BuildCornerTrackPath();
+    IPath BuildCornerPlankPath();
+    IPath BuildCornerPlankPath(int plankCount);
 }

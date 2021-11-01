@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Trains.NET.Rendering
-{
-    public interface ITerrainMapRenderer
-    {
-        event EventHandler? Changed;
+namespace Trains.NET.Rendering;
 
-        IImage GetTerrainImage();
-    }
+public interface ITerrainMapRenderer
+{
+    event EventHandler? Changed;
+
+    IImage GetTerrainImage();
 }

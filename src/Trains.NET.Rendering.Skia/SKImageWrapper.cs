@@ -1,21 +1,20 @@
 ﻿using SkiaSharp;
 
-namespace Trains.NET.Rendering.Skia
+namespace Trains.NET.Rendering.Skia;
+
+public class SKImageWrapper : IImage
 {
-    public class SKImageWrapper : IImage
+    private readonly SKImage _image;
+
+    public SKImageWrapper(SKImage sKImage)
     {
-        private readonly SKImage _image;
+        _image = sKImage;
+    }
 
-        public SKImageWrapper(SKImage sKImage)
-        {
-            _image = sKImage;
-        }
+    public SKImage Image => _image;
 
-        public SKImage Image => _image;
-
-        public void Dispose()
-        {
-            _image.Dispose();
-        }
+    public void Dispose()
+    {
+        _image.Dispose();
     }
 }

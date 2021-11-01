@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Trains.NET.Engine
-{
-    public interface IGameManager
-    {
-        event EventHandler? Changed;
+namespace Trains.NET.Engine;
 
-        ITool CurrentTool { get; set; }
-        bool BuildMode { get; set; }
-    }
+public interface IGameManager
+{
+    event EventHandler? Changed;
+
+    ITool CurrentTool { get; set; }
+    bool BuildMode { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public interface IPathFactory
 {
-    public interface IPathFactory
-    {
-        IPath Create();
-    }
+    IPath Create();
 }

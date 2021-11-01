@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Trains.NET.Rendering
-{
-    public interface IImageCanvas : IDisposable
-    {
-        ICanvas Canvas { get; }
+namespace Trains.NET.Rendering;
 
-        IImage Render();
-    }
+public interface IImageCanvas : IDisposable
+{
+    ICanvas Canvas { get; }
+
+    IImage Render();
 }

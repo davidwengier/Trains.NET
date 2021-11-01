@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public interface IRenderer<T>
 {
-    public interface IRenderer<T>
-    {
-        void Render(ICanvas canvas, T entity);
-        bool ShouldRender(T entity) => true;
-    }
+    void Render(ICanvas canvas, T entity);
+    bool ShouldRender(T entity) => true;
 }

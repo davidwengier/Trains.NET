@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        int Column { get; set; }
-        int Row { get; set; }
-    }
+    int Column { get; set; }
+    int Row { get; set; }
 }

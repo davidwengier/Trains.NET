@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Rendering;
+
+public static partial class CanvasExtensions
 {
-    public static partial class CanvasExtensions
+    public static IDisposable Scope(this ICanvas canvas)
     {
-        public static IDisposable Scope(this ICanvas canvas)
-        {
-            return new CanvasScope(canvas);
-        }
+        return new CanvasScope(canvas);
     }
 }

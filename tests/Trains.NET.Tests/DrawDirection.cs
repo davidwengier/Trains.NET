@@ -1,10 +1,9 @@
-﻿namespace Trains.NET.Tests
+﻿namespace Trains.NET.Tests;
+
+public enum DrawDirection
 {
-    public enum DrawDirection
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
+    Up,
+    Down,
+    Left,
+    Right
 }

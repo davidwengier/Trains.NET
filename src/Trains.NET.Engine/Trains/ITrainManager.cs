@@ -2,17 +2,16 @@
 using System;
 using System.ComponentModel;
 
-namespace Trains.NET.Engine
+namespace Trains.NET.Engine;
+
+public interface ITrainManager
 {
-    public interface ITrainManager
-    {
-        event EventHandler? Changed;
-        event PropertyChangedEventHandler? CurrentTrainPropertyChanged;
+    event EventHandler? Changed;
+    event PropertyChangedEventHandler? CurrentTrainPropertyChanged;
 
-        Train? CurrentTrain { get; set; }
+    Train? CurrentTrain { get; set; }
 
-        void ToggleFollow(Train train);
-        void PreviousTrain();
-        void NextTrain();
-    }
+    void ToggleFollow(Train train);
+    void PreviousTrain();
+    void NextTrain();
 }

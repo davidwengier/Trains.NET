@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Trains.NET.Engine.Sounds
+namespace Trains.NET.Engine.Sounds;
+
+public interface ISoundGenerator : IDisposable
 {
-    public interface ISoundGenerator : IDisposable
-    {
-        bool IsRunning { get; }
-        void Start();
-        void Stop();
-    }
+    bool IsRunning { get; }
+    void Start();
+    void Stop();
 }

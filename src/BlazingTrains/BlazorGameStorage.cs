@@ -1,48 +1,47 @@
 ﻿using Blazored.LocalStorage;
 using Trains.NET.Engine;
 
-namespace BlazingTrains
+namespace BlazingTrains;
+
+public class BlazorGameStorage : IGameStorage
 {
-    public class BlazorGameStorage : IGameStorage
+    public IServiceProvider? AspNetCoreServices { get; set; }
+
+    private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
+
+    public IEnumerable<IEntity> ReadEntities()
     {
-        public IServiceProvider? AspNetCoreServices { get; set; }
+        if (this.LocalStorageService is null) yield break;
 
-        private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
-
-        public IEnumerable<IEntity> ReadEntities()
+        var entities = this.LocalStorageService.GetItemAsync<IEntity[]>("Entities").GetAwaiter().GetResult();
+        foreach (var entity in entities)
         {
-            if (this.LocalStorageService is null) yield break;
-
-            var entities = this.LocalStorageService.GetItemAsync<IEntity[]>("Entities").GetAwaiter().GetResult();
-            foreach (var entity in entities)
-            {
-                yield return entity;
-            }
+            yield return entity;
         }
+    }
 
-        public IEnumerable<Terrain> ReadTerrain()
+    public IEnumerable<Terrain> ReadTerrain()
+    {
+        if (this.LocalStorageService is null) yield break;
+
+        var terrainList = this.LocalStorageService.GetItemAsync<Terrain[]>("Terrain").GetAwaiter().GetResult();
+        foreach (var terrain in terrainList)
         {
-            if (this.LocalStorageService is null) yield break;
-
-            var terrainList = this.LocalStorageService.GetItemAsync<Terrain[]>("Terrain").GetAwaiter().GetResult();
-            foreach (var terrain in terrainList)
-            {
-                yield return terrain;
-            }
+            yield return terrain;
         }
+    }
 
-        public void WriteEntities(IEnumerable<IEntity> entities)
-        {
-            if (this.LocalStorageService is null) return;
+    public void WriteEntities(IEnumerable<IEntity> entities)
+    {
+        if (this.LocalStorageService is null) return;
 
-            _ = this.LocalStorageService.SetItemAsync("Entities", entities.ToArray());
-        }
+        _ = this.LocalStorageService.SetItemAsync("Entities", entities.ToArray());
+    }
 
-        public void WriteTerrain(IEnumerable<Terrain> terrainList)
-        {
-            if (this.LocalStorageService is null) return;
+    public void WriteTerrain(IEnumerable<Terrain> terrainList)
+    {
+        if (this.LocalStorageService is null) return;
 
-            _ = this.LocalStorageService.SetItemAsync("Terrain", terrainList.ToArray());
-        }
+        _ = this.LocalStorageService.SetItemAsync("Terrain", terrainList.ToArray());
     }
 }

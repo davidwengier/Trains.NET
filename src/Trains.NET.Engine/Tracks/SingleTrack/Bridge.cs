@@ -1,6 +1,5 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public class Bridge : SingleTrack
 {
-    public class Bridge : SingleTrack
-    {
-    }
 }

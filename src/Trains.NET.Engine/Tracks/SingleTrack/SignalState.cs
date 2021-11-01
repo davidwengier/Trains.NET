@@ -1,9 +1,8 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public enum SignalState
 {
-    public enum SignalState
-    {
-        Stop,
-        TemporaryStop,
-        Go
-    }
+    Stop,
+    TemporaryStop,
+    Go
 }

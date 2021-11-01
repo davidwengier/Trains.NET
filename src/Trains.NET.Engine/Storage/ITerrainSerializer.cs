@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Trains.NET.Engine
+namespace Trains.NET.Engine;
+
+public interface ITerrainSerializer
 {
-    public interface ITerrainSerializer
-    {
-        IEnumerable<Terrain> Deserialize(string[] lines);
-        string Serialize(IEnumerable<Terrain> terrain);
-    }
+    IEnumerable<Terrain> Deserialize(string[] lines);
+    string Serialize(IEnumerable<Terrain> terrain);
 }

@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Trains.NET.Engine
+namespace Trains.NET.Engine;
+
+public interface IGameStorage
 {
-    public interface IGameStorage
-    {
-        IEnumerable<IEntity> ReadEntities();
+    IEnumerable<IEntity> ReadEntities();
 
-        void WriteEntities(IEnumerable<IEntity> entities);
+    void WriteEntities(IEnumerable<IEntity> entities);
 
-        IEnumerable<Terrain> ReadTerrain();
+    IEnumerable<Terrain> ReadTerrain();
 
-        void WriteTerrain(IEnumerable<Terrain> terrainList);
-    }
+    void WriteTerrain(IEnumerable<Terrain> terrainList);
 }

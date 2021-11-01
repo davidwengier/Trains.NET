@@ -1,19 +1,18 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public enum Picture
 {
-    public enum Picture
-    {
-        Left,
-        Right,
-        Backward,
-        Forward,
-        Eye,
-        Trash,
-        Play,
-        Pause,
-        Cross,
-        Tools,
-        Eraser,
-        Plus,
-        Minus
-    }
+    Left,
+    Right,
+    Backward,
+    Forward,
+    Eye,
+    Trash,
+    Play,
+    Pause,
+    Cross,
+    Tools,
+    Eraser,
+    Plus,
+    Minus
 }

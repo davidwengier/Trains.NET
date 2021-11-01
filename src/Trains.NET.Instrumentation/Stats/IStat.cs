@@ -1,9 +1,8 @@
-﻿namespace Trains.NET.Instrumentation
-{
-    public interface IStat
-    {
-        string GetDescription();
+﻿namespace Trains.NET.Instrumentation;
 
-        bool ShouldShow();
-    }
+public interface IStat
+{
+    string GetDescription();
+
+    bool ShouldShow();
 }

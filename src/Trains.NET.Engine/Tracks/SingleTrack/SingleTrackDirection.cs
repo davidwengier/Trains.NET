@@ -1,14 +1,13 @@
-﻿namespace Trains.NET.Engine
-{
-    public enum SingleTrackDirection
-    {
-        Undefined,
-        Horizontal,
-        Vertical,
+﻿namespace Trains.NET.Engine;
 
-        LeftUp,
-        RightUp,
-        RightDown,
-        LeftDown
-    }
+public enum SingleTrackDirection
+{
+    Undefined,
+    Horizontal,
+    Vertical,
+
+    LeftUp,
+    RightUp,
+    RightDown,
+    LeftDown
 }

@@ -2,22 +2,21 @@
 using System.Linq;
 using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering.UI
+namespace Trains.NET.Rendering.UI;
+
+public class CommandsPanel : ButtonPanelBase
 {
-    public class CommandsPanel : ButtonPanelBase
+    private readonly List<TextButton> _buttons;
+
+    protected override bool IsCollapsable => true;
+    protected override string? Title => "Commands";
+    protected override int Top => 250;
+
+    public CommandsPanel(IEnumerable<ICommand> commands)
     {
-        private readonly List<TextButton> _buttons;
-
-        protected override bool IsCollapsable => true;
-        protected override string? Title => "Commands";
-        protected override int Top => 250;
-
-        public CommandsPanel(IEnumerable<ICommand> commands)
-        {
-            _buttons = commands.Select(c => new TextButton(c.Name, () => false, () => c.Execute())).ToList();
-        }
-
-        protected override IEnumerable<TextButton> GetButtons()
-            => _buttons;
+        _buttons = commands.Select(c => new TextButton(c.Name, () => false, () => c.Execute())).ToList();
     }
+
+    protected override IEnumerable<TextButton> GetButtons()
+        => _buttons;
 }

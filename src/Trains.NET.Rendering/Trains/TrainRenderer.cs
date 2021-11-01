@@ -1,81 +1,80 @@
 ﻿using Trains.NET.Engine;
 using Trains.NET.Rendering.Trains;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Rendering;
+
+public class TrainRenderer : IRenderer<Train>
 {
-    public class TrainRenderer : IRenderer<Train>
+    private readonly ITrainParameters _trainParameters;
+    private readonly ITrainPainter _trainPainter;
+    private readonly ITrainManager _trainManager;
+
+    public TrainRenderer(ITrainParameters trainParameters, ITrainPainter trainPainter, ITrainManager trainManager)
     {
-        private readonly ITrainParameters _trainParameters;
-        private readonly ITrainPainter _trainPainter;
-        private readonly ITrainManager _trainManager;
+        _trainParameters = trainParameters;
+        _trainPainter = trainPainter;
+        _trainManager = trainManager;
+    }
 
-        public TrainRenderer(ITrainParameters trainParameters, ITrainPainter trainPainter, ITrainManager trainManager)
+    public void Render(ICanvas canvas, Train train)
+    {
+        SetupCanvasToDrawTrain(canvas, train);
+        var shouldHighlight = _trainManager.CurrentTrain == train;
+        TrainPalette? palette = _trainPainter.GetPalette(train);
+
+        RenderTrain(canvas, palette, _trainParameters, shouldHighlight);
+    }
+
+    public static void RenderTrain(ICanvas canvas, TrainPalette palette, ITrainParameters trainParameters, bool shouldHighlight)
+    {
+        var outline = new PaintBrush
         {
-            _trainParameters = trainParameters;
-            _trainPainter = trainPainter;
-            _trainManager = trainManager;
-        }
+            Color = shouldHighlight ? Colors.LightGray : palette.OutlineColor,
+            Style = PaintStyle.Stroke,
+            StrokeWidth = trainParameters.StrokeWidth
+        };
 
-        public void Render(ICanvas canvas, Train train)
+        var smokeStack = new PaintBrush
         {
-            SetupCanvasToDrawTrain(canvas, train);
-            var shouldHighlight = _trainManager.CurrentTrain == train;
-            TrainPalette? palette = _trainPainter.GetPalette(train);
+            Color = palette.OutlineColor,
+            Style = PaintStyle.Fill,
+            StrokeWidth = trainParameters.StrokeWidth
+        };
 
-            RenderTrain(canvas, palette, _trainParameters, shouldHighlight);
-        }
+        float startPos = -((trainParameters.HeadWidth + trainParameters.RearWidth) / 2);
 
-        public static void RenderTrain(ICanvas canvas, TrainPalette palette, ITrainParameters trainParameters, bool shouldHighlight)
-        {
-            var outline = new PaintBrush
-            {
-                Color = shouldHighlight ? Colors.LightGray : palette.OutlineColor,
-                Style = PaintStyle.Stroke,
-                StrokeWidth = trainParameters.StrokeWidth
-            };
+        canvas.DrawGradientRect(startPos,
+                        -(trainParameters.RearHeight / 2),
+                        trainParameters.RearWidth,
+                        trainParameters.RearHeight,
+                        palette.RearSectionStartColor, palette.RearSectionEndColor);
 
-            var smokeStack = new PaintBrush
-            {
-                Color = palette.OutlineColor,
-                Style = PaintStyle.Fill,
-                StrokeWidth = trainParameters.StrokeWidth
-            };
+        canvas.DrawGradientRect(startPos + trainParameters.RearWidth,
+                        -(trainParameters.HeadHeight / 2),
+                        trainParameters.HeadWidth,
+                        trainParameters.HeadHeight,
+                        palette.FrontSectionStartColor, palette.FrontSectionEndColor);
 
-            float startPos = -((trainParameters.HeadWidth + trainParameters.RearWidth) / 2);
+        canvas.DrawRect(startPos,
+                        -(trainParameters.RearHeight / 2),
+                        trainParameters.RearWidth,
+                        trainParameters.RearHeight,
+                        outline);
 
-            canvas.DrawGradientRect(startPos,
-                            -(trainParameters.RearHeight / 2),
-                            trainParameters.RearWidth,
-                            trainParameters.RearHeight,
-                            palette.RearSectionStartColor, palette.RearSectionEndColor);
+        canvas.DrawRect(startPos + trainParameters.RearWidth,
+                        -(trainParameters.HeadHeight / 2),
+                        trainParameters.HeadWidth,
+                        trainParameters.HeadHeight,
+                        outline);
 
-            canvas.DrawGradientRect(startPos + trainParameters.RearWidth,
-                            -(trainParameters.HeadHeight / 2),
-                            trainParameters.HeadWidth,
-                            trainParameters.HeadHeight,
-                            palette.FrontSectionStartColor, palette.FrontSectionEndColor);
+        canvas.DrawCircle(startPos + trainParameters.RearWidth + trainParameters.HeadWidth - trainParameters.SmokeStackOffset, 0, trainParameters.SmokeStackRadius, smokeStack);
+    }
 
-            canvas.DrawRect(startPos,
-                            -(trainParameters.RearHeight / 2),
-                            trainParameters.RearWidth,
-                            trainParameters.RearHeight,
-                            outline);
-
-            canvas.DrawRect(startPos + trainParameters.RearWidth,
-                            -(trainParameters.HeadHeight / 2),
-                            trainParameters.HeadWidth,
-                            trainParameters.HeadHeight,
-                            outline);
-
-            canvas.DrawCircle(startPos + trainParameters.RearWidth + trainParameters.HeadWidth - trainParameters.SmokeStackOffset, 0, trainParameters.SmokeStackRadius, smokeStack);
-        }
-
-        public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train)
-        {
-            float x = 100 * train.RelativeLeft;
-            float y = 100 * train.RelativeTop;
-            canvas.Translate(x, y);
-            canvas.RotateDegrees(train.Angle);
-        }
+    public static void SetupCanvasToDrawTrain(ICanvas canvas, IMovable train)
+    {
+        float x = 100 * train.RelativeLeft;
+        float y = 100 * train.RelativeTop;
+        canvas.Translate(x, y);
+        canvas.RotateDegrees(train.Angle);
     }
 }

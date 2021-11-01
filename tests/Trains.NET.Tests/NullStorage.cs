@@ -2,26 +2,25 @@
 using System.Linq;
 using Trains.NET.Engine;
 
-namespace Trains.NET.Tests
+namespace Trains.NET.Tests;
+
+internal class NullStorage : IGameStorage
 {
-    internal class NullStorage : IGameStorage
+    public IEnumerable<IEntity> ReadEntities()
     {
-        public IEnumerable<IEntity> ReadEntities()
-        {
-            return Enumerable.Empty<IEntity>();
-        }
+        return Enumerable.Empty<IEntity>();
+    }
 
-        public IEnumerable<Terrain> ReadTerrain()
-        {
-            return Enumerable.Empty<Terrain>();
-        }
+    public IEnumerable<Terrain> ReadTerrain()
+    {
+        return Enumerable.Empty<Terrain>();
+    }
 
-        public void WriteEntities(IEnumerable<IEntity> entities)
-        {
-        }
+    public void WriteEntities(IEnumerable<IEntity> entities)
+    {
+    }
 
-        public void WriteTerrain(IEnumerable<Terrain> terrainList)
-        {
-        }
+    public void WriteTerrain(IEnumerable<Terrain> terrainList)
+    {
     }
 }

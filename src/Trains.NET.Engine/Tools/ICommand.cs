@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        string Name { get; }
-        void Execute();
-    }
+    string Name { get; }
+    void Execute();
 }

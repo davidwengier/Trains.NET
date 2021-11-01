@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Trains.NET.Engine
+namespace Trains.NET.Engine;
+
+public interface IEntityCollectionSerializer
 {
-    public interface IEntityCollectionSerializer
-    {
-        IEnumerable<IEntity> Deserialize(string[] lines);
-        string Serialize(IEnumerable<IEntity> tracks);
-    }
+    IEnumerable<IEntity> Deserialize(string[] lines);
+    string Serialize(IEnumerable<IEntity> tracks);
 }

@@ -1,8 +1,7 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public interface ITogglable
 {
-    public interface ITogglable
-    {
-        string Name { get; }
-        bool Enabled { get; set; }
-    }
+    string Name { get; }
+    bool Enabled { get; set; }
 }

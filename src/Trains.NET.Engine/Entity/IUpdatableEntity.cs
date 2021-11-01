@@ -1,7 +1,6 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public interface IUpdatableEntity : IStaticEntity
 {
-    public interface IUpdatableEntity : IStaticEntity
-    {
-        void Update();
-    }
+    void Update();
 }

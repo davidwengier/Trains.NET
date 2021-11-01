@@ -1,10 +1,9 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public interface IScreenManager
 {
-    public interface IScreenManager
-    {
-        /// <summary>
-        /// Called when the actual screen is being repainted
-        /// </summary>
-        void Render(ICanvas canvas);
-    }
+    /// <summary>
+    /// Called when the actual screen is being repainted
+    /// </summary>
+    void Render(ICanvas canvas);
 }

@@ -1,9 +1,8 @@
 ﻿using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering.Trains
+namespace Trains.NET.Rendering.Trains;
+
+public interface ITrainPainter
 {
-    public interface ITrainPainter
-    {
-        TrainPalette GetPalette(Train train);
-    }
+    TrainPalette GetPalette(Train train);
 }

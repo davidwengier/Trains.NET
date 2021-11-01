@@ -1,11 +1,12 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public enum PointerAction
 {
-    public enum PointerAction
-    {
-        Move,
-        Click,
-        Drag,
-        ZoomIn,
-        ZoomOut
-    }
+    Move,
+    Click,
+    Drag,
+    ZoomIn,
+    ZoomOut,
+    AlternateDrag,
+    AlternateClick
 }

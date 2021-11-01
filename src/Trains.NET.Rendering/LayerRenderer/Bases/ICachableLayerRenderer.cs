@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Rendering;
+
+public interface ICachableLayerRenderer : ILayerRenderer
 {
-    public interface ICachableLayerRenderer : ILayerRenderer
-    {
-        event EventHandler? Changed;
-    }
+    event EventHandler? Changed;
 }

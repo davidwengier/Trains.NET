@@ -1,9 +1,8 @@
-﻿namespace Trains.NET.Engine
+﻿namespace Trains.NET.Engine;
+
+public enum ToolMode
 {
-    public enum ToolMode
-    {
-        Build,
-        Play,
-        All
-    }
+    Build,
+    Play,
+    All
 }

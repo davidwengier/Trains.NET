@@ -1,8 +1,7 @@
 ﻿using Trains.NET.Engine;
 
-namespace Trains.NET.Rendering
+namespace Trains.NET.Rendering;
+
+public interface IStaticEntityRenderer<T> : IRenderer<T> where T : IStaticEntity
 {
-    public interface IStaticEntityRenderer<T> : IRenderer<T> where T : IStaticEntity
-    {
-    }
 }

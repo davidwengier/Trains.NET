@@ -1,39 +1,38 @@
-﻿namespace Trains.NET.Rendering
+﻿namespace Trains.NET.Rendering;
+
+public class ZoomHandler : IInteractionHandler
 {
-    public class ZoomHandler : IInteractionHandler
+    private const float ZoomInDelta = 1.25f;
+    private const float ZoomOutDelta = 1f / ZoomInCommand.ZoomInDelta;
+
+    private readonly IPixelMapper _pixelMapper;
+
+    public ZoomHandler(IPixelMapper pixelMapper)
     {
-        private const float ZoomInDelta = 1.25f;
-        private const float ZoomOutDelta = 1f / ZoomInCommand.ZoomInDelta;
+        _pixelMapper = pixelMapper;
+    }
 
-        private readonly IPixelMapper _pixelMapper;
+    public bool PreHandleNextClick => false;
 
-        public ZoomHandler(IPixelMapper pixelMapper)
+    public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
+    {
+        bool didAdjust = false;
+        if (action == PointerAction.ZoomIn)
         {
-            _pixelMapper = pixelMapper;
+            didAdjust = _pixelMapper.AdjustGameScale(ZoomInDelta);
+        }
+        else if (action == PointerAction.ZoomOut)
+        {
+            didAdjust = _pixelMapper.AdjustGameScale(ZoomOutDelta);
         }
 
-        public bool PreHandleNextClick => false;
-
-        public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
+        if (didAdjust == false)
         {
-            bool didAdjust = false;
-            if (action == PointerAction.ZoomIn)
-            {
-                didAdjust = _pixelMapper.AdjustGameScale(ZoomInDelta);
-            }
-            else if (action == PointerAction.ZoomOut)
-            {
-                didAdjust = _pixelMapper.AdjustGameScale(ZoomOutDelta);
-            }
-
-            if (didAdjust == false)
-            {
-                return false;
-            }
-
-            // TODO: Move the viewport so its centered on where the mouse pointer is
-
-            return true;
+            return false;
         }
+
+        // TODO: Move the viewport so its centered on where the mouse pointer is
+
+        return true;
     }
 }

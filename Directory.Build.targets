@@ -1,10 +1,5 @@
 <Project>
 
-  <!-- Only applies to Trains.NET things -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
-  </ItemGroup>
-
   <Import Project="build\Packages.targets" />
 
 </Project>

@@ -47,9 +47,9 @@ public class GameThreadTimerTests
         Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
     }
 
-    [Theory]
+    [Theory(Skip = "Flaky in CI")]
     [InlineData(8, 2)]
-    [InlineData(8, 4, Skip = "Flaky in CI")]
+    [InlineData(8, 4)]
     [InlineData(8, 8)]
     [InlineData(16, 2)]
     [InlineData(16, 4)]

@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using Microsoft.AspNetCore.Components.Web;
+using SkiaSharp;
 using SkiaSharp.Views.Blazor;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
@@ -22,7 +23,7 @@ public partial class Index
         this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
     }
 
-    protected void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
+    private void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
     {
         using (_renderTime.Measure())
         {
@@ -36,6 +37,60 @@ public partial class Index
         }
 
         _fps.Update();
+    }
+
+    private void OnPointerDown(PointerEventArgs e)
+    {
+        if (e.Buttons == 1)
+        {
+            _interactionManager.PointerClick((int)e.OffsetX, (int)e.OffsetY);
+        }
+        else if (e.Buttons == 2)
+        {
+            _interactionManager.PointerAlternateClick((int)e.OffsetX, (int)e.OffsetY);
+        }
+    }
+
+    private void OnPointerMove(PointerEventArgs e)
+    {
+        if (e.Buttons == 1)
+        {
+            _interactionManager.PointerDrag((int)e.OffsetX, (int)e.OffsetY);
+        }
+        else if (e.Buttons == 2)
+        {
+            _interactionManager.PointerAlternateDrag((int)e.OffsetX, (int)e.OffsetY);
+        }
+        else
+        {
+            _interactionManager.PointerMove((int)e.OffsetX, (int)e.OffsetY);
+        }
+    }
+
+    private void OnPointerUp(PointerEventArgs e)
+    {
+        _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
+    }
+
+    private void OnTouchMove(TouchEventArgs e)
+    {
+        var touch = e.Touches.FirstOrDefault();
+        if (touch is not null)
+        {
+            _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
+        }
+    }
+
+    private void OnMouseWheel(WheelEventArgs e)
+    {
+        if (e.DeltaY < 0)
+        {
+            _interactionManager.PointerZoomIn((int)e.ClientX, (int)e.ClientY);
+        }
+        else
+        {
+            _interactionManager.PointerZoomOut((int)e.ClientX, (int)e.ClientY);
+        }
     }
 
     private void BeforeUnload_BeforeUnloadHandler(object? sender, blazejewicz.Blazor.BeforeUnload.BeforeUnloadArgs e)

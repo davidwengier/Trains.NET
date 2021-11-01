@@ -54,6 +54,7 @@ public partial class MainWindow : Window
     private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
     {
         var mousePos = e.GetPosition(_gameElement);
+
         if (e.Delta > 0)
         {
             _interactionManager.PointerZoomIn((int)mousePos.X, (int)mousePos.Y);
@@ -67,9 +68,14 @@ public partial class MainWindow : Window
     private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
     {
         var mousePos = e.GetPosition(_gameElement);
+
         if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
         {
             _interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
+        }
+        else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+        {
+            _interactionManager.PointerAlternateDrag((int)mousePos.X, (int)mousePos.Y);
         }
         else
         {
@@ -79,13 +85,16 @@ public partial class MainWindow : Window
 
     private void SKElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        if (e.LeftButton != System.Windows.Input.MouseButtonState.Pressed)
-        {
-            return;
-        }
-
         var mousePos = e.GetPosition(_gameElement);
-        _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
+
+        if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+        {
+            _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
+        }
+        else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+        {
+            _interactionManager.PointerAlternateClick((int)mousePos.X, (int)mousePos.Y);
+        }
     }
 
     private void SKElement_MouseUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)

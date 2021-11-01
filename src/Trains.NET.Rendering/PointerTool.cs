@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering;
 
 [Order(2)]
-public class PointerTool : IDraggableTool
+public class PointerTool : IDraggableTool, IAlternateDragTool
 {
     private readonly ITrainManager _trainManager;
     private readonly IGameBoard _gameBoard;

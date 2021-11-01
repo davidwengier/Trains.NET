@@ -10,18 +10,20 @@ public class InteractionManager : IInteractionManager
     private readonly IGame _game;
     private readonly IPixelMapper _pixelMapper;
     private readonly IGameManager _gameManager;
+    private readonly IAlternateDragTool _alternateDragTool;
     private IInteractionHandler? _capturedHandler;
     private ITool? _capturedTool;
     private bool _hasDragged;
     private int _lastToolColumn;
     private int _lastToolRow;
 
-    public InteractionManager(IEnumerable<IInteractionHandler> handlers, IGame game, IPixelMapper pixelMapper, IGameManager gameManager)
+    public InteractionManager(IEnumerable<IInteractionHandler> handlers, IGame game, IPixelMapper pixelMapper, IGameManager gameManager, IAlternateDragTool alternateDragTool)
     {
         _handler = handlers.Reverse().ToArray();
         _game = game;
         _pixelMapper = pixelMapper;
         _gameManager = gameManager;
+        _alternateDragTool = alternateDragTool;
     }
 
     public bool PointerClick(int x, int y)
@@ -32,6 +34,12 @@ public class InteractionManager : IInteractionManager
 
     public bool PointerDrag(int x, int y)
         => HandleInteraction(x, y, PointerAction.Drag);
+
+    public bool PointerAlternateClick(int x, int y)
+        => HandleInteraction(x, y, PointerAction.AlternateClick);
+
+    public bool PointerAlternateDrag(int x, int y)
+        => HandleInteraction(x, y, PointerAction.AlternateDrag);
 
     public bool PointerZoomIn(int x, int y)
         => HandleInteraction(x, y, PointerAction.ZoomIn);
@@ -93,6 +101,17 @@ public class InteractionManager : IInteractionManager
             {
                 return true;
             }
+        }
+        else if (action is PointerAction.AlternateClick)
+        {
+            _alternateDragTool.StartDrag(x, y);
+            return true;
+        }
+        else if (action is PointerAction.AlternateDrag)
+        {
+            _hasDragged = true;
+            _alternateDragTool.ContinueDrag(x, y);
+            return true;
         }
 
         foreach (IInteractionHandler handler in _handler)

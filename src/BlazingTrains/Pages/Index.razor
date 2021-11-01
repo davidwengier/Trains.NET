@@ -13,60 +13,9 @@
           IgnorePixelScaling="true"
           EnableRenderLoop="true"
           OnPaintSurface="OnPaintSurface"
-          oncontextmenu="return false;"
+          oncontextmenu="return false"
           @onpointerdown="OnPointerDown"
           @onpointermove="OnPointerMove"
           @onpointerup="OnPointerUp"
           @ontouchmove="OnTouchMove"
           @onwheel="OnMouseWheel" />
-
-
-@code
-{
-    private void OnPointerDown(PointerEventArgs e)
-    {
-        //        if (e.Button != 1) return;
-
-        _interactionManager.PointerClick((int)e.OffsetX, (int)e.OffsetY);
-    }
-
-    private void OnPointerMove(PointerEventArgs e)
-    {
-        if (e.Buttons > 0)
-        {
-            _interactionManager.PointerDrag((int)e.OffsetX, (int)e.OffsetY);
-        }
-        else
-        {
-            _interactionManager.PointerMove((int)e.OffsetX, (int)e.OffsetY);
-        }
-    }
-
-    private void OnPointerUp(PointerEventArgs e)
-    {
-        //if (e.Buttons != 1) return;
-
-        _interactionManager.PointerRelease((int)e.OffsetX, (int)e.OffsetY);
-    }
-
-    private void OnTouchMove(TouchEventArgs e)
-    {
-        var touch = e.Touches.FirstOrDefault();
-
-        if (touch is null) return;
-
-        _interactionManager.PointerDrag((int)touch.ClientX, (int)touch.ClientY);
-    }
-
-    private void OnMouseWheel(WheelEventArgs e)
-    {
-        if (e.DeltaY < 0)
-        {
-            _interactionManager.PointerZoomIn((int)e.ClientX, (int)e.ClientY);
-        }
-        else
-        {
-            _interactionManager.PointerZoomOut((int)e.ClientX, (int)e.ClientY);
-        }
-    }
-}

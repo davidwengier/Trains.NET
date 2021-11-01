@@ -49,7 +49,14 @@ public partial class MainForm : Form
 
     private void SKControl_MouseDown(object? sender, MouseEventArgs e)
     {
-        _interactionManager.PointerClick(e.X, e.Y);
+        if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+        {
+            _interactionManager.PointerClick(e.X, e.Y);
+        }
+        else if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
+        {
+            _interactionManager.PointerAlternateClick(e.X, e.Y);
+        }
     }
 
     private void SKControl_MouseMove(object? sender, MouseEventArgs e)
@@ -57,6 +64,10 @@ public partial class MainForm : Form
         if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
         {
             _interactionManager.PointerDrag(e.X, e.Y);
+        }
+        else if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
+        {
+            _interactionManager.PointerAlternateDrag(e.X, e.Y);
         }
         else
         {
@@ -66,7 +77,10 @@ public partial class MainForm : Form
 
     private void SKControl_MouseUp(object? sender, MouseEventArgs e)
     {
-        _interactionManager.PointerRelease(e.X, e.Y);
+        if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+        {
+            _interactionManager.PointerRelease(e.X, e.Y);
+        }
     }
 
     protected override void Dispose(bool disposing)

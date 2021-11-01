@@ -6,5 +6,7 @@ public enum PointerAction
     Click,
     Drag,
     ZoomIn,
-    ZoomOut
+    ZoomOut,
+    AlternateDrag,
+    AlternateClick
 }

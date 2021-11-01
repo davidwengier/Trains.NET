@@ -5,7 +5,12 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <NoWarn>$(NoWarn);CS1587;CS1591;CA1062</NoWarn>
+    <ApplicationIcon>RedTrain.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="RedTrain.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.WindowsForms" />

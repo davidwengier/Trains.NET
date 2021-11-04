@@ -11,7 +11,7 @@ public class Layout : ILayout, IInitializeAsync
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
-    private IStaticEntity?[][] _entities;
+    private IStaticEntity?[][] _entities = null!;
     private int _rows;
 
     public Task InitializeAsync(int columns, int rows)

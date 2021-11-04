@@ -49,6 +49,8 @@ public partial class MainWindow : Window
         this.Title = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion;
 
         _gameElement.SizeChanged += SKElement_SizeChanged;
+
+        _game.InitializeAsync(200, 200).GetAwaiter().GetResult();
     }
 
     private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)

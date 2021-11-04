@@ -1,32 +1,46 @@
-﻿using Trains.NET.Rendering;
+﻿using System.Threading.Tasks;
+using Trains.NET.Rendering;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Trains.NET.Tests.Rendering.PixelMapperTests;
 
-public class AdjustGameScaleTests
+public class AdjustGameScaleTests : IAsyncLifetime
 {
     private const int ScreenSize = 720;
 
-    private readonly IPixelMapper _pixelMapper;
+    private readonly PixelMapper _pixelMapper;
     private readonly ITestOutputHelper _output;
 
     public AdjustGameScaleTests(ITestOutputHelper output)
     {
         _pixelMapper = new PixelMapper();
+
+        _output = output;
+    }
+
+    public async Task InitializeAsync()
+    {
+        await _pixelMapper.InitializeAsync(100, 100);
+
         _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
         int centerViewportOffsetX = _pixelMapper.MaxGridWidth / 2 - ScreenSize / 2;
         int centerViewportOffsetY = _pixelMapper.MaxGridHeight / 2 - ScreenSize / 2;
 
         _pixelMapper.SetViewPort(centerViewportOffsetX, centerViewportOffsetY);
-        _output = output;
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     [Fact]
-    public void AdjustGameScale_CantZoomToZero()
+    public async Task AdjustGameScale_CantZoomToZero()
     {
         const int ScreenSize = 200;
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 100);
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
@@ -37,10 +51,11 @@ public class AdjustGameScaleTests
     }
 
     [Fact]
-    public void AdjustGameScale_SingleZoomOut_CorrectViewportWorldPosition()
+    public async Task AdjustGameScale_SingleZoomOut_CorrectViewportWorldPosition()
     {
         const int ScreenSize = 200;
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 100);
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
@@ -59,10 +74,11 @@ public class AdjustGameScaleTests
     }
 
     [Fact]
-    public void AdjustGameScale_SingleZoomIn_CorrectViewportWorldPosition()
+    public async Task AdjustGameScale_SingleZoomIn_CorrectViewportWorldPosition()
     {
         const int ScreenSize = 200;
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 100);
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
@@ -81,10 +97,11 @@ public class AdjustGameScaleTests
     }
 
     [Fact]
-    public void AdjustGameScale_DoubleZoomIn_CorrectViewportWorldPosition()
+    public async Task AdjustGameScale_DoubleZoomIn_CorrectViewportWorldPosition()
     {
         const int ScreenSize = 200;
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 100);
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
@@ -109,10 +126,11 @@ public class AdjustGameScaleTests
     }
 
     [Fact]
-    public void AdjustGameScale_DoubleZoomIn_OddPos_CorrectViewportWorldPosition()
+    public async Task AdjustGameScale_DoubleZoomIn_OddPos_CorrectViewportWorldPosition()
     {
         const int ScreenSize = 200;
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 100);
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 

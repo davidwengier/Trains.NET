@@ -17,5 +17,4 @@ public interface IGameBoard : IDisposable
     IEnumerable<T> GetMovables<T>() where T : IMovable;
     IMovable? GetMovableAt(int column, int row);
     IEnumerable<TrainPosition> GetNextSteps(Train train, float distanceToMove);
-    void Initialize(int columns, int rows);
 }

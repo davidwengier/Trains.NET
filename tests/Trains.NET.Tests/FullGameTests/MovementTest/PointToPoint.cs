@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
@@ -33,11 +34,11 @@ public class PointToPoint_1000Step : PointToPoint
 {
     public PointToPoint_1000Step() : base(1000) { }
 }
-public abstract class PointToPoint : IDisposable
+public abstract class PointToPoint : IAsyncLifetime, IDisposable
 {
     private readonly int _movementSteps;
     private const int MovementPrecision = 4;
-    private readonly ILayout _trackLayout;
+    private readonly Layout _trackLayout;
     private readonly GameBoard _gameBoard;
     private readonly TrackTool _trackTool;
 
@@ -59,6 +60,18 @@ public abstract class PointToPoint : IDisposable
             };
 
         _trackTool = new TrackTool(filteredLayout, entityFactories);
+    }
+
+    public async Task InitializeAsync()
+    {
+        await _trackLayout.InitializeAsync(100, 100);
+        await _gameBoard.InitializeAsync(100, 100);
+
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     [Theory]

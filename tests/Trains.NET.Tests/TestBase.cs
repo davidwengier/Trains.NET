@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
@@ -8,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace Trains.NET.Tests;
 
-public class TestBase : IDisposable
+public class TestBase : IAsyncLifetime, IDisposable
 {
     private int _lastCol;
     private int _lastRow;
@@ -17,7 +18,7 @@ public class TestBase : IDisposable
     internal readonly IGameStorage Storage;
     internal readonly TestTimer Timer;
     internal readonly GameBoard GameBoard;
-    internal readonly ILayout TrackLayout;
+    internal readonly Layout TrackLayout;
     internal readonly ITerrainMap TerrainMap;
     internal readonly ILayout<Track> FilteredLayout;
     internal readonly TrackTool TrackTool;
@@ -44,6 +45,18 @@ public class TestBase : IDisposable
         TrackTool = new TrackTool(FilteredLayout, entityFactories);
 
         _output = output;
+    }
+
+    public async Task InitializeAsync()
+    {
+        await TrackLayout.InitializeAsync(200, 100);
+        await GameBoard.InitializeAsync(200, 100);
+
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     protected void StartDrawTrack(int startColumn, int startRow)

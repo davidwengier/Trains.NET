@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
@@ -45,11 +46,13 @@ public abstract class FullTrackLoop
     [Theory]
     [InlineData(0.0f)]
     [InlineData(180.0f)]
-    public void MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
+    public async Task MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
     {
         var trackLayout = new Layout();
+        await trackLayout.InitializeAsync(100, 100);
         var terrainMap = new TerrainMap();
         var board = new GameBoard(trackLayout, terrainMap, null, null);
+        await board.InitializeAsync(100, 100);
 
         trackLayout.AddTrack(1, 1);
         trackLayout.AddTrack(2, 1);
@@ -91,13 +94,15 @@ public abstract class FullTrackLoop
     [Theory]
     [InlineData(0.0f)]
     [InlineData(180.0f)]
-    public void MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
+    public async Task MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
     {
         var trackLayout = new Layout();
+        await trackLayout.InitializeAsync(100, 100);
         var filteredLayout = new FilteredLayout<Track>(trackLayout);
         var terrainMap = new TerrainMap();
         terrainMap.Reset(1, 100, 100);
         var board = new GameBoard(trackLayout, terrainMap, null, null);
+        await board.InitializeAsync(100, 100);
         var entityFactories = new List<IStaticEntityFactory<Track>>
             {
                 new CrossTrackFactory(terrainMap, trackLayout),

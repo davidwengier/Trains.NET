@@ -24,6 +24,8 @@ public partial class MainForm : Form
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
+        _game.InitializeAsync(200, 200).GetAwaiter().GetResult();
+
         _game.SetSize(_skControl.Width, _skControl.Height);
 
         _skControl.SizeChanged += (s, e) => _game.SetSize(_skControl.Width, _skControl.Height);

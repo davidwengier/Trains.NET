@@ -15,10 +15,12 @@ public partial class Index
     private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaSharp-OnPaintSurfaceFPS");
     private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
+
+        await _game.InitializeAsync(200, 200);
 
         this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
     }

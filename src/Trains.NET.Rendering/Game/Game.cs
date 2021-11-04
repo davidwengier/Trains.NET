@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 
@@ -24,13 +25,15 @@ public class Game : IGame
     private readonly Dictionary<ILayerRenderer, ElapsedMillisecondsTimedStat> _renderCacheDrawTimes;
     private readonly IEnumerable<IScreen> _screens;
     private readonly IImageCache _imageCache;
+    private readonly IEnumerable<IInitializeAsync> _initializers;
 
     public Game(IGameBoard gameBoard,
                 IEnumerable<ILayerRenderer> boardRenderers,
                 IPixelMapper pixelMapper,
                 IImageFactory imageFactory,
                 IEnumerable<IScreen> screens,
-                IImageCache imageCache)
+                IImageCache imageCache,
+                IEnumerable<IInitializeAsync> initializers)
     {
         _gameBoard = gameBoard;
         _boardRenderers = boardRenderers;
@@ -38,7 +41,7 @@ public class Game : IGame
         _imageFactory = imageFactory;
         _screens = screens;
         _imageCache = imageCache;
-
+        _initializers = initializers;
         foreach (IScreen screen in _screens)
         {
             screen.Changed += (s, e) => _imageCache.SetDirty(screen);
@@ -52,8 +55,14 @@ public class Game : IGame
         _screenDrawTimes = _screens.ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>(GetLayerDiagnosticsName(x)));
         _renderCacheDrawTimes = _boardRenderers.Where(x => x is ICachableLayerRenderer).ToDictionary(x => x, x => InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Draw-Cache-" + x.Name.Replace(" ", "")));
         _pixelMapper.ViewPortChanged += (s, e) => _imageCache.SetDirtyAll(_boardRenderers);
+    }
 
-        _gameBoard.Initialize(_pixelMapper.Columns, _pixelMapper.Rows);
+    public async Task InitializeAsync(int columns, int rows)
+    {
+        foreach (var initializer in _initializers)
+        {
+            await initializer.InitializeAsync(columns, rows);
+        }
     }
 
     private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)

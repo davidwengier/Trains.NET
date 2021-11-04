@@ -132,6 +132,12 @@ namespace DI
         Service? field = fields.FirstOrDefault(f => SymbolEqualityComparer.Default.Equals(f.ImplementationType, service.ImplementationType));
         if (field != null)
         {
+            if (service.Parent?.ElementType is not null)
+            {
+                sb.Append('(');
+                sb.Append(service.Parent.ElementType);
+                sb.Append(')');
+            }
             sb.Append(field.VariableName);
         }
         else
@@ -149,7 +155,8 @@ namespace DI
             {
                 if (!first)
                 {
-                    sb.Append(',');
+                    sb.Append(", ");
+
                 }
                 sb.Append(GetTypeConstruction(arg, fields));
                 first = false;
@@ -203,7 +210,8 @@ namespace DI
             var listService = new Service(typeToCreate, parent)
             {
                 ImplementationType = list,
-                UseCollectionInitializer = true
+                UseCollectionInitializer = true,
+                ElementType = typeToFind
             };
 
             if (CheckForCycle(context, services, list))

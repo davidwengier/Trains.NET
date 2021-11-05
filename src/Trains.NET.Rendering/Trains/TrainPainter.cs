@@ -6,8 +6,7 @@ namespace Trains.NET.Rendering.Trains;
 
 public class TrainPainter : ITrainPainter
 {
-    private readonly Dictionary<Guid, TrainPalette> _paletteMap = new();
-    private readonly Random _random = new();
+    private readonly Dictionary<int, TrainPalette> _paletteMap = new();
 
     private static readonly TrainPalette s_baseTrainPalette = new(
         Colors.Black,
@@ -19,18 +18,18 @@ public class TrainPainter : ITrainPainter
 
     public TrainPalette GetPalette(Train train)
     {
-        if (!_paletteMap.ContainsKey(train.UniqueID))
+        if (!_paletteMap.ContainsKey(train.Seed))
         {
-            _paletteMap.Add(train.UniqueID, GetRandomPalette());
+            _paletteMap.Add(train.Seed, GetPalette(train.GetPRNG()));
         }
-        return _paletteMap[train.UniqueID];
+        return _paletteMap[train.Seed];
     }
 
-    private TrainPalette GetRandomPalette()
+    private static TrainPalette GetPalette(BasicPRNG r)
     {
-        byte sR = (byte)_random.Next(32, 192);
-        byte sG = (byte)_random.Next(32, 192);
-        byte sB = (byte)_random.Next(32, 192);
+        byte sR = (byte)r.Next(32, 192);
+        byte sG = (byte)r.Next(32, 192);
+        byte sB = (byte)r.Next(32, 192);
 
         byte eR = (byte)(sR + 64);
         byte eG = (byte)(sG + 64);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Trains.NET.Engine;
 
@@ -251,5 +252,63 @@ public static class TrainMovement
                 position.RelativeLeft = -0.1f;
             }
         }
+    }
+
+    public static IEnumerable<TrainPosition> GetNextSteps(ILayout layout, Train train, float distanceToMove)
+    {
+        TrainPosition? last = null;
+        float distance = distanceToMove;
+        while (distance > 0.0f)
+        {
+            TrainPosition position = last ?? train.GetPosition();
+
+            TrainPosition? newPosition = GetNextPosition(layout, position, distance);
+            if (newPosition != null)
+            {
+                last = newPosition;
+                yield return newPosition;
+                distance = newPosition.Distance;
+            }
+            else
+            {
+                yield break;
+            }
+        }
+    }
+
+    private static TrainPosition? GetNextPosition(ILayout layout, TrainPosition currentPosition, float distance)
+    {
+        if (!layout.TryGet(currentPosition.Column, currentPosition.Row, out Track? track))
+        {
+            return null;
+        }
+
+        TrainPosition position = currentPosition.Clone();
+        position.Distance = distance;
+
+        track.Move(position);
+
+        if (position.RelativeLeft < 0.0f)
+        {
+            position.Column--;
+            position.RelativeLeft = 1.0f;
+        }
+        if (position.RelativeLeft > 1.0f)
+        {
+            position.Column++;
+            position.RelativeLeft = 0.0f;
+        }
+        if (position.RelativeTop < 0.0f)
+        {
+            position.Row--;
+            position.RelativeTop = 1.0f;
+        }
+        if (position.RelativeTop > 1.0f)
+        {
+            position.Row++;
+            position.RelativeTop = 0.0f;
+        }
+
+        return position;
     }
 }

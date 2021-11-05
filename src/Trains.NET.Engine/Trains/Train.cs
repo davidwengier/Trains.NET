@@ -3,13 +3,12 @@ using System.ComponentModel;
 
 namespace Trains.NET.Engine;
 
-public class Train : IMovable, INotifyPropertyChanged
+public class Train : IMovable, INotifyPropertyChanged, ISeeded
 {
-    private static readonly Random s_random = new();
-
     // only used for tests??
     internal const float SpeedScaleModifier = 0.005f;
 
+    private const int MaxSpawnCarriages = 6;
     private const int MaximumSpeed = 200;
     private const float MinimumLookaheadSpeed = 5.0f;
     private const float DefaultSpeed = 20.0f;
@@ -18,11 +17,12 @@ public class Train : IMovable, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public Train()
+    public Train(int seed)
     {
+        this.Seed = seed;
         this.UniqueID = Guid.NewGuid();
-        this.Name = TrainNames.Names[s_random.Next(0, TrainNames.Names.Length)];
-        this.Carriages = s_random.Next(0, 6);
+        this.Name = TrainNames.GetName(seed);
+        this.Carriages = Math.Abs(seed) % MaxSpawnCarriages;
         this.DesiredSpeed = DefaultSpeed;
         this.RelativeLeft = 0.5f;
         this.RelativeTop = 0.5f;
@@ -30,6 +30,7 @@ public class Train : IMovable, INotifyPropertyChanged
 
     private Train(Train other)
     {
+        this.Seed = other.Seed;
         this.UniqueID = other.UniqueID;
         this.Column = other.Column;
         this.Name = other.Name;
@@ -64,6 +65,7 @@ public class Train : IMovable, INotifyPropertyChanged
     public float RelativeTop { get; set; }
 
     public string Name { get; set; }
+    public int Seed { get; }
     public virtual float CurrentSpeed { get; set; }
     public virtual float DesiredSpeed { get; set; }
     public virtual bool Stopped { get; set; }

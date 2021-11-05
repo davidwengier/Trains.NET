@@ -77,9 +77,6 @@ public class EmojiDrawer
             }
             DrawTrees(folderName, pixelMapper);
             DrawTracks(folderName, pixelMapper);
-
-            // Reset so all of our "Train{i}" images are the same colour, at even if different sizes
-            EmojiTrainPainter.Reset();
             DrawTrains(folderName, pixelMapper);
         }
     }
@@ -88,7 +85,7 @@ public class EmojiDrawer
     {
         for (int i = 0; i < s_numberOfTrainsToDraw; i++)
         {
-            var train = new Train();
+            var train = new Train(i);
 
             DrawTrains(train, $"train{i}", folderName, pixelMapper, null);
             foreach (var renderer in _trackRenderers)
@@ -120,7 +117,7 @@ public class EmojiDrawer
     {
         for (int i = 0; i < s_numberOfTreesToDraw; i++)
         {
-            Draw("tree" + i, folderName, pixelMapper, canvas => _treeRenderer.Render(canvas, new Tree() { Seed = i }));
+            Draw("tree" + i, folderName, pixelMapper, canvas => _treeRenderer.Render(canvas, new Tree(i)));
         }
     }
 

@@ -12,9 +12,6 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
     private readonly PaintBrush _baseTreeBrush;
     private readonly PaintBrush _topTreeBrush;
 
-    // Change this if you don't like the majority of tree styles
-    private const int SeedOffset = 1337;
-
     public TreeRenderer()
     {
         _centerOffset = 50.0f;
@@ -39,8 +36,10 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
         canvas.Translate(_centerOffset, _centerOffset);
 
         // Let's make some repeatable numbers
-        var r = new Random(SeedOffset + tree.Seed);
-        int circleCount = r.Next(10, 20);
+
+        BasicPRNG r = tree.GetPRNG();
+        int seed = Math.Abs(tree.Seed) + 1;
+        int circleCount = seed % 10 + 10;
 
         // Draw a base fill
         canvas.DrawCircle(0, 0, _baseRadius, _baseTreeBrush);
@@ -54,7 +53,7 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
         DrawTreeLayer(canvas, r, (int)(circleCount * 0.7), angleOffset, 0.5f, _topTreeBrush);
     }
 
-    private void DrawTreeLayer(ICanvas canvas, Random r, int circleCount, float angleOffset, float scale, PaintBrush brush)
+    private void DrawTreeLayer(ICanvas canvas, BasicPRNG r, int circleCount, float angleOffset, float scale, PaintBrush brush)
     {
         for (int i = 0; i < circleCount; i++)
         {

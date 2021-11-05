@@ -3,10 +3,5 @@
 public interface IGameStorage
 {
     string? ReadEntities();
-
     void WriteEntities(string entities);
-
-    int? ReadTerrainSeed();
-
-    void WriteTerrainSeed(int terrainSeed);
 }

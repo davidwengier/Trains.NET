@@ -18,11 +18,7 @@ public class TreeSerializer : IEntitySerializer
             return false;
         }
 
-        var track = new Tree()
-        {
-            Seed = int.Parse(bits[1])
-        };
-        entity = track;
+        entity = new Tree(int.Parse(bits[1]));
         return true;
     }
 

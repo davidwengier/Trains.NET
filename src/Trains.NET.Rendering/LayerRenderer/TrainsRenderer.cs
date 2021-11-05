@@ -5,7 +5,8 @@ namespace Trains.NET.Rendering;
 [Order(500)]
 public class TrainsRenderer : ILayerRenderer
 {
-    private readonly IGameBoard _gameBoard;
+    private readonly IMovableLayout _movableLayout;
+    private readonly ILayout _layout;
     private readonly IRenderer<Train> _trainRenderer;
     private readonly CarriageRenderer _carriageRenderer;
 
@@ -13,16 +14,17 @@ public class TrainsRenderer : ILayerRenderer
 
     public string Name => "Trains";
 
-    public TrainsRenderer(IGameBoard gameBoard, IRenderer<Train> trainRenderer, CarriageRenderer carriageRenderer)
+    public TrainsRenderer(IMovableLayout movableLayout, ILayout layout, IRenderer<Train> trainRenderer, CarriageRenderer carriageRenderer)
     {
-        _gameBoard = gameBoard;
+        _movableLayout = movableLayout;
+        _layout = layout;
         _trainRenderer = trainRenderer;
         _carriageRenderer = carriageRenderer;
     }
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        foreach (Train train in _gameBoard.GetMovables())
+        foreach (Train train in _movableLayout.Get())
         {
             // Create a fake train pointing backwards, to represent our carriage
             var fakeTrain = train.Clone();
@@ -51,7 +53,7 @@ public class TrainsRenderer : ILayerRenderer
                     }
                 }
 
-                var steps = _gameBoard.GetNextSteps(fakeTrain, 1.0f);
+                var steps = TrainMovement.GetNextSteps(_layout, fakeTrain, 1.0f);
                 foreach (var step in steps)
                 {
                     fakeTrain.ApplyStep(step);

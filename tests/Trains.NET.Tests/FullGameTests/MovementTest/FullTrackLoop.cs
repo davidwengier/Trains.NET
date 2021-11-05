@@ -1,44 +1,42 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Trains.NET.Engine;
-using Trains.NET.Engine.Tracks;
-using Trains.NET.Rendering;
 using Xunit;
+using Xunit.Abstractions;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.FullGameTests.MovementTest;
 
 public class FullTrackLoop_SingleStep : FullTrackLoop
 {
-    public FullTrackLoop_SingleStep() : base(1) { }
+    public FullTrackLoop_SingleStep(ITestOutputHelper output) : base(output, 1) { }
 }
 public class FullTrackLoop_2Step : FullTrackLoop
 {
-    public FullTrackLoop_2Step() : base(2) { }
+    public FullTrackLoop_2Step(ITestOutputHelper output) : base(output, 2) { }
 }
 public class FullTrackLoop_3Step : FullTrackLoop
 {
-    public FullTrackLoop_3Step() : base(3) { }
+    public FullTrackLoop_3Step(ITestOutputHelper output) : base(output, 3) { }
 }
 public class FullTrackLoop_10Step : FullTrackLoop
 {
-    public FullTrackLoop_10Step() : base(10) { }
+    public FullTrackLoop_10Step(ITestOutputHelper output) : base(output, 10) { }
 }
 public class FullTrackLoop_100Step : FullTrackLoop
 {
-    public FullTrackLoop_100Step() : base(100) { }
+    public FullTrackLoop_100Step(ITestOutputHelper output) : base(output, 100) { }
 }
 public class FullTrackLoop_1000Step : FullTrackLoop
 {
-    public FullTrackLoop_1000Step() : base(1000) { }
+    public FullTrackLoop_1000Step(ITestOutputHelper output) : base(output, 1000) { }
 }
-public abstract class FullTrackLoop
+public abstract class FullTrackLoop : TestBase
 {
     private const int MovementPrecision = 3;
     private readonly int _movementSteps;
 
-    public FullTrackLoop(int movementSteps)
+    public FullTrackLoop(ITestOutputHelper output, int movementSteps)
+        : base(output)
     {
         _movementSteps = movementSteps;
     }
@@ -46,26 +44,20 @@ public abstract class FullTrackLoop
     [Theory]
     [InlineData(0.0f)]
     [InlineData(180.0f)]
-    public async Task MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
+    public void MovementTest_FullTrackLoop_3x3Square(float initialTrainAngle)
     {
-        var trackLayout = new Layout();
-        await trackLayout.InitializeAsync(100, 100);
-        var terrainMap = new FlatTerrainMap();
-        var board = new GameBoard(trackLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
-        await board.InitializeAsync(100, 100);
+        TrackLayout.AddTrack(1, 1);
+        TrackLayout.AddTrack(2, 1);
+        TrackLayout.AddTrack(3, 1);
+        TrackLayout.AddTrack(3, 2);
+        TrackLayout.AddTrack(3, 3);
+        TrackLayout.AddTrack(2, 3);
+        TrackLayout.AddTrack(1, 3);
+        TrackLayout.AddTrack(1, 2);
 
-        trackLayout.AddTrack(1, 1);
-        trackLayout.AddTrack(2, 1);
-        trackLayout.AddTrack(3, 1);
-        trackLayout.AddTrack(3, 2);
-        trackLayout.AddTrack(3, 3);
-        trackLayout.AddTrack(2, 3);
-        trackLayout.AddTrack(1, 3);
-        trackLayout.AddTrack(1, 2);
+        TrainManager.AddTrain(2, 1);
 
-        board.AddTrain(2, 1);
-
-        var train = (Train)board.GetMovables().Single();
+        var train = (Train)MovableLayout.Get().Single();
 
         float distance = (float)(4 * StraightTrackDistance +
                                  4 * CornerTrackDistance);
@@ -82,7 +74,7 @@ public abstract class FullTrackLoop
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            board.GameLoopStep();
+            GameBoard.GameLoopStep();
 
         Assert.Equal(2, train.Column);
         Assert.Equal(1, train.Row);
@@ -94,52 +86,36 @@ public abstract class FullTrackLoop
     [Theory]
     [InlineData(0.0f)]
     [InlineData(180.0f)]
-    public async Task MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
+    public void MovementTest_FullTrackLoop_FourLoopCorners(float initialTrainAngle)
     {
-        var trackLayout = new Layout();
-        await trackLayout.InitializeAsync(100, 100);
-        var filteredLayout = new FilteredLayout<Track>(trackLayout);
-        var terrainMap = new FlatTerrainMap();
-        var board = new GameBoard(trackLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
-        await board.InitializeAsync(100, 100);
-        var entityFactories = new List<IStaticEntityFactory<Track>>
-            {
-                new CrossTrackFactory(terrainMap, trackLayout),
-                new TIntersectionFactory(terrainMap, trackLayout),
-                new BridgeFactory(terrainMap, filteredLayout),
-                new SingleTrackFactory(terrainMap, filteredLayout)
-            };
+        TrackLayout.AddTrack(1, 1, SingleTrackDirection.RightDown);
+        TrackLayout.AddTrack(2, 1, SingleTrackDirection.LeftDown);
+        TrackLayout.AddTrack(4, 1, SingleTrackDirection.RightDown);
+        TrackLayout.AddTrack(5, 1, SingleTrackDirection.LeftDown);
 
-        var trackTool = new TrackTool(filteredLayout, entityFactories);
+        TrackLayout.AddTrack(1, 2, SingleTrackDirection.RightUp);
+        TrackLayout.AddCrossTrack(2, 2);
+        TrackLayout.AddTrack(3, 2, SingleTrackDirection.Horizontal);
+        TrackLayout.AddCrossTrack(4, 2);
+        TrackLayout.AddTrack(5, 2, SingleTrackDirection.LeftUp);
 
-        trackLayout.AddTrack(1, 1, SingleTrackDirection.RightDown);
-        trackLayout.AddTrack(2, 1, SingleTrackDirection.LeftDown);
-        trackLayout.AddTrack(4, 1, SingleTrackDirection.RightDown);
-        trackLayout.AddTrack(5, 1, SingleTrackDirection.LeftDown);
+        TrackLayout.AddTrack(2, 3, SingleTrackDirection.Vertical);
+        TrackLayout.AddTrack(4, 3, SingleTrackDirection.Vertical);
 
-        trackLayout.AddTrack(1, 2, SingleTrackDirection.RightUp);
-        trackLayout.AddCrossTrack(2, 2);
-        trackLayout.AddTrack(3, 2, SingleTrackDirection.Horizontal);
-        trackLayout.AddCrossTrack(4, 2);
-        trackLayout.AddTrack(5, 2, SingleTrackDirection.LeftUp);
+        TrackLayout.AddTrack(1, 4, SingleTrackDirection.RightDown);
+        TrackLayout.AddCrossTrack(2, 4);
+        TrackLayout.AddTrack(3, 4, SingleTrackDirection.Horizontal);
+        TrackLayout.AddCrossTrack(4, 4);
+        TrackLayout.AddTrack(5, 4, SingleTrackDirection.LeftDown);
 
-        trackLayout.AddTrack(2, 3, SingleTrackDirection.Vertical);
-        trackLayout.AddTrack(4, 3, SingleTrackDirection.Vertical);
+        TrackLayout.AddTrack(1, 5, SingleTrackDirection.RightUp);
+        TrackLayout.AddTrack(2, 5, SingleTrackDirection.LeftUp);
+        TrackLayout.AddTrack(4, 5, SingleTrackDirection.RightUp);
+        TrackLayout.AddTrack(5, 5, SingleTrackDirection.LeftUp);
 
-        trackLayout.AddTrack(1, 4, SingleTrackDirection.RightDown);
-        trackLayout.AddCrossTrack(2, 4);
-        trackLayout.AddTrack(3, 4, SingleTrackDirection.Horizontal);
-        trackLayout.AddCrossTrack(4, 4);
-        trackLayout.AddTrack(5, 4, SingleTrackDirection.LeftDown);
+        TrainManager.AddTrain(3, 2);
 
-        trackLayout.AddTrack(1, 5, SingleTrackDirection.RightUp);
-        trackLayout.AddTrack(2, 5, SingleTrackDirection.LeftUp);
-        trackLayout.AddTrack(4, 5, SingleTrackDirection.RightUp);
-        trackLayout.AddTrack(5, 5, SingleTrackDirection.LeftUp);
-
-        board.AddTrain(3, 2);
-
-        var train = (Train)board.GetMovables().Single();
+        var train = (Train)MovableLayout.Get().Single();
 
         float distance = (float)(12 * StraightTrackDistance +
                                  12 * CornerTrackDistance);
@@ -155,7 +131,7 @@ public abstract class FullTrackLoop
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            board.GameLoopStep();
+            GameBoard.GameLoopStep();
 
         Assert.Equal(3, train.Column);
         Assert.Equal(2, train.Row);

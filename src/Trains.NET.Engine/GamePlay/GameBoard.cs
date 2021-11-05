@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine;
 
-public class GameBoard : IGameBoard
+public class GameBoard : IGameBoard, IInitializeAsync
 {
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 
@@ -52,7 +53,7 @@ public class GameBoard : IGameBoard
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-    public void Initialize(int columns, int rows)
+    public Task InitializeAsync(int columns, int rows)
     {
         _columns = columns;
         _rows = rows;
@@ -83,6 +84,8 @@ public class GameBoard : IGameBoard
         {
             ClearAll();
         }
+
+        return Task.CompletedTask;
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]

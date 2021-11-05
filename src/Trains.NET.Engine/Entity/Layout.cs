@@ -2,20 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
-public class Layout : ILayout
+public class Layout : ILayout, IInitializeAsync
 {
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
-    private readonly IStaticEntity?[][] _entities;
+    private IStaticEntity?[][] _entities = null!;
+    private int _rows;
 
-    public Layout()
+    public Task InitializeAsync(int columns, int rows)
     {
-        _entities = new IStaticEntity[200][];
+        _entities = new IStaticEntity[columns][];
+        _rows = rows;
         ResetArrays();
+
+        return Task.CompletedTask;
     }
 
     public void Set(int column, int row, IStaticEntity entity)
@@ -145,18 +150,18 @@ public class Layout : ILayout
     {
         lock (_gate)
         {
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < _entities.Length; i++)
             {
-                _entities[i] = new IStaticEntity?[200];
+                _entities[i] = new IStaticEntity?[_rows];
             }
         }
     }
 
     public IEnumerator<IStaticEntity> GetEnumerator()
     {
-        for (int i = 0; i < 200; i++)
+        for (int i = 0; i < _entities.Length; i++)
         {
-            for (int j = 0; j < 200; j++)
+            for (int j = 0; j < _rows; j++)
             {
                 var track = _entities[i][j];
                 if (track is not null)

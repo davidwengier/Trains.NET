@@ -18,4 +18,5 @@ public class Service
     public bool UseCollectionInitializer { get; internal set; }
     public string? VariableName { get; internal set; }
     public Service? Parent { get; internal set; }
+    public ITypeSymbol? ElementType { get; internal set; }
 }

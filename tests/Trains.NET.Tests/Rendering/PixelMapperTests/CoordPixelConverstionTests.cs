@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Trains.NET.Rendering;
 using Xunit;
 using Xunit.Abstractions;
@@ -8,7 +9,7 @@ namespace Trains.NET.Tests.Rendering.PixelMapperTests;
 public class SnapshotTests
 {
     [Fact]
-    public void Snapshot_PostSnapshot_SnapshotShoudntChange()
+    public async Task Snapshot_PostSnapshot_SnapshotShoudntChange()
     {
         int width = 200;
         int height = 200;
@@ -16,7 +17,8 @@ public class SnapshotTests
         int viewportY = 30;
         float gameScale = 2.0f;
 
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 200);
 
         pixelMapper.SetViewPortSize(width, height);
         pixelMapper.AdjustGameScale(gameScale);
@@ -36,14 +38,15 @@ public class SnapshotTests
     }
 
     [Fact]
-    public void Snapshot_FullySetup()
+    public async Task Snapshot_FullySetup()
     {
         int width = 200;
         int height = 200;
         int viewportX = 30;
         int viewportY = 30;
 
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 200);
 
         pixelMapper.SetViewPortSize(width, height);
         pixelMapper.SetViewPort(viewportX, viewportY);
@@ -55,9 +58,10 @@ public class SnapshotTests
     }
 
     [Fact]
-    public void Snapshot_NoChanges()
+    public async Task Snapshot_NoChanges()
     {
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 200);
 
         IPixelMapper actual = pixelMapper.Snapshot();
 
@@ -65,9 +69,10 @@ public class SnapshotTests
     }
 
     [Fact]
-    public void Snapshot_CompareTwoSnapshotsFromSameMapper()
+    public async Task Snapshot_CompareTwoSnapshotsFromSameMapper()
     {
-        IPixelMapper pixelMapper = new PixelMapper();
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(100, 200);
 
         IPixelMapper expected = pixelMapper.Snapshot();
         IPixelMapper actual = pixelMapper.Snapshot();
@@ -88,7 +93,7 @@ public class SnapshotTests
     }
 }
 
-public class CoordPixelConverstionTests
+public class CoordPixelConverstionTests : IAsyncLifetime
 {
     private const int DefaultCellSize = 40;
     private const int DoubleDefaultCellSize = DefaultCellSize * 2;
@@ -96,20 +101,30 @@ public class CoordPixelConverstionTests
     // This screen size is used as part of the data below, be careful if you change it.
     private const int ScreenSize = 200;
     private readonly ITestOutputHelper _output;
-    private readonly IPixelMapper _pixelMapper;
+    private readonly PixelMapper _pixelMapper;
 
     public CoordPixelConverstionTests(ITestOutputHelper output)
     {
         _output = output;
 
         _pixelMapper = new PixelMapper();
+    }
+
+    public async Task InitializeAsync()
+    {
+        await _pixelMapper.InitializeAsync(200, 100);
         _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
-        _pixelMapper.LogData(output);
+        _pixelMapper.LogData(_output);
 
         if (DefaultCellSize != _pixelMapper.CellSize)
         {
             throw new Exception("Cell size is different than this test expects, these tests assume the DefaultCellSize is " + DefaultCellSize);
         }
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     [Theory]

@@ -13,22 +13,22 @@ public class BlazorGameStorage : IGameStorage
     {
         if (this.LocalStorageService is null) yield break;
 
-        var entities = this.LocalStorageService.GetItemAsync<IEntity[]>("Entities").GetAwaiter().GetResult();
-        foreach (var entity in entities)
-        {
-            yield return entity;
-        }
+        //var entities = this.LocalStorageService.GetItemAsync<IEntity[]>("Entities").GetAwaiter().GetResult();
+        //foreach (var entity in entities)
+        //{
+        //    yield return entity;
+        //}
     }
 
     public IEnumerable<Terrain> ReadTerrain()
     {
         if (this.LocalStorageService is null) yield break;
 
-        var terrainList = this.LocalStorageService.GetItemAsync<Terrain[]>("Terrain").GetAwaiter().GetResult();
-        foreach (var terrain in terrainList)
-        {
-            yield return terrain;
-        }
+        //var terrainList = this.LocalStorageService.GetItemAsync<Terrain[]>("Terrain").GetAwaiter().GetResult();
+        //foreach (var terrain in terrainList)
+        //{
+        //    yield return terrain;
+        //}
     }
 
     public void WriteEntities(IEnumerable<IEntity> entities)

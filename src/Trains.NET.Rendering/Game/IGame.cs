@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 
 namespace Trains.NET.Rendering;
 
@@ -11,4 +12,6 @@ public interface IGame : IDisposable
     (int Width, int Height) GetSize();
     (int Width, int Height) GetScreenSize();
     void SetContext(IContext context);
+
+    Task InitializeAsync(int columns, int rows);
 }

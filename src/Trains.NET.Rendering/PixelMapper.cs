@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering;
 
-public class PixelMapper : IPixelMapper
+public class PixelMapper : IPixelMapper, IInitializeAsync
 {
-    private readonly int _columns = 200;
-    private readonly int _rows = 100;
+    private int _columns;
+    private int _rows;
 
     public int Columns => _columns;
     public int Rows => _rows;
@@ -22,6 +24,14 @@ public class PixelMapper : IPixelMapper
     public int CellSize => (int)(40 * this.GameScale);
 
     public event EventHandler? ViewPortChanged;
+
+    public Task InitializeAsync(int columns, int rows)
+    {
+        _columns = columns;
+        _rows = rows;
+
+        return Task.CompletedTask;
+    }
 
     public void SetViewPortSize(int width, int height)
     {
@@ -78,6 +88,8 @@ public class PixelMapper : IPixelMapper
     {
         return new PixelMapper()
         {
+            _columns = _columns,
+            _rows = _rows,
             ViewPortX = this.ViewPortX,
             ViewPortY = this.ViewPortY,
             ViewPortHeight = this.ViewPortHeight,

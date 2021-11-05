@@ -14,19 +14,14 @@ internal class FlatTerrainMap : ITerrainMap
         return new Terrain() { Column = column, Row = row, Height = Terrain.FirstLandHeight };
     }
 
-    public IEnumerator<Terrain> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Reset(int seed, int columns, int rows)
     {
         CollectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Set(IEnumerable<Terrain> terrainList)
+    public IEnumerator<Terrain> GetEnumerator()
     {
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
+        throw new NotImplementedException();
     }
 
     IEnumerator IEnumerable.GetEnumerator()

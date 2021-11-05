@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace BlazingTrains;
 
@@ -7,41 +6,23 @@ public class BlazorGameStorage : IGameStorage
 {
     public IServiceProvider? AspNetCoreServices { get; set; }
 
-    private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
+    //private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
 
-    public IEnumerable<IEntity> ReadEntities()
+    public string? ReadEntities()
     {
-        if (this.LocalStorageService is null) yield break;
-
-        //var entities = this.LocalStorageService.GetItemAsync<IEntity[]>("Entities").GetAwaiter().GetResult();
-        //foreach (var entity in entities)
-        //{
-        //    yield return entity;
-        //}
+        return null;
     }
 
-    public IEnumerable<Terrain> ReadTerrain()
+    public int? ReadTerrainSeed()
     {
-        if (this.LocalStorageService is null) yield break;
-
-        //var terrainList = this.LocalStorageService.GetItemAsync<Terrain[]>("Terrain").GetAwaiter().GetResult();
-        //foreach (var terrain in terrainList)
-        //{
-        //    yield return terrain;
-        //}
+        return null;
     }
 
-    public void WriteEntities(IEnumerable<IEntity> entities)
+    public void WriteEntities(string entities)
     {
-        if (this.LocalStorageService is null) return;
-
-        _ = this.LocalStorageService.SetItemAsync("Entities", entities.ToArray());
     }
 
-    public void WriteTerrain(IEnumerable<Terrain> terrainList)
+    public void WriteTerrainSeed(int terrainSeed)
     {
-        if (this.LocalStorageService is null) return;
-
-        _ = this.LocalStorageService.SetItemAsync("Terrain", terrainList.ToArray());
     }
 }

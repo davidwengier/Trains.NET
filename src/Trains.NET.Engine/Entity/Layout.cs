@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
-public class Layout : ILayout, IInitializeAsync
+public class Layout : ILayout, IInitializeAsync, IGameState
 {
     public event EventHandler? CollectionChanged;
 
@@ -177,4 +178,18 @@ public class Layout : ILayout, IInitializeAsync
     {
         return GetEnumerator();
     }
+
+    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    {
+        var staticEntites = entities.OfType<IStaticEntity>();
+
+        if (staticEntites == null) return false;
+
+        Set(staticEntites);
+        return true;
+    }
+
+    public IEnumerable<IEntity> Save() => this;
+
+    public void Reset(int columns, int rows) => Clear();
 }

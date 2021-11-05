@@ -15,7 +15,6 @@ public class TestBase : IAsyncLifetime, IDisposable
     private int _lastRow;
 
     private readonly ITestOutputHelper _output;
-    internal readonly IGameStorage Storage;
     internal readonly TestTimer Timer;
     internal readonly GameBoard GameBoard;
     internal readonly Layout TrackLayout;
@@ -26,12 +25,11 @@ public class TestBase : IAsyncLifetime, IDisposable
 
     protected TestBase(ITestOutputHelper output)
     {
-        Storage = new NullStorage();
         Timer = new TestTimer();
         TrackLayout = new Layout();
         TerrainMap = new FlatTerrainMap();
         MovableLayout = new MovableLayout();
-        GameBoard = new GameBoard(TrackLayout, MovableLayout, TerrainMap, Storage, Timer, new NullSerializer());
+        GameBoard = new GameBoard(TrackLayout, MovableLayout, TerrainMap, new NullGameStateManager(), Timer);
 
         FilteredLayout = new FilteredLayout<Track>(TrackLayout);
 
@@ -52,7 +50,6 @@ public class TestBase : IAsyncLifetime, IDisposable
     {
         await TrackLayout.InitializeAsync(200, 100);
         await GameBoard.InitializeAsync(200, 100);
-
     }
 
     public Task DisposeAsync()

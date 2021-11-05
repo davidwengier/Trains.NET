@@ -52,7 +52,7 @@ public abstract class FullTrackLoop
         await trackLayout.InitializeAsync(100, 100);
         var terrainMap = new FlatTerrainMap();
         var movableLayout = new MovableLayout();
-        var board = new GameBoard(trackLayout, movableLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
+        var board = new GameBoard(trackLayout, movableLayout, terrainMap, new NullGameStateManager(), new TestTimer());
         await board.InitializeAsync(100, 100);
 
         trackLayout.AddTrack(1, 1);
@@ -102,7 +102,7 @@ public abstract class FullTrackLoop
         var filteredLayout = new FilteredLayout<Track>(trackLayout);
         var terrainMap = new FlatTerrainMap();
         var movableLayout = new MovableLayout();
-        var board = new GameBoard(trackLayout, movableLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
+        var board = new GameBoard(trackLayout, movableLayout, terrainMap, new NullGameStateManager(), new TestTimer());
         await board.InitializeAsync(100, 100);
         var entityFactories = new List<IStaticEntityFactory<Track>>
             {

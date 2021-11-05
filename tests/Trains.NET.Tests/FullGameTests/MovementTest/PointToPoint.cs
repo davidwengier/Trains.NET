@@ -48,7 +48,7 @@ public abstract class PointToPoint : IAsyncLifetime, IDisposable
         _trackLayout = new Layout();
         var terrainMap = new FlatTerrainMap();
         var movableLayout = new MovableLayout();
-        _gameBoard = new GameBoard(_trackLayout, movableLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
+        _gameBoard = new GameBoard(_trackLayout, movableLayout, terrainMap, new NullGameStateManager(), new TestTimer());
         var filteredLayout = new FilteredLayout<Track>(_trackLayout);
 
         var entityFactories = new List<IStaticEntityFactory<Track>>

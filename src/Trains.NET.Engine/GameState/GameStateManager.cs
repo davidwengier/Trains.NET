@@ -8,6 +8,7 @@ public class GameStateManager : IGameStateManager
     private readonly IEnumerable<IGameState> _gameStates;
     private readonly IGameStorage _storage;
     private readonly IGameSerializer _gameSerializer;
+
     public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage, IGameSerializer gameSerializer)
     {
         _gameStates = gameStates;

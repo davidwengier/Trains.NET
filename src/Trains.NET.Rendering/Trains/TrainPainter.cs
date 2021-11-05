@@ -20,12 +20,12 @@ public class TrainPainter : ITrainPainter
     {
         if (!_paletteMap.ContainsKey(train.Seed))
         {
-            _paletteMap.Add(train.Seed, GetRandomPalette(train.GetPRNG()));
+            _paletteMap.Add(train.Seed, GetPalette(train.GetPRNG()));
         }
         return _paletteMap[train.Seed];
     }
 
-    private static TrainPalette GetRandomPalette(BasicPRNG r)
+    private static TrainPalette GetPalette(BasicPRNG r)
     {
         byte sR = (byte)r.Next(32, 192);
         byte sG = (byte)r.Next(32, 192);

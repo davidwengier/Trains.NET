@@ -12,6 +12,7 @@ public class TerrainMap : ITerrainMap, IGameState
 
     private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
     private readonly Random _newSeedRandom = new();
+
     public int Seed { get; private set; }
 
     public event EventHandler? CollectionChanged;

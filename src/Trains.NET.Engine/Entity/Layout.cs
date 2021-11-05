@@ -159,6 +159,7 @@ public class Layout : ILayout, IInitializeAsync
 
     public IEnumerator<IStaticEntity> GetEnumerator()
     {
+        if (_entities == null) yield break;
         for (int i = 0; i < _entities.Length; i++)
         {
             for (int j = 0; j < _rows; j++)

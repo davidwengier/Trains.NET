@@ -19,7 +19,7 @@ public class TrainSerializer : IEntitySerializer
         }
 
         int i = 1;
-        var track = new Train()
+        entity = new Train(int.Parse(bits[i++]))
         {
             CurrentSpeed = float.Parse(bits[i++]),
             Angle = float.Parse(bits[i++]),
@@ -27,11 +27,9 @@ public class TrainSerializer : IEntitySerializer
             Follow = bool.Parse(bits[i++]),
             RelativeLeft = float.Parse(bits[i++]),
             RelativeTop = float.Parse(bits[i++]),
-            Name = bits[i++],
             Stopped = bool.Parse(bits[i++]),
             Carriages = int.Parse(bits[i++])
         };
-        entity = track;
         return true;
     }
 
@@ -45,7 +43,7 @@ public class TrainSerializer : IEntitySerializer
 
         var train = (Train)entity;
 
-        data = $"{nameof(Train)}|{train.CurrentSpeed}|{train.Angle}|{train.DesiredSpeed}|{train.Follow}|{train.RelativeLeft}|{train.RelativeTop}|{train.Name}|{train.Stopped}|{train.Carriages}";
+        data = $"{nameof(Train)}|{train.Seed}|{train.CurrentSpeed}|{train.Angle}|{train.DesiredSpeed}|{train.Follow}|{train.RelativeLeft}|{train.RelativeTop}|{train.Stopped}|{train.Carriages}";
         return true;
     }
 }

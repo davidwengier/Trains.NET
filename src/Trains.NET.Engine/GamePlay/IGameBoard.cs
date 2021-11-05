@@ -7,7 +7,6 @@ namespace Trains.NET.Engine;
 public interface IGameBoard : IDisposable
 {
     bool Enabled { get; set; }
-    int TerrainSeed { get; set; }
     IEnumerable<(Track, Train, float)> LastTrackLeases { get; }
 
     void ClearAll();

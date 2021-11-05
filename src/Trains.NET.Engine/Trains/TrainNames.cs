@@ -1,8 +1,12 @@
-﻿namespace Trains.NET.Engine;
+﻿using System;
+
+namespace Trains.NET.Engine;
 
 internal static class TrainNames
 {
-    public static string[] Names = new string[]{
+    public static string GetName(int seed) => s_names[Math.Abs(seed) % s_names.Length];
+
+    private static readonly string[] s_names = new string[]{
             "The Flying Scott",
             "The Falling Scott",
             "The Boolean Boiler",

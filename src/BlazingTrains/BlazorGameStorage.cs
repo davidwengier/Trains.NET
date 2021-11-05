@@ -13,16 +13,7 @@ public class BlazorGameStorage : IGameStorage
         return null;
     }
 
-    public int? ReadTerrainSeed()
-    {
-        return null;
-    }
-
     public void WriteEntities(string entities)
-    {
-    }
-
-    public void WriteTerrainSeed(int terrainSeed)
     {
     }
 }

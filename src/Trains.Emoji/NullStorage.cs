@@ -9,16 +9,7 @@ internal class NullStorage : IGameStorage
         return null;
     }
 
-    public int? ReadTerrainSeed()
-    {
-        return null;
-    }
-
     public void WriteEntities(string entities)
-    {
-    }
-
-    public void WriteTerrainSeed(int terrainSeed)
     {
     }
 }

@@ -9,7 +9,10 @@ namespace Trains.NET.Engine;
 
 public class GameBoard : IGameBoard, IInitializeAsync
 {
+    private const string TerrainSeedConfigName = "TerrainSeed";
+
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
+    private readonly Random _trainSpawnRandom = new();
 
     private const int GameLoopInterval = 16;
 
@@ -19,8 +22,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
     private readonly IGameSerializer _gameSerializer;
     private readonly ITerrainMap _terrainMap;
     private readonly IGameStorage _storage;
-    private readonly Train _reservedTrain = new();
-    private int _terrainSeed;
+    private readonly Train _reservedTrain;
 
     private int _columns;
     private int _rows;
@@ -28,16 +30,6 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
     public bool Enabled { get; set; } = true;
-
-    public int TerrainSeed
-    {
-        get { return _terrainSeed; }
-        set
-        {
-            _terrainSeed = value;
-            _terrainMap.Reset(value, _columns, _rows);
-        }
-    }
 
     public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage storage, ITimer timer, IGameSerializer gameSerializer)
     {
@@ -49,6 +41,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
         _gameLoopTimer.Interval = GameLoopInterval;
         _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
+        _reservedTrain = new Train(0);
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
@@ -57,26 +50,28 @@ public class GameBoard : IGameBoard, IInitializeAsync
         _columns = columns;
         _rows = rows;
 
-        int? terrainSeed = null;
         IEnumerable<IStaticEntity>? tracks = null;
         IEnumerable<IMovable>? trains = null;
+        ConfigEntity? terrainSeed = null;
         try
         {
             var entitiesString = _storage.ReadEntities();
-            terrainSeed = _storage?.ReadTerrainSeed();
             if (entitiesString is not null)
             {
                 var entities = _gameSerializer.Deserialize(entitiesString);
                 tracks = entities.OfType<IStaticEntity>();
                 trains = entities.OfType<IMovable>();
+                terrainSeed = entities.OfType<ConfigEntity>()
+                                        .Where(x => x.Name == TerrainSeedConfigName)
+                                        .FirstOrDefault();
             }
         }
         catch { }
 
         if (tracks is not null && terrainSeed is not null && trains is not null)
         {
+            _terrainMap.ResetToSeed(terrainSeed.Value, _columns, _rows);
             _layout.Set(tracks);
-            _terrainMap.Reset(terrainSeed.Value, _columns, _rows);
             _movables = ImmutableList.CreateRange(trains);
         }
         else
@@ -308,7 +303,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     public IMovable? AddTrain(int column, int row)
     {
-        var train = new Train()
+        var train = new Train(_trainSpawnRandom.Next())
         {
             Column = column,
             Row = row
@@ -347,19 +342,18 @@ public class GameBoard : IGameBoard, IInitializeAsync
     {
         _movables = _movables.Clear();
         _layout.Clear();
-
-        this.TerrainSeed = new Random().Next();
+        _terrainMap.Reset(_columns, _rows);
     }
 
     public void Dispose()
     {
         _gameLoopTimer.Dispose();
         _storage.WriteEntities(_gameSerializer.Serialize(GetAllEntities()));
-        _storage.WriteTerrainSeed(this.TerrainSeed);
     }
 
     private IEnumerable<IEntity> GetAllEntities()
     {
+        yield return new ConfigEntity(TerrainSeedConfigName, _terrainMap.Seed);
         foreach (var entity in _layout)
         {
             yield return entity;

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Trains\Storage\FileSystemStorage.cs" Link="Storage\FileSystemStorage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="RedTrain.ico" />
   </ItemGroup>
 

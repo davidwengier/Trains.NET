@@ -30,12 +30,6 @@ public class TerrainMap : ITerrainMap
         CollectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Set(IEnumerable<Terrain> terrainList)
-    {
-        _terrainMap = terrainList.ToImmutableDictionary(t => (t.Column, t.Row));
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     public IEnumerator<Terrain> GetEnumerator()
     {
         return _terrainMap.Values.GetEnumerator();

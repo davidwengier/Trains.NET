@@ -51,7 +51,7 @@ public abstract class FullTrackLoop
         var trackLayout = new Layout();
         await trackLayout.InitializeAsync(100, 100);
         var terrainMap = new FlatTerrainMap();
-        var board = new GameBoard(trackLayout, terrainMap, null, null);
+        var board = new GameBoard(trackLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
         await board.InitializeAsync(100, 100);
 
         trackLayout.AddTrack(1, 1);
@@ -100,7 +100,7 @@ public abstract class FullTrackLoop
         await trackLayout.InitializeAsync(100, 100);
         var filteredLayout = new FilteredLayout<Track>(trackLayout);
         var terrainMap = new FlatTerrainMap();
-        var board = new GameBoard(trackLayout, terrainMap, null, null);
+        var board = new GameBoard(trackLayout, terrainMap, new NullStorage(), new TestTimer(), new NullSerializer());
         await board.InitializeAsync(100, 100);
         var entityFactories = new List<IStaticEntityFactory<Track>>
             {

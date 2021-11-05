@@ -1,26 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.Emoji;
 
 internal class NullStorage : IGameStorage
 {
-    public IEnumerable<IEntity> ReadEntities()
+    public string? ReadEntities()
     {
-        return Enumerable.Empty<IEntity>();
+        return null;
     }
 
-    public IEnumerable<Terrain> ReadTerrain()
+    public int? ReadTerrainSeed()
     {
-        return Enumerable.Empty<Terrain>();
+        return null;
     }
 
-    public void WriteEntities(IEnumerable<IEntity> entities)
+    public void WriteEntities(string entities)
     {
     }
 
-    public void WriteTerrain(IEnumerable<Terrain> terrainList)
+    public void WriteTerrainSeed(int terrainSeed)
     {
     }
 }

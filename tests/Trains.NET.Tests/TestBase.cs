@@ -29,7 +29,7 @@ public class TestBase : IAsyncLifetime, IDisposable
         Timer = new TestTimer();
         TrackLayout = new Layout();
         TerrainMap = new FlatTerrainMap();
-        GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer);
+        GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer, new NullSerializer());
 
         FilteredLayout = new FilteredLayout<Track>(TrackLayout);
 
@@ -79,24 +79,6 @@ public class TestBase : IAsyncLifetime, IDisposable
         TrackTool.Execute(nextCol, nextRow, new ExecuteInfo(_lastCol, _lastRow));
         _lastCol = nextCol;
         _lastRow = nextRow;
-    }
-
-    protected void FlattenTerrain()
-    {
-        List<Terrain> terrain = new();
-        for (int c = 0; c < 100; c++)
-        {
-            for (int r = 0; r < 100; r++)
-            {
-                terrain.Add(new Terrain
-                {
-                    Column = c,
-                    Row = r,
-                    Height = Terrain.FirstLandHeight
-                });
-            }
-        }
-        TerrainMap.Set(terrain);
     }
 
     protected void AssertTrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)

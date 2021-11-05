@@ -15,9 +15,10 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
     private readonly ILayout _layout;
-    private readonly ITimer? _gameLoopTimer;
+    private readonly ITimer _gameLoopTimer;
+    private readonly IGameSerializer _gameSerializer;
     private readonly ITerrainMap _terrainMap;
-    private readonly IGameStorage? _storage;
+    private readonly IGameStorage _storage;
     private readonly Train _reservedTrain = new();
     private int _terrainSeed;
 
@@ -38,18 +39,16 @@ public class GameBoard : IGameBoard, IInitializeAsync
         }
     }
 
-    public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage? storage, ITimer? timer)
+    public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage storage, ITimer timer, IGameSerializer gameSerializer)
     {
         _layout = trackLayout;
         _gameLoopTimer = timer;
+        _gameSerializer = gameSerializer;
         _terrainMap = terrainMap;
         _storage = storage;
-        if (_gameLoopTimer != null)
-        {
-            _gameLoopTimer.Interval = GameLoopInterval;
-            _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
-            _gameLoopTimer.Start();
-        }
+
+        _gameLoopTimer.Interval = GameLoopInterval;
+        _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
@@ -58,32 +57,34 @@ public class GameBoard : IGameBoard, IInitializeAsync
         _columns = columns;
         _rows = rows;
 
-        IEnumerable<IEntity>? entities = null;
+        int? terrainSeed = null;
         IEnumerable<IStaticEntity>? tracks = null;
-        IEnumerable<Terrain>? terrain = null;
         IEnumerable<IMovable>? trains = null;
         try
         {
-            entities = _storage?.ReadEntities();
-            terrain = _storage?.ReadTerrain();
+            var entitiesString = _storage.ReadEntities();
+            terrainSeed = _storage?.ReadTerrainSeed();
+            if (entitiesString is not null)
+            {
+                var entities = _gameSerializer.Deserialize(entitiesString);
+                tracks = entities.OfType<IStaticEntity>();
+                trains = entities.OfType<IMovable>();
+            }
         }
         catch { }
-        if (entities is not null)
-        {
-            tracks = entities.OfType<IStaticEntity>();
-            trains = entities.OfType<IMovable>();
-        }
 
-        if (tracks is not null && terrain is not null && terrain.Any() && trains is not null)
+        if (tracks is not null && terrainSeed is not null && trains is not null)
         {
             _layout.Set(tracks);
-            _terrainMap.Set(terrain);
+            _terrainMap.Reset(terrainSeed.Value, _columns, _rows);
             _movables = ImmutableList.CreateRange(trains);
         }
         else
         {
             ClearAll();
         }
+
+        _gameLoopTimer.Start();
 
         return Task.CompletedTask;
     }
@@ -347,19 +348,14 @@ public class GameBoard : IGameBoard, IInitializeAsync
         _movables = _movables.Clear();
         _layout.Clear();
 
-        _terrainSeed = new Random().Next();
-
-        _terrainMap.Reset(_terrainSeed, _columns, _rows);
+        this.TerrainSeed = new Random().Next();
     }
 
     public void Dispose()
     {
-        _gameLoopTimer?.Dispose();
-        if (_storage is not null)
-        {
-            _storage.WriteEntities(GetAllEntities());
-            _storage.WriteTerrain(_terrainMap);
-        }
+        _gameLoopTimer.Dispose();
+        _storage.WriteEntities(_gameSerializer.Serialize(GetAllEntities()));
+        _storage.WriteTerrainSeed(this.TerrainSeed);
     }
 
     private IEnumerable<IEntity> GetAllEntities()

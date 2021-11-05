@@ -19,6 +19,7 @@ public class TestBase : IAsyncLifetime, IDisposable
     internal readonly TestTimer Timer;
     internal readonly GameBoard GameBoard;
     internal readonly Layout TrackLayout;
+    internal readonly IMovableLayout MovableLayout;
     internal readonly ITerrainMap TerrainMap;
     internal readonly ILayout<Track> FilteredLayout;
     internal readonly TrackTool TrackTool;
@@ -29,7 +30,8 @@ public class TestBase : IAsyncLifetime, IDisposable
         Timer = new TestTimer();
         TrackLayout = new Layout();
         TerrainMap = new FlatTerrainMap();
-        GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer, new NullSerializer());
+        MovableLayout = new MovableLayout();
+        GameBoard = new GameBoard(TrackLayout, MovableLayout, TerrainMap, Storage, Timer, new NullSerializer());
 
         FilteredLayout = new FilteredLayout<Track>(TrackLayout);
 

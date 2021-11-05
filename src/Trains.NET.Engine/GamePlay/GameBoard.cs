@@ -16,7 +16,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     private const int GameLoopInterval = 16;
 
-    private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
+    private readonly IMovableLayout _movableLayout;
     private readonly ILayout _layout;
     private readonly ITimer _gameLoopTimer;
     private readonly IGameSerializer _gameSerializer;
@@ -31,9 +31,10 @@ public class GameBoard : IGameBoard, IInitializeAsync
     public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
     public bool Enabled { get; set; } = true;
 
-    public GameBoard(ILayout trackLayout, ITerrainMap terrainMap, IGameStorage storage, ITimer timer, IGameSerializer gameSerializer)
+    public GameBoard(ILayout trackLayout, IMovableLayout movableLayout, ITerrainMap terrainMap, IGameStorage storage, ITimer timer, IGameSerializer gameSerializer)
     {
         _layout = trackLayout;
+        _movableLayout = movableLayout;
         _gameLoopTimer = timer;
         _gameSerializer = gameSerializer;
         _terrainMap = terrainMap;
@@ -72,7 +73,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
         {
             _terrainMap.ResetToSeed(terrainSeed.Value, _columns, _rows);
             _layout.Set(tracks);
-            _movables = ImmutableList.CreateRange(trains);
+            _movableLayout.Set(trains);
         }
         else
         {
@@ -122,7 +123,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
         var timeSinceLastGameTick = (_gameLoopTimer?.TimeSinceLastTick / 16f);
         float speedModifier = 0.005f * (timeSinceLastGameTick ?? 1);
 
-        foreach (Train train in _movables)
+        foreach (Train train in _movableLayout.Get())
         {
             // Claim the track we are currently on, distance of 0
             if (_layout.TryGet(train.Column, train.Row, out Track? myTrack))
@@ -314,24 +315,22 @@ public class GameBoard : IGameBoard, IInitializeAsync
             return null;
         }
 
-        _movables = _movables.Add(train);
+        _movableLayout.Add(train);
 
         return train;
     }
 
     public void RemoveMovable(IMovable movable)
     {
-        _movables = _movables.Remove(movable);
+        _movableLayout.Remove(movable);
     }
 
     public ImmutableList<IMovable> GetMovables()
-    {
-        return _movables;
-    }
+        => _movableLayout.Get();
 
     public IEnumerable<T> GetMovables<T>() where T : IMovable
     {
-        foreach (var movable in _movables)
+        foreach (var movable in _movableLayout.Get())
         {
             if (movable is T train)
                 yield return train;
@@ -340,7 +339,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     public void ClearAll()
     {
-        _movables = _movables.Clear();
+        _movableLayout.Clear();
         _layout.Clear();
         _terrainMap.Reset(_columns, _rows);
     }
@@ -358,7 +357,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
         {
             yield return entity;
         }
-        foreach (var entity in _movables)
+        foreach (var entity in _movableLayout.Get())
         {
             yield return entity;
         }
@@ -366,7 +365,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
 
     public IMovable? GetMovableAt(int column, int row)
     {
-        foreach (var movable in _movables)
+        foreach (var movable in _movableLayout.Get())
         {
             if (movable is not Train train)
             {

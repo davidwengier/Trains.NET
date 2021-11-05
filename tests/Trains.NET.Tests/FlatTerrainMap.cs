@@ -7,7 +7,6 @@ namespace Trains.NET.Tests;
 
 internal class FlatTerrainMap : ITerrainMap
 {
-    public int Seed => 0;
     public event EventHandler CollectionChanged;
 
     public Terrain Get(int column, int row)
@@ -20,10 +19,7 @@ internal class FlatTerrainMap : ITerrainMap
         throw new NotImplementedException();
     }
 
-    public void Reset(int columns, int rows)
-        => ResetToSeed(0, columns, rows);
-
-    public void ResetToSeed(int seed, int columns, int rows)
+    public void Reset(int? seed)
     {
         CollectionChanged?.Invoke(this, EventArgs.Empty);
     }

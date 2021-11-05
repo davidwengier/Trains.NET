@@ -3,28 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
-public class TerrainMap : ITerrainMap, IGameState
+public class TerrainMap : ITerrainMap, IInitializeAsync, IGameState
 {
     private const string TerrainSeedConfigName = "TerrainSeed";
 
     private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
+    private int _columns;
+    private int _rows;
     private readonly Random _newSeedRandom = new();
 
-    public int Seed { get; private set; }
+    private int _seed;
 
     public event EventHandler? CollectionChanged;
 
-    public void Reset(int columns, int rows)
-        => ResetToSeed(_newSeedRandom.Next(), columns, rows);
+    void IGameState.Reset()
+        => Reset(null);
 
-    public void ResetToSeed(int seed, int columns, int rows)
+    public void Reset(int? seed)
     {
-        this.Seed = seed;
+        _seed = seed ?? _newSeedRandom.Next();
 
-        Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(columns, rows, 4, seed);
+        Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4, _seed);
 
         ImmutableDictionary<(int, int), Terrain>.Builder builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
         foreach ((int x, int y) coord in noiseMap.Keys)
@@ -54,20 +57,28 @@ public class TerrainMap : ITerrainMap, IGameState
     public Terrain Get(int column, int row)
         => _terrainMap[(column, row)];
 
-    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    public bool Load(IEnumerable<IEntity> entities)
     {
         var terrainSeed = entities.OfType<ConfigEntity>()
                                     .FirstOrDefault(x => x.Name == TerrainSeedConfigName);
 
         if (terrainSeed == null) return false;
 
-        ResetToSeed(terrainSeed.Value, columns, rows);
+        Reset(terrainSeed.Value);
 
         return true;
     }
 
     public IEnumerable<IEntity> Save()
     {
-        yield return new ConfigEntity(TerrainSeedConfigName, this.Seed);
+        yield return new ConfigEntity(TerrainSeedConfigName, _seed);
+    }
+
+    public Task InitializeAsync(int columns, int rows)
+    {
+        _columns = columns;
+        _rows = rows;
+
+        return Task.CompletedTask;
     }
 }

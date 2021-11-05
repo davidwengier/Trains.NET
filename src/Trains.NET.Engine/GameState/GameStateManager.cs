@@ -16,7 +16,7 @@ public class GameStateManager : IGameStateManager
         _gameSerializer = gameSerializer;
     }
 
-    public void Load(int columns, int rows)
+    public void Load()
     {
         var entitiesString = _storage.ReadEntities();
         bool failed = false;
@@ -26,7 +26,7 @@ public class GameStateManager : IGameStateManager
 
             foreach (var gameState in _gameStates)
             {
-                if (!gameState.Load(entities, columns, rows))
+                if (!gameState.Load(entities))
                 {
                     failed = true;
                     break;
@@ -40,15 +40,15 @@ public class GameStateManager : IGameStateManager
 
         if (failed)
         {
-            Reset(columns, rows);
+            Reset();
         }
     }
 
-    public void Reset(int columns, int rows)
+    public void Reset()
     {
         foreach (var gameState in _gameStates)
         {
-            gameState.Reset(columns, rows);
+            gameState.Reset();
         }
     }
 

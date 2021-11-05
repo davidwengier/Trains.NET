@@ -34,7 +34,7 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     public void Clear()
         => _movables = _movables.Clear();
 
-    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    public bool Load(IEnumerable<IEntity> entities)
     {
         var movables = entities.OfType<IMovable>();
 
@@ -46,7 +46,8 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
 
     public IEnumerable<IEntity> Save() => _movables;
 
-    public void Reset(int columns, int rows) => Clear();
+    void IGameState.Reset()
+        => Clear();
 
     public void Update(long timeSinceLastTick)
     {

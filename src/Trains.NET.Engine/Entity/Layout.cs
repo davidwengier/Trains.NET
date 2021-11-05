@@ -179,7 +179,7 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         return GetEnumerator();
     }
 
-    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    public bool Load(IEnumerable<IEntity> entities)
     {
         var staticEntites = entities.OfType<IStaticEntity>();
 
@@ -191,7 +191,8 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
 
     public IEnumerable<IEntity> Save() => this;
 
-    public void Reset(int columns, int rows) => Clear();
+    void IGameState.Reset()
+        => Clear();
 
     public void Update(long timeSinceLastTick)
     {

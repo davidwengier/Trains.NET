@@ -46,8 +46,7 @@ public abstract class PointToPoint : IAsyncLifetime, IDisposable
     {
         _movementSteps = movementSteps;
         _trackLayout = new Layout();
-        var terrainMap = new TerrainMap();
-        terrainMap.Reset(1, 100, 100);
+        var terrainMap = new FlatTerrainMap();
         _gameBoard = new GameBoard(_trackLayout, terrainMap, null, null);
         var filteredLayout = new FilteredLayout<Track>(_trackLayout);
 

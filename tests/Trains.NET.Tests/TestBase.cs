@@ -28,8 +28,7 @@ public class TestBase : IAsyncLifetime, IDisposable
         Storage = new NullStorage();
         Timer = new TestTimer();
         TrackLayout = new Layout();
-        TerrainMap = new TerrainMap();
-        TerrainMap.Reset(1, 100, 100);
+        TerrainMap = new FlatTerrainMap();
         GameBoard = new GameBoard(TrackLayout, TerrainMap, Storage, Timer);
 
         FilteredLayout = new FilteredLayout<Track>(TrackLayout);

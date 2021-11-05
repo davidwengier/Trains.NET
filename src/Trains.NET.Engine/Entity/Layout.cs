@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
-public class Layout : ILayout, IInitializeAsync, IGameState
+public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
 {
     public event EventHandler? CollectionChanged;
 
@@ -192,4 +192,12 @@ public class Layout : ILayout, IInitializeAsync, IGameState
     public IEnumerable<IEntity> Save() => this;
 
     public void Reset(int columns, int rows) => Clear();
+
+    public void Update(long timeSinceLastTick)
+    {
+        foreach (IUpdatableEntity entity in this.OfType<IUpdatableEntity>())
+        {
+            entity.Update();
+        }
+    }
 }

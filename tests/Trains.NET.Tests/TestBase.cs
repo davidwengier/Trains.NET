@@ -18,27 +18,34 @@ public class TestBase : IAsyncLifetime, IDisposable
     internal readonly TestTimer Timer;
     internal readonly GameBoard GameBoard;
     internal readonly Layout TrackLayout;
-    internal readonly IMovableLayout MovableLayout;
+    internal readonly MovableLayout MovableLayout;
     internal readonly ITerrainMap TerrainMap;
     internal readonly ILayout<Track> FilteredLayout;
     internal readonly TrackTool TrackTool;
+    internal readonly TrainManager TrainManager;
 
     protected TestBase(ITestOutputHelper output)
     {
         Timer = new TestTimer();
         TrackLayout = new Layout();
         TerrainMap = new FlatTerrainMap();
-        MovableLayout = new MovableLayout();
-        GameBoard = new GameBoard(TrackLayout, MovableLayout, TerrainMap, new NullGameStateManager(), Timer);
+        MovableLayout = new MovableLayout(TrackLayout);
+        GameBoard = new GameBoard(new IGameStep[] {
+            TrackLayout,
+            MovableLayout
+        }, new NullGameStateManager(), Timer);
+
+        TrainManager = new TrainManager(MovableLayout, TrackLayout);
 
         FilteredLayout = new FilteredLayout<Track>(TrackLayout);
 
         var entityFactories = new List<IStaticEntityFactory<Track>>
             {
+                new BridgeFactory(TerrainMap, FilteredLayout),
                 new CrossTrackFactory(TerrainMap, TrackLayout),
                 new TIntersectionFactory(TerrainMap, TrackLayout),
-                new BridgeFactory(TerrainMap, FilteredLayout),
-                new SingleTrackFactory(TerrainMap, FilteredLayout)
+                new SingleTrackFactory(TerrainMap, FilteredLayout),
+                new SignalFactory(TerrainMap)
             };
 
         TrackTool = new TrackTool(FilteredLayout, entityFactories);
@@ -48,8 +55,8 @@ public class TestBase : IAsyncLifetime, IDisposable
 
     public async Task InitializeAsync()
     {
-        await TrackLayout.InitializeAsync(200, 100);
-        await GameBoard.InitializeAsync(200, 100);
+        await TrackLayout.InitializeAsync(100, 100);
+        await GameBoard.InitializeAsync(100, 100);
     }
 
     public Task DisposeAsync()
@@ -82,7 +89,7 @@ public class TestBase : IAsyncLifetime, IDisposable
 
     protected void AssertTrainMovement(float startAngle, int startColumn, int startRow, int endColumn, int endRow)
     {
-        var train = GameBoard.AddTrain(startColumn, startRow) as Train;
+        var train = TrainManager.AddTrain(startColumn, startRow) as Train;
 
         train!.LookaheadDistance = 0.1f;
         train.SetAngle(startAngle);

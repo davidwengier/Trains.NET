@@ -15,6 +15,7 @@ public class Game : IGame
     private int _screenWidth;
     private int _screenHeight;
     private readonly IGameBoard _gameBoard;
+    private readonly ITrainManager _trainManager;
     private readonly IEnumerable<ILayerRenderer> _boardRenderers;
     private readonly IPixelMapper _pixelMapper;
     private readonly IImageFactory _imageFactory;
@@ -28,6 +29,7 @@ public class Game : IGame
     private readonly IEnumerable<IInitializeAsync> _initializers;
 
     public Game(IGameBoard gameBoard,
+                ITrainManager trainManager,
                 IEnumerable<ILayerRenderer> boardRenderers,
                 IPixelMapper pixelMapper,
                 IImageFactory imageFactory,
@@ -36,6 +38,7 @@ public class Game : IGame
                 IEnumerable<IInitializeAsync> initializers)
     {
         _gameBoard = gameBoard;
+        _trainManager = trainManager;
         _boardRenderers = boardRenderers;
         _pixelMapper = pixelMapper;
         _imageFactory = imageFactory;
@@ -206,35 +209,17 @@ public class Game : IGame
     {
         if (!_gameBoard.Enabled) return;
 
-        foreach (IMovable vehicle in _gameBoard.GetMovables())
+        if (!_trainManager.TryGetFollowTrainPosition(out int col, out int row)) return;
+
+        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+
+        double easing = 10;
+        int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
+        int adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
+
+        if (adjustX != 0 || adjustY != 0)
         {
-            if (vehicle is Train { Follow: true } train)
-            {
-                int col, row;
-                if (train.Carriages == 0)
-                {
-                    col = train.Column;
-                    row = train.Row;
-                }
-                else
-                {
-                    var locomotivePosition = _gameBoard.GetNextSteps(train, train.Carriages).Last();
-                    col = locomotivePosition.Column;
-                    row = locomotivePosition.Row;
-                }
-
-                (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
-
-                double easing = 10;
-                int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
-                int adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
-
-                if (adjustX != 0 || adjustY != 0)
-                {
-                    _pixelMapper.AdjustViewPort(adjustX, adjustY);
-                }
-                break;
-            }
+            _pixelMapper.AdjustViewPort(adjustX, adjustY);
         }
     }
 

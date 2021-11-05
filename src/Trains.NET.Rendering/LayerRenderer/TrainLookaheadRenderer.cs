@@ -6,12 +6,12 @@ namespace Trains.NET.Rendering.LayerRenderer;
 [Order(470)]
 public class TrainLookaheadRenderer : ILayerRenderer
 {
-    private readonly IGameBoard _gameBoard;
+    private readonly IMovableLayout _movableLayout;
     private readonly ITrainPainter _painter;
 
-    public TrainLookaheadRenderer(IGameBoard gameBoard, ITrainPainter painter)
+    public TrainLookaheadRenderer(IMovableLayout movableLayout, ITrainPainter painter)
     {
-        _gameBoard = gameBoard;
+        _movableLayout = movableLayout;
         _painter = painter;
     }
 
@@ -21,7 +21,7 @@ public class TrainLookaheadRenderer : ILayerRenderer
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        foreach (var (track, train, _) in _gameBoard.LastTrackLeases)
+        foreach (var (track, train, _) in _movableLayout.LastTrackLeases)
         {
             var _paint = new PaintBrush
             {

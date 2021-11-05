@@ -12,7 +12,7 @@ public class TrainInfoScreen : PanelBase
 
     private readonly ITrainManager _trainManager;
     private readonly IGameManager _gameManager;
-    private readonly IGameBoard _gameBoard;
+    private readonly IMovableLayout _movableLayout;
     private readonly ITrainParameters _trainParameters;
     private readonly ITrainPainter _trainPainter;
     private readonly MultiButton _controlButton;
@@ -27,11 +27,11 @@ public class TrainInfoScreen : PanelBase
     protected override bool CanClose => true;
     protected override string? Title => "Info";
 
-    public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IGameBoard gameBoard, ITrainParameters trainParameters, ITrainPainter trainPainter)
+    public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IMovableLayout movableLayout, ITrainParameters trainParameters, ITrainPainter trainPainter)
     {
         _trainManager = trainManager;
         _gameManager = gameManager;
-        _gameBoard = gameBoard;
+        _movableLayout = movableLayout;
         _trainParameters = trainParameters;
         _trainPainter = trainPainter;
         _trainManager.Changed += (s, e) =>
@@ -57,7 +57,7 @@ public class TrainInfoScreen : PanelBase
                     CreateButton(Picture.Eye, () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
                     CreateButton(Picture.Trash, () => false, () =>
                     {
-                        _gameBoard.RemoveMovable(_trainManager.CurrentTrain!);
+                        _movableLayout.Remove(_trainManager.CurrentTrain!);
                         Close();
                     }),
             });

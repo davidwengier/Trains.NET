@@ -14,4 +14,6 @@ public interface ITrainManager
     void ToggleFollow(Train train);
     void PreviousTrain();
     void NextTrain();
+    IMovable? AddTrain(int column, int row);
+    bool TryGetFollowTrainPosition(out int col, out int row);
 }

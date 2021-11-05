@@ -6,7 +6,7 @@ namespace Trains.NET.Rendering;
 public class PointerTool : IDraggableTool, IAlternateDragTool
 {
     private readonly ITrainManager _trainManager;
-    private readonly IGameBoard _gameBoard;
+    private readonly IMovableLayout _movableLayout;
     private readonly IPixelMapper _pixelMapper;
     private readonly ILayout<Track> _trackLayout;
 
@@ -14,10 +14,10 @@ public class PointerTool : IDraggableTool, IAlternateDragTool
     private int _lastY;
 
     public ToolMode Mode => ToolMode.All;
-    public PointerTool(ITrainManager trainManager, IGameBoard gameBoard, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
+    public PointerTool(ITrainManager trainManager, IMovableLayout movableLayout, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
     {
         _trainManager = trainManager;
-        _gameBoard = gameBoard;
+        _movableLayout = movableLayout;
         _pixelMapper = pixelMapper;
         _trackLayout = trackLayout;
     }
@@ -31,7 +31,7 @@ public class PointerTool : IDraggableTool, IAlternateDragTool
             return;
         }
 
-        if (_gameBoard.GetMovableAt(column, row) is Train train)
+        if (_movableLayout.GetAt(column, row) is Train train)
         {
             _trainManager.CurrentTrain = train;
         }
@@ -58,6 +58,6 @@ public class PointerTool : IDraggableTool, IAlternateDragTool
     }
 
     public bool IsValid(int column, int row)
-        => _gameBoard.GetMovableAt(column, row) is Train ||
+        => _movableLayout.GetAt(column, row) is Train ||
         (_trackLayout.TryGet(column, row, out var track) && track.HasMultipleStates);
 }

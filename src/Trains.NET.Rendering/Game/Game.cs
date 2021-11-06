@@ -101,10 +101,6 @@ public class Game : IGame
         if (_width != width || _height != height)
         {
             _pixelMapper.SetViewPortSize(width, height);
-            if (_width == 0)
-            {
-                _pixelMapper.SetViewPort((_pixelMapper.MaxGridWidth - width) / 2, (_pixelMapper.MaxGridHeight - height) / 2);
-            }
             _width = width;
             _height = height;
 

@@ -4,10 +4,13 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering;
 
-public class PixelMapper : IPixelMapper, IInitializeAsync
+public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 {
     private int _columns;
     private int _rows;
+    private bool _firstViewPortAdjustment = true;
+    private int? _initialViewPortX;
+    private int? _initialViewPortY;
 
     public int Columns => _columns;
     public int Rows => _rows;
@@ -37,7 +40,21 @@ public class PixelMapper : IPixelMapper, IInitializeAsync
     {
         this.ViewPortWidth = width;
         this.ViewPortHeight = height;
-        AdjustViewPort(0, 0);
+
+        if (_firstViewPortAdjustment && _initialViewPortX.HasValue && _initialViewPortY.HasValue)
+        {
+            SetViewPort(_initialViewPortX.Value, _initialViewPortY.Value);
+        }
+        else if (_firstViewPortAdjustment)
+        {
+            SetViewPort((this.MaxGridWidth - width) / 2, (this.MaxGridHeight - height) / 2);
+        }
+        else
+        {
+            AdjustViewPort(0, 0);
+        }
+
+        _firstViewPortAdjustment = false;
     }
 
     public void SetViewPort(int x, int y)
@@ -150,5 +167,43 @@ public class PixelMapper : IPixelMapper, IInitializeAsync
         ViewPortChanged?.Invoke(this, EventArgs.Empty);
 
         return true;
+    }
+
+    public bool Load(IGameStorage storage)
+    {
+        // We always return true from this method
+        // because if the saved viewport isn't valid it's not worth
+        // resetting the users game over.
+
+        var data = storage.Read(nameof(PixelMapper));
+
+        if (data is null)
+            return true;
+
+        var bits = data.Split(",");
+        if (bits.Length != 3)
+            return true;
+
+        if (!int.TryParse(bits[0], out var x) ||
+            !int.TryParse(bits[1], out var y) ||
+            !float.TryParse(bits[2], out var gameScale))
+        {
+            return true;
+        }
+
+        _initialViewPortX = -x;
+        _initialViewPortY = -y;
+        this.GameScale = gameScale;
+
+        return true;
+    }
+
+    public void Save(IGameStorage storage)
+    {
+        storage.Write(nameof(PixelMapper), $"{this.ViewPortX},{this.ViewPortY},{this.GameScale}");
+    }
+
+    public void Reset()
+    {
     }
 }

@@ -19,9 +19,6 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
 
     public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
 
-    public void Set(IEnumerable<IMovable> movables)
-        => _movables = ImmutableList.CreateRange(movables);
-
     public ImmutableList<IMovable> Get()
         => _movables;
 
@@ -31,22 +28,21 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     public void Remove(IMovable movable)
         => _movables = _movables.Remove(movable);
 
-    public void Clear()
-        => _movables = _movables.Clear();
-
     public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
     {
         var movables = entities.OfType<IMovable>();
 
         if (movables == null) return false;
 
-        Set(movables);
+        _movables = ImmutableList.CreateRange(movables);
+
         return true;
     }
 
     public IEnumerable<IEntity> Save() => _movables;
 
-    public void Reset(int columns, int rows) => Clear();
+    public void Reset(int columns, int rows)
+        => _movables = _movables.Clear();
 
     public void Update(long timeSinceLastTick)
     {

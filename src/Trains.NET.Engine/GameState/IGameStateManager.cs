@@ -2,7 +2,7 @@
 
 public interface IGameStateManager
 {
-    void Load(int columns, int rows);
+    void Load();
     void Save();
-    void Reset(int columns, int rows);
+    void Reset();
 }

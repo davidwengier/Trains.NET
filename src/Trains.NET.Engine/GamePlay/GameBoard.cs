@@ -5,6 +5,8 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine;
 
+// Ensure this gets initialized last
+[Order(999999)]
 public class GameBoard : IGameBoard, IInitializeAsync
 {
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
@@ -14,9 +16,6 @@ public class GameBoard : IGameBoard, IInitializeAsync
     private readonly ITimer _gameLoopTimer;
     private readonly IGameStateManager _gameStateManager;
     private readonly IEnumerable<IGameStep> _gameSteps;
-
-    private int _columns;
-    private int _rows;
 
     public bool Enabled { get; set; } = true;
 
@@ -30,13 +29,9 @@ public class GameBoard : IGameBoard, IInitializeAsync
         _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     public Task InitializeAsync(int columns, int rows)
     {
-        _columns = columns;
-        _rows = rows;
-
-        _gameStateManager.Load(columns, rows);
+        _gameStateManager.Load();
         _gameLoopTimer.Start();
 
         return Task.CompletedTask;
@@ -59,7 +54,7 @@ public class GameBoard : IGameBoard, IInitializeAsync
     private void GameLoopTimerElapsed(object? sender, EventArgs e) => GameLoopStep();
 
     public void ClearAll()
-        => _gameStateManager.Reset(_columns, _rows);
+        => _gameStateManager.Reset();
 
     public void Dispose()
     {

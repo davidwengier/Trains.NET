@@ -9,18 +9,24 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
     private Dictionary<Track, (Train, float)> _lastTrackLeases = new();
     private readonly ILayout _layout;
+    private readonly IEntityCollectionSerializer _gameSerializer;
     private readonly Train _reservedTrain;
 
-    public MovableLayout(ILayout layout)
+    public int Count => _movables.Count;
+
+    public IMovable this[int index] => _movables[index];
+
+    public MovableLayout(ILayout layout, IEntityCollectionSerializer gameSerializer)
     {
         _layout = layout;
+        _gameSerializer = gameSerializer;
         _reservedTrain = new Train(0);
     }
 
-    public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
+    public int IndexOf(IMovable movable)
+        => _movables.IndexOf(movable);
 
-    public ImmutableList<IMovable> Get()
-        => _movables;
+    public IEnumerable<(Track, Train, float)> LastTrackLeases => _lastTrackLeases.Select(kvp => (kvp.Key, kvp.Value.Item1, kvp.Value.Item2));
 
     public void Add(IMovable movable)
         => _movables = _movables.Add(movable);
@@ -28,20 +34,31 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     public void Remove(IMovable movable)
         => _movables = _movables.Remove(movable);
 
-    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    public bool Load(IGameStorage storage)
     {
+        var entitiesString = storage.Read(nameof(IMovableLayout));
+        if (entitiesString is null)
+            return false;
+
+        var entities = _gameSerializer.Deserialize(entitiesString);
+
         var movables = entities.OfType<IMovable>();
 
-        if (movables == null) return false;
+        if (movables is null)
+            return false;
 
         _movables = ImmutableList.CreateRange(movables);
 
         return true;
     }
 
-    public IEnumerable<IEntity> Save() => _movables;
+    public void Save(IGameStorage storage)
+    {
+        var entities = _gameSerializer.Serialize(_movables);
+        storage.Write(nameof(IMovableLayout), entities);
+    }
 
-    public void Reset(int columns, int rows)
+    public void Reset()
         => _movables = _movables.Clear();
 
     public void Update(long timeSinceLastTick)
@@ -185,7 +202,7 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
 
     public IMovable? GetAt(int column, int row)
     {
-        foreach (var movable in Get())
+        foreach (var movable in _movables)
         {
             if (movable is not Train train)
             {
@@ -216,12 +233,9 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
         return null;
     }
 
-    public IEnumerable<T> Get<T>() where T : IMovable
-    {
-        foreach (var movable in Get())
-        {
-            if (movable is T movableT)
-                yield return movableT;
-        }
-    }
+    public IEnumerator<IMovable> GetEnumerator()
+        => _movables.GetEnumerator();
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        => _movables.GetEnumerator();
 }

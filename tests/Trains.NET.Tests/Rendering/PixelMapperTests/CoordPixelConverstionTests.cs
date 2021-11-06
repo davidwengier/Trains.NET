@@ -114,6 +114,7 @@ public class CoordPixelConverstionTests : IAsyncLifetime
     {
         await _pixelMapper.InitializeAsync(200, 100);
         _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
+        _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
         if (DefaultCellSize != _pixelMapper.CellSize)

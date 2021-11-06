@@ -10,9 +10,7 @@ public interface ILayout : IEnumerable<IStaticEntity>
 
     bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity? entity);
     bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity) where T : class, IStaticEntity;
-    void Set(IEnumerable<IStaticEntity> entities);
     void Set(int column, int row, IStaticEntity entity);
-    void Clear();
     void Add(int column, int row, IStaticEntity entity);
     void Remove(int column, int row);
     void RaiseCollectionChanged();

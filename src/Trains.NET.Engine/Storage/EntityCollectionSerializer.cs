@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Trains.NET.Engine.Storage;
 
-public class GameSerializer : IGameSerializer
+public class EntityCollectionSerializer : IEntityCollectionSerializer
 {
     private readonly IEnumerable<IEntitySerializer> _serializers;
 
-    public GameSerializer(IEnumerable<IEntitySerializer> serializer)
+    public EntityCollectionSerializer(IEnumerable<IEntitySerializer> serializer)
     {
         _serializers = serializer;
     }

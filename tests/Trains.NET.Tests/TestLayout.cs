@@ -18,11 +18,6 @@ internal class TestLayout : ILayout
         _layout.Add((column, row), entityToAdd);
     }
 
-    public void Clear()
-    {
-        _layout.Clear();
-    }
-
     public IEnumerator<IStaticEntity> GetEnumerator()
     {
         return _layout.Values.GetEnumerator();

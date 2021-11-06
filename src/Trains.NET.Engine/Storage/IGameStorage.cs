@@ -2,6 +2,6 @@
 
 public interface IGameStorage
 {
-    string? ReadEntities();
-    void WriteEntities(string entities);
+    string? Read(string key);
+    void Write(string key, string value);
 }

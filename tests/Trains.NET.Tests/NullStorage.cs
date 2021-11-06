@@ -4,12 +4,12 @@ namespace Trains.NET.Tests;
 
 internal class NullStorage : IGameStorage
 {
-    public string ReadEntities()
+    public string Read(string key)
     {
         return null;
     }
 
-    public void WriteEntities(string entities)
+    public void Write(string key, string value)
     {
     }
 }

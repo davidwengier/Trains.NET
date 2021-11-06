@@ -12,8 +12,14 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
+    private readonly IEntityCollectionSerializer _gameSerializer;
     private IStaticEntity?[][] _entities = null!;
     private int _rows;
+
+    public Layout(IEntityCollectionSerializer gameSerializer)
+    {
+        _gameSerializer = gameSerializer;
+    }
 
     public Task InitializeAsync(int columns, int rows)
     {
@@ -91,18 +97,6 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         CollectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Set(IEnumerable<IStaticEntity> tracks)
-    {
-        ResetArrays();
-
-        foreach (IStaticEntity track in tracks)
-        {
-            StoreEntity(track.Column, track.Row, track);
-        }
-
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     public void RaiseCollectionChanged()
     {
         CollectionChanged?.Invoke(this, EventArgs.Empty);
@@ -140,13 +134,6 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         return staticEntity == null || staticEntity is T;
     }
 
-    public void Clear()
-    {
-        ResetArrays();
-
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     private void ResetArrays()
     {
         lock (_gate)
@@ -179,19 +166,43 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         return GetEnumerator();
     }
 
-    public bool Load(IEnumerable<IEntity> entities, int columns, int rows)
+    public bool Load(IGameStorage storage)
     {
+        var entitiesString = storage.Read(nameof(ILayout));
+        if (entitiesString is null)
+            return false;
+
+        var entities = _gameSerializer.Deserialize(entitiesString);
+
         var staticEntites = entities.OfType<IStaticEntity>();
 
-        if (staticEntites == null) return false;
+        if (staticEntites is null)
+            return false;
 
-        Set(staticEntites);
+        ResetArrays();
+
+        foreach (IStaticEntity entity in staticEntites)
+        {
+            StoreEntity(entity.Column, entity.Row, entity);
+        }
+
+        CollectionChanged?.Invoke(this, EventArgs.Empty);
+
         return true;
     }
 
-    public IEnumerable<IEntity> Save() => this;
+    public void Save(IGameStorage storage)
+    {
+        var entities = _gameSerializer.Serialize(this);
+        storage.Write(nameof(ILayout), entities);
+    }
 
-    public void Reset(int columns, int rows) => Clear();
+    void IGameState.Reset()
+    {
+        ResetArrays();
+
+        CollectionChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     public void Update(long timeSinceLastTick)
     {

@@ -24,7 +24,7 @@ public class TrainsRenderer : ILayerRenderer
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        foreach (Train train in _movableLayout.Get())
+        foreach (Train train in _movableLayout)
         {
             // Create a fake train pointing backwards, to represent our carriage
             var fakeTrain = train.Clone();

@@ -3,7 +3,7 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Tests;
 
-internal class NullSerializer : IGameSerializer
+internal class NullSerializer : IEntityCollectionSerializer
 {
     public IEnumerable<IEntity> Deserialize(string lines)
     {

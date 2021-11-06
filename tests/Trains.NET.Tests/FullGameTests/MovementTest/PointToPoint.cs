@@ -54,7 +54,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = angle;
         // We have an edge coming up, disable lookahead
@@ -90,7 +90,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = angle;
         // We have an edge coming up, disable lookahead
@@ -126,7 +126,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -162,7 +162,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -198,7 +198,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -234,7 +234,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -276,7 +276,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = angle;
         // We have an edge coming up, disable lookahead
@@ -314,7 +314,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookaheadÏ
@@ -352,7 +352,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -390,7 +390,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead
@@ -428,7 +428,7 @@ public abstract class PointToPoint : TestBase
 
         float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
         train.Angle = startingAngle;
         // We have an edge coming up, disable lookahead

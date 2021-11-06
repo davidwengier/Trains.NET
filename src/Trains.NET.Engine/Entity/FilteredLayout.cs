@@ -54,11 +54,6 @@ public class FilteredLayout<T> : ILayout<T>
         return GetEnumerator();
     }
 
-    public void Clear()
-    {
-        _layout.Clear();
-    }
-
     public void Remove(int column, int row)
     {
         _layout.Remove(column, row);

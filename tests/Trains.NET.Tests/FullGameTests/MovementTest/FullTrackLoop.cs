@@ -57,7 +57,7 @@ public abstract class FullTrackLoop : TestBase
 
         TrainManager.AddTrain(2, 1);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
 
         float distance = (float)(4 * StraightTrackDistance +
                                  4 * CornerTrackDistance);
@@ -115,7 +115,7 @@ public abstract class FullTrackLoop : TestBase
 
         TrainManager.AddTrain(3, 2);
 
-        var train = (Train)MovableLayout.Get().Single();
+        var train = (Train)MovableLayout.Single();
 
         float distance = (float)(12 * StraightTrackDistance +
                                  12 * CornerTrackDistance);

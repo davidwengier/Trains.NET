@@ -97,18 +97,6 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         CollectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Set(IEnumerable<IStaticEntity> tracks)
-    {
-        ResetArrays();
-
-        foreach (IStaticEntity track in tracks)
-        {
-            StoreEntity(track.Column, track.Row, track);
-        }
-
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     public void RaiseCollectionChanged()
     {
         CollectionChanged?.Invoke(this, EventArgs.Empty);
@@ -144,13 +132,6 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
     {
         TryGet(column, row, out IStaticEntity? staticEntity);
         return staticEntity == null || staticEntity is T;
-    }
-
-    public void Clear()
-    {
-        ResetArrays();
-
-        CollectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void ResetArrays()
@@ -198,7 +179,14 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         if (staticEntites is null)
             return false;
 
-        Set(staticEntites);
+        ResetArrays();
+
+        foreach (IStaticEntity entity in staticEntites)
+        {
+            StoreEntity(entity.Column, entity.Row, entity);
+        }
+
+        CollectionChanged?.Invoke(this, EventArgs.Empty);
 
         return true;
     }
@@ -210,7 +198,11 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
     }
 
     void IGameState.Reset()
-        => Clear();
+    {
+        ResetArrays();
+
+        CollectionChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     public void Update(long timeSinceLastTick)
     {

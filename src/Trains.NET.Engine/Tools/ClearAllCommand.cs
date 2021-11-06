@@ -3,20 +3,17 @@
 [Order(10)]
 public class ClearAllCommand : ICommand
 {
-    private readonly ITrainManager _trainManager;
-    private readonly IGameBoard _gameBoard;
+    private readonly IGameStateManager _gameStateManager;
 
-    public ClearAllCommand(ITrainManager trainManager, IGameBoard gameBoard)
+    public ClearAllCommand(IGameStateManager gameStateManager)
     {
-        _trainManager = trainManager;
-        _gameBoard = gameBoard;
+        _gameStateManager = gameStateManager;
     }
 
     public string Name => "Clear All";
 
     public void Execute()
     {
-        _trainManager.CurrentTrain = null;
-        _gameBoard.ClearAll();
+        _gameStateManager.Reset();
     }
 }

@@ -74,7 +74,7 @@ public abstract class FullTrackLoop : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(2, train.Column);
         Assert.Equal(1, train.Row);
@@ -131,7 +131,7 @@ public abstract class FullTrackLoop : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(3, train.Column);
         Assert.Equal(2, train.Row);

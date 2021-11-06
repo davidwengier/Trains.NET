@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
-public class GameStateManager : IGameStateManager
+[Order(999999)]
+public class GameStateManager : IGameStateManager, IInitializeAsync
 {
     private readonly IEnumerable<IGameState> _gameStates;
     private readonly IGameStorage _storage;
@@ -11,6 +13,13 @@ public class GameStateManager : IGameStateManager
     {
         _gameStates = gameStates;
         _storage = storage;
+    }
+
+    public Task InitializeAsync(int columns, int rows)
+    {
+        Load();
+
+        return Task.CompletedTask;
     }
 
     public void Load()

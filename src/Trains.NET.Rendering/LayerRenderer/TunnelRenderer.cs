@@ -12,16 +12,16 @@ public partial class TunnelRenderer : ILayerRenderer
 
     private readonly ITerrainMap _terrainMap;
     private readonly ILayout<Track> _trackLayout;
-    private readonly IGameBoard _gameBoard;
+    private readonly IGameManager _gameManager;
 
     public bool Enabled { get; set; } = true;
     public string Name => "Tunnels";
 
-    public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameBoard gameBoard)
+    public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameManager gameManager)
     {
         _terrainMap = terrainMap;
         _trackLayout = layout;
-        _gameBoard = gameBoard;
+        _gameManager = gameManager;
     }
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
@@ -402,7 +402,7 @@ public partial class TunnelRenderer : ILayerRenderer
     }
 
     private Color BuildModeAwareColour(Color color)
-        => !_gameBoard.Enabled
+        => _gameManager.BuildMode
             ? color with { A = BuildModeAlpha }
             : color;
 }

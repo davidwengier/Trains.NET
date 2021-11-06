@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine;
 
-public class GameManager : IGameManager
+public class GameManager : IGameManager, IInitializeAsync
 {
+    private const int GameLoopInterval = 16;
+
     private bool _buildMode;
     private ITool _currentTool;
     private readonly ITool _defaultTool;
-    private readonly IGameBoard _gameBoard;
+    private readonly ITimer _gameLoopTimer;
+    private readonly IEnumerable<IGameStep> _gameSteps;
+    private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 
     public event EventHandler? Changed;
-
-    public GameManager(IEnumerable<ITool> tools, IGameBoard gameBoard, ILayout layout)
-    {
-        _defaultTool = tools.First();
-        _currentTool = _defaultTool;
-        _gameBoard = gameBoard;
-    }
 
     public bool BuildMode
     {
@@ -27,7 +26,6 @@ public class GameManager : IGameManager
         {
             _buildMode = value;
             _currentTool = _defaultTool;
-            _gameBoard.Enabled = !_buildMode;
 
             Changed?.Invoke(this, EventArgs.Empty);
         }
@@ -42,5 +40,46 @@ public class GameManager : IGameManager
 
             Changed?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    public GameManager(IEnumerable<ITool> tools, IEnumerable<IGameStep> gameSteps, ITimer timer)
+    {
+        _defaultTool = tools.First();
+        _currentTool = _defaultTool;
+
+        _gameLoopTimer = timer;
+        _gameSteps = gameSteps;
+
+        _gameLoopTimer.Interval = GameLoopInterval;
+        _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
+    }
+
+    public Task InitializeAsync(int columns, int rows)
+    {
+        _gameLoopTimer.Start();
+
+        return Task.CompletedTask;
+    }
+
+    public void GameLoopStep()
+    {
+        if (_buildMode) return;
+
+        using (_gameUpdateTime.Measure())
+        {
+            var timeSinceLastTick = _gameLoopTimer?.TimeSinceLastTick ?? 16;
+            foreach (var gameStep in _gameSteps)
+            {
+                gameStep.Update(timeSinceLastTick);
+            }
+        }
+    }
+
+    private void GameLoopTimerElapsed(object? sender, EventArgs e)
+        => GameLoopStep();
+
+    public void Dispose()
+    {
+        _gameLoopTimer.Dispose();
     }
 }

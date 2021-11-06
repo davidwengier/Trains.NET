@@ -14,7 +14,7 @@ public class Game : IGame
     private int _height;
     private int _screenWidth;
     private int _screenHeight;
-    private readonly IGameBoard _gameBoard;
+    private readonly IGameManager _gameManager;
     private readonly ITrainManager _trainManager;
     private readonly IEnumerable<ILayerRenderer> _boardRenderers;
     private readonly IPixelMapper _pixelMapper;
@@ -28,7 +28,7 @@ public class Game : IGame
     private readonly IImageCache _imageCache;
     private readonly IEnumerable<IInitializeAsync> _initializers;
 
-    public Game(IGameBoard gameBoard,
+    public Game(IGameManager gameManager,
                 ITrainManager trainManager,
                 IEnumerable<ILayerRenderer> boardRenderers,
                 IPixelMapper pixelMapper,
@@ -37,7 +37,7 @@ public class Game : IGame
                 IImageCache imageCache,
                 IEnumerable<IInitializeAsync> initializers)
     {
-        _gameBoard = gameBoard;
+        _gameManager = gameManager;
         _trainManager = trainManager;
         _boardRenderers = boardRenderers;
         _pixelMapper = pixelMapper;
@@ -203,7 +203,7 @@ public class Game : IGame
 
     public void AdjustViewPortIfNecessary()
     {
-        if (!_gameBoard.Enabled) return;
+        if (_gameManager.BuildMode) return;
 
         if (!_trainManager.TryGetFollowTrainPosition(out int col, out int row)) return;
 
@@ -222,6 +222,6 @@ public class Game : IGame
     public void Dispose()
     {
         _imageCache.Dispose();
-        _gameBoard.Dispose();
+        _gameManager.Dispose();
     }
 }

@@ -29,7 +29,7 @@ public class TestBase : IAsyncLifetime, IDisposable
     protected TestBase(ITestOutputHelper output)
     {
         Timer = new TestTimer();
-        var gameSerializer = new GameSerializer(Enumerable.Empty<IEntitySerializer>());
+        var gameSerializer = new EntityCollectionSerializer(Enumerable.Empty<IEntitySerializer>());
         TrackLayout = new Layout(gameSerializer);
         TerrainMap = new FlatTerrainMap();
         MovableLayout = new MovableLayout(TrackLayout, gameSerializer);

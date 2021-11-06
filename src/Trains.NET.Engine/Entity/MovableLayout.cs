@@ -9,10 +9,10 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
     private Dictionary<Track, (Train, float)> _lastTrackLeases = new();
     private readonly ILayout _layout;
-    private readonly IGameSerializer _gameSerializer;
+    private readonly IEntityCollectionSerializer _gameSerializer;
     private readonly Train _reservedTrain;
 
-    public MovableLayout(ILayout layout, IGameSerializer gameSerializer)
+    public MovableLayout(ILayout layout, IEntityCollectionSerializer gameSerializer)
     {
         _layout = layout;
         _gameSerializer = gameSerializer;

@@ -12,11 +12,11 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
-    private readonly IGameSerializer _gameSerializer;
+    private readonly IEntityCollectionSerializer _gameSerializer;
     private IStaticEntity?[][] _entities = null!;
     private int _rows;
 
-    public Layout(IGameSerializer gameSerializer)
+    public Layout(IEntityCollectionSerializer gameSerializer)
     {
         _gameSerializer = gameSerializer;
     }

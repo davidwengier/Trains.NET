@@ -54,7 +54,7 @@ public class TrackNeighborsTests
     [InlineData(true, true, true, true)]
     public async Task GetAllNeighbors(bool left, bool up, bool right, bool down)
     {
-        var layout = new Layout(new GameSerializer(Enumerable.Empty<IEntitySerializer>()));
+        var layout = new Layout(new EntityCollectionSerializer(Enumerable.Empty<IEntitySerializer>()));
         await layout.InitializeAsync(100, 100);
         layout.AddTrack(5, 5);
 

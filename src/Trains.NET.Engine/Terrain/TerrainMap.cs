@@ -2,15 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Trains.NET.Engine;
 
 public class TerrainMap : ITerrainMap, IInitializeAsync, IGameState
 {
-    private const string TerrainSeedConfigName = "TerrainSeed";
-
     private ImmutableDictionary<(int, int), Terrain> _terrainMap = ImmutableDictionary<(int, int), Terrain>.Empty;
     private int _columns;
     private int _rows;
@@ -57,21 +54,22 @@ public class TerrainMap : ITerrainMap, IInitializeAsync, IGameState
     public Terrain Get(int column, int row)
         => _terrainMap[(column, row)];
 
-    public bool Load(IEnumerable<IEntity> entities)
+    public bool Load(IGameStorage storage)
     {
-        var terrainSeed = entities.OfType<ConfigEntity>()
-                                    .FirstOrDefault(x => x.Name == TerrainSeedConfigName);
+        var terrainSeed = storage.Read(nameof(TerrainMap));
 
-        if (terrainSeed == null) return false;
+        if (int.TryParse(terrainSeed, out var seed))
+        {
+            Reset(seed);
+            return true;
+        }
 
-        Reset(terrainSeed.Value);
-
-        return true;
+        return false;
     }
 
-    public IEnumerable<IEntity> Save()
+    public void Save(IGameStorage storage)
     {
-        yield return new ConfigEntity(TerrainSeedConfigName, _seed);
+        storage.Write(nameof(TerrainMap), _seed.ToString());
     }
 
     public Task InitializeAsync(int columns, int rows)

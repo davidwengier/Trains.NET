@@ -9,11 +9,13 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
     private Dictionary<Track, (Train, float)> _lastTrackLeases = new();
     private readonly ILayout _layout;
+    private readonly IGameSerializer _gameSerializer;
     private readonly Train _reservedTrain;
 
-    public MovableLayout(ILayout layout)
+    public MovableLayout(ILayout layout, IGameSerializer gameSerializer)
     {
         _layout = layout;
+        _gameSerializer = gameSerializer;
         _reservedTrain = new Train(0);
     }
 
@@ -34,17 +36,29 @@ public class MovableLayout : IMovableLayout, IGameState, IGameStep
     public void Clear()
         => _movables = _movables.Clear();
 
-    public bool Load(IEnumerable<IEntity> entities)
+    public bool Load(IGameStorage storage)
     {
-        var movables = entities.OfType<IMovable>();
+        var entitiesString = storage.Read(nameof(IMovableLayout));
+        if (entitiesString is null)
+            return false;
 
-        if (movables == null) return false;
+        var entities = _gameSerializer.Deserialize(entitiesString);
 
-        Set(movables);
+        var moveables = entities.OfType<IMovable>();
+
+        if (moveables is null)
+            return false;
+
+        Set(moveables);
+
         return true;
     }
 
-    public IEnumerable<IEntity> Save() => _movables;
+    public void Save(IGameStorage storage)
+    {
+        var entities = _gameSerializer.Serialize(Get());
+        storage.Write(nameof(IMovableLayout), entities);
+    }
 
     void IGameState.Reset()
         => Clear();

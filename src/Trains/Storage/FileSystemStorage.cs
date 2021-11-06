@@ -6,32 +6,31 @@ namespace Trains.Storage;
 
 public class FileSystemStorage : IGameStorage
 {
-    private const string TracksFilename = "Trains.NET.tracks";
-
-    private readonly string _tracksFilePath = GetFilePath(TracksFilename);
-
     internal static string GetFilePath(string fileName)
     {
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Trains.NET", fileName);
     }
 
-    public string? ReadEntities()
+    public string? Read(string key)
     {
-        if (!File.Exists(_tracksFilePath))
+        var fileName = GetFilePath(key);
+        if (!File.Exists(fileName))
         {
             return null;
         }
 
-        return File.ReadAllText(_tracksFilePath);
+        return File.ReadAllText(fileName);
     }
 
-    public void WriteEntities(string entities)
+    public void Write(string key, string value)
     {
-        var tracksFileDirectory = Path.GetDirectoryName(_tracksFilePath);
-        if (tracksFileDirectory != null)
+        var fileName = GetFilePath(key);
+
+        var directory = Path.GetDirectoryName(fileName);
+        if (directory != null)
         {
-            Directory.CreateDirectory(tracksFileDirectory);
-            File.WriteAllText(_tracksFilePath, entities);
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(fileName, value);
         }
     }
 }

@@ -12,8 +12,14 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
+    private readonly IGameSerializer _gameSerializer;
     private IStaticEntity?[][] _entities = null!;
     private int _rows;
+
+    public Layout(IGameSerializer gameSerializer)
+    {
+        _gameSerializer = gameSerializer;
+    }
 
     public Task InitializeAsync(int columns, int rows)
     {
@@ -179,17 +185,29 @@ public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
         return GetEnumerator();
     }
 
-    public bool Load(IEnumerable<IEntity> entities)
+    public bool Load(IGameStorage storage)
     {
+        var entitiesString = storage.Read(nameof(ILayout));
+        if (entitiesString is null)
+            return false;
+
+        var entities = _gameSerializer.Deserialize(entitiesString);
+
         var staticEntites = entities.OfType<IStaticEntity>();
 
-        if (staticEntites == null) return false;
+        if (staticEntites is null)
+            return false;
 
         Set(staticEntites);
+
         return true;
     }
 
-    public IEnumerable<IEntity> Save() => this;
+    public void Save(IGameStorage storage)
+    {
+        var entities = _gameSerializer.Serialize(this);
+        storage.Write(nameof(ILayout), entities);
+    }
 
     void IGameState.Reset()
         => Clear();

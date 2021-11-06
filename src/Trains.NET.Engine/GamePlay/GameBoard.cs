@@ -5,6 +5,8 @@ using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine;
 
+// Ensure this gets initialized last
+[Order(999999)]
 public class GameBoard : IGameBoard, IInitializeAsync
 {
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");

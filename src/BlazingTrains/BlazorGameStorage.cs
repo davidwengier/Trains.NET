@@ -8,12 +8,12 @@ public class BlazorGameStorage : IGameStorage
 
     //private ILocalStorageService? LocalStorageService => this.AspNetCoreServices?.GetService<ILocalStorageService>();
 
-    public string? ReadEntities()
+    public string? Read(string key)
     {
         return null;
     }
 
-    public void WriteEntities(string entities)
+    public void Write(string key, string value)
     {
     }
 }

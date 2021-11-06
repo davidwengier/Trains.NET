@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Trains.NET.Engine;
+using Trains.NET.Engine.Storage;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
 using Xunit;
@@ -27,9 +29,10 @@ public class TestBase : IAsyncLifetime, IDisposable
     protected TestBase(ITestOutputHelper output)
     {
         Timer = new TestTimer();
-        TrackLayout = new Layout();
+        var gameSerializer = new GameSerializer(Enumerable.Empty<IEntitySerializer>());
+        TrackLayout = new Layout(gameSerializer);
         TerrainMap = new FlatTerrainMap();
-        MovableLayout = new MovableLayout(TrackLayout);
+        MovableLayout = new MovableLayout(TrackLayout, gameSerializer);
         GameBoard = new GameBoard(new IGameStep[] {
             TrackLayout,
             MovableLayout

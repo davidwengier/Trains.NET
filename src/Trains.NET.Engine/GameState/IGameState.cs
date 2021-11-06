@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Trains.NET.Engine;
+﻿namespace Trains.NET.Engine;
 
 public interface IGameState
 {
-    bool Load(IEnumerable<IEntity> entities);
-    IEnumerable<IEntity> Save();
+    bool Load(IGameStorage storage);
+    void Save(IGameStorage storage);
     void Reset();
 }

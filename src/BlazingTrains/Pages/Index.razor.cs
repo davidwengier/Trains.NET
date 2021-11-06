@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using SkiaSharp;
 using SkiaSharp.Views.Blazor;
+using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -116,6 +117,7 @@ public partial class Index
 
     private void BeforeUnload_BeforeUnloadHandler(object? sender, blazejewicz.Blazor.BeforeUnload.BeforeUnloadArgs e)
     {
+        DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
     }
 

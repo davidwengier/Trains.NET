@@ -68,7 +68,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -104,7 +104,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -140,7 +140,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -176,7 +176,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -212,7 +212,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -248,7 +248,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -290,7 +290,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -328,7 +328,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -366,7 +366,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -404,7 +404,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);
@@ -442,7 +442,7 @@ public abstract class PointToPoint : TestBase
 
         // Move it!
         for (int i = 0; i < _movementSteps; i++)
-            GameBoard.GameLoopStep();
+            GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
         Assert.Equal(expectedRow, train.Row);

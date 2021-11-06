@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Engine;
 
-public interface IGameManager
+public interface IGameManager : IDisposable
 {
     event EventHandler? Changed;
 

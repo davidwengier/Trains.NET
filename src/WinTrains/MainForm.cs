@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -85,15 +87,11 @@ public partial class MainForm : Form
         }
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void OnClosing(CancelEventArgs e)
     {
-        if (disposing && (components != null))
-        {
-            components.Dispose();
-            _presenting = false;
-            _game.Dispose();
-        }
-        base.Dispose(disposing);
+        _presenting = false;
+        DI.ServiceLocator.GetService<IGameStateManager>().Save();
+        _game.Dispose();
     }
 
     private void SKControl_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)

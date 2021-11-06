@@ -17,14 +17,14 @@ public class TestBase : IAsyncLifetime, IDisposable
     private int _lastRow;
 
     private readonly ITestOutputHelper _output;
-    internal readonly TestTimer Timer;
-    internal readonly GameBoard GameBoard;
-    internal readonly Layout TrackLayout;
-    internal readonly MovableLayout MovableLayout;
-    internal readonly ITerrainMap TerrainMap;
-    internal readonly ILayout<Track> FilteredLayout;
-    internal readonly TrackTool TrackTool;
-    internal readonly TrainManager TrainManager;
+    protected readonly TestTimer Timer;
+    protected readonly GameManager GameManager;
+    protected readonly Layout TrackLayout;
+    protected readonly MovableLayout MovableLayout;
+    protected readonly ITerrainMap TerrainMap;
+    protected readonly ILayout<Track> FilteredLayout;
+    protected readonly TrackTool TrackTool;
+    protected readonly TrainManager TrainManager;
 
     protected TestBase(ITestOutputHelper output)
     {
@@ -33,10 +33,17 @@ public class TestBase : IAsyncLifetime, IDisposable
         TrackLayout = new Layout(gameSerializer);
         TerrainMap = new FlatTerrainMap();
         MovableLayout = new MovableLayout(TrackLayout, gameSerializer);
-        GameBoard = new GameBoard(new IGameStep[] {
-            TrackLayout,
-            MovableLayout
-        }, new NullGameStateManager(), Timer);
+        GameManager = new GameManager(
+            new ITool[]
+            {
+                new NullTool()
+            },
+            new IGameStep[]
+            {
+                TrackLayout,
+                MovableLayout
+            },
+            Timer);
 
         TrainManager = new TrainManager(MovableLayout, TrackLayout);
 
@@ -59,7 +66,7 @@ public class TestBase : IAsyncLifetime, IDisposable
     public async Task InitializeAsync()
     {
         await TrackLayout.InitializeAsync(100, 100);
-        await GameBoard.InitializeAsync(100, 100);
+        await GameManager.InitializeAsync(100, 100);
     }
 
     public Task DisposeAsync()
@@ -111,6 +118,6 @@ public class TestBase : IAsyncLifetime, IDisposable
     public void Dispose()
     {
         Timer.Dispose();
-        GameBoard.Dispose();
+        GameManager.Dispose();
     }
 }

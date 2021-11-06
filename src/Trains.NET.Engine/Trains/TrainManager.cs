@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Trains.NET.Engine;
 
-public class TrainManager : ITrainManager
+public class TrainManager : ITrainManager, IGameState
 {
     private Train? _currentTrain;
     private readonly IMovableLayout _movableLayout;
@@ -122,5 +122,19 @@ public class TrainManager : ITrainManager
             }
         }
         return false;
+    }
+
+    public bool Load(IGameStorage storage)
+    {
+        return true;
+    }
+
+    public void Save(IGameStorage storage)
+    {
+    }
+
+    public void Reset()
+    {
+        this.CurrentTrain = null;
     }
 }

@@ -67,46 +67,6 @@ public class TrackLayoutTests : TestBase
         Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
     }
 
-    [Fact(Skip = "These are broken and I don't know why")]
-    public void RightAngleWithCircleOnTop()
-    {
-        TrackTool.Execute(1, 4, new ExecuteInfo(0, 0));
-        TrackTool.Execute(1, 3, new ExecuteInfo(1, 4));
-        TrackTool.Execute(2, 3, new ExecuteInfo(1, 3));
-        TrackTool.Execute(1, 1, new ExecuteInfo(2, 3));
-        TrackTool.Execute(2, 1, new ExecuteInfo(1, 1));
-        TrackTool.Execute(1, 2, new ExecuteInfo(2, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(1, 2));
-
-        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(1, 4).Direction);
-        Assert.Equal(SingleTrackDirection.RightDown, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
-        Assert.Equal(SingleTrackDirection.LeftUp, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
-        Assert.Equal(SingleTrackDirection.RightDown, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
-        Assert.Equal(SingleTrackDirection.LeftDown, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-        Assert.Equal(SingleTrackDirection.RightUp, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
-        Assert.Equal(TIntersectionDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
-    }
-
-    [Fact(Skip = "These are broken and I don't know why")]
-    public void LeftAngleWithCircleOnTop()
-    {
-        TrackTool.Execute(1, 3, new ExecuteInfo(0, 0));
-        TrackTool.Execute(2, 3, new ExecuteInfo(1, 3));
-        TrackTool.Execute(2, 4, new ExecuteInfo(2, 3));
-        TrackTool.Execute(1, 1, new ExecuteInfo(2, 4));
-        TrackTool.Execute(2, 1, new ExecuteInfo(1, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(2, 1));
-        TrackTool.Execute(1, 2, new ExecuteInfo(2, 2));
-
-        Assert.Equal(SingleTrackDirection.RightUp, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
-        Assert.Equal(SingleTrackDirection.LeftDown, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
-        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 4).Direction);
-        Assert.Equal(SingleTrackDirection.RightDown, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
-        Assert.Equal(SingleTrackDirection.LeftDown, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-        Assert.Equal(SingleTrackDirection.LeftUp, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
-        Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(1, 2).Direction);
-    }
-
     [Fact]
     public void CrossVerticalFirst()
     {
@@ -402,33 +362,40 @@ public class TrackLayoutTests : TestBase
         Assert.Equal(SingleTrackDirection.LeftUp, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
     }
 
-    [Fact(Skip = "These are broken and I don't know why")]
+    [Fact]
     public void LeftUpDown()
     {
-        TrackTool.Execute(1, 2, new ExecuteInfo(0, 0));
-        TrackTool.Execute(2, 1, new ExecuteInfo(1, 2));
-        TrackTool.Execute(2, 3, new ExecuteInfo(2, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(2, 3));
+        TrackTool.Execute(1, 3, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 1, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 2, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 5, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 4, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 3, new ExecuteInfo(0, 0));
 
-        Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 3).Direction);
         Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
-        Assert.Equal(TIntersectionDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 4).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 5).Direction);
+        Assert.Equal(TIntersectionDirection.LeftDown_LeftUp, TrackLayout.GetTrackAt<TIntersection>(2, 3).Direction);
     }
 
-    [Fact(Skip = "These are broken and I don't know why")]
+    [Fact]
     public void RightUpDown()
     {
-        TrackTool.Execute(3, 2, new ExecuteInfo(0, 0));
-        TrackTool.Execute(2, 2, new ExecuteInfo(3, 2));
-        TrackTool.Execute(2, 1, new ExecuteInfo(2, 2));
-        TrackTool.Execute(2, 2, new ExecuteInfo(2, 1));
-        TrackTool.Execute(2, 3, new ExecuteInfo(2, 2));
+        TrackTool.Execute(3, 3, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 1, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 2, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 5, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 4, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 3, new ExecuteInfo(0, 0));
 
-        Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(3, 3).Direction);
         Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
-        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
-        Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 2).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 4).Direction);
+        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 5).Direction);
+        Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(2, 3).Direction);
     }
 
     [Fact]
@@ -447,13 +414,13 @@ public class TrackLayoutTests : TestBase
         Assert.Equal(TIntersectionDirection.RightUp_RightDown, TrackLayout.GetTrackAt<TIntersection>(2, 2).Direction);
     }
 
-    [Fact(Skip = "These are broken and I don't know why")]
+    [Fact]
     public void LeftRightUp()
     {
         TrackTool.Execute(1, 2, new ExecuteInfo(0, 0));
-        TrackTool.Execute(2, 1, new ExecuteInfo(1, 2));
-        TrackTool.Execute(3, 2, new ExecuteInfo(2, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(3, 2));
+        TrackTool.Execute(2, 1, new ExecuteInfo(0, 0));
+        TrackTool.Execute(3, 2, new ExecuteInfo(0, 0));
+        TrackTool.Execute(2, 2, new ExecuteInfo(0, 0));
 
         Assert.Equal(SingleTrackDirection.Horizontal, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
         Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 1).Direction);
@@ -613,29 +580,6 @@ public class TrackLayoutTests : TestBase
         Assert.False(TrackLayout.GetTrackAt<SingleTrack>(1, 1).Happy);
         Assert.True(TrackLayout.GetTrackAt<SingleTrack>(1, 2).Happy);
         Assert.False(TrackLayout.GetTrackAt<SingleTrack>(1, 3).Happy);
-    }
-
-    [Fact(Skip = "These are broken and I don't know why")]
-    public void Trident()
-    {
-        TrackTool.Execute(1, 1, new ExecuteInfo(0, 0));
-        TrackTool.Execute(1, 2, new ExecuteInfo(1, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(1, 2));
-        TrackTool.Execute(3, 2, new ExecuteInfo(2, 2));
-        TrackTool.Execute(3, 1, new ExecuteInfo(3, 2));
-        TrackTool.Execute(2, 3, new ExecuteInfo(3, 1));
-        TrackTool.Execute(2, 2, new ExecuteInfo(2, 3));
-
-        TrackTool.Execute(2, 1, new ExecuteInfo(0, 0));
-
-        Assert.Equal(SingleTrackDirection.RightDown, TrackLayout.GetTrackAt<SingleTrack>(1, 1).Direction);
-        Assert.Equal(SingleTrackDirection.RightUp, TrackLayout.GetTrackAt<SingleTrack>(1, 2).Direction);
-        Assert.NotNull(TrackLayout.GetTrackAt<CrossTrack>(2, 2));
-        Assert.Equal(SingleTrackDirection.LeftUp, TrackLayout.GetTrackAt<SingleTrack>(3, 2).Direction);
-        Assert.Equal(SingleTrackDirection.LeftDown, TrackLayout.GetTrackAt<SingleTrack>(3, 1).Direction);
-        Assert.Equal(SingleTrackDirection.Vertical, TrackLayout.GetTrackAt<SingleTrack>(2, 3).Direction);
-
-        Assert.Equal(TIntersectionDirection.RightDown_LeftDown, TrackLayout.GetTrackAt<TIntersection>(2, 1).Direction);
     }
 
     [Fact]

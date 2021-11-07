@@ -94,33 +94,71 @@ public class TIntersectionFactory : IStaticEntityFactory<Track>
                 entity = new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp };
             }
         }
-        // if where we have come from is unhappy, we can fix it, and create a t-intersection
-        else if (neighbours.Count == 2 &&
-            allNeighbours.Count == 3 &&
-            _layout.TryGet(fromColumn, fromRow, out Track? track) &&
-            !track.Happy)
+        else if (neighbours.Count == 2 && allNeighbours.Count == 3)
         {
-            if (neighbours.Down is not null && neighbours.Up is not null)
+            if (neighbours.Up is not null && neighbours.Down is not null && allNeighbours.Left is SingleTrack { Happy: false } singleTrack1)
             {
-                if (track is SingleTrack singleTrack)
+                entity = new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp };
+                if (singleTrack1.IsConnectedDown() && singleTrack1.GetAllNeighbors().Down is not null)
                 {
-                    singleTrack.Direction = SingleTrackDirection.Horizontal;
+                    singleTrack1.Direction = SingleTrackDirection.RightDown;
                 }
-                entity = new TIntersection()
+                else if (singleTrack1.IsConnectedUp() && singleTrack1.GetAllNeighbors().Up is not null)
                 {
-                    Direction = fromColumn < column ? TIntersectionDirection.LeftDown_LeftUp : TIntersectionDirection.RightUp_RightDown
-                };
+                    singleTrack1.Direction = SingleTrackDirection.RightUp;
+                }
+                else
+                {
+                    singleTrack1.Direction = SingleTrackDirection.Horizontal;
+                }
             }
-            else if (neighbours.Left is not null && neighbours.Right is not null)
+            else if (neighbours.Up is not null && neighbours.Down is not null && allNeighbours.Right is SingleTrack { Happy: false } singleTrack2)
             {
-                if (track is SingleTrack singleTrack)
+                entity = new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown };
+                if (singleTrack2.IsConnectedDown() && singleTrack2.GetAllNeighbors().Down is not null)
                 {
-                    singleTrack.Direction = SingleTrackDirection.Vertical;
+                    singleTrack2.Direction = SingleTrackDirection.LeftDown;
                 }
-                entity = new TIntersection()
+                else if (singleTrack2.IsConnectedUp() && singleTrack2.GetAllNeighbors().Up is not null)
                 {
-                    Direction = fromRow < row ? TIntersectionDirection.LeftUp_RightUp : TIntersectionDirection.RightDown_LeftDown
-                };
+                    singleTrack2.Direction = SingleTrackDirection.LeftUp;
+                }
+                else
+                {
+                    singleTrack2.Direction = SingleTrackDirection.Horizontal;
+                }
+            }
+            else if (neighbours.Left is not null && neighbours.Right is not null && allNeighbours.Up is SingleTrack { Happy: false } singleTrack3)
+            {
+                entity = new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp };
+                if (singleTrack3.IsConnectedLeft() && singleTrack3.GetAllNeighbors().Left is not null)
+                {
+                    singleTrack3.Direction = SingleTrackDirection.LeftDown;
+                }
+                else if (singleTrack3.IsConnectedRight() && singleTrack3.GetAllNeighbors().Right is not null)
+                {
+                    singleTrack3.Direction = SingleTrackDirection.RightDown;
+                }
+                else
+                {
+                    singleTrack3.Direction = SingleTrackDirection.Vertical;
+                }
+            }
+            else if (neighbours.Left is not null && neighbours.Right is not null && allNeighbours.Down is SingleTrack { Happy: false } singleTrack4)
+            {
+                entity = new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown };
+                if (singleTrack4.IsConnectedLeft() && singleTrack4.GetAllNeighbors().Left is not null)
+                {
+                    singleTrack4.Direction = SingleTrackDirection.LeftUp;
+                }
+                else if (singleTrack4.IsConnectedRight() && singleTrack4.GetAllNeighbors().Right is not null)
+                {
+                    singleTrack4.Direction = SingleTrackDirection.RightUp;
+                }
+                else
+                {
+                    singleTrack4.Direction = SingleTrackDirection.Vertical;
+                }
             }
         }
 

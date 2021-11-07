@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Trains.NET.Engine.Utilities;
 using Trains.NET.Instrumentation;
 
 namespace Trains.NET.Engine;
@@ -73,9 +74,8 @@ public class GameManager : IGameManager, IInitializeAsync
             foreach (var gameStep in _gameSteps)
             {
                 gameStep.Update(timeSinceLastTick);
-                //Uncomment this line to enable saving on every game loop step.
-                //On my clunky VM, enabling this increased GameLoopStep time from ~45ms to ~150ms
-                //_gameStateManager.Save();
+                if(_gameStateManager.SaveMode == SaveModes.GameStep)
+                    _gameStateManager.Save();
             }
         }
     }

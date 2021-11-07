@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Trains.NET.Engine.Utilities;
+using Trains.NET.Instrumentation;
+using Trains.NET.Instrumentation.Stats;
 
 namespace Trains.NET.Engine;
 
@@ -9,12 +14,16 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
     private readonly IEnumerable<IGameState> _gameStates;
     private readonly IGameStorage _storage;
     private readonly ITimer _timer;
+    private readonly InformationStat _saveModeStat = InstrumentationBag.Add<InformationStat>("Save-Mode");
+
+    public SaveModes SaveMode { get; private set; }
 
     public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage, ITimer timer)
     {
         _gameStates = gameStates;
         _storage = storage;
         _timer = timer;
+        _saveModeStat.Information = $"{this.SaveMode}";
     }
 
     public Task InitializeAsync(int columns, int rows)
@@ -62,5 +71,21 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
         {
             gameState.Save(_storage);
         }
+    }
+
+    public void ChangeSaveMode()
+    {
+        this.SaveMode = this.SaveMode switch
+        {
+            SaveModes.Disabled => SaveModes.GameStep,
+            SaveModes.GameStep => SaveModes.Timer,
+            SaveModes.Timer => SaveModes.Disabled,
+            _ => SaveModes.Disabled
+        };
+        _saveModeStat.Information = $"{this.SaveMode}";
+        if (this.SaveMode == SaveModes.Timer)
+            _timer.Start();
+        else
+            _timer.Stop();
     }
 }

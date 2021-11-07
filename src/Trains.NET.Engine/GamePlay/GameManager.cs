@@ -14,6 +14,7 @@ public class GameManager : IGameManager, IInitializeAsync
     private ITool _currentTool;
     private readonly ITool _defaultTool;
     private readonly ITimer _gameLoopTimer;
+    private readonly IGameStateManager _gameStateManager;
     private readonly IEnumerable<IGameStep> _gameSteps;
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 
@@ -42,7 +43,7 @@ public class GameManager : IGameManager, IInitializeAsync
         }
     }
 
-    public GameManager(IEnumerable<ITool> tools, IEnumerable<IGameStep> gameSteps, ITimer timer)
+    public GameManager(IEnumerable<ITool> tools, IEnumerable<IGameStep> gameSteps, ITimer timer, IGameStateManager gameStateManager)
     {
         _defaultTool = tools.First();
         _currentTool = _defaultTool;
@@ -52,6 +53,7 @@ public class GameManager : IGameManager, IInitializeAsync
 
         _gameLoopTimer.Interval = GameLoopInterval;
         _gameLoopTimer.Elapsed += GameLoopTimerElapsed;
+        _gameStateManager = gameStateManager;
     }
 
     public Task InitializeAsync(int columns, int rows)
@@ -71,6 +73,7 @@ public class GameManager : IGameManager, IInitializeAsync
             foreach (var gameStep in _gameSteps)
             {
                 gameStep.Update(timeSinceLastTick);
+                _gameStateManager.Save();
             }
         }
     }

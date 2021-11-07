@@ -11,7 +11,7 @@ public class ChangeSaveModeCommand : ICommand
         _gameStateManager = gameStateManager;
     }
 
-    public string Name => $"Change Auto Save Mode";
+    public string Name => $"Change Save Mode";
 
     public void Execute()
     {

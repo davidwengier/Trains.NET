@@ -8,7 +8,7 @@ namespace Trains.NET.Engine.Utilities;
 
 public enum SaveModes
 {
-    Disabled,
+    Manual,
     GameStep,
     Timer
 }

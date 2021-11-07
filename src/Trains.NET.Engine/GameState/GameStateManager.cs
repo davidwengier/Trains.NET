@@ -77,10 +77,10 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
     {
         this.SaveMode = this.SaveMode switch
         {
-            SaveModes.Disabled => SaveModes.GameStep,
+            SaveModes.Manual => SaveModes.GameStep,
             SaveModes.GameStep => SaveModes.Timer,
-            SaveModes.Timer => SaveModes.Disabled,
-            _ => SaveModes.Disabled
+            SaveModes.Timer => SaveModes.Manual,
+            _ => SaveModes.Manual
         };
         _saveModeStat.Information = $"{this.SaveMode}";
         if (this.SaveMode == SaveModes.Timer)

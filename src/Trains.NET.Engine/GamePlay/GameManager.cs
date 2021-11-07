@@ -73,7 +73,9 @@ public class GameManager : IGameManager, IInitializeAsync
             foreach (var gameStep in _gameSteps)
             {
                 gameStep.Update(timeSinceLastTick);
-                _gameStateManager.Save();
+                //Uncomment this line to enable saving on every game loop step.
+                //On my clunky VM, enabling this increased GameLoopStep time from ~45ms to ~150ms
+                //_gameStateManager.Save();
             }
         }
     }

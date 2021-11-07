@@ -8,18 +8,31 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
 {
     private readonly IEnumerable<IGameState> _gameStates;
     private readonly IGameStorage _storage;
+    private readonly ITimer _timer;
 
-    public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage)
+    public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage, ITimer timer)
     {
         _gameStates = gameStates;
         _storage = storage;
+        _timer = timer;
     }
 
     public Task InitializeAsync(int columns, int rows)
     {
         Load();
 
+        _timer.Interval = 1000;
+        _timer.Elapsed += _timer_Elapsed;
+        //Uncomment this line to enable saving once per second/interval time set above.
+        //On my clunky VM, enabling this increased GameLoopStep time from ~45ms to ~50ms, but that might just be noise and I didn't measure precisely
+        //_timer.Start();
+
         return Task.CompletedTask;
+    }
+
+    private void _timer_Elapsed(object? sender, System.EventArgs e)
+    {
+        Save();
     }
 
     public void Load()

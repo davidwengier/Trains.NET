@@ -15,6 +15,7 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
     private readonly IGameStorage _storage;
     private readonly ITimer _timer;
     private readonly InformationStat _saveModeStat = InstrumentationBag.Add<InformationStat>("Save-Mode");
+    private readonly ElapsedMillisecondsTimedStat _saveTimeStat = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Save-Time");
 
     public SaveModes SaveMode { get; private set; }
 
@@ -32,9 +33,6 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
 
         _timer.Interval = 1000;
         _timer.Elapsed += _timer_Elapsed;
-        //Uncomment this line to enable saving once per second/interval time set above.
-        //On my clunky VM, enabling this increased GameLoopStep time from ~45ms to ~50ms, but that might just be noise and I didn't measure precisely
-        //_timer.Start();
 
         return Task.CompletedTask;
     }
@@ -67,9 +65,12 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
 
     public void Save()
     {
-        foreach (var gameState in _gameStates)
+        using (_saveTimeStat.Measure())
         {
-            gameState.Save(_storage);
+            foreach (var gameState in _gameStates)
+            {
+                gameState.Save(_storage);
+            }
         }
     }
 

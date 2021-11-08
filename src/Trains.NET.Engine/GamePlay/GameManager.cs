@@ -74,7 +74,7 @@ public class GameManager : IGameManager, IInitializeAsync
             foreach (var gameStep in _gameSteps)
             {
                 gameStep.Update(timeSinceLastTick);
-                if(_gameStateManager.SaveMode == SaveModes.GameStep)
+                if (_gameStateManager.SaveMode == SaveModes.GameStep)
                     _gameStateManager.Save();
             }
         }

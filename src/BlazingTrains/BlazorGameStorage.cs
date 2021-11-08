@@ -15,8 +15,13 @@ public class BlazorGameStorage : IGameStorage
         return data;
     }
 
+
+    Dictionary<string, string> _lastSavedValue = new Dictionary<string, string>();
     public void Write(string key, string value)
     {
-        this.SyncLocalStorageService?.SetItemAsString(key, value);
+        if (!_lastSavedValue.TryGetValue(key, out var previousValue) || previousValue != value)
+        {
+            this.SyncLocalStorageService?.SetItemAsString(key, value);
+        }
     }
 }

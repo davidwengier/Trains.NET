@@ -5,9 +5,18 @@ namespace BlazingTrains;
 
 public class BlazorGameStorage : IGameStorage
 {
+    private ISyncLocalStorageService? _syncLocalStorageService;
+    private readonly Dictionary<string, string> _lastSavedValue = new Dictionary<string, string>();
+
     public IServiceProvider? AspNetCoreServices { get; set; }
 
-    private ISyncLocalStorageService? SyncLocalStorageService => this.AspNetCoreServices?.GetService<ISyncLocalStorageService>();
+    private ISyncLocalStorageService? SyncLocalStorageService
+    {
+        get
+        {
+            return (_syncLocalStorageService ??= this.AspNetCoreServices?.GetService<ISyncLocalStorageService>());
+        }
+    }
 
     public string? Read(string key)
     {
@@ -15,7 +24,6 @@ public class BlazorGameStorage : IGameStorage
         return data;
     }
 
-    private readonly Dictionary<string, string> _lastSavedValue = new Dictionary<string, string>();
     public void Write(string key, string value)
     {
         var valueExists = _lastSavedValue.TryGetValue(key, out var previousValue);

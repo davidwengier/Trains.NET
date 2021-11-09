@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -90,7 +89,6 @@ public partial class MainForm : Form
     protected override void OnClosing(CancelEventArgs e)
     {
         _presenting = false;
-        DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
     }
 

@@ -43,8 +43,7 @@ public class TestBase : IAsyncLifetime, IDisposable
                 TrackLayout,
                 MovableLayout
             },
-            Timer,
-            new GameStateManager(Enumerable.Empty<IGameState>(), new NullStorage(), Timer));
+            Timer);
 
         TrainManager = new TrainManager(MovableLayout, TrackLayout);
 

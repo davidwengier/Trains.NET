@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using SkiaSharp;
 using SkiaSharp.Views.Blazor;
-using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -22,8 +21,6 @@ public partial class Index
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
         await _game.InitializeAsync(200, 200);
-
-        this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
     }
 
     private void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
@@ -113,16 +110,5 @@ public partial class Index
         {
             _interactionManager.PointerZoomOut((int)e.ClientX, (int)e.ClientY);
         }
-    }
-
-    private void BeforeUnload_BeforeUnloadHandler(object? sender, blazejewicz.Blazor.BeforeUnload.BeforeUnloadArgs e)
-    {
-        DI.ServiceLocator.GetService<IGameStateManager>().Save();
-        _game.Dispose();
-    }
-
-    public void Dispose()
-    {
-        this.BeforeUnload.BeforeUnloadHandler -= BeforeUnload_BeforeUnloadHandler;
     }
 }

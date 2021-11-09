@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using Trains.NET.Engine;
 using Trains.NET.Rendering;
 using Trains.Storage;
 
@@ -113,7 +112,6 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
         File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
     }

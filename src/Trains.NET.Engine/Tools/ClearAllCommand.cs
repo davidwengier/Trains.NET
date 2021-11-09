@@ -5,12 +5,12 @@ public class ClearAllCommand : ICommand
 {
     private readonly IGameStateManager _gameStateManager;
 
+    public string Name => "Clear All";
+
     public ClearAllCommand(IGameStateManager gameStateManager)
     {
         _gameStateManager = gameStateManager;
     }
-
-    public string Name => "Clear All";
 
     public void Execute()
     {

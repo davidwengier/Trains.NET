@@ -17,7 +17,7 @@ public class BlazorTimer : ITimer
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        Stop();
     }
 
     public void Start()

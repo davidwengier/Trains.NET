@@ -1,13 +1,11 @@
-﻿using Trains.NET.Engine;
-
-namespace BlazingTrains.Commands;
+﻿namespace Trains.NET.Engine;
 
 [Order(150)]
-
 public class SaveCommand : ICommand
 {
-    public string Name => "Save";
     private readonly IGameStateManager _gameStateManager;
+
+    public string Name => "Save";
 
     public SaveCommand(IGameStateManager gameStateManager)
     {

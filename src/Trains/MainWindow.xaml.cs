@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using Trains.NET.Engine;
 using Trains.NET.Rendering;
 using Trains.Storage;
 

@@ -8,7 +8,7 @@ using Trains.NET.Rendering.Skia;
 
 namespace Trains.Commands;
 
-[Order(150)]
+[Order(2000)]
 public class SnapshotCommand : ICommand
 {
     private readonly IPixelMapper _pixelMapper;

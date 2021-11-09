@@ -113,7 +113,6 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
         File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
     }

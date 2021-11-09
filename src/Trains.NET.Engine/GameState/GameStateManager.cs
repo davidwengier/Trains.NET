@@ -1,43 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Trains.NET.Engine.Utilities;
 using Trains.NET.Instrumentation;
 using Trains.NET.Instrumentation.Stats;
 
 namespace Trains.NET.Engine;
 
 [Order(999999)]
-public class GameStateManager : IGameStateManager, IInitializeAsync
+public class GameStateManager : IGameStateManager, IInitializeAsync, IGameStep
 {
+    // Auto-save every 2 seconds
+    private const int AutosaveInterval = 2 * 60;
+
+    private int _autosaveCounter;
+    private bool _autosaveEnabled;
+
     private readonly IEnumerable<IGameState> _gameStates;
     private readonly IGameStorage _storage;
-    private readonly ITimer _timer;
-    private readonly InformationStat _saveModeStat = InstrumentationBag.Add<InformationStat>("Save-Mode");
+    private readonly InformationStat _autosaveStat = InstrumentationBag.Add<InformationStat>("Autosave");
     private readonly ElapsedMillisecondsTimedStat _saveTimeStat = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Save-Time");
 
-    public SaveModes SaveMode { get; private set; }
+    public bool AutosaveEnabled
+    {
+        get { return _autosaveEnabled; }
+        set
+        {
+            _autosaveEnabled = value;
+            if (_autosaveEnabled)
+            {
+                _autosaveCounter = 0;
+                Save();
+            }
+            else
+            {
+                // if they're turning off autosave, we want to at least save that
+                // otherwise if they leave before the next save, it could be back on
+                // on load
+                _storage.Write("Autosave", this.AutosaveEnabled.ToString());
+            }
+        }
+    }
 
-    public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage, ITimer timer)
+    public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage)
     {
         _gameStates = gameStates;
         _storage = storage;
-        _timer = timer;
-        _saveModeStat.Information = $"{this.SaveMode}";
     }
 
     public Task InitializeAsync(int columns, int rows)
     {
         Load();
 
-        _timer.Interval = 1000;
-        _timer.Elapsed += _timer_Elapsed;
-
         return Task.CompletedTask;
-    }
-
-    private void _timer_Elapsed(object? sender, System.EventArgs e)
-    {
-        Save();
     }
 
     public void Load()
@@ -51,6 +64,7 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
                 break;
             }
         }
+        this.AutosaveEnabled = _storage.Read("Autosave")?.Equals("True") ?? true;
     }
 
     public void Reset()
@@ -69,22 +83,19 @@ public class GameStateManager : IGameStateManager, IInitializeAsync
             {
                 gameState.Save(_storage);
             }
+            _storage.Write("Autosave", this.AutosaveEnabled.ToString());
         }
     }
 
-    public void ChangeSaveMode()
+    public void Update(long timeSinceLastTick)
     {
-        this.SaveMode = this.SaveMode switch
+        _autosaveStat.Information = this.AutosaveEnabled ? "On" : "Off";
+
+        if (this.AutosaveEnabled &&
+            ++_autosaveCounter > AutosaveInterval)
         {
-            SaveModes.Manual => SaveModes.GameStep,
-            SaveModes.GameStep => SaveModes.Timer,
-            SaveModes.Timer => SaveModes.Manual,
-            _ => SaveModes.Manual
-        };
-        _saveModeStat.Information = $"{this.SaveMode}";
-        if (this.SaveMode == SaveModes.Timer)
-            _timer.Start();
-        else
-            _timer.Stop();
+            Save();
+            _autosaveCounter = 0;
+        }
     }
 }

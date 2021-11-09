@@ -90,7 +90,6 @@ public partial class MainForm : Form
     protected override void OnClosing(CancelEventArgs e)
     {
         _presenting = false;
-        DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
     }
 

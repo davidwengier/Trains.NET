@@ -9,23 +9,27 @@
   
   <ItemGroup>
 
-    <PackageReference Update="System.Collections.Immutable" Version="6.0.0-rc.2.21480.5" />
-
     <!-- Analyzers etc. -->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.0-6.final" />
-
-    <!-- For source generators -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.0-6.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
 
+    <!-- For source generators -->
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" PrivateAssets="all" />
+
     <!-- SkiaSharp -->
-    <PackageReference Update="SkiaSharp"                    Version="2.88.0-preview.152" />
-    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.152" />
-    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.88.0-preview.152" />
-    <PackageReference Update="SkiaSharp.Views.Blazor"       Version="2.88.0-preview.152" />
+    <PackageReference Update="SkiaSharp"                    Version="2.88.0-preview.155" />
+    <PackageReference Update="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.155" />
+    <PackageReference Update="SkiaSharp.Views.WPF"          Version="2.88.0-preview.155" />
+    <PackageReference Update="SkiaSharp.Views.Blazor"       Version="2.88.0-preview.155" />
+    <PackageReference Update="Svg.SourceGenerator.Skia"     Version="0.5.8.3" />
+    
+    <!-- Blazor Stuff -->
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Update="Blazored.LocalStorage" Version="4.1.5" />
 
     <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.0-6.final">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -37,7 +41,7 @@
     </PackageReference>
 
     <!-- Test dependencies -->
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>

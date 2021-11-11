@@ -1,13 +1,16 @@
-using BlazingServerTrains.Data;
+﻿using BlazingServerTrains.Data;
+using BlazingServerTrains.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<SharedMemory>();
 
 var app = builder.Build();
 
@@ -21,12 +24,22 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 
+app.MapRazorPages();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapControllers();
+//app.MapFallbackToFile("/");
+
+
+//var page = @"<html><body>TEST</body></html>";
+//app.MapGet("/", () => page);
+
+
 
 app.Run();

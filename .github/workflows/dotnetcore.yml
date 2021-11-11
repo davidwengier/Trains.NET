@@ -92,7 +92,7 @@ jobs:
       run: dotnet workload install wasm-tools 
 
     - name: Publish app
-      run: dotnet publish src/BlazingTrains/BlazingTrains.csproj -c Release
+      run: dotnet publish src/BlazingTrains/BlazingTrains.csproj -c Release -p:PublishIISAssets=false
 
     - name: GitHub Pages
       if: success()

@@ -4,9 +4,7 @@
 
 using BlazingServerTrains.Services;
 using Microsoft.AspNetCore.Components;
-
-
-
+using Microsoft.JSInterop;
 
 namespace BlazingServerTrains.Pages;
 
@@ -14,6 +12,9 @@ public partial class Index
 {
     [Inject]
     public SharedMemory SharedMemory { get; set; }
+
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
 
     public string TerrainMap
     {
@@ -33,8 +34,12 @@ public partial class Index
         this.SharedMemory!.PropertyChanged += Index_PropertyChanged;
     }
 
-    private void Index_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private async void Index_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
+        var prop = typeof(SharedMemory).GetProperty(e.PropertyName);
+        var val = prop?.GetValue(this.SharedMemory);
+        _ = this.JSRuntime.InvokeVoidAsync("MessageOuterJS", $"TO Outer PropertyChanged - {e.PropertyName}: {val}");
+        _ = this.JSRuntime.InvokeVoidAsync("MessageInnerJS", $"TO Inner PropertyChanged - {e.PropertyName}: {val}");
     }
 }

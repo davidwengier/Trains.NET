@@ -8,8 +8,11 @@
 @implements IDisposable
 
 <PageTitle>Trains - @@davidwengier - @ThisAssembly.AssemblyInformationalVersion</PageTitle>
+<div>
+    <p>Server says to WASM: <strong>@InteropMessage</strong></p>
 
-<SKGLView style="position:fixed; left:0px; top:0px; width: 100vw; height: 100vh; overflow: hidden;"
+</div>
+<SKGLView style="position:fixed; left:0px; top:50px; width: 95vw; height: 100vh; overflow: hidden;"
           IgnorePixelScaling="true"
           EnableRenderLoop="true"
           OnPaintSurface="OnPaintSurface"

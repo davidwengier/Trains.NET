@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using SkiaSharp;
 using SkiaSharp.Views.Blazor;
 using Trains.NET.Engine;
@@ -16,6 +18,10 @@ public partial class Index
     private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaSharp-OnPaintSurfaceFPS");
     private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
 
+    public string InteropMessage { get; set; }
+
+    public static Index Current { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         _game = DI.ServiceLocator.GetService<IGame>();
@@ -24,6 +30,7 @@ public partial class Index
         await _game.InitializeAsync(200, 200);
 
         this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
+        Current = this;
     }
 
     private void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
@@ -119,6 +126,20 @@ public partial class Index
     {
         DI.ServiceLocator.GetService<IGameStateManager>().Save();
         _game.Dispose();
+    }
+
+    [JSInvokable]
+    public static void MessageWASM(string message)
+    {
+        Debug.WriteLine($"Message received in WASM: {message}");
+        Index.Current.PageMessageWASM(message);
+    }
+
+    public  void PageMessageWASM(string message)
+    {
+        Debug.WriteLine($"Message received in WASM page: {message}");
+        InteropMessage = message;
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

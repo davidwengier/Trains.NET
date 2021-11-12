@@ -2,10 +2,11 @@
 
 <PageTitle>Server Trains.Net</PageTitle>
 
-<iframe src="/index.html" width="500" height="500" />
+<iframe id="wasmFrame" src="/index.html" width="500" height="500" />
 
-<div style="display: flex; flex-direction: column">
-
+<div style="display: flex; flex-direction: column; background-color: #BBBBBB;">
+    <h3>This area is rendered server side</h3>
+    <h4>These feilds share values, you can edit them on different devices, like a lo-fi google doc </h4>
     <label>TerrainMap</label>
     <input type="number" @oninput="@(e => TerrainMap = e?.Value?.ToString() ?? string.Empty)" value="@TerrainMap" />
 

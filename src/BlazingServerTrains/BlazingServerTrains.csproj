@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
 
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.Views.Blazor" />

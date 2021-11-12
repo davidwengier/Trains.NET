@@ -1,10 +1,19 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Server Trains.Net</PageTitle>
 
-<input @bind-value="@TrainNames" />
+<iframe src="/index.html" width="500" height="500" />
 
-<iframe src="https://localhost:7119/index.html" width="500" height="500"/>
+<div style="display: flex; flex-direction: column">
+
+    <label>TerrainMap</label>
+    <input type="number" @oninput="@(e => TerrainMap = e?.Value?.ToString() ?? string.Empty)" value="@TerrainMap" />
+
+    <label>ILayout</label>
+    <input @oninput="@(e => ILayout = e?.Value?.ToString() ?? string.Empty)" value="@ILayout" />
+
+</div>
+
 
 <Counter></Counter>
 

@@ -10,3 +10,9 @@ function MessageInnerJS(message) {
     var wasmFrame = document.getElementById('wasmFrame');
     wasmFrame.contentWindow.WASMMessageInnerJS(message);
 }
+
+function UpdateProperty(propertyName, value) {
+    console.log("Outer update property: " + propertyName + value);
+    var wasmFrame = document.getElementById('wasmFrame');
+    wasmFrame.contentWindow.WASMUpdateProperty(propertyName, value);
+}

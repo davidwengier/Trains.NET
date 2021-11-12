@@ -39,7 +39,8 @@ public partial class Index
         await InvokeAsync(StateHasChanged);
         var prop = typeof(SharedMemory).GetProperty(e.PropertyName);
         var val = prop?.GetValue(this.SharedMemory);
-        _ = this.JSRuntime.InvokeVoidAsync("MessageOuterJS", $"TO Outer PropertyChanged - {e.PropertyName}: {val}");
-        _ = this.JSRuntime.InvokeVoidAsync("MessageInnerJS", $"TO Inner PropertyChanged - {e.PropertyName}: {val}");
+       // _ = this.JSRuntime.InvokeVoidAsync("MessageOuterJS", $"TO Outer PropertyChanged - {e.PropertyName}: {val}");
+       // _ = this.JSRuntime.InvokeVoidAsync("MessageInnerJS", $"TO Inner PropertyChanged - {e.PropertyName}: {val}");
+        _ = this.JSRuntime.InvokeVoidAsync("UpdateProperty", e.PropertyName, val);
     }
 }

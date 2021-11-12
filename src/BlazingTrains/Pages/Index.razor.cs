@@ -14,7 +14,7 @@ public partial class Index
 {
     private IGame _game = null!;
     private IInteractionManager _interactionManager = null!;
-
+    private ITerrainMap _terrainMap = null;
     private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SkiaSharp-OnPaintSurfaceFPS");
     private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
 
@@ -26,7 +26,7 @@ public partial class Index
     {
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
-
+        _terrainMap = DI.ServiceLocator.GetService<ITerrainMap>();
         await _game.InitializeAsync(200, 200);
 
         this.BeforeUnload.BeforeUnloadHandler += BeforeUnload_BeforeUnloadHandler;
@@ -132,14 +132,35 @@ public partial class Index
     public static void MessageWASM(string message)
     {
         Debug.WriteLine($"Message received in WASM: {message}");
-        Index.Current.PageMessageWASM(message);
+        _ = Index.Current.PageMessageWASM(message);
     }
 
-    public  void PageMessageWASM(string message)
+    [JSInvokable]
+    public static void UpdateProperty(string propertyName, string value)
+    {
+        Current.PageUpdateProperty(propertyName, value);
+    }
+
+    private void PageUpdateProperty(string propertyName, string value)
+    {
+        PageMessageWASM($"Updating Propertyy: {propertyName}: {value} {value.GetType()}");
+        if(propertyName == "TerrainMap")
+        {
+            if (int.TryParse(value, out int seed))
+            {
+                _terrainMap.Reset(seed);
+
+            }
+        }
+    }
+
+    public  async Task PageMessageWASM(string message)
     {
         Debug.WriteLine($"Message received in WASM page: {message}");
-        InteropMessage = message;
-        InvokeAsync(StateHasChanged);
+        this.InteropMessage = message;
+        await InvokeAsync(StateHasChanged);
+        //await _game.InitializeAsync(500, 100);
+        //_terrainMap.Reset(55);
     }
 
     public void Dispose()

@@ -1,13 +1,10 @@
 ﻿@page "/"
-@using SkiaSharp
+@using Microsoft.AspNetCore.Components.Web
 @using SkiaSharp.Views.Blazor
-@using Trains.NET.Rendering
-@using Trains.NET.Rendering.Skia
 
 <PageTitle>Trains - @@davidwengier - @ThisAssembly.AssemblyInformationalVersion</PageTitle>
 
-<SKGLView style="position:fixed; left:0px; top:0px; width: 100vw; height: 100vh; overflow: hidden;"
-          IgnorePixelScaling="true"
+<SKGLView IgnorePixelScaling="true"
           EnableRenderLoop="true"
           OnPaintSurface="OnPaintSurface"
           oncontextmenu="return false"

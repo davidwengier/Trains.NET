@@ -5,9 +5,9 @@ using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 
-namespace BlazingTrains.Pages;
+namespace BlazingTrains;
 
-public partial class Index
+public partial class Game
 {
     private IGame _game = null!;
     private IInteractionManager _interactionManager = null!;

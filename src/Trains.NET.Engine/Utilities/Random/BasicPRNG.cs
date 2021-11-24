@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Engine;
+﻿namespace Trains.NET.Engine;
 
 public struct BasicPRNG
 {

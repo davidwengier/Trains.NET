@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Threading.Tasks;
-
-namespace Trains.NET.Rendering;
+﻿namespace Trains.NET.Rendering;
 
 public interface IGame : IDisposable
 {

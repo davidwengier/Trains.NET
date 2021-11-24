@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Midi;
+﻿using Midi;
 
 namespace Trains.Sounds;
 

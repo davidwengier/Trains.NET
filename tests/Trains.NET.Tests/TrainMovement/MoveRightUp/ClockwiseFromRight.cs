@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Xunit;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.TrainMovementTests.MoveRightUp;

@@ -1,5 +1,4 @@
-﻿using System;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Trains.NET.Rendering.Skia;
 

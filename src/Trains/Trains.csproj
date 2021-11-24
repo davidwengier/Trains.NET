@@ -14,9 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.WPF" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />
     <ProjectReference Include="..\Trains.NET.Instrumentation\Trains.NET.Instrumentation.csproj" />

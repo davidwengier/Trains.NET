@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Rendering;
-using Xunit.Abstractions;
 
 namespace Trains.NET.Tests.Rendering;
 

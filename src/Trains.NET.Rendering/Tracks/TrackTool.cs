@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering;
 

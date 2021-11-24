@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Tests;
+﻿namespace Trains.NET.Tests;
 
 public static class TrainMovementTestsHelper
 {

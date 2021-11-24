@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Trains.NET.Rendering.UI;
+﻿namespace Trains.NET.Rendering.UI;
 
 public abstract partial class ButtonPanelBase : PanelBase
 {

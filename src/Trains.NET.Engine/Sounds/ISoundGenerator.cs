@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Engine.Sounds;
+﻿namespace Trains.NET.Engine.Sounds;
 
 public interface ISoundGenerator : IDisposable
 {

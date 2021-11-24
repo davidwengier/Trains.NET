@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Trains.NET.Engine;
+﻿namespace Trains.NET.Engine;
 
 public interface ITerrainMap : IEnumerable<Terrain>
 {

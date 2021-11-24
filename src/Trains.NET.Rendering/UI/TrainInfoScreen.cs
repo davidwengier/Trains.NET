@@ -1,5 +1,4 @@
-﻿using System;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering.UI;

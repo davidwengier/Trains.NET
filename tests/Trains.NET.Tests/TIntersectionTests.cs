@@ -1,7 +1,4 @@
-﻿using Xunit;
-using Xunit.Abstractions;
-
-namespace Trains.NET.Tests;
+﻿namespace Trains.NET.Tests;
 
 public class TIntersectionTests : TestBase
 {

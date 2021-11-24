@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <NoWarn>NU1701</NoWarn>
     <WarningLevel>5</WarningLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>

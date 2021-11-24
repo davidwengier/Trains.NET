@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Trains.NET.Engine.Storage;
 using Trains.NET.Engine.Tracks;
 using Trains.NET.Rendering;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Trains.NET.Tests;
 

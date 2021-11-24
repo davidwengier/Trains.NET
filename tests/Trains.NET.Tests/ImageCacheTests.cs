@@ -1,7 +1,5 @@
-﻿using System;
-using Trains.NET.Rendering;
+﻿using Trains.NET.Rendering;
 using Trains.NET.Rendering.Drawing;
-using Xunit;
 
 namespace Trains.NET.Tests;
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Engine;
+﻿namespace Trains.NET.Engine;
 
 internal static class TrainNames
 {

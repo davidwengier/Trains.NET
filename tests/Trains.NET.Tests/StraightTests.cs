@@ -1,6 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Trains.NET.Tests;
 

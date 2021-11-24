@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Trains.NET.Instrumentation;
+﻿namespace Trains.NET.Instrumentation;
 
 public static class InstrumentationBag
 {

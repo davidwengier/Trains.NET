@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Instrumentation;
+﻿namespace Trains.NET.Instrumentation;
 
 public class DisposableCallback : IDisposable
 {

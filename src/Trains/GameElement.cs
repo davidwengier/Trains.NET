@@ -6,7 +6,6 @@ using SkiaSharp;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 using Trains.NET.Instrumentation;
-using System;
 
 namespace Trains;
 

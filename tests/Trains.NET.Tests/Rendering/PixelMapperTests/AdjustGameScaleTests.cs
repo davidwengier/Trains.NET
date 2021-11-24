@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Trains.NET.Rendering;
-using Xunit;
-using Xunit.Abstractions;
+﻿using Trains.NET.Rendering;
 
 namespace Trains.NET.Tests.Rendering.PixelMapperTests;
 

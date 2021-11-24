@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering.UI;
 

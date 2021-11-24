@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.Sounds;
+﻿namespace Trains.Sounds;
 
 internal sealed record MidiHornDef
 {

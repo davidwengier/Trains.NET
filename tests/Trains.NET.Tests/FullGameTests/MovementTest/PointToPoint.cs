@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Trains.NET.Engine;
-using Xunit;
-using Xunit.Abstractions;
+﻿using Trains.NET.Engine;
 using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.FullGameTests.MovementTest;

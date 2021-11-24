@@ -1,6 +1,4 @@
-﻿using System;
-using Trains.NET.Engine;
-using Xunit;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Tests;
 

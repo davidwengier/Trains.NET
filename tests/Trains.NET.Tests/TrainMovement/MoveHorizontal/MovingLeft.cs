@@ -1,5 +1,4 @@
 ﻿using Trains.NET.Engine;
-using Xunit;
 
 namespace Trains.NET.Tests.TrainMovementTests.MoveHorizontal;
 

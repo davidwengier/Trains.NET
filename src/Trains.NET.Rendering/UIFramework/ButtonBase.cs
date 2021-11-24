@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Trains.NET.Rendering.UI;
+﻿namespace Trains.NET.Rendering.UI;
 
 public abstract class ButtonBase
 {

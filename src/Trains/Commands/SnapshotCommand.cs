@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using SkiaSharp;
 using SkiaSharp.Views.WPF;
 using Trains.NET.Engine;

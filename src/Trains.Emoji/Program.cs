@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using SkiaSharp;
+﻿using SkiaSharp;
 using Trains.NET.Engine;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;

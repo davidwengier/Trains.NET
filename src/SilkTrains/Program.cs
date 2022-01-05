@@ -59,41 +59,42 @@ void BindMouse(IMouse mouse)
 {
     mouse.Scroll += (_, deltaPos) =>
     {
-        var mousePos = mouse.Position;
+        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
         if (deltaPos.Y > 0)
         {
-            interactionManager.PointerZoomIn((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerZoomIn(mousePos.X, mousePos.Y);
         }
         else
         {
-            interactionManager.PointerZoomOut((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerZoomOut(mousePos.X, mousePos.Y);
         }
     };
-    mouse.MouseMove += (_, mousePos) =>
+    mouse.MouseMove += (_, newPosFloat) =>
     {
+        var mousePos = window.PointToFramebuffer((Vector2D<int>)newPosFloat.ToGeneric());
         if (mouse.IsButtonPressed(MouseButton.Left))
         {
-            interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerDrag(mousePos.X, mousePos.Y);
         }
         else if (mouse.IsButtonPressed(MouseButton.Right))
         {
-            interactionManager.PointerAlternateDrag((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerAlternateDrag(mousePos.X, mousePos.Y);
         }
         else
         {
-            interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerMove(mousePos.X, mousePos.Y);
         }
     };
     mouse.MouseDown += (_, button) =>
     {
-        var mousePos = mouse.Position;
+        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
         if (button == MouseButton.Left)
         {
-            interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerClick(mousePos.X, mousePos.Y);
         }
         else if (button == MouseButton.Right)
         {
-            interactionManager.PointerAlternateClick((int)mousePos.X, (int)mousePos.Y);
+            interactionManager.PointerAlternateClick(mousePos.X, mousePos.Y);
         }
     };
     mouse.MouseUp += (_, button) =>
@@ -103,8 +104,8 @@ void BindMouse(IMouse mouse)
             return;
         }
 
-        var mousePos = mouse.Position;
-        interactionManager.PointerRelease((int)mousePos.X, (int)mousePos.Y);
+        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
+        interactionManager.PointerRelease(mousePos.X, mousePos.Y);
     };
 }
 

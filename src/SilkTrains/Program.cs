@@ -5,6 +5,7 @@ using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using SilkTrains;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SkiaSharp;
@@ -59,7 +60,7 @@ void BindMouse(IMouse mouse)
 {
     mouse.Scroll += (_, deltaPos) =>
     {
-        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
+        var mousePos = window.NotBuggedPointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
         if (deltaPos.Y > 0)
         {
             interactionManager.PointerZoomIn(mousePos.X, mousePos.Y);
@@ -71,7 +72,7 @@ void BindMouse(IMouse mouse)
     };
     mouse.MouseMove += (_, newPosFloat) =>
     {
-        var mousePos = window.PointToFramebuffer((Vector2D<int>)newPosFloat.ToGeneric());
+        var mousePos = window.NotBuggedPointToFramebuffer((Vector2D<int>)newPosFloat.ToGeneric());
         if (mouse.IsButtonPressed(MouseButton.Left))
         {
             interactionManager.PointerDrag(mousePos.X, mousePos.Y);
@@ -87,7 +88,7 @@ void BindMouse(IMouse mouse)
     };
     mouse.MouseDown += (_, button) =>
     {
-        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
+        var mousePos = window.NotBuggedPointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
         if (button == MouseButton.Left)
         {
             interactionManager.PointerClick(mousePos.X, mousePos.Y);
@@ -104,7 +105,7 @@ void BindMouse(IMouse mouse)
             return;
         }
 
-        var mousePos = window.PointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
+        var mousePos = window.NotBuggedPointToFramebuffer((Vector2D<int>)mouse.Position.ToGeneric());
         interactionManager.PointerRelease(mousePos.X, mousePos.Y);
     };
 }
@@ -112,7 +113,7 @@ void BindMouse(IMouse mouse)
 // Create the Skia-OpenGL link
 void HandleSize(Vector2D<int> fbSize)
 {
-    renderTarget = new(window.Size.X, window.Size.Y, 0, 8, new(0, (int)InternalFormat.Rgba8));
+    renderTarget = new(window.FramebufferSize.X, window.FramebufferSize.Y, 0, 8, new(0, (int)InternalFormat.Rgba8));
     surface = SKSurface.Create(grContext, renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
     canvas = surface.Canvas;
     canvasWrapper = new(canvas);

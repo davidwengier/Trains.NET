@@ -11,10 +11,10 @@ public class ToolsPanel : ButtonPanelBase
     private readonly List<ButtonBase> _buildModeButtons;
     private readonly List<ButtonBase> _playModeButtons;
 
-    protected override int Top => 60;
+    protected override int Top => -12;
 
-    protected override bool IsCollapsable => true;
-    protected override string? Title => "Tools";
+    protected override bool IsCollapsable => false;
+    protected override string? Title => "Mode";
 
     public ToolsPanel(IEnumerable<ITool> tools, IGameManager gameManager)
     {

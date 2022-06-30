@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,10 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Input" Version="2.11.0" />
-    <PackageReference Include="Silk.NET.OpenGL" Version="2.11.0" />
-    <PackageReference Include="Silk.NET.Windowing" Version="2.11.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+    <PackageReference Include="Silk.NET.Input" />
+    <PackageReference Include="Silk.NET.OpenGL" />
+    <PackageReference Include="Silk.NET.Windowing" />
+    <PackageReference Include="SixLabors.ImageSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trains.NET.Engine\Trains.NET.Engine.csproj" />

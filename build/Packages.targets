@@ -1,33 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-
-  <PropertyGroup>
-    <RestoreSources>
-      https://api.nuget.org/v3/index.json;
-      https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json;
-    </RestoreSources>
-  </PropertyGroup>
-  
   <ItemGroup>
-
     <!-- Analyzers etc. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
-
-    <!-- For source generators -->
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
-
-    <!-- SkiaSharp -->
-    
-    
-    
-    
-    
-    
-    <!-- Blazor Stuff -->
-    
-    <PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-    
 
     <!-- Latest C# compiler -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset">
@@ -42,16 +18,9 @@
     </PackageReference>
 
     <!-- Test dependencies -->
-    
-    
     <PackageReference Update="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Update="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
-  
 </Project>

@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="Svg.SourceGenerator.Skia" />
+    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.155" />
+    <PackageReference Include="Svg.SourceGenerator.Skia" Version="0.5.8.3" />
   </ItemGroup>
 
   <ItemGroup>

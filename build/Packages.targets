@@ -2,23 +2,23 @@
 <Project>
   <ItemGroup>
     <!-- Analyzers etc. -->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" Version="3.3.3" />
 
     <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
     <!-- Nerdbank GitVersioning -->
-    <PackageReference Include="Nerdbank.GitVersioning">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.240">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
 
     <!-- Test dependencies -->
-    <PackageReference Update="xunit.runner.visualstudio">
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

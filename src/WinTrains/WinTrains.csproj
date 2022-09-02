@@ -7,6 +7,13 @@
     <UseWindowsForms>true</UseWindowsForms>
     <NoWarn>$(NoWarn);CS1587;CS1591;CA1062</NoWarn>
     <ApplicationIcon>RedTrain.ico</ApplicationIcon>
+    <LangVersion>preview</LangVersion>
+    <Features>strict</Features>
+    <Nullable>enable</Nullable>
+    <NoWarn>NU1701</NoWarn>
+    <WarningLevel>5</WarningLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +26,10 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.88.0-preview.155" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.240">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

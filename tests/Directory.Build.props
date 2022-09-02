@@ -1,7 +1,5 @@
 <Project>
 
-  <Import Project="..\Directory.Build.props" />
-
   <PropertyGroup>
     <!-- makes tests easier -->
     <Nullable>disable</Nullable>

@@ -3,7 +3,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-
+    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <NoWarn>$(NoWarn);CA2000</NoWarn>
   </PropertyGroup>

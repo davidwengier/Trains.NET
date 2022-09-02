@@ -4,6 +4,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <NoWarn>$(NoWarn);CS1591;CA1062</NoWarn>
+    <LangVersion>preview</LangVersion>
+    <Features>strict</Features>
+    <Nullable>enable</Nullable>
+    <NoWarn>NU1701</NoWarn>
+    <WarningLevel>5</WarningLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>

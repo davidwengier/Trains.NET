@@ -22,8 +22,8 @@ public class ClockwiseCounterClockwise
     {
         (double newAngle, float newDistance) = TrainMovement.MoveClockwise(currentAngle, distance, maximumNewAngle);
 
-        Assert.Equal(expectedAngle, newAngle, 3);
-        Assert.Equal(expectedDistance, newDistance, 3);
+        Assert.Equal(expectedAngle, newAngle, 3f);
+        Assert.Equal(expectedDistance, newDistance, 3f);
     }
 
     [Theory]
@@ -43,7 +43,7 @@ public class ClockwiseCounterClockwise
     {
         (double newAngle, float newDistance) = TrainMovement.MoveCounterClockwise(currentAngle, distance, maximumNewAngle);
 
-        Assert.Equal(expectedAngle, newAngle, 3);
-        Assert.Equal(expectedDistance, newDistance, 3);
+        Assert.Equal(expectedAngle, newAngle, 3f);
+        Assert.Equal(expectedDistance, newDistance, 3f);
     }
 }

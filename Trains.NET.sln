@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{88B2DB4E
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		build\Packages.targets = build\Packages.targets
 		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
@@ -45,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTrains", "src\WinTrains\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingTrains", "src\BlazingTrains\BlazingTrains.csproj", "{79D851AC-3713-4582-A20A-5E6C24FEAE6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilkTrains", "src\SilkTrains\SilkTrains.csproj", "{D5624473-B557-42F4-B907-C9922CAA8075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SilkTrains", "src\SilkTrains\SilkTrains.csproj", "{D5624473-B557-42F4-B907-C9922CAA8075}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

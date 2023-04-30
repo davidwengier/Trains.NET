@@ -18,10 +18,10 @@ public class CounterClockwiseFromTop
 
         TrainMovement.MoveRightUp(position);
 
-        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3);
-        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3);
-        Assert.Equal(expectedPos.Angle, position.Angle, 3);
-        Assert.Equal(expectedPos.Distance, position.Distance, 3);
+        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3f);
+        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3f);
+        Assert.Equal(expectedPos.Angle, position.Angle, 3f);
+        Assert.Equal(expectedPos.Distance, position.Distance, 3f);
     }
 
     [Theory]
@@ -37,10 +37,10 @@ public class CounterClockwiseFromTop
 
         TrainMovement.MoveRightUp(position);
 
-        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3);
-        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3);
-        Assert.Equal(expectedPos.Angle, position.Angle, 3);
-        Assert.Equal(expectedPos.Distance, position.Distance, 3);
+        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3f);
+        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3f);
+        Assert.Equal(expectedPos.Angle, position.Angle, 3f);
+        Assert.Equal(expectedPos.Distance, position.Distance, 3f);
     }
 
     [Theory]
@@ -55,10 +55,10 @@ public class CounterClockwiseFromTop
 
         TrainMovement.MoveRightUp(position);
 
-        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3);
-        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3);
-        Assert.Equal(expectedPos.Angle, position.Angle, 3);
-        Assert.Equal(expectedPos.Distance, position.Distance, 3);
+        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3f);
+        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3f);
+        Assert.Equal(expectedPos.Angle, position.Angle, 3f);
+        Assert.Equal(expectedPos.Distance, position.Distance, 3f);
     }
 
     [Theory]
@@ -72,9 +72,9 @@ public class CounterClockwiseFromTop
 
         TrainMovement.MoveRightUp(position);
 
-        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3);
-        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3);
-        Assert.Equal(expectedPos.Angle, position.Angle, 3);
-        Assert.Equal(expectedPos.Distance, position.Distance, 3);
+        Assert.Equal(expectedPos.RelativeLeft, position.RelativeLeft, 3f);
+        Assert.Equal(expectedPos.RelativeTop, position.RelativeTop, 3f);
+        Assert.Equal(expectedPos.Angle, position.Angle, 3f);
+        Assert.Equal(expectedPos.Distance, position.Distance, 3f);
     }
 }

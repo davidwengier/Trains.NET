@@ -29,7 +29,7 @@ public class FullTrackLoop_1000Step : FullTrackLoop
 }
 public abstract class FullTrackLoop : TestBase
 {
-    private const int MovementPrecision = 3;
+    private const float MovementPrecision = 3;
     private readonly int _movementSteps;
 
     public FullTrackLoop(ITestOutputHelper output, int movementSteps)

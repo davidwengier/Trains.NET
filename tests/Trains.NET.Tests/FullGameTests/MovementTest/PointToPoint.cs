@@ -30,7 +30,7 @@ public class PointToPoint_1000Step : PointToPoint
 public abstract class PointToPoint : TestBase
 {
     private readonly int _movementSteps;
-    private const int MovementPrecision = 4;
+    private const float MovementPrecision = 4;
 
     public PointToPoint(ITestOutputHelper output, int movementSteps)
         : base(output)

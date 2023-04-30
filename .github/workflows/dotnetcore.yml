@@ -19,10 +19,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Install workload
-      run: dotnet workload install wasm-tools 
+      run: dotnet workload install wasm-tools-net7
 
     - name: Build Debug
       run: dotnet build Trains.NET.sln -p:CI=true -c Debug
@@ -86,7 +86,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Install workload
       run: dotnet workload install wasm-tools 
@@ -99,6 +99,6 @@ jobs:
       uses: crazy-max/ghaction-github-pages@v2.2.0
       with:
         target_branch: gh-pages
-        build_dir: src/BlazingTrains/bin/Release/net6.0/publish/wwwroot
+        build_dir: src/BlazingTrains/bin/Release/net7.0/publish/wwwroot
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishIISAssets>true</PublishIISAssets>
@@ -35,6 +35,27 @@
     <ProjectReference Include="..\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
     <ProjectReference Include="..\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
     <ProjectReference Include="..\Trains.NET.SourceGenerator\Trains.NET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Net.Compilers.Toolset">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

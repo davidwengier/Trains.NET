@@ -140,15 +140,16 @@ window.Load += () =>
         return;
     }
 
-    using var img = Image.Load<Rgba32>(ers);
-    var rowByteLen = img.Width * 4;
-    var bytes = new byte[rowByteLen * img.Height];
-    for (int i = 0; i < img.Height; i++)
-    {
-        MemoryMarshal.Cast<Rgba32, byte>(img.GetPixelRowSpan(i)).CopyTo(bytes.AsSpan(i * rowByteLen, rowByteLen));
-    }
-    var rawImage = new RawImage(img.Width, img.Height, bytes);
-    window.SetWindowIcon(ref rawImage);
+    // TODO: ImageSharp API changed. Need to work out how to fix this
+    //using var img = Image.Load<Rgba32>(ers);
+    //var rowByteLen = img.Width * 4;
+    //var bytes = new byte[rowByteLen * img.Height];
+    //for (int i = 0; i < img.Height; i++)
+    //{
+    //    MemoryMarshal.Cast<Rgba32, byte>(img.GetPixelRowSpan(i)).CopyTo(bytes.AsSpan(i * rowByteLen, rowByteLen));
+    //}
+    //var rawImage = new RawImage(img.Width, img.Height, bytes);
+    //window.SetWindowIcon(ref rawImage);
 };
 
 window.FramebufferResize += HandleSize;

@@ -29,7 +29,7 @@ public class TrainMovementHelperTests
     [InlineData(-360.0, 0.0)]
     [InlineData(-810.0, 270.0)]
     [InlineData(-630.0, 90.0)]
-    public void KeepWithin0and360(float angle, float expected) => Assert.Equal(expected, TrainMovement.KeepWithin0and360(angle), 1);
+    public void KeepWithin0and360(float angle, float expected) => Assert.Equal(expected, TrainMovement.KeepWithin0and360(angle), 1f);
 
     [Theory]
     [InlineData(45.0f, 0.0f, 90.0f)]
@@ -64,7 +64,7 @@ public class TrainMovementHelperTests
     {
         (float x, float y) = TrainMovement.AngleToPoints(angle, radius);
 
-        Assert.Equal(expectedX, x, 3);
-        Assert.Equal(expectedY, y, 3);
+        Assert.Equal(expectedX, x, 3f);
+        Assert.Equal(expectedY, y, 3f);
     }
 }

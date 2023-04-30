@@ -22,7 +22,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Install workload
-      run: dotnet workload install wasm-tools-net7
+      run: dotnet workload install wasm-tools
 
     - name: Build Debug
       run: dotnet build Trains.NET.sln -p:CI=true -c Debug

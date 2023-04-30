@@ -6,8 +6,6 @@ using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using SilkTrains;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using SkiaSharp;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
@@ -140,16 +138,19 @@ window.Load += () =>
         return;
     }
 
-    // TODO: ImageSharp API changed. Need to work out how to fix this
-    //using var img = Image.Load<Rgba32>(ers);
-    //var rowByteLen = img.Width * 4;
-    //var bytes = new byte[rowByteLen * img.Height];
-    //for (int i = 0; i < img.Height; i++)
-    //{
-    //    MemoryMarshal.Cast<Rgba32, byte>(img.GetPixelRowSpan(i)).CopyTo(bytes.AsSpan(i * rowByteLen, rowByteLen));
-    //}
-    //var rawImage = new RawImage(img.Width, img.Height, bytes);
-    //window.SetWindowIcon(ref rawImage);
+    using var img = Image.Load<Rgba32>(ers);
+    var rowByteLen = img.Width * 4;
+    var bytes = new byte[rowByteLen * img.Height];
+    img.ProcessPixelRows(processor =>
+    {
+        for (int i = 0; i < img.Height; i++)
+        {
+            MemoryMarshal.Cast<Rgba32, byte>(processor.GetRowSpan(i)).CopyTo(bytes.AsSpan(i * rowByteLen, rowByteLen));
+        }
+    });
+
+    var rawImage = new RawImage(img.Width, img.Height, bytes);
+    window.SetWindowIcon(ref rawImage);
 };
 
 window.FramebufferResize += HandleSize;

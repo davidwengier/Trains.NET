@@ -18,7 +18,7 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
-        this.Text = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion;
+        this.Text = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
 
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();

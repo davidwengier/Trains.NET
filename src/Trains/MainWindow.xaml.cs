@@ -44,7 +44,7 @@ public partial class MainWindow : Window
 
         this.Content = _gameElement;
 
-        this.Title = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion;
+        this.Title = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
 
         _gameElement.SizeChanged += SKElement_SizeChanged;
 

@@ -35,7 +35,7 @@ if (File.Exists(windowSizeFileName))
 var options = WindowOptions.Default with
 {
     Size = size,
-    Title = "Trains - @davidwengier - " + ThisAssembly.AssemblyInformationalVersion,
+    Title = "Trains - @davidwengier@aus.socual - " + ThisAssembly.AssemblyInformationalVersion,
     PreferredStencilBufferBits = 8,
     PreferredBitDepth = new(8)
 };

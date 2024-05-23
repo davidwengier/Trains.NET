@@ -12,6 +12,12 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
+  <!-- Workaround for https://github.com/dotnet/roslyn/issues/41640 -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
   <!-- I have no idea which one of these works, but sometimes one of them does -->
   <PropertyGroup Condition="'$(CI)' == 'true'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

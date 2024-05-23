@@ -60,12 +60,24 @@ public static class RenderingExtensions
         {
             paint.StrokeWidth = brush.StrokeWidth.Value;
         }
-        if (brush.TextSize != null)
-        {
-            paint.TextSize = brush.TextSize.Value;
-        }
 
         return paint;
+    }
+
+    public static SKFont ToSkiaFont(this PaintBrush brush)
+    {
+        var font = new SKFont();
+
+        if (brush.IsAntialias != null)
+        {
+            font.Edging = brush.IsAntialias.Value ? SKFontEdging.Antialias : SKFontEdging.Alias;
+        }
+        if (brush.TextSize != null)
+        {
+            font.Size = brush.TextSize.Value;
+        }
+
+        return font;
     }
 
     public static SKPath ToSkia(this IPath path) => ((SKPathWrapper)path).Path;

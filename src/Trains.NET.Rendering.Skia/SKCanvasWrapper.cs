@@ -5,6 +5,7 @@ namespace Trains.NET.Rendering.Skia;
 public class SKCanvasWrapper : ICanvas
 {
     private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
+    private static readonly Dictionary<PaintBrush, SKFont> s_fontCache = new();
 
     private static readonly SKPaint s_noAntialiasPaint = new()
     {
@@ -12,12 +13,13 @@ public class SKCanvasWrapper : ICanvas
         IsDither = false
     };
 
-    private readonly SkiaSharp.SKCanvas _canvas;
+    private readonly SKCanvas _canvas;
 
-    public SKCanvasWrapper(SkiaSharp.SKCanvas canvas)
+    public SKCanvasWrapper(SKCanvas canvas)
     {
         _canvas = canvas;
     }
+
     private static SKPaint GetSKPaint(PaintBrush paint)
     {
         if (!s_paintCache.TryGetValue(paint, out SKPaint? skPaint))
@@ -26,6 +28,16 @@ public class SKCanvasWrapper : ICanvas
             s_paintCache.Add(paint, skPaint);
         }
         return skPaint;
+    }
+
+    private static SKFont GetSKFont(PaintBrush paint)
+    {
+        if (!s_fontCache.TryGetValue(paint, out SKFont? skFont))
+        {
+            skFont = paint.ToSkiaFont();
+            s_fontCache.Add(paint, skFont);
+        }
+        return skFont;
     }
 
     public void Clear(Color color)
@@ -72,7 +84,7 @@ public class SKCanvasWrapper : ICanvas
         => _canvas.DrawRoundRect(x, y, width, height, radiusX, radiusY, GetSKPaint(paint));
 
     public void DrawText(string text, float x, float y, PaintBrush paint)
-        => _canvas.DrawText(text, x, y, GetSKPaint(paint));
+        => _canvas.DrawText(text, x, y, GetSKFont(paint), GetSKPaint(paint));
 
     public void DrawGradientRect(float x, float y, float width, float height, Color start, Color end)
         => DrawVerticalGradientRect(x, y, width, height, new[] { start, end, start });
@@ -132,5 +144,5 @@ public class SKCanvasWrapper : ICanvas
         => _canvas.Translate(x, y);
 
     public float MeasureText(string text, PaintBrush paint)
-        => GetSKPaint(paint).MeasureText(text);
+        => GetSKFont(paint).MeasureText(text);
 }

@@ -49,9 +49,9 @@ public class CounterClockwiseFromLeft
     [InlineData(0.0f, 0.5f, 0.0f, ThirdCornerTrackDistance, Cos60ByRadius, Sin60ByRadius, 330.0f)]
     [InlineData(0.0f, 0.5f, 0.0f, ThirdCornerTrackDistance * 2, Cos30ByRadius, Sin30ByRadius, 300.0f)]
     [InlineData(Cos60ByRadius, Sin60ByRadius, 330.0f, ThirdCornerTrackDistance, Cos30ByRadius, Sin30ByRadius, 300.0f)]
-    public void MoveLeftUp_CounterClockwiseFromLeft_WithinCell_VariedDistance(float initalLeft, float initalTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
+    public void MoveLeftUp_CounterClockwiseFromLeft_WithinCell_VariedDistance(float initialLeft, float initialTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(expectedLeft, expectedTop, expectedAngle, 0.0f);
 
         TrainMovement.MoveLeftUp(position);
@@ -66,9 +66,9 @@ public class CounterClockwiseFromLeft
     [InlineData(0.0f, 0.5f, 0.0f, HalfCornerTrackDistance * 3, HalfCornerTrackDistance)]
     [InlineData(Cos45ByRadius, Sin45ByRadius, 315.0f, HalfCornerTrackDistance * 2, HalfCornerTrackDistance)]
     [InlineData(Cos45ByRadius, Sin45ByRadius, 315.0f, 1.0f + HalfCornerTrackDistance, 1.0f)]
-    public void MoveLeftUp_CounterClockwiseFromLeft_BeyondCell(float initalLeft, float initalTop, float initialAngle, float distance, float expectedDistance)
+    public void MoveLeftUp_CounterClockwiseFromLeft_BeyondCell(float initialLeft, float initialTop, float initialAngle, float distance, float expectedDistance)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(0.5f, -0.1f, 270.0f, expectedDistance);
 
         TrainMovement.MoveLeftUp(position);

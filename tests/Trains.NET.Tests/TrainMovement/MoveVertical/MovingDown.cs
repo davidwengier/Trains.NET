@@ -47,9 +47,9 @@ public class MovingDown
     [InlineData(0.1f, 0.2f, 0.3f)]
     [InlineData(0.1f, 0.5f, 0.6f)]
     [InlineData(0.5f, 0.4f, 0.9f)]
-    public void MoveVertical_MovingDown_WithinCell_VariedDistance(float initalTop, float distance, float expectedTop)
+    public void MoveVertical_MovingDown_WithinCell_VariedDistance(float initialTop, float distance, float expectedTop)
     {
-        var position = new TrainPosition(0.5f, initalTop, 90, distance);
+        var position = new TrainPosition(0.5f, initialTop, 90, distance);
         var expectedPos = new TrainPosition(0.5f, expectedTop, 90, 0.0f);
 
         TrainMovement.MoveVertical(position);
@@ -66,9 +66,9 @@ public class MovingDown
     [InlineData(0.5f, 1.0f, 0.5f)]
     [InlineData(0.5f, 2.0f, 1.5f)]
     [InlineData(0.0f, 1.0f, 0.0f)]
-    public void MoveVertical_MovingDown_BeyondCell(float initalTop, float distance, float expectedDistance)
+    public void MoveVertical_MovingDown_BeyondCell(float initialTop, float distance, float expectedDistance)
     {
-        var position = new TrainPosition(0.5f, initalTop, 90, distance);
+        var position = new TrainPosition(0.5f, initialTop, 90, distance);
         var expectedPos = new TrainPosition(0.5f, 1.1f, 90, expectedDistance);
 
         TrainMovement.MoveVertical(position);

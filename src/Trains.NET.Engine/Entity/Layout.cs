@@ -7,7 +7,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
 {
     public event EventHandler? CollectionChanged;
 
-    private readonly object _gate = new object();
+    private readonly object _gate = new();
     private readonly IEntityCollectionSerializer _gameSerializer = gameSerializer;
     private IStaticEntity?[][] _entities = null!;
     private int _rows;
@@ -165,14 +165,9 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
 
         var entities = _gameSerializer.Deserialize(entitiesString);
 
-        var staticEntites = entities.OfType<IStaticEntity>();
-
-        if (staticEntites is null)
-            return false;
-
         ResetArrays();
 
-        foreach (IStaticEntity entity in staticEntites)
+        foreach (IStaticEntity entity in entities.OfType<IStaticEntity>())
         {
             StoreEntity(entity.Column, entity.Row, entity);
         }

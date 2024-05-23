@@ -118,7 +118,7 @@ public class EmojiDrawer(
     {
         using var bitmap = new SKBitmap(pixelMapper.CellSize, pixelMapper.CellSize, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
         using var skCanvas = new SKCanvas(bitmap);
-        using (ICanvas canvas = new SKCanvasWrapper(skCanvas))
+        using (var canvas = new SKCanvasWrapper(skCanvas))
         using (canvas.Scope())
         {
             float scale = pixelMapper.CellSize / 100.0f;

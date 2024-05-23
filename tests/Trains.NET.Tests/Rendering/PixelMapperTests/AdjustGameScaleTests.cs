@@ -49,7 +49,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
-        // Set the inital viewport to be at 100,100
+        // Set the initial viewport to be at 100,100
         pixelMapper.SetViewPort(100, 100);
         pixelMapper.LogData(_output);
 
@@ -72,7 +72,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
-        // Set the inital viewport to be at 100,100
+        // Set the initial viewport to be at 100,100
         pixelMapper.SetViewPort(100, 100);
         pixelMapper.LogData(_output);
 
@@ -95,7 +95,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
-        // Set the inital viewport to be at 100,100
+        // Set the initial viewport to be at 100,100
         pixelMapper.SetViewPort(100, 100);
         pixelMapper.LogData(_output);
 
@@ -124,7 +124,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
 
         pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
 
-        // Set the inital viewport to be at 100,100
+        // Set the initial viewport to be at 100,100
         pixelMapper.SetViewPort(350, 700);
         pixelMapper.LogData(_output);
 

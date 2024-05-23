@@ -20,8 +20,10 @@ public class TrainsRenderer(
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        foreach (Train train in _movableLayout)
+        foreach (var movable in _movableLayout)
         {
+            var train = (Train)movable;
+
             // Create a fake train pointing backwards, to represent our carriage
             var fakeTrain = train.Clone();
             for (var i = 0; i <= train.Carriages; i++)

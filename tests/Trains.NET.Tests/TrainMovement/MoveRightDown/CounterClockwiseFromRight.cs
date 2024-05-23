@@ -48,9 +48,9 @@ public class CounterClockwiseFromRight
     [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance, 1.0f - Cos60ByRadius, 1.0f - Sin60ByRadius, 150.0f)]
     [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance * 2, 1.0f - Cos30ByRadius, 1.0f - Sin30ByRadius, 120.0f)]
     [InlineData(1.0f - Cos60ByRadius, 1.0f - Sin60ByRadius, 150.0f, ThirdCornerTrackDistance, 1.0f - Cos30ByRadius, 1.0f - Sin30ByRadius, 120.0f)]
-    public void MoveRightDown_CounterClockwiseFromRight_WithinCell_VariedDistance(float initalLeft, float initalTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
+    public void MoveRightDown_CounterClockwiseFromRight_WithinCell_VariedDistance(float initialLeft, float initialTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(expectedLeft, expectedTop, expectedAngle, 0.0f);
 
         TrainMovement.MoveRightDown(position);
@@ -65,9 +65,9 @@ public class CounterClockwiseFromRight
     [InlineData(1.0f, 0.5f, 180.0f, HalfCornerTrackDistance * 3, HalfCornerTrackDistance)]
     [InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, HalfCornerTrackDistance * 2, HalfCornerTrackDistance)]
     [InlineData(1.0f - Cos45ByRadius, 1.0f - Sin45ByRadius, 135.0f, 1.0f + HalfCornerTrackDistance, 1.0f)]
-    public void MoveRightDown_CounterClockwiseFromRight_BeyondCell(float initalLeft, float initalTop, float initialAngle, float distance, float expectedDistance)
+    public void MoveRightDown_CounterClockwiseFromRight_BeyondCell(float initialLeft, float initialTop, float initialAngle, float distance, float expectedDistance)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(0.5f, 1.1f, 90.0f, expectedDistance);
 
         TrainMovement.MoveRightDown(position);

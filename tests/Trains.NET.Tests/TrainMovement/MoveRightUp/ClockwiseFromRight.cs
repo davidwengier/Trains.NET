@@ -48,9 +48,9 @@ public class ClockwiseFromRight
     [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance, 1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f)]
     [InlineData(1.0f, 0.5f, 180.0f, ThirdCornerTrackDistance * 2, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
     [InlineData(1.0f - Cos60ByRadius, Sin60ByRadius, 210.0f, ThirdCornerTrackDistance, 1.0f - Cos30ByRadius, Sin30ByRadius, 240.0f)]
-    public void MoveRightUp_ClockwiseFromRight_WithinCell_VariedDistance(float initalLeft, float initalTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
+    public void MoveRightUp_ClockwiseFromRight_WithinCell_VariedDistance(float initialLeft, float initialTop, float initialAngle, float distance, float expectedLeft, float expectedTop, float expectedAngle)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(expectedLeft, expectedTop, expectedAngle, 0.0f);
 
         TrainMovement.MoveRightUp(position);
@@ -65,9 +65,9 @@ public class ClockwiseFromRight
     [InlineData(1.0f, 0.5f, 180.0f, HalfCornerTrackDistance * 3, HalfCornerTrackDistance)]
     [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, HalfCornerTrackDistance * 2, HalfCornerTrackDistance)]
     [InlineData(1.0f - Cos45ByRadius, Sin45ByRadius, 225.0f, 1.0f + HalfCornerTrackDistance, 1.0f)]
-    public void MoveRightUp_ClockwiseFromRight_BeyondCell(float initalLeft, float initalTop, float initialAngle, float distance, float expectedDistance)
+    public void MoveRightUp_ClockwiseFromRight_BeyondCell(float initialLeft, float initialTop, float initialAngle, float distance, float expectedDistance)
     {
-        var position = new TrainPosition(initalLeft, initalTop, initialAngle, distance);
+        var position = new TrainPosition(initialLeft, initialTop, initialAngle, distance);
         var expectedPos = new TrainPosition(0.5f, -0.1f, 270, expectedDistance);
 
         TrainMovement.MoveRightUp(position);

@@ -47,9 +47,9 @@ public class MovingLeft
     [InlineData(0.9f, 0.2f, 0.7f)]
     [InlineData(0.9f, 0.5f, 0.4f)]
     [InlineData(0.5f, 0.4f, 0.1f)]
-    public void MoveHorizontal_MovingLeft_WithinCell_VariedDistance(float initalLeft, float distance, float expectedLeft)
+    public void MoveHorizontal_MovingLeft_WithinCell_VariedDistance(float initialLeft, float distance, float expectedLeft)
     {
-        var position = new TrainPosition(initalLeft, 0.5f, 180, distance);
+        var position = new TrainPosition(initialLeft, 0.5f, 180, distance);
         var expectedPos = new TrainPosition(expectedLeft, 0.5f, 180, 0.0f);
 
         TrainMovement.MoveHorizontal(position);
@@ -66,9 +66,9 @@ public class MovingLeft
     [InlineData(0.5f, 1.0f, 0.5f)]
     [InlineData(0.5f, 2.0f, 1.5f)]
     [InlineData(1.0f, 1.0f, 0.0f)]
-    public void MoveHorizontal_MovingLeft_BeyondCell(float initalLeft, float distance, float expectedDistance)
+    public void MoveHorizontal_MovingLeft_BeyondCell(float initialLeft, float distance, float expectedDistance)
     {
-        var position = new TrainPosition(initalLeft, 0.5f, 180, distance);
+        var position = new TrainPosition(initialLeft, 0.5f, 180, distance);
         var expectedPos = new TrainPosition(-0.1f, 0.5f, 180, expectedDistance);
 
         TrainMovement.MoveHorizontal(position);

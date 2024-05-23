@@ -6,9 +6,9 @@ public class BuildModeButton(IGameManager gameManager) : MultiButton(34, GetButt
 {
     private static ButtonBase[] GetButtons(IGameManager gameManager)
     {
-        return new ButtonBase[]{
-                new PictureButton(Picture.Tools, 20, () => gameManager.BuildMode, () => gameManager.BuildMode = true),
-                new PictureButton(Picture.Play, 20, () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
-                };
+        return [
+            new PictureButton(Picture.Tools, 20, () => gameManager.BuildMode, () => gameManager.BuildMode = true),
+            new PictureButton(Picture.Play, 20, () => !gameManager.BuildMode, () => gameManager.BuildMode = false)
+        ];
     }
 }

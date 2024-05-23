@@ -28,7 +28,7 @@ public partial class TunnelRenderer(
         var tunnelBaseColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(firstMountain));
         var entranceColourArray = new[] { tunnelBaseColour, tunnelRoofColour, tunnelBaseColour };
 
-        Dictionary<(int column, int row), Tunnel> entrances = new();
+        Dictionary<(int column, int row), Tunnel> entrances = [];
 
         foreach (Track track in _trackLayout)
         {
@@ -202,13 +202,13 @@ public partial class TunnelRenderer(
         {
             var cellSize = pixelMapper.CellSize;
             var quarterCellSize = 0.25f * cellSize;
-            var threequarterCellSize = 0.75f * cellSize;
+            var threeQuarterCellSize = 0.75f * cellSize;
 
             c.DrawHorizontalGradientRect(0, 0, cellSize, quarterCellSize, colours);
-            c.DrawVerticalGradientRect(threequarterCellSize, 0, quarterCellSize, cellSize, colours);
-            c.DrawHorizontalGradientRect(0, threequarterCellSize, cellSize, quarterCellSize, colours);
-            c.DrawGradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
-            c.DrawGradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
+            c.DrawVerticalGradientRect(threeQuarterCellSize, 0, quarterCellSize, cellSize, colours);
+            c.DrawHorizontalGradientRect(0, threeQuarterCellSize, cellSize, quarterCellSize, colours);
+            c.DrawGradientCircle(threeQuarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
+            c.DrawGradientCircle(threeQuarterCellSize, threeQuarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
         }
     }
 
@@ -220,16 +220,16 @@ public partial class TunnelRenderer(
         {
             var cellSize = pixelMapper.CellSize;
             var quarterCellSize = 0.25f * cellSize;
-            var threequarterCellSize = 0.75f * cellSize;
+            var threeQuarterCellSize = 0.75f * cellSize;
 
             c.DrawVerticalGradientRect(0, 0, quarterCellSize, cellSize, colours);
             c.DrawHorizontalGradientRect(0, 0, cellSize, quarterCellSize, colours);
-            c.DrawVerticalGradientRect(0, threequarterCellSize, quarterCellSize, cellSize, colours);
-            c.DrawHorizontalGradientRect(0, threequarterCellSize, cellSize, quarterCellSize, colours);
+            c.DrawVerticalGradientRect(0, threeQuarterCellSize, quarterCellSize, cellSize, colours);
+            c.DrawHorizontalGradientRect(0, threeQuarterCellSize, cellSize, quarterCellSize, colours);
             c.DrawGradientCircle(0, 0, quarterCellSize, quarterCellSize, 0, 0, cellSize, colours);
-            c.DrawGradientCircle(threequarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
-            c.DrawGradientCircle(threequarterCellSize, threequarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
-            c.DrawGradientCircle(0, threequarterCellSize, quarterCellSize, quarterCellSize, 0, cellSize, cellSize, colours);
+            c.DrawGradientCircle(threeQuarterCellSize, 0, quarterCellSize, quarterCellSize, cellSize, 0, cellSize, colours);
+            c.DrawGradientCircle(threeQuarterCellSize, threeQuarterCellSize, quarterCellSize, quarterCellSize, cellSize, cellSize, cellSize, colours);
+            c.DrawGradientCircle(0, threeQuarterCellSize, quarterCellSize, quarterCellSize, 0, cellSize, cellSize, colours);
         }
     }
 
@@ -315,9 +315,9 @@ public partial class TunnelRenderer(
             var cellSize = pixelMapper.CellSize;
             var halfCellSize = 0.5f * pixelMapper.CellSize;
 
-            c.DrawVerticalGradientRect(0, 0, cellSize, halfCellSize, new Color[] { darkColour, lightColour });
-            c.DrawGradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, new[] { darkColour, lightColour });
-            c.DrawGradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, new[] { darkColour, lightColour });
+            c.DrawVerticalGradientRect(0, 0, cellSize, halfCellSize, [darkColour, lightColour]);
+            c.DrawGradientCircle(0, halfCellSize, halfCellSize, halfCellSize, 0, cellSize, halfCellSize, [darkColour, lightColour]);
+            c.DrawGradientCircle(halfCellSize, halfCellSize, halfCellSize, halfCellSize, cellSize, cellSize, halfCellSize, [darkColour, lightColour]);
         }
     }
 
@@ -339,7 +339,7 @@ public partial class TunnelRenderer(
             var cellSize = pixelMapper.CellSize;
             var halfCellSize = 0.5f * pixelMapper.CellSize;
 
-            c.DrawGradientCircle(0, 0, cellSize, cellSize, 0, halfCellSize, halfCellSize, new[] { lightColour, darkColour });
+            c.DrawGradientCircle(0, 0, cellSize, cellSize, 0, halfCellSize, halfCellSize, [lightColour, darkColour]);
         }
     }
 

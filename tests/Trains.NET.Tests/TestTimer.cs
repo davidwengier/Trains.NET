@@ -1,8 +1,6 @@
-﻿using Trains.NET.Engine;
+﻿namespace Trains.NET.Tests;
 
-namespace Trains.NET.Tests;
-
-public class TestTimer : ITimer
+public class TestTimer : Engine.ITimer
 {
     public double Interval { get; set; }
 

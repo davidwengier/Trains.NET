@@ -17,12 +17,12 @@ public class GameThreadTimerTests
     {
         const int TestInterval = 20;
         bool run = false;
-        using (ITimer gameTimer = new GameThreadTimer())
+        using (var gameTimer = new GameThreadTimer())
         {
             gameTimer.Interval = TestInterval;
             gameTimer.Elapsed += (sender, e) => run = true;
             gameTimer.Start();
-            await Task.Delay(TestInterval * 2).ConfigureAwait(false);
+            await Task.Delay(TestInterval * 2);
         }
         Assert.True(run);
     }
@@ -35,7 +35,7 @@ public class GameThreadTimerTests
     {
         const double IntervalDiffMillisecondThreshold = 2.0;
 
-        (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw => { }).ConfigureAwait(false);
+        (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw => { });
 
         Assert.True(enoughSamples, "Didn't collect enough samples to average");
         Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
@@ -59,7 +59,7 @@ public class GameThreadTimerTests
         {
             long target = sw.ElapsedMilliseconds + sleepWorkloadMS;
             while (sw.ElapsedMilliseconds < target) ;
-        }).ConfigureAwait(false);
+        });
 
         Assert.True(enoughSamples, "Didn't collect enough samples to average");
         Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
@@ -72,7 +72,7 @@ public class GameThreadTimerTests
 
         var times = new List<long>();
         var testStopwatch = Stopwatch.StartNew();
-        using (ITimer gameTimer = new GameThreadTimer())
+        using (var gameTimer = new GameThreadTimer())
         {
             gameTimer.Interval = interval;
             gameTimer.Elapsed += (sender, e) =>

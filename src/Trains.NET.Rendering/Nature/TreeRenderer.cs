@@ -20,7 +20,7 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
         _baseTreeBrush = new PaintBrush
         {
             Color = new Color("#1B633A"),
-            Style = PaintStyle.Fill
+            Style = PaintStyle.Fill,
         };
         _topTreeBrush = new PaintBrush
         {

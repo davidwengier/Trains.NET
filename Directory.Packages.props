@@ -3,25 +3,25 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.5.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
-    <PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="4.5.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.128" />
-    <PackageVersion Include="Silk.NET.Input" Version="2.17.1" />
-    <PackageVersion Include="Silk.NET.OpenGL" Version="2.17.1" />
-    <PackageVersion Include="Silk.NET.Windowing" Version="2.17.1" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="3.0.1" />
-    <PackageVersion Include="SkiaSharp" Version="2.88.3" />
-    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="2.88.3" />
-    <PackageVersion Include="SkiaSharp.Views.WindowsForms" Version="2.88.3" />
-    <PackageVersion Include="SkiaSharp.Views.WPF" Version="2.88.3" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.10.0-3.final" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0-3.final" />
+    <PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="4.10.0-3.final" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.62-alpha" />
+    <PackageVersion Include="Silk.NET.Input" Version="2.21.0" />
+    <PackageVersion Include="Silk.NET.OpenGL" Version="2.21.0" />
+    <PackageVersion Include="Silk.NET.Windowing" Version="2.21.0" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.4" />
+    <PackageVersion Include="SkiaSharp" Version="3.0.0-preview.3.1" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="3.0.0-preview.3.1" />
+    <PackageVersion Include="SkiaSharp.Views.WindowsForms" Version="3.0.0-preview.3.1" />
+    <PackageVersion Include="SkiaSharp.Views.WPF" Version="3.0.0-preview.3.1" />
     <PackageVersion Include="Svg.SourceGenerator.Skia" Version="0.5.18" />
-    <PackageVersion Include="xunit" Version="2.4.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
+    <PackageVersion Include="xunit" Version="2.8.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.0" />
   </ItemGroup>
 </Project>

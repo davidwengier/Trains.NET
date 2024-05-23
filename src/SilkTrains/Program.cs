@@ -6,6 +6,8 @@ using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using SilkTrains;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using SkiaSharp;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;

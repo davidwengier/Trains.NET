@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using Trains.NET.Engine;
 
 namespace BlazingTrains;
 
-public class BlazorTimer : ITimer
+public class BlazorTimer : Trains.NET.Engine.ITimer
 {
     private CancellationTokenSource? _cts;
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();

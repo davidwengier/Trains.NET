@@ -2,11 +2,11 @@
 
 namespace Trains.NET.Engine;
 
-public class TrainManager : ITrainManager, IGameState
+public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrainManager, IGameState
 {
     private Train? _currentTrain;
-    private readonly IMovableLayout _movableLayout;
-    private readonly ILayout _layout;
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly ILayout _layout = layout;
     private readonly Random _trainSpawnRandom = new();
 
     public event EventHandler? Changed;
@@ -28,12 +28,6 @@ public class TrainManager : ITrainManager, IGameState
             }
             Changed?.Invoke(this, EventArgs.Empty);
         }
-    }
-
-    public TrainManager(IMovableLayout movableLayout, ILayout layout)
-    {
-        _movableLayout = movableLayout;
-        _layout = layout;
     }
 
     public IMovable? AddTrain(int column, int row)

@@ -3,24 +3,21 @@
 namespace Trains.NET.Rendering;
 
 [Order(2)]
-public class PointerTool : IDraggableTool, IAlternateDragTool
+public class PointerTool(
+    ITrainManager trainManager,
+    IMovableLayout movableLayout,
+    IPixelMapper pixelMapper,
+    ILayout<Track> trackLayout) : IDraggableTool, IAlternateDragTool
 {
-    private readonly ITrainManager _trainManager;
-    private readonly IMovableLayout _movableLayout;
-    private readonly IPixelMapper _pixelMapper;
-    private readonly ILayout<Track> _trackLayout;
+    private readonly ITrainManager _trainManager = trainManager;
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly IPixelMapper _pixelMapper = pixelMapper;
+    private readonly ILayout<Track> _trackLayout = trackLayout;
 
     private int _lastX;
     private int _lastY;
 
     public ToolMode Mode => ToolMode.All;
-    public PointerTool(ITrainManager trainManager, IMovableLayout movableLayout, IPixelMapper pixelMapper, ILayout<Track> trackLayout)
-    {
-        _trainManager = trainManager;
-        _movableLayout = movableLayout;
-        _pixelMapper = pixelMapper;
-        _trackLayout = trackLayout;
-    }
 
     public string Name => "Pointer";
 

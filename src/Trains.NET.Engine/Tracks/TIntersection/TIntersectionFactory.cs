@@ -3,16 +3,10 @@
 namespace Trains.NET.Engine;
 
 [Order(2)]
-public class TIntersectionFactory : IStaticEntityFactory<Track>
+public class TIntersectionFactory(ITerrainMap terrainMap, ILayout layout) : IStaticEntityFactory<Track>
 {
-    private readonly ITerrainMap _terrainMap;
-    private readonly ILayout _layout;
-
-    public TIntersectionFactory(ITerrainMap terrainMap, ILayout layout)
-    {
-        _terrainMap = terrainMap;
-        _layout = layout;
-    }
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly ILayout _layout = layout;
 
     public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
     {

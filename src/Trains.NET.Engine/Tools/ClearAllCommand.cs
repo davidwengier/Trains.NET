@@ -1,16 +1,11 @@
 ﻿namespace Trains.NET.Engine;
 
 [Order(10)]
-public class ClearAllCommand : ICommand
+public class ClearAllCommand(IGameStateManager gameStateManager) : ICommand
 {
-    private readonly IGameStateManager _gameStateManager;
+    private readonly IGameStateManager _gameStateManager = gameStateManager;
 
     public string Name => "Clear All";
-
-    public ClearAllCommand(IGameStateManager gameStateManager)
-    {
-        _gameStateManager = gameStateManager;
-    }
 
     public void Execute()
     {

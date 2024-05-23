@@ -4,14 +4,9 @@ namespace Trains.NET.Rendering;
 
 [Order(0)]
 // Terrain layer has its own efficient caching, so doesn't need to be an ICachedLayerRenderer
-public class TerrainLayerRenderer : ILayerRenderer
+public class TerrainLayerRenderer(ITerrainMapRenderer terrainMapRenderer) : ILayerRenderer
 {
-    private readonly ITerrainMapRenderer _terrainMapRenderer;
-
-    public TerrainLayerRenderer(ITerrainMapRenderer terrainMapRenderer)
-    {
-        _terrainMapRenderer = terrainMapRenderer;
-    }
+    private readonly ITerrainMapRenderer _terrainMapRenderer = terrainMapRenderer;
 
     public bool Enabled { get; set; } = true;
     public string Name => "Terrain";

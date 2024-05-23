@@ -1,16 +1,13 @@
 ﻿namespace Trains.NET.Rendering.UI;
 
-public class PictureButton : ButtonBase
+public class PictureButton(
+    Picture picture,
+    float pictureSize,
+    Func<bool> isActive,
+    Action onClick) : ButtonBase(isActive, onClick)
 {
-    private readonly Picture _picture;
-    private readonly float _pictureSize;
-
-    public PictureButton(Picture picture, float pictureSize, Func<bool> isActive, Action onClick)
-        : base(isActive, onClick)
-    {
-        _picture = picture;
-        _pictureSize = pictureSize;
-    }
+    private readonly Picture _picture = picture;
+    private readonly float _pictureSize = pictureSize;
 
     public override int GetMinimumWidth(ICanvas canvas)
         => (int)_pictureSize;

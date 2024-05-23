@@ -2,16 +2,10 @@
 
 namespace Trains.NET.Engine.Tracks;
 
-public class BridgeFactory : IStaticEntityFactory<Track>
+public class BridgeFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout) : IStaticEntityFactory<Track>
 {
-    private readonly ITerrainMap _terrainMap;
-    private readonly ILayout<Track> _trackLayout;
-
-    public BridgeFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout)
-    {
-        _terrainMap = terrainMap;
-        _trackLayout = trackLayout;
-    }
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly ILayout<Track> _trackLayout = trackLayout;
 
     public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
     {

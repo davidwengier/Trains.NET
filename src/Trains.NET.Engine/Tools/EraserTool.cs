@@ -1,21 +1,17 @@
 ﻿namespace Trains.NET.Engine;
 
 [Order(20)]
-public class EraserTool : ITool
+public class EraserTool(
+    ILayout trackLayout,
+    IMovableLayout movableLayout,
+    ITrainManager trainManager) : ITool
 {
-    private readonly ILayout _collection;
-    private readonly IMovableLayout _movableLayout;
-    private readonly ITrainManager _trainManager;
+    private readonly ILayout _collection = trackLayout;
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly ITrainManager _trainManager = trainManager;
 
     public ToolMode Mode => ToolMode.Build;
     public string Name => "Eraser";
-
-    public EraserTool(ILayout trackLayout, IMovableLayout movableLayout, ITrainManager trainManager)
-    {
-        _collection = trackLayout;
-        _movableLayout = movableLayout;
-        _trainManager = trainManager;
-    }
 
     public void Execute(int column, int row, ExecuteInfo info)
     {

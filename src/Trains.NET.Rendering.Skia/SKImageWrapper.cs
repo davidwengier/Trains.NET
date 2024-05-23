@@ -2,14 +2,9 @@
 
 namespace Trains.NET.Rendering.Skia;
 
-public class SKImageWrapper : IImage
+public class SKImageWrapper(SKImage sKImage) : IImage
 {
-    private readonly SKImage _image;
-
-    public SKImageWrapper(SKImage sKImage)
-    {
-        _image = sKImage;
-    }
+    private readonly SKImage _image = sKImage;
 
     public SKImage Image => _image;
 

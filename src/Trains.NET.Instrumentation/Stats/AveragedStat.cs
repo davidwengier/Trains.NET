@@ -1,13 +1,10 @@
 ﻿namespace Trains.NET.Instrumentation;
 
-public abstract class AveragedStat : IStat
+public abstract class AveragedStat(int sampleCount) : IStat
 {
     public double? Value { get; private set; }
-    private readonly int _sampleCount;
-    public AveragedStat(int sampleCount)
-    {
-        _sampleCount = sampleCount;
-    }
+    private readonly int _sampleCount = sampleCount;
+
     protected void SetValue(double value)
     {
         if (this.Value == null)

@@ -2,24 +2,17 @@
 
 namespace Trains.NET.Engine;
 
-public class MovableLayout : IMovableLayout, IGameState, IGameStep
+public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSerializer) : IMovableLayout, IGameState, IGameStep
 {
     private ImmutableList<IMovable> _movables = ImmutableList<IMovable>.Empty;
     private Dictionary<Track, (Train, float)> _lastTrackLeases = new();
-    private readonly ILayout _layout;
-    private readonly IEntityCollectionSerializer _gameSerializer;
-    private readonly Train _reservedTrain;
+    private readonly ILayout _layout = layout;
+    private readonly IEntityCollectionSerializer _gameSerializer = gameSerializer;
+    private readonly Train _reservedTrain = new Train(0);
 
     public int Count => _movables.Count;
 
     public IMovable this[int index] => _movables[index];
-
-    public MovableLayout(ILayout layout, IEntityCollectionSerializer gameSerializer)
-    {
-        _layout = layout;
-        _gameSerializer = gameSerializer;
-        _reservedTrain = new Train(0);
-    }
 
     public int IndexOf(IMovable movable)
         => _movables.IndexOf(movable);

@@ -2,16 +2,10 @@
 
 public partial class ImageCache
 {
-    private class SuspendSetDirtyCallsTracker : IDisposable
+    private class SuspendSetDirtyCallsTracker(ImageCache owner) : IDisposable
     {
-        private readonly ImageCache _owner;
-        private readonly HashSet<object> _dirtyQueue;
-
-        public SuspendSetDirtyCallsTracker(ImageCache owner)
-        {
-            _owner = owner;
-            _dirtyQueue = new HashSet<object>();
-        }
+        private readonly ImageCache _owner = owner;
+        private readonly HashSet<object> _dirtyQueue = new HashSet<object>();
 
         internal void Add(object key)
         {

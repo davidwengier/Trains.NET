@@ -1,15 +1,9 @@
 ﻿namespace Trains.NET.Rendering.UI;
 
-public class TextButton : ButtonBase
+public class TextButton(string label, Func<bool> isActive, Action onClick) : ButtonBase(isActive, onClick)
 {
-    private readonly string _label;
+    private readonly string _label = label;
     public PaintBrush LabelBrush { get; set; } = Brushes.Label;
-
-    public TextButton(string label, Func<bool> isActive, Action onClick)
-        : base(isActive, onClick)
-    {
-        _label = label;
-    }
 
     public override int GetMinimumWidth(ICanvas canvas)
     {

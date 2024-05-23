@@ -3,19 +3,14 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trains.NET.Engine;
 
-public class Layout : ILayout, IInitializeAsync, IGameState, IGameStep
+public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInitializeAsync, IGameState, IGameStep
 {
     public event EventHandler? CollectionChanged;
 
     private readonly object _gate = new object();
-    private readonly IEntityCollectionSerializer _gameSerializer;
+    private readonly IEntityCollectionSerializer _gameSerializer = gameSerializer;
     private IStaticEntity?[][] _entities = null!;
     private int _rows;
-
-    public Layout(IEntityCollectionSerializer gameSerializer)
-    {
-        _gameSerializer = gameSerializer;
-    }
 
     public Task InitializeAsync(int columns, int rows)
     {

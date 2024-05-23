@@ -2,14 +2,9 @@
 
 namespace Trains.NET.Engine.Storage;
 
-public class EntityCollectionSerializer : IEntityCollectionSerializer
+public class EntityCollectionSerializer(IEnumerable<IEntitySerializer> serializer) : IEntityCollectionSerializer
 {
-    private readonly IEnumerable<IEntitySerializer> _serializers;
-
-    public EntityCollectionSerializer(IEnumerable<IEntitySerializer> serializer)
-    {
-        _serializers = serializer;
-    }
+    private readonly IEnumerable<IEntitySerializer> _serializers = serializer;
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     public IEnumerable<IEntity> Deserialize(string lines)

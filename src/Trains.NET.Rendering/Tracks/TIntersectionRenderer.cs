@@ -2,14 +2,9 @@
 
 namespace Trains.NET.Rendering;
 
-public class TIntersectionRenderer : SpecializedEntityRenderer<TIntersection, Track>
+public class TIntersectionRenderer(SingleTrackRenderer trackRenderer) : SpecializedEntityRenderer<TIntersection, Track>
 {
-    private readonly SingleTrackRenderer _trackRenderer;
-
-    public TIntersectionRenderer(SingleTrackRenderer trackRenderer)
-    {
-        _trackRenderer = trackRenderer;
-    }
+    private readonly SingleTrackRenderer _trackRenderer = trackRenderer;
 
     protected override void Render(ICanvas canvas, TIntersection track)
     {

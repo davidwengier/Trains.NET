@@ -1,16 +1,11 @@
 ﻿namespace Trains.NET.Engine;
 
 [Order(140)]
-public class ToggleAutosaveCommand : ICommand
+public class ToggleAutosaveCommand(IGameStateManager gameStateManager) : ICommand
 {
-    private readonly IGameStateManager _gameStateManager;
+    private readonly IGameStateManager _gameStateManager = gameStateManager;
 
     public string Name => "Toggle Autosave";
-
-    public ToggleAutosaveCommand(IGameStateManager gameStateManager)
-    {
-        _gameStateManager = gameStateManager;
-    }
 
     public void Execute()
     {

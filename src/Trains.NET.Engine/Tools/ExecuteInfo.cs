@@ -1,13 +1,7 @@
 ﻿namespace Trains.NET.Engine;
 
-public struct ExecuteInfo
+public struct ExecuteInfo(int fromColumn, int fromRow)
 {
-    public readonly int FromColumn;
-    public readonly int FromRow;
-
-    public ExecuteInfo(int fromColumn, int fromRow)
-    {
-        FromColumn = fromColumn;
-        FromRow = fromRow;
-    }
+    public readonly int FromColumn = fromColumn;
+    public readonly int FromRow = fromRow;
 }

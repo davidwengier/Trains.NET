@@ -1,16 +1,11 @@
 ﻿namespace Trains.NET.Engine;
 
 [Order(150)]
-public class SaveCommand : ICommand
+public class SaveCommand(IGameStateManager gameStateManager) : ICommand
 {
-    private readonly IGameStateManager _gameStateManager;
+    private readonly IGameStateManager _gameStateManager = gameStateManager;
 
     public string Name => "Save";
-
-    public SaveCommand(IGameStateManager gameStateManager)
-    {
-        _gameStateManager = gameStateManager;
-    }
 
     public void Execute()
     {

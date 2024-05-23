@@ -8,18 +8,15 @@ using Trains.NET.Rendering.Skia;
 namespace Trains.Commands;
 
 [Order(2000)]
-public class SnapshotCommand : ICommand
+public class SnapshotCommand(
+    IPixelMapper pixelMapper,
+    IEnumerable<ILayerRenderer> renderers)
+    : ICommand
 {
-    private readonly IPixelMapper _pixelMapper;
-    private readonly IEnumerable<ILayerRenderer> _renderers;
+    private readonly IPixelMapper _pixelMapper = pixelMapper;
+    private readonly IEnumerable<ILayerRenderer> _renderers = renderers;
 
     public string Name => "Snapshot";
-
-    public SnapshotCommand(IPixelMapper pixelMapper, IEnumerable<ILayerRenderer> renderers)
-    {
-        _pixelMapper = pixelMapper;
-        _renderers = renderers;
-    }
 
     public void Execute()
     {

@@ -2,11 +2,8 @@
 
 namespace Trains.NET.Tests;
 
-public class StraightTests : TestBase
+public class StraightTests(ITestOutputHelper output) : TestBase(output)
 {
-    public StraightTests(ITestOutputHelper output) : base(output)
-    { }
-
     [Theory]
     [InlineData(TrainAngleHelper.TrainFacingUp, 1, 3, 1, 1)]
     [InlineData(TrainAngleHelper.TrainFacingDown, 1, 1, 1, 3)]

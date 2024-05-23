@@ -1,11 +1,11 @@
 ﻿namespace Trains.NET.Engine;
 
-public class TrackNeighbors
+public class TrackNeighbors(Track? left, Track? up, Track? right, Track? down)
 {
-    public Track? Left { get; }
-    public Track? Up { get; }
-    public Track? Right { get; }
-    public Track? Down { get; }
+    public Track? Left { get; } = left;
+    public Track? Up { get; } = up;
+    public Track? Right { get; } = right;
+    public Track? Down { get; } = down;
 
     public IEnumerable<Track> All
     {
@@ -30,14 +30,6 @@ public class TrackNeighbors
             this.Right == otherTrack ||
             this.Up == otherTrack ||
             this.Down == otherTrack);
-    }
-
-    public TrackNeighbors(Track? left, Track? up, Track? right, Track? down)
-    {
-        this.Left = left;
-        this.Up = up;
-        this.Right = right;
-        this.Down = down;
     }
 
     public static TrackNeighbors GetConnectedNeighbours(ILayout trackLayout, int column, int row, bool emptyIsConsideredConnected = false, bool ignoreCurrent = false)

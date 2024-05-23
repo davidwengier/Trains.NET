@@ -3,24 +3,20 @@
 namespace Trains.NET.Rendering;
 
 [Order(500)]
-public class TrainsRenderer : ILayerRenderer
+public class TrainsRenderer(
+    IMovableLayout movableLayout,
+    ILayout layout,
+    IRenderer<Train> trainRenderer,
+    CarriageRenderer carriageRenderer) : ILayerRenderer
 {
-    private readonly IMovableLayout _movableLayout;
-    private readonly ILayout _layout;
-    private readonly IRenderer<Train> _trainRenderer;
-    private readonly CarriageRenderer _carriageRenderer;
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly ILayout _layout = layout;
+    private readonly IRenderer<Train> _trainRenderer = trainRenderer;
+    private readonly CarriageRenderer _carriageRenderer = carriageRenderer;
 
     public bool Enabled { get; set; } = true;
 
     public string Name => "Trains";
-
-    public TrainsRenderer(IMovableLayout movableLayout, ILayout layout, IRenderer<Train> trainRenderer, CarriageRenderer carriageRenderer)
-    {
-        _movableLayout = movableLayout;
-        _layout = layout;
-        _trainRenderer = trainRenderer;
-        _carriageRenderer = carriageRenderer;
-    }
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {

@@ -1,10 +1,7 @@
 ﻿namespace Trains.NET.Tests;
 
-public class TIntersectionTests : TestBase
+public class TIntersectionTests(ITestOutputHelper output) : TestBase(output)
 {
-    public TIntersectionTests(ITestOutputHelper output) : base(output)
-    { }
-
     [Theory]
     [InlineData(TrainAngleHelper.TrainFacingDown, 1, 1, 2, 2)]
     [InlineData(TrainAngleHelper.TrainFacingUp, 1, 3, 2, 2)]

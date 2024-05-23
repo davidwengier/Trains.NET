@@ -2,27 +2,23 @@
 
 namespace Trains.NET.Rendering.UI;
 
-public class InteractionManager : IInteractionManager
+public class InteractionManager(
+    IEnumerable<IInteractionHandler> handlers,
+    IGame game,
+    IPixelMapper pixelMapper,
+    IGameManager gameManager,
+    IAlternateDragTool alternateDragTool) : IInteractionManager
 {
-    private readonly IEnumerable<IInteractionHandler> _handler;
-    private readonly IGame _game;
-    private readonly IPixelMapper _pixelMapper;
-    private readonly IGameManager _gameManager;
-    private readonly IAlternateDragTool _alternateDragTool;
+    private readonly IEnumerable<IInteractionHandler> _handler = handlers.Reverse().ToArray();
+    private readonly IGame _game = game;
+    private readonly IPixelMapper _pixelMapper = pixelMapper;
+    private readonly IGameManager _gameManager = gameManager;
+    private readonly IAlternateDragTool _alternateDragTool = alternateDragTool;
     private IInteractionHandler? _capturedHandler;
     private ITool? _capturedTool;
     private bool _hasDragged;
     private int _lastToolColumn;
     private int _lastToolRow;
-
-    public InteractionManager(IEnumerable<IInteractionHandler> handlers, IGame game, IPixelMapper pixelMapper, IGameManager gameManager, IAlternateDragTool alternateDragTool)
-    {
-        _handler = handlers.Reverse().ToArray();
-        _game = game;
-        _pixelMapper = pixelMapper;
-        _gameManager = gameManager;
-        _alternateDragTool = alternateDragTool;
-    }
 
     public bool PointerClick(int x, int y)
         => HandleInteraction(x, y, PointerAction.Click);

@@ -3,14 +3,9 @@
 namespace Trains.NET.Engine.Tracks;
 
 [Order(4)]
-public class SignalFactory : IStaticEntityFactory<Track>
+public class SignalFactory(ITerrainMap terrainMap) : IStaticEntityFactory<Track>
 {
-    private readonly ITerrainMap _terrainMap;
-
-    public SignalFactory(ITerrainMap terrainMap)
-    {
-        _terrainMap = terrainMap;
-    }
+    private readonly ITerrainMap _terrainMap = terrainMap;
 
     public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
     {

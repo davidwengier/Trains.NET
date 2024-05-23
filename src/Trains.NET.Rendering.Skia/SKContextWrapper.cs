@@ -2,12 +2,7 @@
 
 namespace Trains.NET.Rendering.Skia;
 
-public class SKContextWrapper : IContext
+public class SKContextWrapper(GRContext context) : IContext
 {
-    public GRContext Context { get; }
-
-    public SKContextWrapper(GRContext context)
-    {
-        this.Context = context;
-    }
+    public GRContext Context { get; } = context;
 }

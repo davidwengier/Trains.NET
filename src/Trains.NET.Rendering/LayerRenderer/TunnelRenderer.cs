@@ -4,23 +4,19 @@ using Trains.NET.Engine;
 namespace Trains.NET.Rendering;
 
 [Order(700)]
-public partial class TunnelRenderer : ILayerRenderer
+public partial class TunnelRenderer(
+    ITerrainMap terrainMap,
+    ILayout<Track> layout,
+    IGameManager gameManager) : ILayerRenderer
 {
     private const int BuildModeAlpha = 170;
 
-    private readonly ITerrainMap _terrainMap;
-    private readonly ILayout<Track> _trackLayout;
-    private readonly IGameManager _gameManager;
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly ILayout<Track> _trackLayout = layout;
+    private readonly IGameManager _gameManager = gameManager;
 
     public bool Enabled { get; set; } = true;
     public string Name => "Tunnels";
-
-    public TunnelRenderer(ITerrainMap terrainMap, ILayout<Track> layout, IGameManager gameManager)
-    {
-        _terrainMap = terrainMap;
-        _trackLayout = layout;
-        _gameManager = gameManager;
-    }
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {

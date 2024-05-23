@@ -89,22 +89,15 @@ public class SnapshotTests
     }
 }
 
-public class CoordPixelConverstionTests : IAsyncLifetime
+public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifetime
 {
     private const int DefaultCellSize = 40;
     private const int DoubleDefaultCellSize = DefaultCellSize * 2;
     private const int HalfDefaultCellSize = DefaultCellSize / 2;
     // This screen size is used as part of the data below, be careful if you change it.
     private const int ScreenSize = 200;
-    private readonly ITestOutputHelper _output;
-    private readonly PixelMapper _pixelMapper;
-
-    public CoordPixelConverstionTests(ITestOutputHelper output)
-    {
-        _output = output;
-
-        _pixelMapper = new PixelMapper();
-    }
+    private readonly ITestOutputHelper _output = output;
+    private readonly PixelMapper _pixelMapper = new PixelMapper();
 
     public async Task InitializeAsync()
     {

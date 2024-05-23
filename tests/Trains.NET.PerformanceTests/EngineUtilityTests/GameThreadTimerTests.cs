@@ -3,14 +3,9 @@ using Trains.NET.Engine;
 
 namespace Trains.NET.Tests.EngineUtilityTests;
 
-public class GameThreadTimerTests
+public class GameThreadTimerTests(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper _output;
-
-    public GameThreadTimerTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
+    private readonly ITestOutputHelper _output = output;
 
     [Fact]
     public async Task GameThreadTimer_DisposeWorks()

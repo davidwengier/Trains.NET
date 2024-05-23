@@ -2,19 +2,12 @@
 
 namespace Trains.NET.Tests.Rendering.PixelMapperTests;
 
-public class AdjustGameScaleTests : IAsyncLifetime
+public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
 {
     private const int ScreenSize = 720;
 
-    private readonly PixelMapper _pixelMapper;
-    private readonly ITestOutputHelper _output;
-
-    public AdjustGameScaleTests(ITestOutputHelper output)
-    {
-        _pixelMapper = new PixelMapper();
-
-        _output = output;
-    }
+    private readonly PixelMapper _pixelMapper = new PixelMapper();
+    private readonly ITestOutputHelper _output = output;
 
     public async Task InitializeAsync()
     {

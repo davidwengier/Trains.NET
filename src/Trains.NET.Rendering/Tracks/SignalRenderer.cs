@@ -3,7 +3,7 @@
 namespace Trains.NET.Rendering.Logic;
 
 [Order(90)]
-public class SignalRenderer : SpecializedEntityRenderer<Signal, Track>
+public class SignalRenderer(IPathFactory pathFactory, SingleTrackRenderer trackRenderer) : SpecializedEntityRenderer<Signal, Track>
 {
     private const int CanvasSize = 100;
     private const int SignalWidth = 10;
@@ -36,14 +36,8 @@ public class SignalRenderer : SpecializedEntityRenderer<Signal, Track>
         Color = new Color(128, 0, 255, 0)
     };
 
-    private readonly IPath _lightPath;
-    private readonly SingleTrackRenderer _trackRenderer;
-
-    public SignalRenderer(IPathFactory pathFactory, SingleTrackRenderer trackRenderer)
-    {
-        _lightPath = BuildLightPath(pathFactory);
-        _trackRenderer = trackRenderer;
-    }
+    private readonly IPath _lightPath = BuildLightPath(pathFactory);
+    private readonly SingleTrackRenderer _trackRenderer = trackRenderer;
 
     private static IPath BuildLightPath(IPathFactory pathFactory)
     {

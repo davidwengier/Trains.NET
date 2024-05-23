@@ -2,7 +2,7 @@
 
 namespace Trains.NET.Rendering.Skia;
 
-public class SKCanvasWrapper : ICanvas
+public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
 {
     private static readonly Dictionary<PaintBrush, SKPaint> s_paintCache = new();
     private static readonly Dictionary<PaintBrush, SKFont> s_fontCache = new();
@@ -13,12 +13,7 @@ public class SKCanvasWrapper : ICanvas
         IsDither = false
     };
 
-    private readonly SKCanvas _canvas;
-
-    public SKCanvasWrapper(SKCanvas canvas)
-    {
-        _canvas = canvas;
-    }
+    private readonly SKCanvas _canvas = canvas;
 
     private static SKPaint GetSKPaint(PaintBrush paint)
     {

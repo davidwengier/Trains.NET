@@ -3,16 +3,10 @@
 namespace Trains.NET.Engine.Tracks;
 
 [Order(1)]
-public class CrossTrackFactory : IStaticEntityFactory<Track>
+public class CrossTrackFactory(ITerrainMap terrainMap, ILayout layout) : IStaticEntityFactory<Track>
 {
-    private readonly ITerrainMap _terrainMap;
-    private readonly ILayout _layout;
-
-    public CrossTrackFactory(ITerrainMap terrainMap, ILayout layout)
-    {
-        _terrainMap = terrainMap;
-        _layout = layout;
-    }
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly ILayout _layout = layout;
 
     public IEnumerable<Track> GetPossibleReplacements(int column, int row, Track track)
     {

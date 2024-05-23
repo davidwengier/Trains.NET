@@ -3,40 +3,28 @@ using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.FullGameTests.MovementTest;
 
-public class PointToPoint_SingleStep : PointToPoint
+public class PointToPoint_SingleStep(ITestOutputHelper output) : PointToPoint(output, 1)
 {
-    public PointToPoint_SingleStep(ITestOutputHelper output) : base(output, 1) { }
 }
-public class PointToPoint_2Step : PointToPoint
+public class PointToPoint_2Step(ITestOutputHelper output) : PointToPoint(output, 2)
 {
-    public PointToPoint_2Step(ITestOutputHelper output) : base(output, 2) { }
 }
-public class PointToPoint_3Step : PointToPoint
+public class PointToPoint_3Step(ITestOutputHelper output) : PointToPoint(output, 3)
 {
-    public PointToPoint_3Step(ITestOutputHelper output) : base(output, 3) { }
 }
-public class PointToPoint_10Step : PointToPoint
+public class PointToPoint_10Step(ITestOutputHelper output) : PointToPoint(output, 10)
 {
-    public PointToPoint_10Step(ITestOutputHelper output) : base(output, 10) { }
 }
-public class PointToPoint_100Step : PointToPoint
+public class PointToPoint_100Step(ITestOutputHelper output) : PointToPoint(output, 100)
 {
-    public PointToPoint_100Step(ITestOutputHelper output) : base(output, 100) { }
 }
-public class PointToPoint_1000Step : PointToPoint
+public class PointToPoint_1000Step(ITestOutputHelper output) : PointToPoint(output, 1000)
 {
-    public PointToPoint_1000Step(ITestOutputHelper output) : base(output, 1000) { }
 }
-public abstract class PointToPoint : TestBase
+public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) : TestBase(output)
 {
-    private readonly int _movementSteps;
+    private readonly int _movementSteps = movementSteps;
     private const float MovementPrecision = 4;
-
-    public PointToPoint(ITestOutputHelper output, int movementSteps)
-        : base(output)
-    {
-        _movementSteps = movementSteps;
-    }
 
     [Theory]
     [InlineData(1, 1, 90.0f, 1, 3)]

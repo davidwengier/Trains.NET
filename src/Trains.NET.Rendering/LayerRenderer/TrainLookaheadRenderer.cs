@@ -4,16 +4,10 @@ using Trains.NET.Rendering.Trains;
 namespace Trains.NET.Rendering.LayerRenderer;
 
 [Order(470)]
-public class TrainLookaheadRenderer : ILayerRenderer
+public class TrainLookaheadRenderer(IMovableLayout movableLayout, ITrainPainter painter) : ILayerRenderer
 {
-    private readonly IMovableLayout _movableLayout;
-    private readonly ITrainPainter _painter;
-
-    public TrainLookaheadRenderer(IMovableLayout movableLayout, ITrainPainter painter)
-    {
-        _movableLayout = movableLayout;
-        _painter = painter;
-    }
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly ITrainPainter _painter = painter;
 
     public bool Enabled { get; set; }
 

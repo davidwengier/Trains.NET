@@ -3,21 +3,17 @@
 namespace Trains.NET.Rendering;
 
 [Order(50)]
-public class TrainTool : ITool
+public class TrainTool(
+    IMovableLayout movableLayout,
+    ILayout<Track> trackLayout,
+    ITrainManager gameState) : ITool
 {
-    private readonly IMovableLayout _movableLayout;
-    private readonly ILayout<Track> _trackLayout;
-    private readonly ITrainManager _trainManager;
+    private readonly IMovableLayout _movableLayout = movableLayout;
+    private readonly ILayout<Track> _trackLayout = trackLayout;
+    private readonly ITrainManager _trainManager = gameState;
 
     public ToolMode Mode => ToolMode.Play;
     public string Name => "Train";
-
-    public TrainTool(IMovableLayout movableLayout, ILayout<Track> trackLayout, ITrainManager gameState)
-    {
-        _movableLayout = movableLayout;
-        _trackLayout = trackLayout;
-        _trainManager = gameState;
-    }
 
     public void Execute(int column, int row, ExecuteInfo info)
     {

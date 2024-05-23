@@ -1,12 +1,9 @@
 ﻿namespace Trains.NET.Instrumentation;
 
-public class CountStat : IStat
+public class CountStat(string nameOfThingYouAreCounting) : IStat
 {
-    private readonly string _thing;
-    public CountStat(string nameOfThingYouAreCounting)
-    {
-        _thing = nameOfThingYouAreCounting;
-    }
+    private readonly string _thing = nameOfThingYouAreCounting;
+
     public int Value { get; private set; }
     public void Add() => this.Value++;
     public void Set(int value) => this.Value = value;

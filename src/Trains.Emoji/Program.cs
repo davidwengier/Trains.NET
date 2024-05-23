@@ -5,15 +5,20 @@ using Trains.NET.Rendering.Skia;
 
 namespace Trains.Emoji;
 
-public class EmojiDrawer
+public class EmojiDrawer(
+    IRenderer<Tree> treeRenderer,
+    IEnumerable<IRenderer<Track>> trackRenderers,
+    IRenderer<Train> trainRenderer,
+    IPixelMapper pixelMapper)
 {
     private static int s_numberOfTrainsToDraw = 6;
     private static int s_numberOfTreesToDraw = 3;
 
-    private readonly IRenderer<Tree> _treeRenderer;
-    private readonly IEnumerable<IRenderer<Track>> _trackRenderers;
-    private readonly IRenderer<Train> _trainRenderer;
-    private readonly IPixelMapper _pixelMapper;
+    private readonly IRenderer<Tree> _treeRenderer = treeRenderer;
+    private readonly IEnumerable<IRenderer<Track>> _trackRenderers = trackRenderers;
+    private readonly IRenderer<Train> _trainRenderer = trainRenderer;
+    private readonly IPixelMapper _pixelMapper = pixelMapper;
+
     private const string BaseFolderName = "EmojiOutput";
 
     public static void Main(string[] args)
@@ -45,14 +50,6 @@ public class EmojiDrawer
             => string.Equals(actual, "--" + expected, StringComparison.OrdinalIgnoreCase)
             || string.Equals(actual, "/" + expected, StringComparison.OrdinalIgnoreCase)
             || string.Equals(actual, "-" + expected, StringComparison.OrdinalIgnoreCase);
-    }
-
-    public EmojiDrawer(IRenderer<Tree> treeRenderer, IEnumerable<IRenderer<Track>> trackRenderers, IRenderer<Train> trainRenderer, IPixelMapper pixelMapper)
-    {
-        _treeRenderer = treeRenderer;
-        _trackRenderers = trackRenderers;
-        _trainRenderer = trainRenderer;
-        _pixelMapper = pixelMapper;
     }
 
     public void Save(IEnumerable<int> imageSizes)

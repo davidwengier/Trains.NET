@@ -3,40 +3,28 @@ using static Trains.NET.Tests.TrainMovementTestsHelper;
 
 namespace Trains.NET.Tests.FullGameTests.MovementTest;
 
-public class FullTrackLoop_SingleStep : FullTrackLoop
+public class FullTrackLoop_SingleStep(ITestOutputHelper output) : FullTrackLoop(output, 1)
 {
-    public FullTrackLoop_SingleStep(ITestOutputHelper output) : base(output, 1) { }
 }
-public class FullTrackLoop_2Step : FullTrackLoop
+public class FullTrackLoop_2Step(ITestOutputHelper output) : FullTrackLoop(output, 2)
 {
-    public FullTrackLoop_2Step(ITestOutputHelper output) : base(output, 2) { }
 }
-public class FullTrackLoop_3Step : FullTrackLoop
+public class FullTrackLoop_3Step(ITestOutputHelper output) : FullTrackLoop(output, 3)
 {
-    public FullTrackLoop_3Step(ITestOutputHelper output) : base(output, 3) { }
 }
-public class FullTrackLoop_10Step : FullTrackLoop
+public class FullTrackLoop_10Step(ITestOutputHelper output) : FullTrackLoop(output, 10)
 {
-    public FullTrackLoop_10Step(ITestOutputHelper output) : base(output, 10) { }
 }
-public class FullTrackLoop_100Step : FullTrackLoop
+public class FullTrackLoop_100Step(ITestOutputHelper output) : FullTrackLoop(output, 100)
 {
-    public FullTrackLoop_100Step(ITestOutputHelper output) : base(output, 100) { }
 }
-public class FullTrackLoop_1000Step : FullTrackLoop
+public class FullTrackLoop_1000Step(ITestOutputHelper output) : FullTrackLoop(output, 1000)
 {
-    public FullTrackLoop_1000Step(ITestOutputHelper output) : base(output, 1000) { }
 }
-public abstract class FullTrackLoop : TestBase
+public abstract class FullTrackLoop(ITestOutputHelper output, int movementSteps) : TestBase(output)
 {
     private const float MovementPrecision = 3;
-    private readonly int _movementSteps;
-
-    public FullTrackLoop(ITestOutputHelper output, int movementSteps)
-        : base(output)
-    {
-        _movementSteps = movementSteps;
-    }
+    private readonly int _movementSteps = movementSteps;
 
     [Theory]
     [InlineData(0.0f)]

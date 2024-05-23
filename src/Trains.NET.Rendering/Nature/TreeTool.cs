@@ -3,21 +3,17 @@
 namespace Trains.NET.Rendering;
 
 [Order(15)]
-public class TreeTool : ITool
+public class TreeTool(
+    ILayout<Tree> trackLayout,
+    ITerrainMap terrainMap,
+    IEnumerable<IStaticEntityFactory<Tree>> entityFactories) : ITool
 {
-    private readonly ILayout<Tree> _entityCollection;
-    private readonly ITerrainMap _terrainMap;
-    private readonly IEnumerable<IStaticEntityFactory<Tree>> _entityFactories;
+    private readonly ILayout<Tree> _entityCollection = trackLayout;
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly IEnumerable<IStaticEntityFactory<Tree>> _entityFactories = entityFactories;
 
     public ToolMode Mode => ToolMode.Build;
     public string Name => "Tree";
-
-    public TreeTool(ILayout<Tree> trackLayout, ITerrainMap terrainMap, IEnumerable<IStaticEntityFactory<Tree>> entityFactories)
-    {
-        _entityCollection = trackLayout;
-        _terrainMap = terrainMap;
-        _entityFactories = entityFactories;
-    }
 
     public void Execute(int column, int row, ExecuteInfo info)
     {

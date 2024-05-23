@@ -3,9 +3,9 @@
 namespace Trains.NET.Rendering;
 
 [Order(400)]
-public class HappinessRenderer : ILayerRenderer
+public class HappinessRenderer(ILayout<Track> trackLayout) : ILayerRenderer
 {
-    private readonly ILayout<Track> _trackLayout;
+    private readonly ILayout<Track> _trackLayout = trackLayout;
     private readonly PaintBrush _paint = new()
     {
         Color = Colors.Cyan,
@@ -14,11 +14,6 @@ public class HappinessRenderer : ILayerRenderer
 
     public bool Enabled { get; set; }
     public string Name => "Happiness";
-
-    public HappinessRenderer(ILayout<Track> trackLayout)
-    {
-        _trackLayout = trackLayout;
-    }
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {

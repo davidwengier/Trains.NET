@@ -2,17 +2,14 @@
 
 namespace Trains.NET.Rendering.UI;
 
-public class TrackButton : ButtonBase
+public class TrackButton(
+    Track track,
+    Func<bool> isActive,
+    Action onClick,
+    IEnumerable<IStaticEntityRenderer<Track>> renderers) : ButtonBase(isActive, onClick)
 {
-    private readonly Track _track;
-    private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers;
-
-    public TrackButton(Track track, Func<bool> isActive, Action onClick, IEnumerable<IStaticEntityRenderer<Track>> renderers)
-        : base(isActive, onClick)
-    {
-        _track = track;
-        _renderers = renderers;
-    }
+    private readonly Track _track = track;
+    private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers = renderers;
 
     public override int GetMinimumWidth(ICanvas canvas) => 40;
 

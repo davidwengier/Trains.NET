@@ -2,13 +2,8 @@
 
 namespace Trains.NET.Rendering.UI;
 
-public class BuildModeButton : MultiButton
+public class BuildModeButton(IGameManager gameManager) : MultiButton(34, GetButtons(gameManager))
 {
-    public BuildModeButton(Engine.IGameManager gameManager)
-        : base(34, GetButtons(gameManager))
-    {
-    }
-
     private static ButtonBase[] GetButtons(IGameManager gameManager)
     {
         return new ButtonBase[]{

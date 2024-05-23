@@ -3,7 +3,9 @@
 namespace Trains.NET.Rendering;
 
 [Order(90)]
-public class BridgeRenderer : SpecializedEntityRenderer<Bridge, Track>
+public class BridgeRenderer(
+    IPathFactory pathFactory,
+    SingleTrackRenderer trackRenderer) : SpecializedEntityRenderer<Bridge, Track>
 {
     private const int CanvasSize = 100;
     private const float RailingInset = SupportTopInset + SupportHeight;
@@ -18,9 +20,9 @@ public class BridgeRenderer : SpecializedEntityRenderer<Bridge, Track>
     private const float WaterWashHeight = SupportHeight + SupportTopInset;
     private const float WaterWashLeftPosition = (CanvasSize - WaterWashWidth) / 2.0f;
 
-    private readonly SingleTrackRenderer _trackRenderer;
-    private readonly IPath _cornerPlankPath;
-    private readonly IPath _cornerRailPath;
+    private readonly SingleTrackRenderer _trackRenderer = trackRenderer;
+    private readonly IPath _cornerPlankPath = BuildCornerPlankPath(pathFactory);
+    private readonly IPath _cornerRailPath = BuildCornerRailPath(pathFactory);
     private static readonly PaintBrush s_waterWashPaint = new()
     {
         Color = new Color("#D1EEEE"),
@@ -39,13 +41,6 @@ public class BridgeRenderer : SpecializedEntityRenderer<Bridge, Track>
         Style = PaintStyle.Fill,
         IsAntialias = true
     };
-
-    public BridgeRenderer(IPathFactory pathFactory, SingleTrackRenderer trackRenderer)
-    {
-        _trackRenderer = trackRenderer;
-        _cornerPlankPath = BuildCornerPlankPath(pathFactory);
-        _cornerRailPath = BuildCornerRailPath(pathFactory);
-    }
 
     protected override void Render(ICanvas canvas, Bridge track)
     {

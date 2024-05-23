@@ -2,11 +2,8 @@
 
 namespace Trains.NET.Tests;
 
-public class TrackLayoutTests : TestBase
+public class TrackLayoutTests(ITestOutputHelper output) : TestBase(output)
 {
-    public TrackLayoutTests(ITestOutputHelper output) : base(output)
-    { }
-
     [Fact]
     public void FishHook()
     {

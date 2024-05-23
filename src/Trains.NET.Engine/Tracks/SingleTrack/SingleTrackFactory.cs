@@ -3,16 +3,10 @@
 namespace Trains.NET.Engine.Tracks;
 
 [Order(3)]
-public class SingleTrackFactory : IStaticEntityFactory<Track>
+public class SingleTrackFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout) : IStaticEntityFactory<Track>
 {
-    private readonly ITerrainMap _terrainMap;
-    private readonly ILayout<Track> _trackLayout;
-
-    public SingleTrackFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout)
-    {
-        _terrainMap = terrainMap;
-        _trackLayout = trackLayout;
-    }
+    private readonly ITerrainMap _terrainMap = terrainMap;
+    private readonly ILayout<Track> _trackLayout = trackLayout;
 
     public bool TryCreateEntity(int column, int row, int fromColumn, int fromRow, [NotNullWhen(returnValue: true)] out Track? entity)
     {

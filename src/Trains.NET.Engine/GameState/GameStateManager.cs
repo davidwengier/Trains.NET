@@ -4,7 +4,10 @@ using Trains.NET.Instrumentation.Stats;
 namespace Trains.NET.Engine;
 
 [Order(999999)]
-public class GameStateManager : IGameStateManager, IInitializeAsync, IGameStep
+public class GameStateManager(
+    IEnumerable<IGameState> gameStates,
+    IGameStorage storage)
+    : IGameStateManager, IInitializeAsync, IGameStep
 {
     // Auto-save every 2 seconds
     private const int AutosaveInterval = 2 * 60;
@@ -12,8 +15,8 @@ public class GameStateManager : IGameStateManager, IInitializeAsync, IGameStep
     private int _autosaveCounter;
     private bool _autosaveEnabled;
 
-    private readonly IEnumerable<IGameState> _gameStates;
-    private readonly IGameStorage _storage;
+    private readonly IEnumerable<IGameState> _gameStates = gameStates;
+    private readonly IGameStorage _storage = storage;
     private readonly InformationStat _autosaveStat = InstrumentationBag.Add<InformationStat>("Autosave");
     private readonly ElapsedMillisecondsTimedStat _saveTimeStat = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Save-Time");
 
@@ -36,12 +39,6 @@ public class GameStateManager : IGameStateManager, IInitializeAsync, IGameStep
                 _storage.Write("Autosave", this.AutosaveEnabled.ToString());
             }
         }
-    }
-
-    public GameStateManager(IEnumerable<IGameState> gameStates, IGameStorage storage)
-    {
-        _gameStates = gameStates;
-        _storage = storage;
     }
 
     public Task InitializeAsync(int columns, int rows)

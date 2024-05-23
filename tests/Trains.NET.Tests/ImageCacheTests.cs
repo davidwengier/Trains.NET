@@ -120,15 +120,10 @@ public class ImageCacheTests : IDisposable
         _imageCache.Dispose();
     }
 
-    private class TestImage : IImage
+    private class TestImage(int state = 0) : IImage
     {
-        public int State { get; }
+        public int State { get; } = state;
         public bool IsDisposed { get; private set; }
-
-        public TestImage(int state = 0)
-        {
-            this.State = state;
-        }
 
         public void Dispose()
         {

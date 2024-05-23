@@ -3,18 +3,14 @@ using Trains.NET.Rendering.Trains;
 
 namespace Trains.NET.Rendering;
 
-public class TrainRenderer : IRenderer<Train>
+public class TrainRenderer(
+    ITrainParameters trainParameters,
+    ITrainPainter trainPainter,
+    ITrainManager trainManager) : IRenderer<Train>
 {
-    private readonly ITrainParameters _trainParameters;
-    private readonly ITrainPainter _trainPainter;
-    private readonly ITrainManager _trainManager;
-
-    public TrainRenderer(ITrainParameters trainParameters, ITrainPainter trainPainter, ITrainManager trainManager)
-    {
-        _trainParameters = trainParameters;
-        _trainPainter = trainPainter;
-        _trainManager = trainManager;
-    }
+    private readonly ITrainParameters _trainParameters = trainParameters;
+    private readonly ITrainPainter _trainPainter = trainPainter;
+    private readonly ITrainManager _trainManager = trainManager;
 
     public void Render(ICanvas canvas, Train train)
     {

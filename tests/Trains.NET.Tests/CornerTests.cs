@@ -2,11 +2,8 @@
 
 namespace Trains.NET.Tests;
 
-public class CornerTests : TestBase
+public class CornerTests(ITestOutputHelper output) : TestBase(output)
 {
-    public CornerTests(ITestOutputHelper output) : base(output)
-    { }
-
     [Theory]
     [InlineData(TrainAngleHelper.TrainFacingLeft, 2, 2, 1, 1)]
     [InlineData(TrainAngleHelper.TrainFacingDown, 1, 1, 2, 2)]

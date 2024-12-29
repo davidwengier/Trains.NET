@@ -5,12 +5,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
 
-    <!-- Latest C# compiler -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-
     <!-- Nerdbank GitVersioning -->
     <PackageReference Include="Nerdbank.GitVersioning">
       <PrivateAssets>all</PrivateAssets>

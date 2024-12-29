@@ -18,7 +18,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Install workload
       run: dotnet workload install wasm-tools
@@ -30,7 +30,7 @@ jobs:
       run: dotnet build Trains.NET.sln -p:CI=true -c Release -bl
 
     - name: Upload binary log
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: binlog
         path: msbuild.binlog

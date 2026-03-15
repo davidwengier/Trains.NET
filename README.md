@@ -38,6 +38,8 @@ Comments, suggestions, questions, feature requests, stream requests etc. are all
 #### Development Quick Start Guide
 
 - Clone the [Trains.NET](https://github.com/davidwengier/Trains.NET) repository
-- Open the project in Visual Studio 2019 (or similar IDE)
+- Install the WebAssembly workload before solution-level builds:
+  - `dotnet workload restore Trains.NET.sln`
+- Open the project in Visual Studio 2022 (or similar IDE)
   - NOTE: You will probably need the latest preview version of Visual Studio to work on this, but command line builds through `dotnet build` should always work
 - Start debugging to confirm it works

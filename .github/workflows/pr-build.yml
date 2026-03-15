@@ -18,10 +18,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
 
-    - name: Install workload
-      run: dotnet workload install wasm-tools
+    - name: Restore workloads
+      run: dotnet workload restore Trains.NET.sln
 
     - name: Build Debug
       run: dotnet build Trains.NET.sln -p:CI=true -c Debug

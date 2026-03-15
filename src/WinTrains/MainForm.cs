@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Trains.NET.Instrumentation;
+﻿using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 
@@ -84,8 +83,15 @@ public partial class MainForm : Form
         }
     }
 
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnFormClosing(FormClosingEventArgs e)
     {
+        base.OnFormClosing(e);
+
+        if (e.Cancel)
+        {
+            return;
+        }
+
         _presenting = false;
         _game.Dispose();
     }

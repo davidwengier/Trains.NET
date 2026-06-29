@@ -58,10 +58,10 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
     }
 
     public void DrawImage(IImage image, int x, int y)
-        => _canvas.DrawImage(image.ToSkia(), x, y);
+        => _canvas.DrawImage(image.ToSkia(), x, y, SKSamplingOptions.Default);
 
     public void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle)
-        => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), s_noAntialiasPaint);
+        => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), SKSamplingOptions.Default, s_noAntialiasPaint);
 
     public void DrawCircle(float x, float y, float radius, PaintBrush paint)
         => _canvas.DrawCircle(x, y, radius, GetSKPaint(paint));
@@ -79,7 +79,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
         => _canvas.DrawRoundRect(x, y, width, height, radiusX, radiusY, GetSKPaint(paint));
 
     public void DrawText(string text, float x, float y, PaintBrush paint)
-        => _canvas.DrawText(text, x, y, GetSKFont(paint), GetSKPaint(paint));
+        => _canvas.DrawText(text, x, y, SKTextAlign.Left, GetSKFont(paint), GetSKPaint(paint));
 
     public void DrawGradientRect(float x, float y, float width, float height, Color start, Color end)
         => DrawVerticalGradientRect(x, y, width, height, new[] { start, end, start });

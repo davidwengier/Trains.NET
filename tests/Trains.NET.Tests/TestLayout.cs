@@ -8,7 +8,7 @@ internal class TestLayout : ILayout
 {
     private readonly Dictionary<(int, int), IStaticEntity> _layout = new();
 
-    public event EventHandler CollectionChanged;
+    public event EventHandler? CollectionChanged;
 
     public void Add(int column, int row, IStaticEntity entityToAdd)
     {
@@ -36,7 +36,7 @@ internal class TestLayout : ILayout
         throw new NotImplementedException();
     }
 
-    public bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity entity)
+    public bool TryGet(int column, int row, [NotNullWhen(true)] out IStaticEntity? entity)
     {
         return _layout.TryGetValue((column, row), out entity);
     }
@@ -46,11 +46,11 @@ internal class TestLayout : ILayout
         return _layout.Values.GetEnumerator();
     }
 
-    public bool TryGet<T>(int column, int row, out T entity) where T : class, IStaticEntity
+    public bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity) where T : class, IStaticEntity
     {
-        var result = _layout.TryGetValue((column, row), out var staticEntity);
-        entity = (T)staticEntity;
-        return result;
+        TryGet(column, row, out var staticEntity);
+        entity = staticEntity as T;
+        return entity != null;
     }
 
     public void Set(int column, int row, IStaticEntity entity)

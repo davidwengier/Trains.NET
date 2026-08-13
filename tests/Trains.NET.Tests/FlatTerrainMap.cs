@@ -5,7 +5,7 @@ namespace Trains.NET.Tests;
 
 internal class FlatTerrainMap : ITerrainMap
 {
-    public event EventHandler CollectionChanged;
+    public event EventHandler? CollectionChanged;
 
     public Terrain Get(int column, int row)
     {

@@ -4,7 +4,7 @@ namespace Trains.NET.Tests;
 
 internal class NullStorage : IGameStorage
 {
-    public string Read(string key)
+    public string? Read(string key)
     {
         return null;
     }

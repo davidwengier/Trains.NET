@@ -6,7 +6,7 @@ public class TestTimer : Engine.ITimer
 
     public long TimeSinceLastTick => 16;
 
-    public event EventHandler Elapsed;
+    public event EventHandler? Elapsed;
 
     public void Dispose()
     {

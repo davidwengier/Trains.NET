@@ -52,7 +52,8 @@ internal static class IStaticEntityCollectionExtensions
 
     public static T GetTrackAt<T>(this ILayout trackLayout, int column, int row) where T : Track
     {
-        trackLayout.TryGet(column, row, out T track);
-        return track;
+        return trackLayout.TryGet<T>(column, row, out var track)
+            ? track
+            : throw new InvalidOperationException($"No {typeof(T).Name} exists at ({column}, {row}).");
     }
 }

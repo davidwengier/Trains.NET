@@ -2,11 +2,6 @@
 
   <Import Project="..\Directory.Build.props" />
 
-  <PropertyGroup>
-    <!-- makes tests easier -->
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />

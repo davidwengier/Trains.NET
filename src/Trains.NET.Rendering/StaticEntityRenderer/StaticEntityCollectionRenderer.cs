@@ -37,17 +37,17 @@ public abstract class StaticEntityCollectionRenderer<T> : ICachableLayerRenderer
 
         foreach (var entity in _layout)
         {
-            var renderer = _renderers.FirstOrDefault(r => r.ShouldRender(entity));
-            if (renderer is null)
-            {
-                // TODO: Fill with Red to indicate error?
-                continue;
-            }
-
             (var x, var y, var onScreen) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
 
             if (!onScreen)
             {
+                continue;
+            }
+
+            var renderer = _renderers.FirstOrDefault(r => r.ShouldRender(entity));
+            if (renderer is null)
+            {
+                // TODO: Fill with Red to indicate error?
                 continue;
             }
 

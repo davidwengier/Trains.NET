@@ -8,7 +8,6 @@
   <ItemGroup>
     <None Remove="svg\*.svg" />
     <AdditionalFiles Include="svg\*.svg" GenerateSkiaPicture="true" NamespaceName="Trains.NET.Rendering.Skia.Assets" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ClassName" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateSkiaPicture" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="NamespaceName" />
   </ItemGroup>

@@ -12,7 +12,6 @@ namespace Trains.NET.SourceGenerator;
 [Generator]
 public sealed class SvgSourceGenerator : IIncrementalGenerator
 {
-    private const string ClassNameMetadata = "build_metadata.AdditionalFiles.ClassName";
     private const string GenerateSkiaPictureMetadata = "build_metadata.AdditionalFiles.GenerateSkiaPicture";
     private const string NamespaceNameMetadata = "build_metadata.AdditionalFiles.NamespaceName";
 
@@ -59,7 +58,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        var className = GetClassName(file, options);
+        var className = $"Svg_{Path.GetFileNameWithoutExtension(file.Path).Replace('-', '_')}";
         if (!SyntaxFacts.IsValidIdentifier(className))
         {
             ReportError(context, file, $"'{className}' is not a valid class name");
@@ -141,22 +140,6 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
 
         var source = GenerateSource(namespaceName, className, pathData, left, top, right, bottom);
         context.AddSource($"{className}.svg.g.cs", SourceText.From(source, Encoding.UTF8));
-    }
-
-    private static string GetClassName(AdditionalText file, AnalyzerConfigOptions options)
-    {
-        if (options.TryGetValue(ClassNameMetadata, out var className) &&
-            !string.IsNullOrWhiteSpace(className))
-        {
-            return className.Trim();
-        }
-
-        var builder = new StringBuilder("Svg_");
-        foreach (var character in Path.GetFileNameWithoutExtension(file.Path))
-        {
-            builder.Append(SyntaxFacts.IsIdentifierPartCharacter(character) ? character : '_');
-        }
-        return builder.ToString();
     }
 
     private static bool IsValidNamespace(string namespaceName)

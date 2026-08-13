@@ -74,10 +74,18 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
 
         foreach (Train train in _movables)
         {
-            // Claim the track we are currently on, distance of 0
+            // Claim the track we are currently on, replacing a blocked-track reservation if needed
             if (_layout.TryGet(train.Column, train.Row, out Track? myTrack))
             {
-                takenTracks.Add(myTrack, (train, 0));
+                if (takenTracks.TryGetValue(myTrack, out var existingLease) &&
+                    ReferenceEquals(existingLease.Item1, _reservedTrain))
+                {
+                    takenTracks[myTrack] = (train, 0);
+                }
+                else
+                {
+                    takenTracks.Add(myTrack, (train, 0));
+                }
             }
 
             // If we are stopped, nothing more for this train to do

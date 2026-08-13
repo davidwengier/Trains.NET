@@ -10,8 +10,8 @@ public class MultiButton : ButtonBase
         _buttonSize = buttonSize;
         _buttons = buttons;
 
-        this.Height = _buttonSize;
-        this.Width = _buttonSize * _buttons.Length;
+        Height = _buttonSize;
+        Width = _buttonSize * _buttons.Length;
     }
 
     public override int GetMinimumWidth(ICanvas canvas) => _buttonSize * _buttons.Length;
@@ -30,6 +30,7 @@ public class MultiButton : ButtonBase
                 x -= button.Width;
             }
         }
+
         return false;
     }
 

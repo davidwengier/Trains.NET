@@ -52,6 +52,7 @@ public partial class ImageCache : IImageCache
                 _setDirtyCallsTracker.Add(key);
                 return;
             }
+
             _dirtyState[key] = true;
         }
     }
@@ -82,6 +83,7 @@ public partial class ImageCache : IImageCache
             {
                 _disposeBuffer[key] = previousImage;
             }
+
             _imageBuffer[key] = image;
             _dirtyState[key] = false;
         }
@@ -95,10 +97,12 @@ public partial class ImageCache : IImageCache
             {
                 image.Dispose();
             }
+
             foreach (var image in _imageBuffer.Values)
             {
                 image.Dispose();
             }
+
             _imageBuffer.Clear();
             _dirtyState.Clear();
             _setDirtyCallsTracker?.Dispose();

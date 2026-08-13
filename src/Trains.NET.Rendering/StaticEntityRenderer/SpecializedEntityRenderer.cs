@@ -12,6 +12,7 @@ public abstract class SpecializedEntityRenderer<TRenderType, TPublicType> : ISta
         {
             return ShouldRender(itemToRender);
         }
+
         return false;
     }
 

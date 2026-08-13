@@ -19,6 +19,7 @@ public class GameThreadTimerTests(ITestOutputHelper output)
             gameTimer.Start();
             await Task.Delay(TestInterval * 2);
         }
+
         Assert.True(run);
     }
 

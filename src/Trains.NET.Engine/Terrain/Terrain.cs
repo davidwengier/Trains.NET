@@ -20,10 +20,10 @@ public class Terrain
     public int Row { get; set; }
     public int Height { get; set; }
 
-    public int TerrainLevel => this.Height / HeightPerLevel;
-    public bool IsWater => this.Height <= LastWaterHeight;
-    public bool IsLand => !this.IsWater;
-    public bool IsMountain => this.Height >= FirstMountainHeight;
+    public int TerrainLevel => Height / HeightPerLevel;
+    public bool IsWater => Height <= LastWaterHeight;
+    public bool IsLand => !IsWater;
+    public bool IsMountain => Height >= FirstMountainHeight;
 
     /// <summary>
     /// Gets a value between 0 and 1 that maps to the position in the possible range of terrain
@@ -35,7 +35,7 @@ public class Terrain
         const float maximumScaling = 1.0f;
 
         // We only want to deal with water level and up
-        var height = Math.Max(this.Height, FirstLandHeight);
+        var height = Math.Max(Height, FirstLandHeight);
 
         float heightRange = MaxHeight - LastWaterHeight;
         float heightDelta = height - LastWaterHeight;

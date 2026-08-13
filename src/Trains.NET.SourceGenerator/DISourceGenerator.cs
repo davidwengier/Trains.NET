@@ -113,6 +113,7 @@ namespace DI
                 {
                     continue;
                 }
+
                 service.VariableName = GetVariableName(service, fields);
                 sourceBuilder.AppendLine($"        private static {service.Type} {service.VariableName} = {GetTypeConstruction(service, fields)};");
                 fields.Add(service);
@@ -133,6 +134,7 @@ namespace DI
                 sb.Append(service.Parent.ElementType);
                 sb.Append(')');
             }
+
             sb.Append(field.VariableName);
         }
         else
@@ -145,6 +147,7 @@ namespace DI
                 sb.Append(')');
                 sb.Append('{');
             }
+
             var first = true;
             foreach (var arg in service.ConstructorArguments)
             {
@@ -153,9 +156,11 @@ namespace DI
                     sb.Append(", ");
 
                 }
+
                 sb.Append(GetTypeConstruction(arg, fields));
                 first = false;
             }
+
             if (service.UseCollectionInitializer)
             {
                 sb.Append('}');
@@ -165,6 +170,7 @@ namespace DI
                 sb.Append(')');
             }
         }
+
         return sb.ToString();
     }
 
@@ -183,6 +189,7 @@ namespace DI
                 break;
             }
         }
+
         return typeName;
     }
 
@@ -213,6 +220,7 @@ namespace DI
             {
                 return;
             }
+
             services.Add(listService);
 
             foreach (var thingy in types)
@@ -251,6 +259,7 @@ namespace DI
                 {
                     return;
                 }
+
                 services.Add(service);
 
                 var constructor = realType?.Constructors.FirstOrDefault();
@@ -280,9 +289,11 @@ namespace DI
                     context.ReportDiagnostic(Diagnostic.Create("TRAINS3", "DI", $"Circular reference detected: {typeToCreate}", DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, false));
                     return true;
                 }
+
                 current = current.Parent;
             }
         }
+
         return false;
     }
 

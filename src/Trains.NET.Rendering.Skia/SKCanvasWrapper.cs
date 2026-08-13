@@ -22,6 +22,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
             skPaint = paint.ToSkia();
             s_paintCache.Add(paint, skPaint);
         }
+
         return skPaint;
     }
 
@@ -32,6 +33,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
             skFont = paint.ToSkiaFont();
             s_fontCache.Add(paint, skFont);
         }
+
         return skFont;
     }
 

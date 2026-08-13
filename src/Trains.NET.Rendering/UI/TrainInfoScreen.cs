@@ -35,7 +35,7 @@ public class TrainInfoScreen : PanelBase
         _trainPainter = trainPainter;
         _trainManager.Changed += (s, e) =>
         {
-            this.Visible = _trainManager.CurrentTrain is not null;
+            Visible = _trainManager.CurrentTrain is not null;
             OnChanged();
         };
         _gameManager.Changed += (s, e) => OnChanged();
@@ -67,7 +67,7 @@ public class TrainInfoScreen : PanelBase
                     CreateButton(Picture.Right, () => false, () => _trainManager.NextTrain())
             });
 
-        this.Visible = _trainManager.CurrentTrain is not null;
+        Visible = _trainManager.CurrentTrain is not null;
     }
 
     private static ButtonBase CreateButton(Picture picture, Func<bool> isActive, Action onClick)

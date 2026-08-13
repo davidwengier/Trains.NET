@@ -14,6 +14,6 @@ public class PictureButton(
 
     protected override void RenderButtonLabel(ICanvas canvas)
     {
-        canvas.DrawPicture(_picture, (this.Width - _pictureSize) / 2, (this.Height - _pictureSize) / 2, _pictureSize);
+        canvas.DrawPicture(_picture, (Width - _pictureSize) / 2, (Height - _pictureSize) / 2, _pictureSize);
     }
 }

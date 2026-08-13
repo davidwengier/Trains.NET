@@ -8,6 +8,6 @@ public class TrackLayoutRenderer : StaticEntityCollectionRenderer<Track>
     public TrackLayoutRenderer(ILayout<Track> layout, IEnumerable<IStaticEntityRenderer<Track>> renderers, IImageFactory imageFactory, IImageCache imageCache)
             : base(layout, renderers, imageFactory, imageCache)
     {
-        this.Name = "Tracks";
+        Name = "Tracks";
     }
 }

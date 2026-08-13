@@ -69,6 +69,7 @@ public class FilteredLayout<T> : ILayout<T>
         {
             return;
         }
+
         _layout.Add(column, row, entity);
     }
 
@@ -81,6 +82,7 @@ public class FilteredLayout<T> : ILayout<T>
                 return entity;
             }
         }
+
         return null;
     }
 

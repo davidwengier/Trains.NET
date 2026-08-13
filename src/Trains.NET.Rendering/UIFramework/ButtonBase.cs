@@ -25,7 +25,7 @@ public abstract class ButtonBase
 
     public virtual bool HandleMouseAction(int x, int y, PointerAction action)
     {
-        if (x is >= 0 && x <= this.Width && y >= 0 && y <= this.Height)
+        if (x is >= 0 && x <= Width && y >= 0 && y <= Height)
         {
             if (action == PointerAction.Click)
             {
@@ -35,29 +35,32 @@ public abstract class ButtonBase
             {
                 _isHovered = true;
             }
+
             return true;
         }
+
         _isHovered = false;
         return false;
     }
 
     public virtual void Render(ICanvas canvas)
     {
-        if (this.Width == 0)
+        if (Width == 0)
         {
-            this.Width = GetMinimumWidth(canvas);
+            Width = GetMinimumWidth(canvas);
         }
 
         var isActive = _isActive?.Invoke() ?? false;
 
         var brush = isActive ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
-        if (!this.TransparentBackground || isActive)
+        if (!TransparentBackground || isActive)
         {
-            canvas.DrawRect(0, 0, this.Width, this.Height, brush);
+            canvas.DrawRect(0, 0, Width, Height, brush);
         }
+
         if (_isHovered)
         {
-            canvas.DrawRect(0, 0, this.Width, this.Height, Brushes.ButtonHoverBackground);
+            canvas.DrawRect(0, 0, Width, Height, Brushes.ButtonHoverBackground);
         }
 
         RenderButtonLabel(canvas);

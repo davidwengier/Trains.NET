@@ -50,6 +50,7 @@ internal sealed class MidiSynth : IDisposable
             SendShortMessage(EncodeProgramChange(i, 110));
             SendShortMessage(EncodeNoteOn(i, (int)hornDef.Notes[i], 127));
         }
+
         await Task.Delay(milliseconds).ConfigureAwait(false);
         for (byte i = 0; i < hornDef.Notes.Length; i++)
         {

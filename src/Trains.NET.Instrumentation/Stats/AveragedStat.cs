@@ -7,16 +7,16 @@ public abstract class AveragedStat(int sampleCount) : IStat
 
     protected void SetValue(double value)
     {
-        if (this.Value == null)
+        if (Value == null)
         {
-            this.Value = value;
+            Value = value;
         }
         else
         {
-            this.Value = (this.Value * (_sampleCount - 1) + value) / _sampleCount;
+            Value = (Value * (_sampleCount - 1) + value) / _sampleCount;
         }
     }
     public abstract string GetDescription();
 
-    public bool ShouldShow() => this.Value.HasValue;
+    public bool ShouldShow() => Value.HasValue;
 }

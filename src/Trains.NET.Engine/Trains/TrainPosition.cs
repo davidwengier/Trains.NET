@@ -12,9 +12,9 @@ public class TrainPosition(float relativeLeft, float relativeTop, float angle, f
     public TrainPosition(int column, int row, float relativeLeft, float relativeTop, float angle, float distance)
         : this(relativeLeft, relativeTop, angle, distance)
     {
-        this.Column = column;
-        this.Row = row;
+        Column = column;
+        Row = row;
     }
 
-    internal TrainPosition Clone() => new(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, this.Distance);
+    internal TrainPosition Clone() => new(Column, Row, RelativeLeft, RelativeTop, Angle, Distance);
 }

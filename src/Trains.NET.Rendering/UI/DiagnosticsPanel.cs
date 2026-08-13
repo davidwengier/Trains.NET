@@ -11,10 +11,10 @@ public class DiagnosticsPanel : PanelBase, ITogglable
 
     public bool Enabled
     {
-        get { return this.Visible; }
+        get { return Visible; }
         set
         {
-            this.Visible = value;
+            Visible = value;
             OnChanged();
         }
     }
@@ -30,13 +30,13 @@ public class DiagnosticsPanel : PanelBase, ITogglable
 
     public DiagnosticsPanel()
     {
-        this.Left = 10;
-        this.Visible = false;
+        Left = 10;
+        Visible = false;
     }
 
     protected override void PreRender(ICanvas canvas)
     {
-        this.Top = int.MaxValue;
+        Top = int.MaxValue;
     }
 
     protected override void Render(ICanvas canvas)
@@ -55,8 +55,8 @@ public class DiagnosticsPanel : PanelBase, ITogglable
             }
         }
 
-        this.InnerWidth = (int)maxWidth;
-        this.InnerHeight = strings.Count * (lineHeight + LineGap);
+        InnerWidth = (int)maxWidth;
+        InnerHeight = strings.Count * (lineHeight + LineGap);
 
         foreach (var line in strings)
         {

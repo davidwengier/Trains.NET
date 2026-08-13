@@ -290,16 +290,19 @@ public static class TrainMovement
             position.Column--;
             position.RelativeLeft = 1.0f;
         }
+
         if (position.RelativeLeft > 1.0f)
         {
             position.Column++;
             position.RelativeLeft = 0.0f;
         }
+
         if (position.RelativeTop < 0.0f)
         {
             position.Row--;
             position.RelativeTop = 1.0f;
         }
+
         if (position.RelativeTop > 1.0f)
         {
             position.Row++;

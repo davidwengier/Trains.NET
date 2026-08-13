@@ -23,18 +23,18 @@ public class TrackSelectionPanel : PanelBase
         _pixelMapper = pixelMapper;
         _entityFactories = entityFactories;
         _renderers = renderers;
-        this.InnerHeight = 40;
+        InnerHeight = 40;
 
-        this.Visible = false;
+        Visible = false;
         _layout.SelectionChanged += (s, e) =>
         {
-            this.Visible = false;
+            Visible = false;
 
             var track = _layout.SelectedEntity;
             if (track is not null)
             {
                 CreateMultiButton(track);
-                this.Visible = true;
+                Visible = true;
             }
 
             OnChanged();
@@ -59,6 +59,7 @@ public class TrackSelectionPanel : PanelBase
                     TransparentBackground = true
                 });
             }
+
             if (buttons.Count > 0)
             {
                 maxButtons = Math.Max(maxButtons, buttons.Count);
@@ -71,8 +72,8 @@ public class TrackSelectionPanel : PanelBase
             TransparentBackground = true
         }));
 
-        this.InnerWidth = maxButtons * 40;
-        this.InnerHeight = _multiButtons.Count * 40;
+        InnerWidth = maxButtons * 40;
+        InnerHeight = _multiButtons.Count * 40;
     }
 
     private void Erase(int column, int row)
@@ -97,12 +98,15 @@ public class TrackSelectionPanel : PanelBase
             {
                 break;
             }
+
             y -= 40;
         }
+
         if (action == PointerAction.Click)
         {
-            this.Visible = false;
+            Visible = false;
         }
+
         return true;
     }
 
@@ -120,10 +124,11 @@ public class TrackSelectionPanel : PanelBase
             {
                 return;
             }
+
             canvas.DrawRect(x, y, _pixelMapper.CellSize, _pixelMapper.CellSize, s_trackHighlightBrush);
 
-            this.Top = y + _pixelMapper.CellSize + 5;
-            this.Left = x - this.InnerWidth / 2 + _pixelMapper.CellSize / 2 - (GetPanelWidth() - this.InnerWidth) / 2;
+            Top = y + _pixelMapper.CellSize + 5;
+            Left = x - InnerWidth / 2 + _pixelMapper.CellSize / 2 - (GetPanelWidth() - InnerWidth) / 2;
         }
     }
 

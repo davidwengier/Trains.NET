@@ -19,6 +19,7 @@ public class SKImageFactory : IImageFactory
             _context = skContext.Context;
             return initialSet;
         }
+
         return false;
     }
 }

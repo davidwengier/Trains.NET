@@ -40,18 +40,22 @@ public class SingleTrackFactory(ITerrainMap terrainMap, ILayout<Track> trackLayo
         {
             yield return new SingleTrack() { Direction = SingleTrackDirection.Vertical };
         }
+
         if (neighbours.Up is not null && neighbours.Left is not null)
         {
             yield return new SingleTrack() { Direction = SingleTrackDirection.LeftUp };
         }
+
         if (neighbours.Up is not null && neighbours.Right is not null)
         {
             yield return new SingleTrack() { Direction = SingleTrackDirection.RightUp };
         }
+
         if (neighbours.Down is not null && neighbours.Left is not null)
         {
             yield return new SingleTrack() { Direction = SingleTrackDirection.LeftDown };
         }
+
         if (neighbours.Down is not null && neighbours.Right is not null)
         {
             yield return new SingleTrack() { Direction = SingleTrackDirection.RightDown };

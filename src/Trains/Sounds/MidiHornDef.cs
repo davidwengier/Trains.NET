@@ -29,7 +29,7 @@ internal sealed record MidiHornDef
 
     private MidiHornDef(params MidiNotes[] notes)
     {
-        this.Notes = notes;
+        Notes = notes;
     }
 
     internal static MidiHornDef GetHorn(HornModel horn) => horn switch

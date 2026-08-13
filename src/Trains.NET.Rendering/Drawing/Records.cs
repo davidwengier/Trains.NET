@@ -33,6 +33,7 @@ public record Color(int A, int R, int G, int B)
                 Convert.ToByte(htmlColor.Substring(5, 2), 16),
                 Convert.ToByte(htmlColor.Substring(7, 2), 16));
         }
+
         throw new ArgumentException($"Invalid color code '{htmlColor}', must be #RRGGBB or #AARRGGBB", nameof(htmlColor));
     }
 }

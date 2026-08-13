@@ -28,6 +28,7 @@ public class TIntersectionFactory(ITerrainMap terrainMap, ILayout layout) : ISta
             yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.StraightAndPrimary };
             yield return new TIntersection() { Direction = TIntersectionDirection.LeftUp_RightUp, Style = TIntersectionStyle.StraightAndSecondary };
         }
+
         if (AreAllPresent(neighbours.Up, neighbours.Left, neighbours.Down))
         {
             yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.CornerAndPrimary };
@@ -35,6 +36,7 @@ public class TIntersectionFactory(ITerrainMap terrainMap, ILayout layout) : ISta
             yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.StraightAndPrimary };
             yield return new TIntersection() { Direction = TIntersectionDirection.LeftDown_LeftUp, Style = TIntersectionStyle.StraightAndSecondary };
         }
+
         if (AreAllPresent(neighbours.Up, neighbours.Right, neighbours.Down))
         {
             yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.CornerAndPrimary };
@@ -42,6 +44,7 @@ public class TIntersectionFactory(ITerrainMap terrainMap, ILayout layout) : ISta
             yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.StraightAndPrimary };
             yield return new TIntersection() { Direction = TIntersectionDirection.RightUp_RightDown, Style = TIntersectionStyle.StraightAndSecondary };
         }
+
         if (AreAllPresent(neighbours.Down, neighbours.Left, neighbours.Right))
         {
             yield return new TIntersection() { Direction = TIntersectionDirection.RightDown_LeftDown, Style = TIntersectionStyle.CornerAndPrimary };

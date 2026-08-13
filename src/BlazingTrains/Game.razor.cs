@@ -33,6 +33,7 @@ public partial class Game
                 // Set the context so all rendering happens in the same place
                 _game.SetContext(new SKContextWrapper(context));
             }
+
             _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
         }
 

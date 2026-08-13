@@ -6,6 +6,7 @@ root = true
 # Don't use tabs for indentation.
 [*]
 indent_style = space
+trim_trailing_whitespace = true
 
 # Code files
 [*.cs]
@@ -32,7 +33,7 @@ dotnet_separate_import_directive_groups = false
 
 # Whitespace options
 dotnet_style_allow_multiple_blank_lines_experimental = false
-dotnet_style_allow_statement_immediately_after_block_experimental = true
+dotnet_style_allow_statement_immediately_after_block_experimental = false
 csharp_style_allow_embedded_statements_on_same_line_experimental = true
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false
@@ -47,7 +48,7 @@ dotnet_diagnostic.IDE2001.severity = none
 dotnet_diagnostic.IDE2002.severity = warning
 
 # dotnet_style_allow_statement_immediately_after_block_experimental
-dotnet_diagnostic.IDE2003.severity = suggestion
+dotnet_diagnostic.IDE2003.severity = warning
 
 # csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental
 dotnet_diagnostic.IDE2004.severity = warning
@@ -68,7 +69,7 @@ dotnet_style_prefer_auto_properties = false
 
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:error
-dotnet_style_qualification_for_property = true:error
+dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:error
 dotnet_style_qualification_for_event = false:error
 

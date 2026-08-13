@@ -24,6 +24,7 @@ public abstract partial class ButtonPanelBase : PanelBase
                 y -= button.Height + ButtonGap;
             }
         }
+
         return true;
     }
 

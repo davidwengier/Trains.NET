@@ -200,6 +200,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
             _pixelMapper.ZoomInPixelMapper();
             _pixelMapper.LogData(_output);
         }
+
         for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomOutPixelMapper();
@@ -227,6 +228,7 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
             _pixelMapper.ZoomOutPixelMapper();
             _pixelMapper.LogData(_output);
         }
+
         for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomInPixelMapper();

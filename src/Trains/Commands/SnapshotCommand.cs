@@ -33,6 +33,7 @@ public class SnapshotCommand(
                 renderer.Render(canvas, width, height, pixelMapper);
             }
         }
+
         Clipboard.SetImage(bitmap.ToWriteableBitmap());
     }
 }

@@ -33,6 +33,7 @@ public class TerrainMap : ITerrainMap, IInitializeAsync, IGameState
                 Height = (int)(noiseMap[coord] * Terrain.MaxHeight)
             });
         }
+
         _terrainMap = builder.ToImmutable();
 
         CollectionChanged?.Invoke(this, EventArgs.Empty);

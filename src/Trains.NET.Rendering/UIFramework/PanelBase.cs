@@ -36,7 +36,7 @@ public abstract class PanelBase : IScreen, IInteractionHandler
         set
         {
             _visible = value;
-            this.PreHandleNextClick = value && this.AutoClose;
+            PreHandleNextClick = value && AutoClose;
             _mouseHasBeenWithin = false;
         }
     }
@@ -44,15 +44,15 @@ public abstract class PanelBase : IScreen, IInteractionHandler
     public event EventHandler? Changed;
 
     private int GetLeft(int width)
-        => this.Left < 0
-            ? width - (-1 * this.Left)
-            : this.Left;
+        => Left < 0
+            ? width - (-1 * Left)
+            : Left;
 
     public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
     {
-        if (!this.Visible)
+        if (!Visible)
         {
-            this.PreHandleNextClick = false;
+            PreHandleNextClick = false;
             return false;
         }
 
@@ -64,9 +64,9 @@ public abstract class PanelBase : IScreen, IInteractionHandler
         var panelHeight = GetPanelHeight();
         var panelWidth = GetPanelWidth();
 
-        y -= this.Top;
+        y -= Top;
 
-        if (this.Position == PanelPosition.Right)
+        if (Position == PanelPosition.Right)
         {
             if (IsCollapsed())
             {
@@ -77,7 +77,7 @@ public abstract class PanelBase : IScreen, IInteractionHandler
                 x -= (width - panelWidth);
             }
         }
-        else if (this.Position == PanelPosition.Left)
+        else if (Position == PanelPosition.Left)
         {
             if (IsCollapsed())
             {
@@ -96,16 +96,17 @@ public abstract class PanelBase : IScreen, IInteractionHandler
                 _collapsed = !_collapsed;
                 OnChanged();
             }
-            else if (action == PointerAction.Click && y <= 10 + CloseButtonWidth && this.CanClose)
+            else if (action == PointerAction.Click && y <= 10 + CloseButtonWidth && CanClose)
             {
-                this.Visible = false;
+                Visible = false;
                 Close();
             }
+
             return true;
         }
         else if (!IsCollapsed() && x is >= 0 && x <= panelWidth && y >= 0 && y <= panelHeight)
         {
-            if (this.Position == PanelPosition.Left)
+            if (Position == PanelPosition.Left)
             {
                 x -= 5;
             }
@@ -113,24 +114,25 @@ public abstract class PanelBase : IScreen, IInteractionHandler
             {
                 x -= 10;
             }
-            y -= this.TopPadding;
 
-            if (this.AutoClose)
+            y -= TopPadding;
+
+            if (AutoClose)
             {
                 _mouseHasBeenWithin = true;
             }
 
             return HandlePointerAction(x, y, action);
         }
-        else if (this.IsCollapsable && !_collapsed)
+        else if (IsCollapsable && !_collapsed)
         {
             _collapsed = true;
             OnChanged();
         }
 
-        if ((_mouseHasBeenWithin || action is PointerAction.Click) && this.AutoClose)
+        if ((_mouseHasBeenWithin || action is PointerAction.Click) && AutoClose)
         {
-            this.Visible = false;
+            Visible = false;
         }
 
         return false;
@@ -142,7 +144,7 @@ public abstract class PanelBase : IScreen, IInteractionHandler
 
     public void Render(ICanvas canvas, int width, int height)
     {
-        if (!this.Visible)
+        if (!Visible)
         {
             return;
         }
@@ -152,35 +154,36 @@ public abstract class PanelBase : IScreen, IInteractionHandler
             PreRender(canvas);
         }
 
-        if (this.Position == PanelPosition.Floating)
+        if (Position == PanelPosition.Floating)
         {
-            this.Left = Math.Max(10, this.Left);
-            this.Left = Math.Min(width - GetPanelWidth() - 10, this.Left);
+            Left = Math.Max(10, Left);
+            Left = Math.Min(width - GetPanelWidth() - 10, Left);
         }
 
-        this.Top = Math.Max(10, this.Top);
-        this.Top = Math.Min(height - GetPanelHeight() - 10, this.Top);
+        Top = Math.Max(10, Top);
+        Top = Math.Min(height - GetPanelHeight() - 10, Top);
 
-        canvas.Translate(0, this.Top);
+        canvas.Translate(0, Top);
 
         _titleWidth = 0;
-        if (this.Title is { Length: > 0 })
+        if (Title is { Length: > 0 })
         {
-            _titleWidth = (int)canvas.MeasureText(this.Title, Brushes.Label);
+            _titleWidth = (int)canvas.MeasureText(Title, Brushes.Label);
         }
-        if (this.CanClose)
+
+        if (CanClose)
         {
             _titleWidth += CloseButtonWidth;
         }
 
         var panelHeight = GetPanelHeight();
         var panelWidth = GetPanelWidth();
-        if (this.Position != PanelPosition.Floating)
+        if (Position != PanelPosition.Floating)
         {
             panelWidth += 20;
         }
 
-        if (this.Position == PanelPosition.Right)
+        if (Position == PanelPosition.Right)
         {
             if (IsCollapsed())
             {
@@ -191,7 +194,7 @@ public abstract class PanelBase : IScreen, IInteractionHandler
                 canvas.Translate(width - panelWidth + 20, 0);
             }
         }
-        else if (this.Position == PanelPosition.Left)
+        else if (Position == PanelPosition.Left)
         {
             if (IsCollapsed())
             {
@@ -207,13 +210,13 @@ public abstract class PanelBase : IScreen, IInteractionHandler
             canvas.Translate(GetLeft(width), 0);
         }
 
-        canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, Brushes.PanelBackground);
+        canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, CornerRadius, CornerRadius, Brushes.PanelBackground);
 
-        if (this.Title is { Length: > 0 } || this.CanClose)
+        if (Title is { Length: > 0 } || CanClose)
         {
             canvas.Save();
 
-            if (this.Position == PanelPosition.Left)
+            if (Position == PanelPosition.Left)
             {
                 canvas.Save();
                 canvas.RotateDegrees(180, panelWidth / 2, 10 + ((_titleWidth + 10) / 2));
@@ -226,18 +229,19 @@ public abstract class PanelBase : IScreen, IInteractionHandler
                 canvas.DrawRoundRect(-TitleAreaWidth, 10, TitleAreaWidth + 3, _titleWidth + 10, 5, 5, Brushes.PanelBorder);
             }
 
-            var title = this.Title ?? "";
+            var title = Title ?? "";
             using (canvas.Scope())
             {
                 canvas.RotateDegrees(270);
                 canvas.DrawText(title, -15 - _titleWidth, -5, Brushes.Label);
             }
-            if (this.CanClose)
+
+            if (CanClose)
             {
                 canvas.DrawPicture(Picture.Cross, -TitleAreaWidth + 5, 10 + (CloseButtonWidth - CloseButtonSize) / 2, CloseButtonSize);
             }
 
-            if (this.Position != PanelPosition.Left)
+            if (Position != PanelPosition.Left)
             {
                 canvas.ClipRect(new Rectangle(-2, 10, TitleAreaWidth / 2, _titleWidth + 20), true, true);
             }
@@ -248,20 +252,20 @@ public abstract class PanelBase : IScreen, IInteractionHandler
             }
         }
 
-        canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, this.CornerRadius, this.CornerRadius, this.PanelBorderBrush);
+        canvas.DrawRoundRect(0, 0, panelWidth, panelHeight, CornerRadius, CornerRadius, PanelBorderBrush);
 
         if (_titleWidth > 0)
         {
             canvas.Restore();
         }
 
-        if (this.Position == PanelPosition.Left)
+        if (Position == PanelPosition.Left)
         {
-            canvas.Translate(25, this.TopPadding);
+            canvas.Translate(25, TopPadding);
         }
         else
         {
-            canvas.Translate(10, this.TopPadding);
+            canvas.Translate(10, TopPadding);
         }
 
         if (IsCollapsed())
@@ -294,11 +298,11 @@ public abstract class PanelBase : IScreen, IInteractionHandler
         => CanCollapse() && _collapsed;
 
     private bool CanCollapse()
-        => this.IsCollapsable && this.Title is { Length: > 0 } && this.Position != PanelPosition.Floating;
+        => IsCollapsable && Title is { Length: > 0 } && Position != PanelPosition.Floating;
 
     protected int GetPanelHeight()
-        => Math.Max(_titleWidth, this.InnerHeight) + this.TopPadding + this.BottomPadding;
+        => Math.Max(_titleWidth, InnerHeight) + TopPadding + BottomPadding;
 
     protected int GetPanelWidth()
-        => this.InnerWidth + 20;
+        => InnerWidth + 20;
 }

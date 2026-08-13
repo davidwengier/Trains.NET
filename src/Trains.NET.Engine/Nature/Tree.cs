@@ -6,7 +6,7 @@ public class Tree(int seed) : IStaticEntity, ISeeded
     public int Row { get; set; }
     public int Seed { get; } = seed;
 
-    public string Identifier => this.Seed.ToString();
+    public string Identifier => Seed.ToString();
 
     public void Created()
     {

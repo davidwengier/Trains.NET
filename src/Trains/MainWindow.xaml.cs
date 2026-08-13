@@ -26,8 +26,8 @@ public partial class MainWindow : Window
             {
                 if (double.TryParse(bits[0], out var width) && double.TryParse(bits[1], out var height))
                 {
-                    this.Width = width;
-                    this.Height = height;
+                    Width = width;
+                    Height = height;
                 }
             }
         }
@@ -42,9 +42,9 @@ public partial class MainWindow : Window
         _gameElement.MouseUp += SKElement_MouseUp;
         _gameElement.MouseWheel += SKElement_MouseWheel;
 
-        this.Content = _gameElement;
+        Content = _gameElement;
 
-        this.Title = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
+        Title = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
 
         _gameElement.SizeChanged += SKElement_SizeChanged;
 
@@ -111,7 +111,7 @@ public partial class MainWindow : Window
     protected override void OnClosing(CancelEventArgs e)
     {
         _game.Dispose();
-        File.WriteAllText(_windowSizeFileName, $"{this.Width},{this.Height}");
+        File.WriteAllText(_windowSizeFileName, $"{Width},{Height}");
     }
 
     private void SKElement_SizeChanged(object? sender, SizeChangedEventArgs e)

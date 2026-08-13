@@ -57,7 +57,7 @@ public class MiniMapScreen : IScreen, IInteractionHandler, ITogglable
 
     public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
     {
-        if (!this.Enabled)
+        if (!Enabled)
         {
             return false;
         }
@@ -89,7 +89,7 @@ public class MiniMapScreen : IScreen, IInteractionHandler, ITogglable
 
     public void Render(ICanvas canvas, int width, int height)
     {
-        if (!this.Enabled)
+        if (!Enabled)
         {
             return;
         }

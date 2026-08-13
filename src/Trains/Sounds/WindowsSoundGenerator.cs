@@ -57,6 +57,7 @@ public sealed class WindowsSoundGenerator : ITogglable, IDisposable
                     await _synth.TweetAsync().ConfigureAwait(false);
                     break;
             }
+
             await Task.Delay(random.Next(500, 3000)).ConfigureAwait(false);
         }
     }

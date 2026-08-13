@@ -61,16 +61,19 @@ public class TrackNeighborsTests
             expected++;
             layout.AddTrack(4, 5);
         }
+
         if (up)
         {
             expected++;
             layout.AddTrack(5, 4);
         }
+
         if (right)
         {
             expected++;
             layout.AddTrack(6, 5);
         }
+
         if (down)
         {
             expected++;

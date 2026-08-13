@@ -21,11 +21,13 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
             {
                 _currentTrain.PropertyChanged -= Train_PropertyChanged;
             }
+
             _currentTrain = value;
             if (_currentTrain != null)
             {
                 _currentTrain.PropertyChanged += Train_PropertyChanged;
             }
+
             Changed?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -57,6 +59,7 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
         {
             t.Follow = (t == trainToSet);
         }
+
         Changed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -70,11 +73,11 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
         var index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
         if (index == -1 || index == 0)
         {
-            this.CurrentTrain = _movableLayout[^1] as Train;
+            CurrentTrain = _movableLayout[^1] as Train;
         }
         else
         {
-            this.CurrentTrain = _movableLayout[index - 1] as Train;
+            CurrentTrain = _movableLayout[index - 1] as Train;
         }
     }
 
@@ -83,11 +86,11 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
         var index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
         if (index == -1 || index == _movableLayout.Count - 1)
         {
-            this.CurrentTrain = _movableLayout[0] as Train;
+            CurrentTrain = _movableLayout[0] as Train;
         }
         else
         {
-            this.CurrentTrain = _movableLayout[index + 1] as Train;
+            CurrentTrain = _movableLayout[index + 1] as Train;
         }
     }
 
@@ -110,9 +113,11 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
                     col = locomotivePosition.Column;
                     row = locomotivePosition.Row;
                 }
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -127,6 +132,6 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
 
     public void Reset()
     {
-        this.CurrentTrain = null;
+        CurrentTrain = null;
     }
 }

@@ -11,25 +11,25 @@ public class TrackNeighbors(Track? left, Track? up, Track? right, Track? down)
     {
         get
         {
-            if (this.Up is not null) yield return this.Up;
-            if (this.Left is not null) yield return this.Left;
-            if (this.Right is not null) yield return this.Right;
-            if (this.Down is not null) yield return this.Down;
+            if (Up is not null) yield return Up;
+            if (Left is not null) yield return Left;
+            if (Right is not null) yield return Right;
+            if (Down is not null) yield return Down;
         }
     }
 
-    public int Count => (this.Up == null ? 0 : 1) +
-            (this.Down == null ? 0 : 1) +
-            (this.Right == null ? 0 : 1) +
-            (this.Left == null ? 0 : 1);
+    public int Count => (Up == null ? 0 : 1) +
+            (Down == null ? 0 : 1) +
+            (Right == null ? 0 : 1) +
+            (Left == null ? 0 : 1);
 
     public bool Contains(Track otherTrack)
     {
         return otherTrack != null &&
-            (this.Left == otherTrack ||
-            this.Right == otherTrack ||
-            this.Up == otherTrack ||
-            this.Down == otherTrack);
+            (Left == otherTrack ||
+            Right == otherTrack ||
+            Up == otherTrack ||
+            Down == otherTrack);
     }
 
     public static TrackNeighbors GetConnectedNeighbours(ILayout trackLayout, int column, int row, bool emptyIsConsideredConnected = false, bool ignoreCurrent = false)

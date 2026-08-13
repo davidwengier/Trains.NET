@@ -130,6 +130,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             ReportError(context, file, "the <path> element must have non-empty path data");
             return;
         }
+
         var pathData = pathDataAttribute.Value;
 
         if (!TryParseViewBox(root.Attribute("viewBox")?.Value, out var left, out var top, out var right, out var bottom))

@@ -20,18 +20,22 @@ public class BridgeFactory(ITerrainMap terrainMap, ILayout<Track> trackLayout) :
         {
             yield return new Bridge() { Direction = SingleTrackDirection.Vertical };
         }
+
         if (neighbours.Up is not null && neighbours.Left is not null)
         {
             yield return new Bridge() { Direction = SingleTrackDirection.LeftUp };
         }
+
         if (neighbours.Up is not null && neighbours.Right is not null)
         {
             yield return new Bridge() { Direction = SingleTrackDirection.RightUp };
         }
+
         if (neighbours.Down is not null && neighbours.Left is not null)
         {
             yield return new Bridge() { Direction = SingleTrackDirection.LeftDown };
         }
+
         if (neighbours.Down is not null && neighbours.Right is not null)
         {
             yield return new Bridge() { Direction = SingleTrackDirection.RightDown };

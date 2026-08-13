@@ -48,14 +48,17 @@ public static class RenderingExtensions
         {
             paint.Color = brush.Color.ToSkia();
         }
+
         if (brush.IsAntialias != null)
         {
             paint.IsAntialias = brush.IsAntialias.Value;
         }
+
         if (brush.Style != null)
         {
             paint.Style = brush.Style.Value.ToSkia();
         }
+
         if (brush.StrokeWidth != null)
         {
             paint.StrokeWidth = brush.StrokeWidth.Value;
@@ -72,6 +75,7 @@ public static class RenderingExtensions
         {
             font.Edging = brush.IsAntialias.Value ? SKFontEdging.Antialias : SKFontEdging.Alias;
         }
+
         if (brush.TextSize != null)
         {
             font.Size = brush.TextSize.Value;

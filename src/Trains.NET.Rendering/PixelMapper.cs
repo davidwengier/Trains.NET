@@ -13,8 +13,8 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
     public int Columns => _columns;
     public int Rows => _rows;
 
-    public int MaxGridWidth => _columns * this.CellSize;
-    public int MaxGridHeight => _rows * this.CellSize;
+    public int MaxGridWidth => _columns * CellSize;
+    public int MaxGridHeight => _rows * CellSize;
 
     public float GameScale { get; private set; } = 1.0f;
     public int ViewPortX { get; private set; }
@@ -22,7 +22,7 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
     public int ViewPortWidth { get; private set; }
     public int ViewPortHeight { get; private set; }
 
-    public int CellSize => (int)(40 * this.GameScale);
+    public int CellSize => (int)(40 * GameScale);
 
     public event EventHandler? ViewPortChanged;
 
@@ -36,8 +36,8 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public void SetViewPortSize(int width, int height)
     {
-        this.ViewPortWidth = width;
-        this.ViewPortHeight = height;
+        ViewPortWidth = width;
+        ViewPortHeight = height;
 
         if (_firstViewPortAdjustment && _initialViewPortX.HasValue && _initialViewPortY.HasValue)
         {
@@ -45,7 +45,7 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
         }
         else if (_firstViewPortAdjustment)
         {
-            SetViewPort((this.MaxGridWidth - width) / 2, (this.MaxGridHeight - height) / 2);
+            SetViewPort((MaxGridWidth - width) / 2, (MaxGridHeight - height) / 2);
         }
         else
         {
@@ -57,12 +57,12 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public void SetViewPort(int x, int y)
     {
-        var oldX = this.ViewPortX;
-        var oldY = this.ViewPortY;
-        this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (this.MaxGridWidth - this.ViewPortWidth));
-        this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (this.MaxGridHeight - this.ViewPortHeight));
+        var oldX = ViewPortX;
+        var oldY = ViewPortY;
+        ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (MaxGridWidth - ViewPortWidth));
+        ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (MaxGridHeight - ViewPortHeight));
 
-        if (this.ViewPortX != oldX || this.ViewPortY != oldY)
+        if (ViewPortX != oldX || ViewPortY != oldY)
         {
             ViewPortChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -70,33 +70,33 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public void AdjustViewPort(int x, int y)
     {
-        SetViewPort(-1 * (this.ViewPortX + x), -1 * (this.ViewPortY + y));
+        SetViewPort(-1 * (ViewPortX + x), -1 * (ViewPortY + y));
     }
 
     public (int, int) ViewPortPixelsToCoords(int x, int y)
     {
-        return ((x - this.ViewPortX) / this.CellSize, (y - this.ViewPortY) / this.CellSize);
+        return ((x - ViewPortX) / CellSize, (y - ViewPortY) / CellSize);
     }
 
     public (int, int, bool) CoordsToViewPortPixels(int column, int row)
     {
-        var x = (column * this.CellSize) + this.ViewPortX;
-        var y = (row * this.CellSize) + this.ViewPortY;
-        var onScreen = x > -this.CellSize &&
-                        y > -this.CellSize &&
-                        x <= this.ViewPortWidth &&
-                        y <= this.ViewPortHeight;
+        var x = (column * CellSize) + ViewPortX;
+        var y = (row * CellSize) + ViewPortY;
+        var onScreen = x > -CellSize &&
+                        y > -CellSize &&
+                        x <= ViewPortWidth &&
+                        y <= ViewPortHeight;
         return (x, y, onScreen);
     }
 
     public (int, int) WorldPixelsToCoords(int x, int y)
     {
-        return (x / this.CellSize, y / this.CellSize);
+        return (x / CellSize, y / CellSize);
     }
 
     public (int, int) CoordsToWorldPixels(int column, int row)
     {
-        return (column * this.CellSize, row * this.CellSize);
+        return (column * CellSize, row * CellSize);
     }
 
     public IPixelMapper Snapshot()
@@ -105,29 +105,29 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
         {
             _columns = _columns,
             _rows = _rows,
-            ViewPortX = this.ViewPortX,
-            ViewPortY = this.ViewPortY,
-            ViewPortHeight = this.ViewPortHeight,
-            ViewPortWidth = this.ViewPortWidth,
-            GameScale = this.GameScale
+            ViewPortX = ViewPortX,
+            ViewPortY = ViewPortY,
+            ViewPortHeight = ViewPortHeight,
+            ViewPortWidth = ViewPortWidth,
+            GameScale = GameScale
         };
     }
 
     private (float, float) GetScaledViewPortSize()
-        => GetScaledViewPortSize(this.GameScale);
+        => GetScaledViewPortSize(GameScale);
 
     private (float, float) GetScaledViewPortSize(float scale)
-        => (this.ViewPortWidth / scale,
-            this.ViewPortHeight / scale);
+        => (ViewPortWidth / scale,
+            ViewPortHeight / scale);
 
     public bool AdjustGameScale(float delta)
     {
-        var newGameScale = this.GameScale * delta;
+        var newGameScale = GameScale * delta;
 
         // Check to see if it is TOO FAR!
         if (newGameScale < 0.1 ||
-            this.MaxGridWidth / this.GameScale * newGameScale < this.ViewPortWidth ||
-            this.MaxGridHeight / this.GameScale * newGameScale < this.ViewPortHeight)
+            MaxGridWidth / GameScale * newGameScale < ViewPortWidth ||
+            MaxGridHeight / GameScale * newGameScale < ViewPortHeight)
         {
             return false;
         }
@@ -136,14 +136,14 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
             newGameScale = 5.0f;
         }
 
-        if (this.GameScale == newGameScale)
+        if (GameScale == newGameScale)
         {
             return false;
         }
 
         // Viewport X & Y will be negative, as they are canvas transations, so swap em!
-        var currentX = -this.ViewPortX / this.GameScale;
-        var currentY = -this.ViewPortY / this.GameScale;
+        var currentX = -ViewPortX / GameScale;
+        var currentY = -ViewPortY / GameScale;
 
         (var svpWidth, var svpHeight) = GetScaledViewPortSize();
 
@@ -155,10 +155,10 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
         var newX = currentCenterX - newSvpWidth / 2.0f;
         var newY = currentCenterY - newSvpHeight / 2.0f;
 
-        this.ViewPortX = -(int)Math.Round(newX * newGameScale);
-        this.ViewPortY = -(int)Math.Round(newY * newGameScale);
+        ViewPortX = -(int)Math.Round(newX * newGameScale);
+        ViewPortY = -(int)Math.Round(newY * newGameScale);
 
-        this.GameScale = newGameScale;
+        GameScale = newGameScale;
 
         AdjustViewPort(0, 0);
 
@@ -191,14 +191,14 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
         _initialViewPortX = -x;
         _initialViewPortY = -y;
-        this.GameScale = gameScale;
+        GameScale = gameScale;
 
         return true;
     }
 
     public void Save(IGameStorage storage)
     {
-        storage.Write(nameof(PixelMapper), $"{this.ViewPortX},{this.ViewPortY},{this.GameScale}");
+        storage.Write(nameof(PixelMapper), $"{ViewPortX},{ViewPortY},{GameScale}");
     }
 
     public void Reset()

@@ -20,6 +20,7 @@ public class TrainPainter : ITrainPainter
         {
             _paletteMap.Add(train.Seed, GetPalette(train.GetPRNG()));
         }
+
         return _paletteMap[train.Seed];
     }
 

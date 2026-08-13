@@ -146,6 +146,7 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
             {
                 break;
             }
+
             if (otherTrain != null && otherTrain.UniqueID != train.UniqueID) // There is a train that isn't us
             {
                 break;
@@ -221,6 +222,7 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
                 }
             }
         }
+
         return null;
     }
 

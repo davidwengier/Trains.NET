@@ -43,14 +43,15 @@ public class GameThreadTimer : ITimer
             {
                 Thread.Sleep(0);
             }
+
             if (_threadLoopEnabled && _elapsedEventEnabled)
             {
                 var time = _stopwatch.ElapsedMilliseconds;
-                this.TimeSinceLastTick = time - _lastTick;
+                TimeSinceLastTick = time - _lastTick;
                 _lastTick = time;
                 Elapsed?.Invoke(this, EventArgs.Empty);
 
-                _nextInvoke = time + (int)this.Interval;
+                _nextInvoke = time + (int)Interval;
             }
         }
     }

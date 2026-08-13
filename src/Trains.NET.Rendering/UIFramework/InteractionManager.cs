@@ -62,6 +62,7 @@ public class InteractionManager(
             _capturedHandler = null;
             return true;
         }
+
         return false;
     }
 
@@ -91,6 +92,7 @@ public class InteractionManager(
                     preHandled |= handler.HandlePointerAction(x, y, width, height, action);
                 }
             }
+
             if (preHandled)
             {
                 return true;
@@ -116,6 +118,7 @@ public class InteractionManager(
                 {
                     _capturedHandler = handler;
                 }
+
                 return true;
             }
         }
@@ -144,6 +147,7 @@ public class InteractionManager(
         {
             _hasDragged = false;
         }
+
         if (action is PointerAction.Drag)
         {
             _hasDragged = true;
@@ -180,6 +184,7 @@ public class InteractionManager(
                 _lastToolRow = row;
             }
         }
+
         return false;
     }
 }

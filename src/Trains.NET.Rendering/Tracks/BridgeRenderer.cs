@@ -61,6 +61,7 @@ public class BridgeRenderer(
                     break;
             }
         }
+
         using (canvas.Scope())
         {
             _trackRenderer.DrawSingleTrack(canvas, track);

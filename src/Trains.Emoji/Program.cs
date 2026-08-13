@@ -40,10 +40,12 @@ public class EmojiDrawer(
                 imageSizes.Add(Convert.ToInt32(args[i]));
             }
         }
+
         if (imageSizes.Count == 0)
         {
             imageSizes.Add(512);
         }
+
         DI.ServiceLocator.GetService<EmojiDrawer>().Save(imageSizes);
 
         static bool IsArg(string actual, string expected)
@@ -58,6 +60,7 @@ public class EmojiDrawer(
         {
             Directory.Delete(BaseFolderName, true);
         }
+
         foreach (var imageSize in imageSizes)
         {
             var folderName = imageSizes.Count() > 1 ? Path.Combine(BaseFolderName, imageSize.ToString()) : BaseFolderName;
@@ -68,6 +71,7 @@ public class EmojiDrawer(
             {
                 Directory.CreateDirectory(folderName);
             }
+
             DrawTrees(folderName, pixelMapper);
             DrawTracks(folderName, pixelMapper);
             DrawTrains(folderName, pixelMapper);
@@ -126,6 +130,7 @@ public class EmojiDrawer(
 
             renderMethod(canvas);
         }
+
         using Stream s = File.OpenWrite(Path.Combine(folderName, name + ".png"));
         bitmap.Encode(s, SKEncodedImageFormat.Png, 100);
     }
@@ -167,6 +172,7 @@ public class EmojiDrawer(
                 // TODO: This needs to be way smarter about track types
                 RenderTrack(canvas, trackRenderer, new Bridge() { Direction = trackDirection });
             }
+
             train.SetAngle(angle);
             _trainRenderer.Render(canvas, train);
         });

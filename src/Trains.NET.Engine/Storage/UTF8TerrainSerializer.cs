@@ -54,6 +54,7 @@ public class UTF8TerrainSerializer : ITerrainSerializer
                 {
                     height = 0;
                 }
+
                 heights.Add(height);
             }
 

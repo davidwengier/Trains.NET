@@ -18,28 +18,28 @@ public class Train : IMovable, INotifyPropertyChanged, ISeeded
 
     public Train(int seed)
     {
-        this.Seed = seed;
-        this.UniqueID = Guid.NewGuid();
-        this.Name = TrainNames.GetName(seed);
-        this.Carriages = Math.Abs(seed) % MaxSpawnCarriages;
-        this.DesiredSpeed = DefaultSpeed;
-        this.RelativeLeft = 0.5f;
-        this.RelativeTop = 0.5f;
+        Seed = seed;
+        UniqueID = Guid.NewGuid();
+        Name = TrainNames.GetName(seed);
+        Carriages = Math.Abs(seed) % MaxSpawnCarriages;
+        DesiredSpeed = DefaultSpeed;
+        RelativeLeft = 0.5f;
+        RelativeTop = 0.5f;
     }
 
     private Train(Train other)
     {
-        this.Seed = other.Seed;
-        this.UniqueID = other.UniqueID;
-        this.Column = other.Column;
-        this.Name = other.Name;
-        this.Row = other.Row;
-        this.Angle = other.Angle;
-        this.RelativeLeft = other.RelativeLeft;
-        this.RelativeTop = other.RelativeTop;
-        this.CurrentSpeed = other.CurrentSpeed;
-        this.DesiredSpeed = other.DesiredSpeed;
-        this.Carriages = other.Carriages;
+        Seed = other.Seed;
+        UniqueID = other.UniqueID;
+        Column = other.Column;
+        Name = other.Name;
+        Row = other.Row;
+        Angle = other.Angle;
+        RelativeLeft = other.RelativeLeft;
+        RelativeTop = other.RelativeTop;
+        CurrentSpeed = other.CurrentSpeed;
+        DesiredSpeed = other.DesiredSpeed;
+        Carriages = other.Carriages;
         _lookaheadOverride = other._lookaheadOverride;
     }
 
@@ -47,7 +47,7 @@ public class Train : IMovable, INotifyPropertyChanged, ISeeded
     {
         get
         {
-            return _lookaheadOverride ?? Math.Max(MinimumLookaheadSpeed, this.CurrentSpeed) * 30;
+            return _lookaheadOverride ?? Math.Max(MinimumLookaheadSpeed, CurrentSpeed) * 30;
         }
         set
         {
@@ -77,7 +77,7 @@ public class Train : IMovable, INotifyPropertyChanged, ISeeded
     {
         while (angle < 0) angle += 360;
         while (angle > 360) angle -= 360;
-        this.Angle = angle;
+        Angle = angle;
     }
 
     public Train Clone()
@@ -87,29 +87,29 @@ public class Train : IMovable, INotifyPropertyChanged, ISeeded
 
     public void AddCarriage()
     {
-        if (this.Carriages < 10)
+        if (Carriages < 10)
         {
-            this.Carriages += 1;
+            Carriages += 1;
         }
     }
 
     public void RemoveCarriage()
     {
-        if (this.Carriages > 0)
+        if (Carriages > 0)
         {
-            this.Carriages -= 1;
+            Carriages -= 1;
         }
     }
 
     internal void ForceSpeed(float speed)
     {
-        this.CurrentSpeed = speed;
-        this.DesiredSpeed = speed;
+        CurrentSpeed = speed;
+        DesiredSpeed = speed;
     }
 
-    public void Start() => this.Stopped = false;
+    public void Start() => Stopped = false;
 
-    public void Stop() => this.Stopped = true;
+    public void Stop() => Stopped = true;
 
     internal void Pause() => _collisionAhead = true;
 
@@ -117,47 +117,48 @@ public class Train : IMovable, INotifyPropertyChanged, ISeeded
 
     public void Slower()
     {
-        if (this.DesiredSpeed > 5)
+        if (DesiredSpeed > 5)
         {
-            this.DesiredSpeed -= 5;
+            DesiredSpeed -= 5;
         }
     }
 
     public void Faster()
     {
-        if (this.DesiredSpeed < MaximumSpeed)
+        if (DesiredSpeed < MaximumSpeed)
         {
-            this.DesiredSpeed += 5;
+            DesiredSpeed += 5;
         }
     }
 
-    public override string ToString() => $"Train {this.UniqueID} [Column: {this.Column} | Row: {this.Row} | Left: {this.RelativeLeft} | Top: {this.RelativeTop} | Angle: {this.Angle} | Speed: {this.CurrentSpeed}]";
+    public override string ToString() => $"Train {UniqueID} [Column: {Column} | Row: {Row} | Left: {RelativeLeft} | Top: {RelativeTop} | Angle: {Angle} | Speed: {CurrentSpeed}]";
 
-    internal TrainPosition GetPosition() => new(this.Column, this.Row, this.RelativeLeft, this.RelativeTop, this.Angle, 0);
+    internal TrainPosition GetPosition() => new(Column, Row, RelativeLeft, RelativeTop, Angle, 0);
 
     internal void AdjustSpeed()
     {
-        if (this.Stopped || _collisionAhead)
+        if (Stopped || _collisionAhead)
         {
-            this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
+            CurrentSpeed = Math.Max(CurrentSpeed - 1.0f, 0);
         }
-        else if (this.DesiredSpeed > this.CurrentSpeed)
+        else if (DesiredSpeed > CurrentSpeed)
         {
-            this.CurrentSpeed = Math.Min(this.CurrentSpeed + 1.0f, this.DesiredSpeed);
+            CurrentSpeed = Math.Min(CurrentSpeed + 1.0f, DesiredSpeed);
         }
-        else if (this.DesiredSpeed < this.CurrentSpeed)
+        else if (DesiredSpeed < CurrentSpeed)
         {
-            this.CurrentSpeed = Math.Max(this.CurrentSpeed - 1.0f, 0);
+            CurrentSpeed = Math.Max(CurrentSpeed - 1.0f, 0);
         }
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentSpeed)));
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentSpeed)));
     }
 
     public void ApplyStep(TrainPosition newPosition)
     {
-        this.Column = newPosition.Column;
-        this.Row = newPosition.Row;
-        this.Angle = newPosition.Angle;
-        this.RelativeLeft = newPosition.RelativeLeft;
-        this.RelativeTop = newPosition.RelativeTop;
+        Column = newPosition.Column;
+        Row = newPosition.Row;
+        Angle = newPosition.Angle;
+        RelativeLeft = newPosition.RelativeLeft;
+        RelativeTop = newPosition.RelativeTop;
     }
 }

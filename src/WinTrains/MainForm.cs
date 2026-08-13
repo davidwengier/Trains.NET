@@ -17,7 +17,7 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
-        this.Text = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
+        Text = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
 
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
@@ -110,6 +110,7 @@ public partial class MainForm : Form
             {
                 _skControl.Invalidate();
             }
+
             _drawTime.Stop();
 
             _fps.Update();

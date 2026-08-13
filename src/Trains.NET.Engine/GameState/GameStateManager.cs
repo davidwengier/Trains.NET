@@ -36,7 +36,7 @@ public class GameStateManager(
                 // if they're turning off autosave, we want to at least save that
                 // otherwise if they leave before the next save, it could be back on
                 // on load
-                _storage.Write("Autosave", this.AutosaveEnabled.ToString());
+                _storage.Write("Autosave", AutosaveEnabled.ToString());
             }
         }
     }
@@ -59,7 +59,8 @@ public class GameStateManager(
                 break;
             }
         }
-        this.AutosaveEnabled = _storage.Read("Autosave")?.Equals("True") ?? true;
+
+        AutosaveEnabled = _storage.Read("Autosave")?.Equals("True") ?? true;
     }
 
     public void Reset()
@@ -78,15 +79,16 @@ public class GameStateManager(
             {
                 gameState.Save(_storage);
             }
-            _storage.Write("Autosave", this.AutosaveEnabled.ToString());
+
+            _storage.Write("Autosave", AutosaveEnabled.ToString());
         }
     }
 
     public void Update(long timeSinceLastTick)
     {
-        _autosaveStat.Information = this.AutosaveEnabled ? "On" : "Off";
+        _autosaveStat.Information = AutosaveEnabled ? "On" : "Off";
 
-        if (this.AutosaveEnabled &&
+        if (AutosaveEnabled &&
             ++_autosaveCounter > AutosaveInterval)
         {
             Save();

@@ -127,7 +127,7 @@ public class ImageCacheTests : IDisposable
 
         public void Dispose()
         {
-            this.IsDisposed = true;
+            IsDisposed = true;
         }
     }
 }

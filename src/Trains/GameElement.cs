@@ -33,7 +33,7 @@ public class GameElement : FrameworkElement, IDisposable
     {
         var args = (RenderingEventArgs)e;
 
-        if (!this.Enabled || _lastRenderingTime == args.RenderingTime)
+        if (!Enabled || _lastRenderingTime == args.RenderingTime)
         {
             return;
         }
@@ -52,8 +52,8 @@ public class GameElement : FrameworkElement, IDisposable
         if (_designMode)
             return;
 
-        var width = (int)this.ActualWidth;
-        var height = (int)this.ActualHeight;
+        var width = (int)ActualWidth;
+        var height = (int)ActualHeight;
 
         if (width == 0 || height == 0)
             return;
@@ -83,10 +83,12 @@ public class GameElement : FrameworkElement, IDisposable
 
             _bitmap.Unlock();
         }
+
         using (_drawTime.Measure())
         {
-            drawingContext.DrawImage(_bitmap, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
         }
+
         _fps.Update();
     }
 

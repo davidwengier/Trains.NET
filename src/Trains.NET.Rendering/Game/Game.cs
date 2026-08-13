@@ -45,6 +45,7 @@ public class Game : IGame
         {
             screen.Changed += (s, e) => _imageCache.SetDirty(screen);
         }
+
         foreach (var renderer in _boardRenderers.OfType<ICachableLayerRenderer>())
         {
             renderer.Changed += (s, e) => _imageCache.SetDirty(renderer);
@@ -72,6 +73,7 @@ public class Game : IGame
         {
             sb.Append("[Cached]");
         }
+
         return sb.ToString();
     }
     private static string GetLayerDiagnosticsName(IScreen screen)
@@ -159,6 +161,7 @@ public class Game : IGame
                 {
                     continue;
                 }
+
                 using (canvas.Scope())
                 {
                     RenderLayer(canvas, pixelMapper, renderer);

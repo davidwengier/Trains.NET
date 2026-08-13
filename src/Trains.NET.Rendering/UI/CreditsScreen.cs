@@ -19,14 +19,14 @@ public class CreditsScreen : PanelBase
     protected override void PreRender(ICanvas canvas)
     {
         // to stick to the bottom
-        this.Top = int.MaxValue;
+        Top = int.MaxValue;
 
         var textWidth = canvas.MeasureText(Label, _labelBrush);
 
         var textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
 
-        this.InnerWidth = Convert.ToInt32(textWidth);
-        this.InnerHeight = textHeight;
+        InnerWidth = Convert.ToInt32(textWidth);
+        InnerHeight = textHeight;
     }
 
     protected override void Render(ICanvas canvas)
@@ -50,6 +50,7 @@ public class CreditsScreen : PanelBase
                 });
             }
             catch { }
+
             return true;
         }
 

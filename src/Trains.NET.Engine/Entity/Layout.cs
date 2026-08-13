@@ -105,9 +105,9 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
         return track != null;
     }
 
-    private static bool IsInvalid(int column, int row)
+    private bool IsInvalid(int column, int row)
     {
-        return column < 0 || row < 0 || column > 200 || row > 200;
+        return column < 0 || row < 0 || column >= _entities.Length || row >= _rows;
     }
 
     public bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity)

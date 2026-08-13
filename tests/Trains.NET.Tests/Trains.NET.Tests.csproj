@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Trains.NET.Engine\Trains.NET.Engine.csproj" />
     <ProjectReference Include="..\..\src\Trains.NET.Rendering\Trains.NET.Rendering.csproj" />
+    <ProjectReference Include="..\..\src\Trains.NET.Rendering.Skia\Trains.NET.Rendering.Skia.csproj" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,6 @@
     <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.148.0" />
     <PackageVersion Include="SkiaSharp.Views.WindowsForms" Version="4.148.0" />
     <PackageVersion Include="SkiaSharp.Views.WPF" Version="4.148.0" />
-    <PackageVersion Include="Svg.SourceGenerator.Skia" Version="2.0.0.4" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.0" />
   </ItemGroup>

@@ -96,7 +96,11 @@ public class TrackSelectionPanel : PanelBase
         {
             if (button.HandleMouseAction(x, y, action))
             {
-                break;
+                // Moves must reach every row so previously hovered buttons are cleared.
+                if (action != PointerAction.Move)
+                {
+                    break;
+                }
             }
 
             y -= 40;

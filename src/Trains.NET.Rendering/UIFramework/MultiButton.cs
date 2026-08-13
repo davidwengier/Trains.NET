@@ -20,15 +20,24 @@ public class MultiButton : ButtonBase
     {
         if (action is Rendering.PointerAction.Click or Rendering.PointerAction.Move)
         {
+            var handled = false;
             foreach (var button in _buttons)
             {
                 if (button.HandleMouseAction(x, y, action))
                 {
-                    return true;
+                    // Moves must reach every child so previously hovered buttons are cleared.
+                    if (action != Rendering.PointerAction.Move)
+                    {
+                        return true;
+                    }
+
+                    handled = true;
                 }
 
                 x -= button.Width;
             }
+
+            return handled;
         }
 
         return false;

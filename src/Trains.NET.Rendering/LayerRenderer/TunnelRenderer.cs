@@ -30,12 +30,12 @@ public partial class TunnelRenderer(
 
         Dictionary<(int column, int row), Tunnel> entrances = [];
 
-        foreach (Track track in _trackLayout)
+        foreach (var track in _trackLayout)
         {
             var terrain = _terrainMap.Get(track.Column, track.Row);
             if (!terrain.IsMountain) continue;
 
-            (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+            (var x, var y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
             // Paint over the tracks with the colour of the terrain. Would be awesome to remove this in future somehow
             var terrainColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(terrain));
@@ -111,7 +111,7 @@ public partial class TunnelRenderer(
 
     private static void DrawEntrance(ICanvas canvas, IPixelMapper pixelMapper, Color[] entranceColourArray, int col, int row, Tunnel tunnels)
     {
-        (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = pixelMapper.CoordsToViewPortPixels(col, row);
 
         switch (tunnels)
         {

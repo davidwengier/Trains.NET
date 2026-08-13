@@ -21,7 +21,7 @@ public class SnapshotCommand(
     public void Execute()
     {
         var pixelMapper = _pixelMapper.Snapshot();
-        (int width, int height) = (pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight);
+        (var width, var height) = (pixelMapper.ViewPortWidth, pixelMapper.ViewPortHeight);
         using var bitmap = new SKBitmap(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
         using var skCanvas = new SKCanvas(bitmap);
         using (ICanvas canvas = new SKCanvasWrapper(skCanvas))

@@ -35,7 +35,7 @@ public abstract class StaticEntityCollectionRenderer<T> : ICachableLayerRenderer
             _lastCellSize = pixelMapper.CellSize;
         }
 
-        foreach (T entity in _layout)
+        foreach (var entity in _layout)
         {
             var renderer = _renderers.FirstOrDefault(r => r.ShouldRender(entity));
             if (renderer is null)
@@ -44,19 +44,19 @@ public abstract class StaticEntityCollectionRenderer<T> : ICachableLayerRenderer
                 continue;
             }
 
-            (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
+            (var x, var y, var onScreen) = pixelMapper.CoordsToViewPortPixels(entity.Column, entity.Row);
 
             if (!onScreen)
             {
                 continue;
             }
 
-            string key = $"{entity.GetType().Name}.{entity.Identifier}";
+            var key = $"{entity.GetType().Name}.{entity.Identifier}";
             if (_imageCache.IsDirty(key))
             {
-                using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
+                using var imageCanvas = _imageFactory.CreateImageCanvas(pixelMapper.CellSize, pixelMapper.CellSize);
 
-                float scale = pixelMapper.CellSize / 100.0f;
+                var scale = pixelMapper.CellSize / 100.0f;
 
                 imageCanvas.Canvas.Scale(scale, scale);
 

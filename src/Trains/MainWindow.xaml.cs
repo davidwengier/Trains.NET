@@ -20,11 +20,11 @@ public partial class MainWindow : Window
 
         if (File.Exists(_windowSizeFileName))
         {
-            string sizeString = File.ReadAllText(_windowSizeFileName);
-            string[] bits = sizeString.Split(',');
+            var sizeString = File.ReadAllText(_windowSizeFileName);
+            var bits = sizeString.Split(',');
             if (bits.Length == 2)
             {
-                if (double.TryParse(bits[0], out double width) && double.TryParse(bits[1], out double height))
+                if (double.TryParse(bits[0], out var width) && double.TryParse(bits[1], out var height))
                 {
                     this.Width = width;
                     this.Height = height;

@@ -21,7 +21,7 @@ public class TrackPathBuilder : ITrackPathBuilder
     }
     public IPath BuildCornerTrackPath()
     {
-        IPath trackPath = _pathFactory.Create();
+        var trackPath = _pathFactory.Create();
 
         trackPath.MoveTo(0, _innerTrackOffset);
         trackPath.ConicTo(_innerTrackOffset, _innerTrackOffset, _innerTrackOffset, 0, 0.75f);
@@ -33,7 +33,7 @@ public class TrackPathBuilder : ITrackPathBuilder
 
     public IPath BuildHorizontalTrackPath()
     {
-        IPath trackPath = _pathFactory.Create();
+        var trackPath = _pathFactory.Create();
 
         trackPath.MoveTo(0, _innerTrackOffset);
         trackPath.LineTo(100.0f, _innerTrackOffset);
@@ -45,13 +45,13 @@ public class TrackPathBuilder : ITrackPathBuilder
 
     public IPath BuildHorizontalPlankPath()
     {
-        float plankGap = 100.0f / _trackParameters.NumPlanks;
+        var plankGap = 100.0f / _trackParameters.NumPlanks;
 
-        IPath path = _pathFactory.Create();
+        var path = _pathFactory.Create();
 
-        for (int i = 1; i < _trackParameters.NumPlanks + 1; i++)
+        for (var i = 1; i < _trackParameters.NumPlanks + 1; i++)
         {
-            float pos = (i * plankGap) - (plankGap / 2);
+            var pos = (i * plankGap) - (plankGap / 2);
 
             path.MoveTo(pos, _innerPlankOffset);
             path.LineTo(pos, _outerPlankOffset);
@@ -64,18 +64,18 @@ public class TrackPathBuilder : ITrackPathBuilder
 
     public IPath BuildCornerPlankPath(int plankCount)
     {
-        IPath path = _pathFactory.Create();
+        var path = _pathFactory.Create();
 
-        double step = Math.PI / 2.0 / _trackParameters.NumCornerPlanks;
+        var step = Math.PI / 2.0 / _trackParameters.NumCornerPlanks;
 
-        for (int i = 0; i < plankCount; i++)
+        for (var i = 0; i < plankCount; i++)
         {
-            double angle = step * (i + 0.5f);
+            var angle = step * (i + 0.5f);
 
-            float innerX = (float)(_innerPlankOffset * Math.Cos(angle));
-            float innerY = (float)(_innerPlankOffset * Math.Sin(angle));
-            float outerX = (float)(_outerPlankOffset * Math.Cos(angle));
-            float outerY = (float)(_outerPlankOffset * Math.Sin(angle));
+            var innerX = (float)(_innerPlankOffset * Math.Cos(angle));
+            var innerY = (float)(_innerPlankOffset * Math.Sin(angle));
+            var outerX = (float)(_outerPlankOffset * Math.Cos(angle));
+            var outerY = (float)(_outerPlankOffset * Math.Sin(angle));
 
             path.MoveTo(innerX, innerY);
             path.LineTo(outerX, outerY);

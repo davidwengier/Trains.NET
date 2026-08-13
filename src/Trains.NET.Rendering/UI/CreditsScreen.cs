@@ -23,7 +23,7 @@ public class CreditsScreen : PanelBase
 
         var textWidth = canvas.MeasureText(Label, _labelBrush);
 
-        int textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
+        var textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
 
         this.InnerWidth = Convert.ToInt32(textWidth);
         this.InnerHeight = textHeight;
@@ -31,7 +31,7 @@ public class CreditsScreen : PanelBase
 
     protected override void Render(ICanvas canvas)
     {
-        int textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
+        var textHeight = _labelBrush.TextSize ?? throw new NullReferenceException("Must set a text size on the label brush");
 
         canvas.DrawText(Label, 0, (float)textHeight - 2, _labelBrush);
     }

@@ -7,11 +7,11 @@ public class SnapshotTests
     [Fact]
     public async Task Snapshot_PostSnapshot_SnapshotShoudntChange()
     {
-        int width = 200;
-        int height = 200;
-        int viewportX = 30;
-        int viewportY = 30;
-        float gameScale = 2.0f;
+        var width = 200;
+        var height = 200;
+        var viewportX = 30;
+        var viewportY = 30;
+        var gameScale = 2.0f;
 
         var pixelMapper = new PixelMapper();
         await pixelMapper.InitializeAsync(100, 200);
@@ -20,7 +20,7 @@ public class SnapshotTests
         pixelMapper.AdjustGameScale(gameScale);
         pixelMapper.SetViewPort(viewportX, viewportY);
 
-        IPixelMapper actual = pixelMapper.Snapshot();
+        var actual = pixelMapper.Snapshot();
 
         pixelMapper.AdjustGameScale(0.5f);
         pixelMapper.SetViewPort(0, 0);
@@ -36,10 +36,10 @@ public class SnapshotTests
     [Fact]
     public async Task Snapshot_FullySetup()
     {
-        int width = 200;
-        int height = 200;
-        int viewportX = 30;
-        int viewportY = 30;
+        var width = 200;
+        var height = 200;
+        var viewportX = 30;
+        var viewportY = 30;
 
         var pixelMapper = new PixelMapper();
         await pixelMapper.InitializeAsync(100, 200);
@@ -48,7 +48,7 @@ public class SnapshotTests
         pixelMapper.SetViewPort(viewportX, viewportY);
         pixelMapper.AdjustGameScale(2f);
 
-        IPixelMapper actual = pixelMapper.Snapshot();
+        var actual = pixelMapper.Snapshot();
 
         AssertSnapshotsSame(pixelMapper, actual);
     }
@@ -59,7 +59,7 @@ public class SnapshotTests
         var pixelMapper = new PixelMapper();
         await pixelMapper.InitializeAsync(100, 200);
 
-        IPixelMapper actual = pixelMapper.Snapshot();
+        var actual = pixelMapper.Snapshot();
 
         AssertSnapshotsSame(pixelMapper, actual);
     }
@@ -70,8 +70,8 @@ public class SnapshotTests
         var pixelMapper = new PixelMapper();
         await pixelMapper.InitializeAsync(100, 200);
 
-        IPixelMapper expected = pixelMapper.Snapshot();
-        IPixelMapper actual = pixelMapper.Snapshot();
+        var expected = pixelMapper.Snapshot();
+        var actual = pixelMapper.Snapshot();
 
         AssertSnapshotsSame(expected, actual);
     }
@@ -125,7 +125,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(5 * DefaultCellSize, 5 * DefaultCellSize, 5, 5)]
     public void ViewPortPixelsToCoords_DefaultScale_DefaultPosition(int x, int y, int expectedCol, int expectedRow)
     {
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -143,7 +143,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -161,7 +161,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -170,16 +170,16 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [Fact]
     public void ViewPortCoordsPixelsCoords_ChangingZoom()
     {
-        int col = 0;
-        int row = 0;
+        var col = 0;
+        var row = 0;
 
-        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         _pixelMapper.AdjustGameScale(2.0f);
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(col, actualCol);
         Assert.Equal(row, actualRow);
@@ -198,9 +198,9 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(6, 6)]
     public void ViewPortCoordsPixelsCoords_DefaultScale_DefaultPosition(int col, int row)
     {
-        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(col, actualCol);
         Assert.Equal(row, actualRow);
@@ -223,9 +223,9 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(col, actualCol);
         Assert.Equal(row, actualRow);
@@ -248,9 +248,9 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
-        (int actualCol, int actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         Assert.Equal(col, actualCol);
         Assert.Equal(row, actualRow);
@@ -265,7 +265,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(6, 6)]
     public void CoordsToViewPortPixels_OffScreen_DefaultScale_DefaultPosition(int col, int row)
     {
-        (_, _, bool onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (_, _, var onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.False(onScreen);
     }
@@ -280,7 +280,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewportX, viewportY);
         _pixelMapper.LogData(_output);
 
-        (_, _, bool onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (_, _, var onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.False(onScreen);
     }
@@ -297,7 +297,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.AdjustGameScale(2.0f);
         _pixelMapper.LogData(_output);
 
-        (_, _, bool onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (_, _, var onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.False(onScreen);
     }
@@ -313,7 +313,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewportX, viewportY);
         _pixelMapper.LogData(_output);
 
-        (_, _, bool onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (_, _, var onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.False(onScreen);
     }
@@ -335,7 +335,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewportX, viewportY);
         _pixelMapper.LogData(_output);
 
-        (_, _, bool onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (_, _, var onScreen) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.True(onScreen);
     }
@@ -348,7 +348,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(5, 5, 5 * DefaultCellSize, 5 * DefaultCellSize)]
     public void CoordsToViewPortPixels_DefaultScale_DefaultPosition(int col, int row, int expectedX, int expectedY)
     {
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -366,7 +366,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -384,7 +384,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(0, 0);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -406,7 +406,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewPortX, viewPortY);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -429,7 +429,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewPortX, viewPortY);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -452,7 +452,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.SetViewPort(viewPortX, viewPortY);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var actualX, var actualY, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -478,7 +478,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(5 * DefaultCellSize, 5 * DefaultCellSize, 5, 5)]
     public void WorldPixelsToCoords_DefaultScale(int x, int y, int expectedCol, int expectedRow)
     {
-        (int actualCol, int actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -507,7 +507,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.AdjustGameScale(2.0f);
         _pixelMapper.LogData(_output);
 
-        (int actualCol, int actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -536,7 +536,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.AdjustGameScale(0.5f);
         _pixelMapper.LogData(_output);
 
-        (int actualCol, int actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
+        (var actualCol, var actualRow) = _pixelMapper.WorldPixelsToCoords(x, y);
 
         Assert.Equal(expectedCol, actualCol);
         Assert.Equal(expectedRow, actualRow);
@@ -550,7 +550,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
     [InlineData(5, 5, 5 * DefaultCellSize, 5 * DefaultCellSize)]
     public void CoordsToWorldPixels_DefaultScale(int col, int row, int expectedX, int expectedY)
     {
-        (int actualX, int actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
+        (var actualX, var actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -567,7 +567,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.AdjustGameScale(2.0f);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
+        (var actualX, var actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);
@@ -584,7 +584,7 @@ public class CoordPixelConverstionTests(ITestOutputHelper output) : IAsyncLifeti
         _pixelMapper.AdjustGameScale(0.5f);
         _pixelMapper.LogData(_output);
 
-        (int actualX, int actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
+        (var actualX, var actualY) = _pixelMapper.CoordsToWorldPixels(col, row);
 
         Assert.Equal(expectedX, actualX);
         Assert.Equal(expectedY, actualY);

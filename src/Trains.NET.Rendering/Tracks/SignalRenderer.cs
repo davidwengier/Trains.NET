@@ -43,7 +43,7 @@ public class SignalRenderer(IPathFactory pathFactory, SingleTrackRenderer trackR
     {
         const int halfLightSpread = LightSpread / 2;
 
-        IPath path = pathFactory.Create();
+        var path = pathFactory.Create();
 
         path.LineTo(-LightLength, -halfLightSpread);
         path.ConicTo(-LightCurveLength, 0, -LightLength, halfLightSpread, 0.75f);

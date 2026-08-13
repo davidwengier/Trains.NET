@@ -24,28 +24,28 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(svgFiles, static (sourceContext, item) =>
         {
-            AdditionalText file = item.Left;
-            AnalyzerConfigOptions options = item.Right.GetOptions(file);
+            var file = item.Left;
+            var options = item.Right.GetOptions(file);
             Generate(sourceContext, file, options);
         });
     }
 
     private static void Generate(SourceProductionContext context, AdditionalText file, AnalyzerConfigOptions options)
     {
-        if (!options.TryGetValue(GenerateSkiaPictureMetadata, out string? generate) ||
+        if (!options.TryGetValue(GenerateSkiaPictureMetadata, out var generate) ||
             !string.Equals(generate, bool.TrueString, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
 
-        SourceText? text = file.GetText(context.CancellationToken);
+        var text = file.GetText(context.CancellationToken);
         if (text is null)
         {
             ReportError(context, file, "the file could not be read");
             return;
         }
 
-        if (!options.TryGetValue(NamespaceNameMetadata, out string? namespaceName) ||
+        if (!options.TryGetValue(NamespaceNameMetadata, out var namespaceName) ||
             string.IsNullOrWhiteSpace(namespaceName))
         {
             ReportError(context, file, "NamespaceName metadata is required");
@@ -59,7 +59,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        string className = GetClassName(file, options);
+        var className = GetClassName(file, options);
         if (!SyntaxFacts.IsValidIdentifier(className))
         {
             ReportError(context, file, $"'{className}' is not a valid class name");
@@ -75,7 +75,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
                 DtdProcessing = DtdProcessing.Prohibit,
                 XmlResolver = null,
             };
-            using XmlReader reader = XmlReader.Create(stringReader, settings);
+            using var reader = XmlReader.Create(stringReader, settings);
             document = XDocument.Load(reader, LoadOptions.None);
         }
         catch (XmlException exception)
@@ -84,14 +84,14 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        XElement? root = document.Root;
+        var root = document.Root;
         if (root is null || root.Name.LocalName != "svg")
         {
             ReportError(context, file, "the root element must be <svg>");
             return;
         }
 
-        XAttribute? unsupportedRootAttribute = root.Attributes()
+        var unsupportedRootAttribute = root.Attributes()
             .FirstOrDefault(static attribute => !attribute.IsNamespaceDeclaration && attribute.Name.LocalName != "viewBox");
         if (unsupportedRootAttribute is not null)
         {
@@ -107,7 +107,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        XElement[] paths = root.Descendants()
+        var paths = root.Descendants()
             .Where(static element => element.Name.LocalName == "path")
             .ToArray();
         if (paths.Length != 1)
@@ -116,8 +116,8 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        XElement path = paths[0];
-        XAttribute? unsupportedPathAttribute = path.Attributes()
+        var path = paths[0];
+        var unsupportedPathAttribute = path.Attributes()
             .FirstOrDefault(static attribute => attribute.Name.LocalName != "d");
         if (unsupportedPathAttribute is not null)
         {
@@ -125,34 +125,34 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        XAttribute? pathDataAttribute = path.Attribute("d");
+        var pathDataAttribute = path.Attribute("d");
         if (pathDataAttribute is null || string.IsNullOrWhiteSpace(pathDataAttribute.Value))
         {
             ReportError(context, file, "the <path> element must have non-empty path data");
             return;
         }
-        string pathData = pathDataAttribute.Value;
+        var pathData = pathDataAttribute.Value;
 
-        if (!TryParseViewBox(root.Attribute("viewBox")?.Value, out float left, out float top, out float right, out float bottom))
+        if (!TryParseViewBox(root.Attribute("viewBox")?.Value, out var left, out var top, out var right, out var bottom))
         {
             ReportError(context, file, "viewBox must contain four finite numbers with positive width and height");
             return;
         }
 
-        string source = GenerateSource(namespaceName, className, pathData, left, top, right, bottom);
+        var source = GenerateSource(namespaceName, className, pathData, left, top, right, bottom);
         context.AddSource($"{className}.svg.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private static string GetClassName(AdditionalText file, AnalyzerConfigOptions options)
     {
-        if (options.TryGetValue(ClassNameMetadata, out string? className) &&
+        if (options.TryGetValue(ClassNameMetadata, out var className) &&
             !string.IsNullOrWhiteSpace(className))
         {
             return className.Trim();
         }
 
         var builder = new StringBuilder("Svg_");
-        foreach (char character in Path.GetFileNameWithoutExtension(file.Path))
+        foreach (var character in Path.GetFileNameWithoutExtension(file.Path))
         {
             builder.Append(SyntaxFacts.IsIdentifierPartCharacter(character) ? character : '_');
         }
@@ -179,12 +179,12 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
             return false;
         }
 
-        string[] values = value.Split(new[] { ' ', '\t', '\r', '\n', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        var values = value.Split(new[] { ' ', '\t', '\r', '\n', ',' }, StringSplitOptions.RemoveEmptyEntries);
         if (values.Length != 4 ||
             !TryParseFinite(values[0], out left) ||
             !TryParseFinite(values[1], out top) ||
-            !TryParseFinite(values[2], out float width) ||
-            !TryParseFinite(values[3], out float height) ||
+            !TryParseFinite(values[2], out var width) ||
+            !TryParseFinite(values[3], out var height) ||
             width <= 0 ||
             height <= 0)
         {
@@ -211,7 +211,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
         float right,
         float bottom)
     {
-        string pathDataLiteral = Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(pathData, quote: true);
+        var pathDataLiteral = Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(pathData, quote: true);
         return $$"""
             // <auto-generated />
             #nullable enable
@@ -240,7 +240,7 @@ public sealed class SvgSourceGenerator : IIncrementalGenerator
     private static void ReportError(SourceProductionContext context, AdditionalText file, string message)
     {
         var position = new LinePosition(0, 0);
-        Location location = Location.Create(
+        var location = Location.Create(
             file.Path,
             new TextSpan(0, 0),
             new LinePositionSpan(position, position));

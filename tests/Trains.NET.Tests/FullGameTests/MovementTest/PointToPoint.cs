@@ -37,7 +37,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -52,7 +52,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(angle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -73,7 +73,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -88,7 +88,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(angle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -109,7 +109,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -124,7 +124,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -145,7 +145,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -160,7 +160,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -181,7 +181,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -196,7 +196,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -217,7 +217,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -232,7 +232,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -259,7 +259,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + StraightTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -274,7 +274,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(angle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -297,7 +297,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -312,7 +312,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -335,7 +335,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -350,7 +350,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -373,7 +373,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -388,7 +388,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);
@@ -411,7 +411,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
 
         TrainManager.AddTrain(startingColumn, startingRow);
 
-        float distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
+        var distance = (float)(HalfStraightTrackDistance + CornerTrackDistance + HalfStraightTrackDistance);
 
         var train = (Train)MovableLayout.Single();
         train.ForceSpeed(distance / _movementSteps / Train.SpeedScaleModifier);
@@ -426,7 +426,7 @@ public abstract class PointToPoint(ITestOutputHelper output, int movementSteps) 
         Assert.Equal(startingAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(expectedColumn, train.Column);

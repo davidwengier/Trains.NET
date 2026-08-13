@@ -14,8 +14,8 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
         await _pixelMapper.InitializeAsync(100, 100);
 
         _pixelMapper.SetViewPortSize(ScreenSize, ScreenSize);
-        int centerViewportOffsetX = _pixelMapper.MaxGridWidth / 2 - ScreenSize / 2;
-        int centerViewportOffsetY = _pixelMapper.MaxGridHeight / 2 - ScreenSize / 2;
+        var centerViewportOffsetX = _pixelMapper.MaxGridWidth / 2 - ScreenSize / 2;
+        var centerViewportOffsetY = _pixelMapper.MaxGridHeight / 2 - ScreenSize / 2;
 
         _pixelMapper.SetViewPort(centerViewportOffsetX, centerViewportOffsetY);
     }
@@ -151,16 +151,16 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
     [InlineData(4)]
     public void AdjustGameScale_ZoomIn_SameCell(int zoomSteps)
     {
-        (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var origCol, var origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
         _pixelMapper.LogData(_output);
 
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomInPixelMapper();
             _pixelMapper.LogData(_output);
         }
 
-        (int newCol, int newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var newCol, var newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
 
         Assert.Equal(origCol, newCol);
         Assert.Equal(origRow, newRow);
@@ -170,16 +170,16 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
     [InlineData(1)]
     public void AdjustGameScale_ZoomOut_SameCell(int zoomSteps)
     {
-        (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var origCol, var origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
         _pixelMapper.LogData(_output);
 
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomOutPixelMapper();
             _pixelMapper.LogData(_output);
         }
 
-        (int newCol, int newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var newCol, var newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
 
         Assert.Equal(origCol, newCol);
         Assert.Equal(origRow, newRow);
@@ -192,21 +192,21 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
     [InlineData(4)]
     public void AdjustGameScale_ZoomInZoomOut_SameCell(int zoomSteps)
     {
-        (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var origCol, var origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
         _pixelMapper.LogData(_output);
 
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomInPixelMapper();
             _pixelMapper.LogData(_output);
         }
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomOutPixelMapper();
             _pixelMapper.LogData(_output);
         }
 
-        (int newCol, int newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var newCol, var newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
 
         Assert.Equal(origCol, newCol);
         Assert.Equal(origRow, newRow);
@@ -219,21 +219,21 @@ public class AdjustGameScaleTests(ITestOutputHelper output) : IAsyncLifetime
     [InlineData(4)]
     public void AdjustGameScale_ZoomOutZoomIn_SameCell(int zoomSteps)
     {
-        (int origCol, int origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var origCol, var origRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
         _pixelMapper.LogData(_output);
 
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomOutPixelMapper();
             _pixelMapper.LogData(_output);
         }
-        for (int i = 0; i < zoomSteps; i++)
+        for (var i = 0; i < zoomSteps; i++)
         {
             _pixelMapper.ZoomInPixelMapper();
             _pixelMapper.LogData(_output);
         }
 
-        (int newCol, int newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
+        (var newCol, var newRow) = _pixelMapper.GetMiddleCoordsOfViewPort();
 
         Assert.Equal(origCol, newCol);
         Assert.Equal(origRow, newRow);

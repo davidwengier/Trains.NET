@@ -43,7 +43,7 @@ public class InteractionManager(
 
     public bool PointerRelease(int x, int y)
     {
-        (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         if (_capturedHandler is null &&
             !_hasDragged &&
@@ -67,7 +67,7 @@ public class InteractionManager(
 
     private bool HandleInteraction(int x, int y, PointerAction action)
     {
-        (int width, int height) = _game.GetScreenSize();
+        (var width, var height) = _game.GetScreenSize();
 
         if (_capturedHandler != null)
         {
@@ -82,8 +82,8 @@ public class InteractionManager(
 
         if (action is PointerAction.Click)
         {
-            bool preHandled = false;
-            foreach (IInteractionHandler handler in _handler)
+            var preHandled = false;
+            foreach (var handler in _handler)
             {
                 if (handler.PreHandleNextClick && action is PointerAction.Click)
                 {
@@ -108,7 +108,7 @@ public class InteractionManager(
             return true;
         }
 
-        foreach (IInteractionHandler handler in _handler)
+        foreach (var handler in _handler)
         {
             if (handler.HandlePointerAction(x, y, width, height, action))
             {
@@ -136,7 +136,7 @@ public class InteractionManager(
 
     private bool ExecuteTool(ITool tool, int x, int y, PointerAction action)
     {
-        (int column, int row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
+        (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         var inSameCell = (column == _lastToolColumn && row == _lastToolRow);
 

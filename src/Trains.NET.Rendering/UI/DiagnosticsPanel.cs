@@ -45,11 +45,11 @@ public class DiagnosticsPanel : PanelBase, ITogglable
 
         float maxWidth = 0;
         var strings = new List<string>();
-        foreach ((string name, IStat stat) in InstrumentationBag.Stats.OrderBy(i => i.Name))
+        foreach ((var name, var stat) in InstrumentationBag.Stats.OrderBy(i => i.Name))
         {
             if (stat.ShouldShow())
             {
-                string line = name + ": " + stat.GetDescription();
+                var line = name + ": " + stat.GetDescription();
                 strings.Add(line);
                 maxWidth = Math.Max(maxWidth, canvas.MeasureText(line, Brushes.Label));
             }
@@ -58,7 +58,7 @@ public class DiagnosticsPanel : PanelBase, ITogglable
         this.InnerWidth = (int)maxWidth;
         this.InnerHeight = strings.Count * (lineHeight + LineGap);
 
-        foreach (string line in strings)
+        foreach (var line in strings)
         {
             canvas.DrawText(line, 0, lineHeight, Brushes.Label);
             canvas.Translate(0, LineGap + lineHeight);

@@ -21,7 +21,7 @@ public class CarriageRenderer
     {
         TrainRenderer.SetupCanvasToDrawTrain(canvas, carriage);
 
-        TrainPalette? palette = _trainPainter.GetPalette(carriage);
+        var palette = _trainPainter.GetPalette(carriage);
 
         var outline = new PaintBrush
         {
@@ -30,7 +30,7 @@ public class CarriageRenderer
             StrokeWidth = _trainParameters.StrokeWidth
         };
 
-        float startPos = -(_carriageWidth / 2);
+        var startPos = -(_carriageWidth / 2);
 
         canvas.DrawGradientRect(startPos,
                         -(_trainParameters.HeadHeight / 2),

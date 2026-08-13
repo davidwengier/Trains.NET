@@ -98,13 +98,13 @@ public class MiniMapScreen : IScreen, IInteractionHandler, ITogglable
 
         canvas.DrawImage(_terrainMapRenderer.GetTerrainImage(), 0, 0);
 
-        foreach (Track track in _trackLayout)
+        foreach (var track in _trackLayout)
         {
             canvas.DrawRect(track.Column, track.Row, 1, 1, _paint);
         }
 
-        (int left, int top) = _pixelMapper.ViewPortPixelsToCoords(0, 0);
-        (int right, int bottom) = _pixelMapper.ViewPortPixelsToCoords(_pixelMapper.ViewPortWidth, _pixelMapper.ViewPortHeight);
+        (var left, var top) = _pixelMapper.ViewPortPixelsToCoords(0, 0);
+        (var right, var bottom) = _pixelMapper.ViewPortPixelsToCoords(_pixelMapper.ViewPortWidth, _pixelMapper.ViewPortHeight);
 
         canvas.DrawRect(left, top, right - left, bottom - top, _viewPortPaint);
 

@@ -8,14 +8,14 @@ public class UTF8TerrainSerializer : ITerrainSerializer
     {
         var terrainList = new List<Terrain>();
 
-        for (int r = 0; r < lines.Length; r++)
+        for (var r = 0; r < lines.Length; r++)
         {
-            string? line = lines[r];
-            string[]? heights = line.Split(',');
-            for (int c = 0; c < heights.Length; c++)
+            var line = lines[r];
+            var heights = line.Split(',');
+            for (var c = 0; c < heights.Length; c++)
             {
 
-                if (!int.TryParse(heights[c], out int height))
+                if (!int.TryParse(heights[c], out var height))
                 {
                     throw new System.Exception("Invalid height read from file");
                 }
@@ -42,15 +42,15 @@ public class UTF8TerrainSerializer : ITerrainSerializer
 
         var happinessSb = new StringBuilder();
 
-        int maxColumn = terrainList.Max(t => t.Column);
-        int maxRow = terrainList.Max(t => t.Row);
+        var maxColumn = terrainList.Max(t => t.Column);
+        var maxRow = terrainList.Max(t => t.Row);
 
-        for (int r = 0; r <= maxRow; r++)
+        for (var r = 0; r <= maxRow; r++)
         {
             var heights = new List<int>();
-            for (int c = 0; c <= maxColumn; c++)
+            for (var c = 0; c <= maxColumn; c++)
             {
-                if (!dict.TryGetValue((c, r), out int height))
+                if (!dict.TryGetValue((c, r), out var height))
                 {
                     height = 0;
                 }

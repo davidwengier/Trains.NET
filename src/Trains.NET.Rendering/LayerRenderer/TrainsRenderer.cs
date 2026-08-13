@@ -30,13 +30,13 @@ public class TrainsRenderer(
             {
                 using (canvas.Scope())
                 {
-                    (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(fakeTrain.Column, fakeTrain.Row);
+                    (var x, var y, var onScreen) = pixelMapper.CoordsToViewPortPixels(fakeTrain.Column, fakeTrain.Row);
 
                     if (onScreen)
                     {
                         canvas.Translate(x, y);
 
-                        float scale = pixelMapper.CellSize / 100.0f;
+                        var scale = pixelMapper.CellSize / 100.0f;
 
                         canvas.Scale(scale, scale);
 

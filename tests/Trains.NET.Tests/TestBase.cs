@@ -100,7 +100,7 @@ public class TestBase : IAsyncLifetime, IDisposable
 
         _output.WriteLine("Initial: " + train);
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             Timer.Tick();
             _output.WriteLine($"Tick {i}: {train}");

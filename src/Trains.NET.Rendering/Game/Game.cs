@@ -41,11 +41,11 @@ public class Game : IGame
         _screens = screens;
         _imageCache = imageCache;
         _initializers = initializers;
-        foreach (IScreen screen in _screens)
+        foreach (var screen in _screens)
         {
             screen.Changed += (s, e) => _imageCache.SetDirty(screen);
         }
-        foreach (ICachableLayerRenderer renderer in _boardRenderers.OfType<ICachableLayerRenderer>())
+        foreach (var renderer in _boardRenderers.OfType<ICachableLayerRenderer>())
         {
             renderer.Changed += (s, e) => _imageCache.SetDirty(renderer);
         }
@@ -88,7 +88,7 @@ public class Game : IGame
 
         _imageCache.SetDirtyAll(_screens);
 
-        (int columns, int rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
+        (var columns, var rows) = _pixelMapper.ViewPortPixelsToCoords(width, height);
         columns = Math.Max(columns, 1);
         rows = Math.Max(rows, 1);
 
@@ -129,14 +129,14 @@ public class Game : IGame
 
         canvas.Clear(Colors.White);
 
-        IPixelMapper pixelMapper = _pixelMapper.Snapshot();
+        var pixelMapper = _pixelMapper.Snapshot();
 
         using (canvas.Scope())
         {
             RenderFrame(canvas, pixelMapper);
         }
 
-        foreach (IScreen screen in _screens)
+        foreach (var screen in _screens)
         {
             using (_screenDrawTimes[screen].Measure())
             {
@@ -153,7 +153,7 @@ public class Game : IGame
         using (_skiaDrawTime.Measure())
         using (canvas.Scope())
         {
-            foreach (ILayerRenderer renderer in _boardRenderers)
+            foreach (var renderer in _boardRenderers)
             {
                 if (!renderer.Enabled)
                 {
@@ -177,7 +177,7 @@ public class Game : IGame
             {
                 using (_renderCacheDrawTimes[renderer].Measure())
                 {
-                    using IImageCanvas imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
+                    using var imageCanvas = _imageFactory.CreateImageCanvas(_width, _height);
                     renderer.Render(imageCanvas.Canvas, _width, _height, pixelMapper);
                     _imageCache.Set(renderer, imageCanvas.Render());
                 }
@@ -201,13 +201,13 @@ public class Game : IGame
     {
         if (_gameManager.BuildMode) return;
 
-        if (!_trainManager.TryGetFollowTrainPosition(out int col, out int row)) return;
+        if (!_trainManager.TryGetFollowTrainPosition(out var col, out var row)) return;
 
-        (int x, int y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
+        (var x, var y, _) = _pixelMapper.CoordsToViewPortPixels(col, row);
 
         double easing = 10;
-        int adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
-        int adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
+        var adjustX = Convert.ToInt32(((_pixelMapper.ViewPortWidth / 2) - x) / easing);
+        var adjustY = Convert.ToInt32(((_pixelMapper.ViewPortHeight / 2) - y) / easing);
 
         if (adjustX != 0 || adjustY != 0)
         {

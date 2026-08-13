@@ -17,7 +17,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
 
     private static SKPaint GetSKPaint(PaintBrush paint)
     {
-        if (!s_paintCache.TryGetValue(paint, out SKPaint? skPaint))
+        if (!s_paintCache.TryGetValue(paint, out var skPaint))
         {
             skPaint = paint.ToSkia();
             s_paintCache.Add(paint, skPaint);
@@ -27,7 +27,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
 
     private static SKFont GetSKFont(PaintBrush paint)
     {
-        if (!s_fontCache.TryGetValue(paint, out SKFont? skFont))
+        if (!s_fontCache.TryGetValue(paint, out var skFont))
         {
             skFont = paint.ToSkiaFont();
             s_fontCache.Add(paint, skFont);
@@ -51,7 +51,7 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
         var skPicture = picture.ToSkia();
 
         _canvas.Save();
-        float scaleFactor = size / Math.Max(skPicture.CullRect.Width, skPicture.CullRect.Height);
+        var scaleFactor = size / Math.Max(skPicture.CullRect.Width, skPicture.CullRect.Height);
         _canvas.Scale(scaleFactor, scaleFactor, x, y);
         _canvas.DrawPicture(picture.ToSkia());
         _canvas.Restore();

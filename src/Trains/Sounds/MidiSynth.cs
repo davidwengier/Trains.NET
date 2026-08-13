@@ -10,10 +10,10 @@ internal sealed class MidiSynth : IDisposable
     public void Init()
     {
         // Find the built in MIDI synth
-        uint num = Win32API.midiOutGetNumDevs();
+        var num = Win32API.midiOutGetNumDevs();
         Win32API.MIDIOUTCAPS caps = default;
         var deviceId = UIntPtr.Zero;
-        bool deviceFound = false;
+        var deviceFound = false;
         for (uint i = 0; i < num; i++)
         {
             Win32API.midiOutGetDevCaps((UIntPtr)i, out caps);
@@ -138,7 +138,7 @@ internal sealed class MidiSynth : IDisposable
         {
             //Win32API.MMRESULT result;
             IntPtr ptr;
-            uint size = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(Win32API.MIDIHDR));
+            var size = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(Win32API.MIDIHDR));
             var header = new Win32API.MIDIHDR
             {
                 lpData = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length),
@@ -146,7 +146,7 @@ internal sealed class MidiSynth : IDisposable
                 dwBytesRecorded = data.Length,
                 dwFlags = 0
             };
-            for (int i = 0; i < data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
                 System.Runtime.InteropServices.Marshal.WriteByte(header.lpData, i, data[i]);
 
             try

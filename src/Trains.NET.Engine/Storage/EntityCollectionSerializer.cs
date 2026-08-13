@@ -13,7 +13,7 @@ public class EntityCollectionSerializer(IEnumerable<IEntitySerializer> serialize
 
         foreach (var line in lines.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string[] bits = line.Split('|', 3);
+            var bits = line.Split('|', 3);
             foreach (var serializer in _serializers)
             {
                 try
@@ -38,7 +38,7 @@ public class EntityCollectionSerializer(IEnumerable<IEntitySerializer> serialize
     {
         StringBuilder sb = new();
 
-        foreach (IEntity entity in entities)
+        foreach (var entity in entities)
         {
             foreach (var serializer in _serializers)
             {

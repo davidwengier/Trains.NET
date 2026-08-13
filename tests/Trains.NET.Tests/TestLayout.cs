@@ -48,7 +48,7 @@ internal class TestLayout : ILayout
 
     public bool TryGet<T>(int column, int row, out T entity) where T : class, IStaticEntity
     {
-        bool result = _layout.TryGetValue((column, row), out IStaticEntity staticEntity);
+        var result = _layout.TryGetValue((column, row), out var staticEntity);
         entity = (T)staticEntity;
         return result;
     }

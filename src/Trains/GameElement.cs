@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
+using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
-using Trains.NET.Instrumentation;
 
 namespace Trains;
 
@@ -52,8 +52,8 @@ public class GameElement : FrameworkElement, IDisposable
         if (_designMode)
             return;
 
-        int width = (int)this.ActualWidth;
-        int height = (int)this.ActualHeight;
+        var width = (int)this.ActualWidth;
+        var height = (int)this.ActualHeight;
 
         if (width == 0 || height == 0)
             return;

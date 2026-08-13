@@ -17,14 +17,14 @@ public class HappinessRenderer(ILayout<Track> trackLayout) : ILayerRenderer
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        foreach (Track track in _trackLayout)
+        foreach (var track in _trackLayout)
         {
             if (!track.Happy)
             {
                 continue;
             }
 
-            (int x, int y, bool onScreen) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+            (var x, var y, var onScreen) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
             if (!onScreen) continue;
 

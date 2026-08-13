@@ -57,8 +57,8 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public void SetViewPort(int x, int y)
     {
-        int oldX = this.ViewPortX;
-        int oldY = this.ViewPortY;
+        var oldX = this.ViewPortX;
+        var oldY = this.ViewPortY;
         this.ViewPortX = Math.Max(Math.Min(-x, 0), -1 * (this.MaxGridWidth - this.ViewPortWidth));
         this.ViewPortY = Math.Max(Math.Min(-y, 0), -1 * (this.MaxGridHeight - this.ViewPortHeight));
 
@@ -80,9 +80,9 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public (int, int, bool) CoordsToViewPortPixels(int column, int row)
     {
-        int x = (column * this.CellSize) + this.ViewPortX;
-        int y = (row * this.CellSize) + this.ViewPortY;
-        bool onScreen = x > -this.CellSize &&
+        var x = (column * this.CellSize) + this.ViewPortX;
+        var y = (row * this.CellSize) + this.ViewPortY;
+        var onScreen = x > -this.CellSize &&
                         y > -this.CellSize &&
                         x <= this.ViewPortWidth &&
                         y <= this.ViewPortHeight;
@@ -122,7 +122,7 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
 
     public bool AdjustGameScale(float delta)
     {
-        float newGameScale = this.GameScale * delta;
+        var newGameScale = this.GameScale * delta;
 
         // Check to see if it is TOO FAR!
         if (newGameScale < 0.1 ||
@@ -142,18 +142,18 @@ public class PixelMapper : IPixelMapper, IInitializeAsync, IGameState
         }
 
         // Viewport X & Y will be negative, as they are canvas transations, so swap em!
-        float currentX = -this.ViewPortX / this.GameScale;
-        float currentY = -this.ViewPortY / this.GameScale;
+        var currentX = -this.ViewPortX / this.GameScale;
+        var currentY = -this.ViewPortY / this.GameScale;
 
-        (float svpWidth, float svpHeight) = GetScaledViewPortSize();
+        (var svpWidth, var svpHeight) = GetScaledViewPortSize();
 
-        float currentCenterX = currentX + svpWidth / 2.0f;
-        float currentCenterY = currentY + svpHeight / 2.0f;
+        var currentCenterX = currentX + svpWidth / 2.0f;
+        var currentCenterY = currentY + svpHeight / 2.0f;
 
-        (float newSvpWidth, float newSvpHeight) = GetScaledViewPortSize(newGameScale);
+        (var newSvpWidth, var newSvpHeight) = GetScaledViewPortSize(newGameScale);
 
-        float newX = currentCenterX - newSvpWidth / 2.0f;
-        float newY = currentCenterY - newSvpHeight / 2.0f;
+        var newX = currentCenterX - newSvpWidth / 2.0f;
+        var newY = currentCenterY - newSvpHeight / 2.0f;
 
         this.ViewPortX = -(int)Math.Round(newX * newGameScale);
         this.ViewPortY = -(int)Math.Round(newY * newGameScale);

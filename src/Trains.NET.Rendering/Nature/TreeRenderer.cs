@@ -36,15 +36,15 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
 
         // Let's make some repeatable numbers
 
-        BasicPRNG r = tree.GetPRNG();
-        int seed = Math.Abs(tree.Seed) + 1;
-        int circleCount = seed % 10 + 10;
+        var r = tree.GetPRNG();
+        var seed = Math.Abs(tree.Seed) + 1;
+        var circleCount = seed % 10 + 10;
 
         // Draw a base fill
         canvas.DrawCircle(0, 0, _baseRadius, _baseTreeBrush);
 
         // Draw a few base circles
-        float angleOffset = r.NextFloat(0, (float)(Math.PI / 2.0f));
+        var angleOffset = r.NextFloat(0, (float)(Math.PI / 2.0f));
         DrawTreeLayer(canvas, r, circleCount, angleOffset, 1.0f, _baseTreeBrush);
 
         // Draw a few top circles
@@ -54,13 +54,13 @@ public class TreeRenderer : IStaticEntityRenderer<Tree>
 
     private void DrawTreeLayer(ICanvas canvas, BasicPRNG r, int circleCount, float angleOffset, float scale, PaintBrush brush)
     {
-        for (int i = 0; i < circleCount; i++)
+        for (var i = 0; i < circleCount; i++)
         {
-            float angle = angleOffset + (float)(Math.PI * 2.0 * i / circleCount);
-            float offset = r.NextFloat(_minTreeSize, _maxTreeSize);
-            float radius = r.NextFloat(10.0f, 15.0f);
-            float x = (float)(scale * offset * Math.Cos(angle));
-            float y = (float)(scale * offset * Math.Sin(angle));
+            var angle = angleOffset + (float)(Math.PI * 2.0 * i / circleCount);
+            var offset = r.NextFloat(_minTreeSize, _maxTreeSize);
+            var radius = r.NextFloat(10.0f, 15.0f);
+            var x = (float)(scale * offset * Math.Cos(angle));
+            var y = (float)(scale * offset * Math.Sin(angle));
 
             canvas.DrawCircle(x, y, radius, brush);
         }

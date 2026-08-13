@@ -25,7 +25,7 @@ public class EmojiDrawer(
     {
         var imageSizes = new List<int>();
 
-        for (int i = 0; i < args.Length; i++)
+        for (var i = 0; i < args.Length; i++)
         {
             if (IsArg(args[i], "trees"))
             {
@@ -58,10 +58,10 @@ public class EmojiDrawer(
         {
             Directory.Delete(BaseFolderName, true);
         }
-        foreach (int imageSize in imageSizes)
+        foreach (var imageSize in imageSizes)
         {
-            string folderName = imageSizes.Count() > 1 ? Path.Combine(BaseFolderName, imageSize.ToString()) : BaseFolderName;
-            IPixelMapper pixelMapper = _pixelMapper.Snapshot();
+            var folderName = imageSizes.Count() > 1 ? Path.Combine(BaseFolderName, imageSize.ToString()) : BaseFolderName;
+            var pixelMapper = _pixelMapper.Snapshot();
             pixelMapper.AdjustGameScale(imageSize / 40.0f);
 
             if (!Directory.Exists(folderName))
@@ -76,7 +76,7 @@ public class EmojiDrawer(
 
     private void DrawTrains(string folderName, IPixelMapper pixelMapper)
     {
-        for (int i = 0; i < s_numberOfTrainsToDraw; i++)
+        for (var i = 0; i < s_numberOfTrainsToDraw; i++)
         {
             var train = new Train(i);
 
@@ -95,7 +95,7 @@ public class EmojiDrawer(
 
     private void DrawTracks(string folderName, IPixelMapper pixelMapper)
     {
-        foreach (SingleTrackDirection direction in (SingleTrackDirection[])Enum.GetValues(typeof(SingleTrackDirection)))
+        foreach (var direction in (SingleTrackDirection[])Enum.GetValues(typeof(SingleTrackDirection)))
         {
             if (direction == SingleTrackDirection.Undefined) continue;
 
@@ -108,7 +108,7 @@ public class EmojiDrawer(
 
     private void DrawTrees(string folderName, IPixelMapper pixelMapper)
     {
-        for (int i = 0; i < s_numberOfTreesToDraw; i++)
+        for (var i = 0; i < s_numberOfTreesToDraw; i++)
         {
             Draw("tree" + i, folderName, pixelMapper, canvas => _treeRenderer.Render(canvas, new Tree(i)));
         }
@@ -121,7 +121,7 @@ public class EmojiDrawer(
         using (var canvas = new SKCanvasWrapper(skCanvas))
         using (canvas.Scope())
         {
-            float scale = pixelMapper.CellSize / 100.0f;
+            var scale = pixelMapper.CellSize / 100.0f;
             canvas.Scale(scale, scale);
 
             renderMethod(canvas);

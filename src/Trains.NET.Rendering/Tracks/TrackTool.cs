@@ -13,7 +13,7 @@ public class TrackTool(ILayout<Track> trackLayout, IEnumerable<IStaticEntityFact
 
     public void Execute(int column, int row, ExecuteInfo info)
     {
-        if (info.FromColumn == 0 && _entityCollection.TryGet(column, row, out Track? track))
+        if (info.FromColumn == 0 && _entityCollection.TryGet(column, row, out var track))
         {
             _entityCollection.SelectedEntity = track;
         }

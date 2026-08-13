@@ -44,7 +44,7 @@ public abstract class FullTrackLoop(ITestOutputHelper output, int movementSteps)
 
         var train = (Train)MovableLayout.Single();
 
-        float distance = (float)(4 * StraightTrackDistance +
+        var distance = (float)(4 * StraightTrackDistance +
                                  4 * CornerTrackDistance);
 
         // Train speed & angle
@@ -58,7 +58,7 @@ public abstract class FullTrackLoop(ITestOutputHelper output, int movementSteps)
         Assert.Equal(initialTrainAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(2, train.Column);
@@ -102,7 +102,7 @@ public abstract class FullTrackLoop(ITestOutputHelper output, int movementSteps)
 
         var train = (Train)MovableLayout.Single();
 
-        float distance = (float)(12 * StraightTrackDistance +
+        var distance = (float)(12 * StraightTrackDistance +
                                  12 * CornerTrackDistance);
 
         train.Angle = initialTrainAngle;
@@ -115,7 +115,7 @@ public abstract class FullTrackLoop(ITestOutputHelper output, int movementSteps)
         Assert.Equal(initialTrainAngle, train.Angle, MovementPrecision);
 
         // Move it!
-        for (int i = 0; i < _movementSteps; i++)
+        for (var i = 0; i < _movementSteps; i++)
             GameManager.GameLoopStep();
 
         Assert.Equal(3, train.Column);

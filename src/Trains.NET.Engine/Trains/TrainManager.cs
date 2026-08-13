@@ -51,9 +51,9 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
     public void ToggleFollow(Train train)
     {
         // if we're already following the train specified, toggle it off
-        Train? trainToSet = train.Follow ? null : train;
+        var trainToSet = train.Follow ? null : train;
 
-        foreach (Train t in _movableLayout.OfType<Train>())
+        foreach (var t in _movableLayout.OfType<Train>())
         {
             t.Follow = (t == trainToSet);
         }
@@ -67,7 +67,7 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
 
     public void PreviousTrain()
     {
-        int index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
+        var index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
         if (index == -1 || index == 0)
         {
             this.CurrentTrain = _movableLayout[^1] as Train;
@@ -80,7 +80,7 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
 
     public void NextTrain()
     {
-        int index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
+        var index = _currentTrain == null ? -1 : _movableLayout.IndexOf(_currentTrain);
         if (index == -1 || index == _movableLayout.Count - 1)
         {
             this.CurrentTrain = _movableLayout[0] as Train;
@@ -95,7 +95,7 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
     {
         col = -1;
         row = -1;
-        foreach (IMovable vehicle in _movableLayout)
+        foreach (var vehicle in _movableLayout)
         {
             if (vehicle is Train { Follow: true } train)
             {

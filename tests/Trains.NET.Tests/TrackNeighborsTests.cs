@@ -55,7 +55,7 @@ public class TrackNeighborsTests
         await layout.InitializeAsync(100, 100);
         layout.AddTrack(5, 5);
 
-        int expected = 0;
+        var expected = 0;
         if (left)
         {
             expected++;

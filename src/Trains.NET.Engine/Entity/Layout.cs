@@ -113,7 +113,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
     public bool TryGet<T>(int column, int row, [NotNullWhen(true)] out T? entity)
         where T : class, IStaticEntity
     {
-        TryGet(column, row, out IStaticEntity? staticEntity);
+        TryGet(column, row, out var staticEntity);
         entity = staticEntity as T;
         return entity != null;
     }
@@ -121,7 +121,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
     public bool IsEmptyOrT<T>(int column, int row)
         where T : class, IStaticEntity
     {
-        TryGet(column, row, out IStaticEntity? staticEntity);
+        TryGet(column, row, out var staticEntity);
         return staticEntity == null || staticEntity is T;
     }
 
@@ -129,7 +129,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
     {
         lock (_gate)
         {
-            for (int i = 0; i < _entities.Length; i++)
+            for (var i = 0; i < _entities.Length; i++)
             {
                 _entities[i] = new IStaticEntity?[_rows];
             }
@@ -139,9 +139,9 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
     public IEnumerator<IStaticEntity> GetEnumerator()
     {
         if (_entities == null) yield break;
-        for (int i = 0; i < _entities.Length; i++)
+        for (var i = 0; i < _entities.Length; i++)
         {
-            for (int j = 0; j < _rows; j++)
+            for (var j = 0; j < _rows; j++)
             {
                 var track = _entities[i][j];
                 if (track is not null)
@@ -167,7 +167,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
 
         ResetArrays();
 
-        foreach (IStaticEntity entity in entities.OfType<IStaticEntity>())
+        foreach (var entity in entities.OfType<IStaticEntity>())
         {
             StoreEntity(entity.Column, entity.Row, entity);
         }
@@ -192,7 +192,7 @@ public class Layout(IEntityCollectionSerializer gameSerializer) : ILayout, IInit
 
     public void Update(long timeSinceLastTick)
     {
-        foreach (IUpdatableEntity entity in this.OfType<IUpdatableEntity>())
+        foreach (var entity in this.OfType<IUpdatableEntity>())
         {
             entity.Update();
         }

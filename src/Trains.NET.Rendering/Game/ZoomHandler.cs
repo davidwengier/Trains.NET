@@ -11,7 +11,7 @@ public class ZoomHandler(IPixelMapper pixelMapper) : IInteractionHandler
 
     public bool HandlePointerAction(int x, int y, int width, int height, PointerAction action)
     {
-        bool didAdjust = false;
+        var didAdjust = false;
         if (action == PointerAction.ZoomIn)
         {
             didAdjust = _pixelMapper.AdjustGameScale(ZoomInDelta);

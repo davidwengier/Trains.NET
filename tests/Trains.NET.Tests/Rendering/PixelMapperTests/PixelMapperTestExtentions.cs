@@ -23,7 +23,7 @@ public static class PixelMapperTestExtentions
         output.WriteLine("Viewport Y: " + pixelMapper.ViewPortY);
         output.WriteLine("Viewport Width: " + pixelMapper.ViewPortWidth);
         output.WriteLine("Viewport Height: " + pixelMapper.ViewPortHeight);
-        (int col, int row) = GetMiddleCoordsOfViewPort(pixelMapper);
+        (var col, var row) = GetMiddleCoordsOfViewPort(pixelMapper);
         output.WriteLine("Viewport Center Column: " + col);
         output.WriteLine("Viewport Center Row: " + row);
     }

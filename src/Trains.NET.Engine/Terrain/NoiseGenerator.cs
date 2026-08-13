@@ -8,24 +8,24 @@ internal static class NoiseGenerator
     public static Dictionary<(int x, int y), float> GenerateNoiseMap(int width, int height, int octaves, int seed)
     {
         var random = new Random(seed);
-        int[] randomData = GetRandomData(random);
-        Vector2[] gradients = CalculateGradients(random);
+        var randomData = GetRandomData(random);
+        var gradients = CalculateGradients(random);
 
-        float[] data = new float[width * height];
+        var data = new float[width * height];
 
-        float min = float.MaxValue;
-        float max = float.MinValue;
+        var min = float.MaxValue;
+        var max = float.MinValue;
 
-        float frequency = 2f;
-        float amplitude = 0.1f;
+        var frequency = 2f;
+        var amplitude = 0.1f;
 
-        for (int octave = 0; octave < octaves; octave++)
+        for (var octave = 0; octave < octaves; octave++)
         {
-            for (int offset = 0; offset < width * height; offset++)
+            for (var offset = 0; offset < width * height; offset++)
             {
-                int i = offset % width;
-                int j = offset / width;
-                float noise = Noise(i * frequency * 1f / width, j * frequency * 1f / height, randomData, gradients);
+                var i = offset % width;
+                var j = offset / width;
+                var noise = Noise(i * frequency * 1f / width, j * frequency * 1f / height, randomData, gradients);
                 noise = data[j * width + i] += noise * amplitude;
 
                 min = Math.Min(min, noise);
@@ -42,13 +42,13 @@ internal static class NoiseGenerator
 
         static int[] GetRandomData(Random random)
         {
-            int[] p = Enumerable.Range(0, 256).ToArray();
+            var p = Enumerable.Range(0, 256).ToArray();
 
-            for (int i = 0; i < p.Length; i++)
+            for (var i = 0; i < p.Length; i++)
             {
-                int source = random.Next(p.Length);
+                var source = random.Next(p.Length);
 
-                int t = p[i];
+                var t = p[i];
                 p[i] = p[source];
                 p[source] = t;
             }
@@ -60,7 +60,7 @@ internal static class NoiseGenerator
         {
             var grad = new Vector2[256];
 
-            for (int i = 0; i < grad.Length; i++)
+            for (var i = 0; i < grad.Length; i++)
             {
                 Vector2 gradient;
                 do
@@ -90,19 +90,19 @@ internal static class NoiseGenerator
     {
         var cell = new Vector2((float)Math.Floor(x), (float)Math.Floor(y));
 
-        float total = 0f;
+        var total = 0f;
 
-        Vector2[]? corners = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+        var corners = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
 
-        foreach (Vector2 n in corners)
+        foreach (var n in corners)
         {
-            Vector2 ij = cell + n;
+            var ij = cell + n;
             var uv = new Vector2(x - ij.X, y - ij.Y);
 
-            int index = permutation[(int)ij.X % permutation.Length];
+            var index = permutation[(int)ij.X % permutation.Length];
             index = permutation[(index + (int)ij.Y) % permutation.Length];
 
-            Vector2 grad = gradients[index % gradients.Length];
+            var grad = gradients[index % gradients.Length];
 
             total += Q(uv.X, uv.Y) * Vector2.Dot(grad, uv);
         }

@@ -10,7 +10,7 @@ public class ImageCacheTests : IDisposable
     [Fact]
     public void Set()
     {
-        object key = new object();
+        var key = new object();
         var image = new TestImage();
 
         // non existent is dirty
@@ -40,7 +40,7 @@ public class ImageCacheTests : IDisposable
     [Fact]
     public void SetDirty()
     {
-        object key = new object();
+        var key = new object();
         var image = new TestImage();
 
         _imageCache.Set(key, image);
@@ -55,7 +55,7 @@ public class ImageCacheTests : IDisposable
     [Fact]
     public void SetDirtyAll()
     {
-        object key = new object();
+        var key = new object();
         var image = new TestImage();
 
         _imageCache.Set(key, image);
@@ -70,7 +70,7 @@ public class ImageCacheTests : IDisposable
     [Fact]
     public void Clear()
     {
-        object key = new object();
+        var key = new object();
         var image = new TestImage();
 
         _imageCache.Set(key, image);
@@ -85,7 +85,7 @@ public class ImageCacheTests : IDisposable
     [Fact]
     public void SuspendSetDirtyCalls()
     {
-        object key = new object();
+        var key = new object();
         var image = new TestImage();
 
         _imageCache.Set(key, image);

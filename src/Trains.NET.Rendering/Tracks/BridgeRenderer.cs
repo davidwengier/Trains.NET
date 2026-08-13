@@ -83,12 +83,12 @@ public class BridgeRenderer(
 
     private static IPath BuildCornerRailPath(IPathFactory pathFactory)
     {
-        IPath path = pathFactory.Create();
+        var path = pathFactory.Create();
 
         // Inner
 
-        float innerRailA = RailingInset;
-        float innerRailB = RailingInset + RailingBaseWidth;
+        var innerRailA = RailingInset;
+        var innerRailB = RailingInset + RailingBaseWidth;
 
         path.MoveTo(0, innerRailA);
         path.LineTo(0, innerRailB);
@@ -98,8 +98,8 @@ public class BridgeRenderer(
 
         // Outer
 
-        float outerRailA = CanvasSize - RailingInset - RailingBaseWidth;
-        float outerRailB = CanvasSize - RailingInset;
+        var outerRailA = CanvasSize - RailingInset - RailingBaseWidth;
+        var outerRailB = CanvasSize - RailingInset;
 
         path.MoveTo(0, outerRailA);
         path.LineTo(0, outerRailB);
@@ -112,7 +112,7 @@ public class BridgeRenderer(
 
     private static IPath BuildCornerPlankPath(IPathFactory pathFactory)
     {
-        IPath path = pathFactory.Create();
+        var path = pathFactory.Create();
 
         path.MoveTo(0, BridgeInset);
         path.LineTo(0, CanvasSize - BridgeInset);

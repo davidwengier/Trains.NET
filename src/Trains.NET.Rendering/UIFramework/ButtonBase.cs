@@ -50,7 +50,7 @@ public abstract class ButtonBase
 
         var isActive = _isActive?.Invoke() ?? false;
 
-        PaintBrush brush = isActive ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
+        var brush = isActive ? Brushes.ButtonActiveBackground : Brushes.ButtonBackground;
         if (!this.TransparentBackground || isActive)
         {
             canvas.DrawRect(0, 0, this.Width, this.Height, brush);

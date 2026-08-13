@@ -104,7 +104,7 @@ public class TrainInfoScreen : PanelBase
 
     protected override void Render(ICanvas canvas)
     {
-        Train train = _trainManager.CurrentTrain ?? throw new NullReferenceException("Current train is null so we shouldn't be rendering");
+        var train = _trainManager.CurrentTrain ?? throw new NullReferenceException("Current train is null so we shouldn't be rendering");
 
         using (canvas.Scope())
         {

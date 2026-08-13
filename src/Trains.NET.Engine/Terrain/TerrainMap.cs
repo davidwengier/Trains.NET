@@ -21,10 +21,10 @@ public class TerrainMap : ITerrainMap, IInitializeAsync, IGameState
     {
         _seed = seed ?? _newSeedRandom.Next();
 
-        Dictionary<(int x, int y), float>? noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4, _seed);
+        var noiseMap = NoiseGenerator.GenerateNoiseMap(_columns, _rows, 4, _seed);
 
-        ImmutableDictionary<(int, int), Terrain>.Builder builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
-        foreach ((int x, int y) coord in noiseMap.Keys)
+        var builder = ImmutableDictionary.CreateBuilder<(int, int), Terrain>();
+        foreach (var coord in noiseMap.Keys)
         {
             builder.Add(coord, new Terrain
             {

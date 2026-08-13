@@ -11,7 +11,7 @@ public class GameThreadTimerTests(ITestOutputHelper output)
     public async Task GameThreadTimer_DisposeWorks()
     {
         const int TestInterval = 20;
-        bool run = false;
+        var run = false;
         using (var gameTimer = new GameThreadTimer())
         {
             gameTimer.Interval = TestInterval;
@@ -30,7 +30,7 @@ public class GameThreadTimerTests(ITestOutputHelper output)
     {
         const double IntervalDiffMillisecondThreshold = 2.0;
 
-        (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw => { });
+        (var enoughSamples, var avgInterval) = await CollectAverageInterval(testInterval, sw => { });
 
         Assert.True(enoughSamples, "Didn't collect enough samples to average");
         Assert.True(Math.Abs(testInterval - avgInterval) < IntervalDiffMillisecondThreshold, $"Measured interval {testInterval} was lower than threshold {IntervalDiffMillisecondThreshold}");
@@ -50,9 +50,9 @@ public class GameThreadTimerTests(ITestOutputHelper output)
     {
         const double IntervalDiffMillisecondThreshold = 2.0;
 
-        (bool enoughSamples, double avgInterval) = await CollectAverageInterval(testInterval, sw =>
+        (var enoughSamples, var avgInterval) = await CollectAverageInterval(testInterval, sw =>
         {
-            long target = sw.ElapsedMilliseconds + sleepWorkloadMS;
+            var target = sw.ElapsedMilliseconds + sleepWorkloadMS;
             while (sw.ElapsedMilliseconds < target) ;
         });
 
@@ -86,14 +86,14 @@ public class GameThreadTimerTests(ITestOutputHelper output)
 
         var intervals = new List<long>();
 
-        for (int i = 0; i < times.Count - 1; i++)
+        for (var i = 0; i < times.Count - 1; i++)
         {
             intervals.Add(times[i + 1] - times[i]);
         }
 
-        int intervalCount = (int)(intervals.Count * AvgPercentile * 0.01);
+        var intervalCount = (int)(intervals.Count * AvgPercentile * 0.01);
         var intervalCutList = intervals.OrderBy(x => x).Take(intervalCount).ToList();
-        double intervalAvg = intervalCutList.Average();
+        var intervalAvg = intervalCutList.Average();
 
         _output.WriteLine($"Raw interval (count, min, avg, max): ({intervals.Count}, {intervals.Min()}, {intervals.Average()}, {intervals.Max()})");
         _output.WriteLine($"{AvgPercentile} percentile (count, min, avg, max): ({intervalCutList.Count}, {intervalCutList.Min()}, {intervalAvg}, {intervalCutList.Max()})");

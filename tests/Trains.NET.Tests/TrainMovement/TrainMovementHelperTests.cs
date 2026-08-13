@@ -62,7 +62,7 @@ public class TrainMovementHelperTests
     [InlineData(Math.PI / 4, 1.0f, 0.707f, 0.707f)]
     public void AngleToPoints(double angle, float radius, float expectedX, float expectedY)
     {
-        (float x, float y) = TrainMovement.AngleToPoints(angle, radius);
+        (var x, var y) = TrainMovement.AngleToPoints(angle, radius);
 
         Assert.Equal(expectedX, x, 3f);
         Assert.Equal(expectedY, y, 3f);

@@ -45,7 +45,7 @@ public class GameThreadTimer : ITimer
             }
             if (_threadLoopEnabled && _elapsedEventEnabled)
             {
-                long time = _stopwatch.ElapsedMilliseconds;
+                var time = _stopwatch.ElapsedMilliseconds;
                 this.TimeSinceLastTick = time - _lastTick;
                 _lastTick = time;
                 Elapsed?.Invoke(this, EventArgs.Empty);

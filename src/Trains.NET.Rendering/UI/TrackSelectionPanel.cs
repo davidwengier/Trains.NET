@@ -47,12 +47,12 @@ public class TrackSelectionPanel : PanelBase
         var row = track.Row;
         var (x, y, _) = _pixelMapper.CoordsToViewPortPixels(column, row + 1);
 
-        int maxButtons = 0;
+        var maxButtons = 0;
         _multiButtons.Clear();
         foreach (var factory in _entityFactories.Reverse())
         {
             var buttons = new List<ButtonBase>();
-            foreach (Track newEntity in factory.GetPossibleReplacements(column, row, track))
+            foreach (var newEntity in factory.GetPossibleReplacements(column, row, track))
             {
                 buttons.Add(new TrackButton(newEntity, () => IsActive(track, newEntity), () => OnClick(column, row, newEntity), _renderers)
                 {

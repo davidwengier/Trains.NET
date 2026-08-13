@@ -18,7 +18,7 @@ public class TrainSerializer : IEntitySerializer
             return false;
         }
 
-        int i = 1;
+        var i = 1;
         entity = new Train(int.Parse(bits[i++]))
         {
             CurrentSpeed = float.Parse(bits[i++]),

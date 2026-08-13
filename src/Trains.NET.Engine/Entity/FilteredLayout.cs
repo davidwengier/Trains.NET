@@ -40,7 +40,7 @@ public class FilteredLayout<T> : ILayout<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        foreach (T entity in _layout.OfType<T>())
+        foreach (var entity in _layout.OfType<T>())
         {
             yield return entity;
         }
@@ -63,7 +63,7 @@ public class FilteredLayout<T> : ILayout<T>
 
     public void Add(int column, int row, IEnumerable<IStaticEntityFactory<T>> entityFactories, int fromColumn, int fromRow)
     {
-        T? entity = CreateNewStaticEntity(column, row, entityFactories, fromColumn, fromRow);
+        var entity = CreateNewStaticEntity(column, row, entityFactories, fromColumn, fromRow);
 
         if (entity is null)
         {
@@ -86,7 +86,7 @@ public class FilteredLayout<T> : ILayout<T>
 
     public bool IsAvailable(int column, int row)
     {
-        _layout.TryGet(column, row, out IStaticEntity? entity);
+        _layout.TryGet(column, row, out var entity);
         return entity == null || entity is T;
     }
 

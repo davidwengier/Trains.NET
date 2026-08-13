@@ -20,7 +20,7 @@ public class ClockwiseCounterClockwise
     [InlineData(Angle270InRads, HalfCornerTrackDistance * 3, Angle360InRads, 0.1f, HalfCornerTrackDistance)] // 270-360, beyond arc
     public void MoveClockwise(double currentAngle, float distance, float maximumNewAngle, float expectedAngle, float expectedDistance)
     {
-        (double newAngle, float newDistance) = TrainMovement.MoveClockwise(currentAngle, distance, maximumNewAngle);
+        (var newAngle, var newDistance) = TrainMovement.MoveClockwise(currentAngle, distance, maximumNewAngle);
 
         Assert.Equal(expectedAngle, newAngle, 3f);
         Assert.Equal(expectedDistance, newDistance, 3f);
@@ -41,7 +41,7 @@ public class ClockwiseCounterClockwise
     [InlineData(Angle360InRads, HalfCornerTrackDistance * 3, Angle270InRads, Angle270InRads - 0.1f, HalfCornerTrackDistance)] // 270-360, beyond arc
     public void MoveCounterClockwise(double currentAngle, float distance, float maximumNewAngle, float expectedAngle, float expectedDistance)
     {
-        (double newAngle, float newDistance) = TrainMovement.MoveCounterClockwise(currentAngle, distance, maximumNewAngle);
+        (var newAngle, var newDistance) = TrainMovement.MoveCounterClockwise(currentAngle, distance, maximumNewAngle);
 
         Assert.Equal(expectedAngle, newAngle, 3f);
         Assert.Equal(expectedDistance, newDistance, 3f);

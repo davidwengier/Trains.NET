@@ -15,7 +15,7 @@ public class SKImageFactory : IImageFactory
     {
         if (context is SKContextWrapper skContext)
         {
-            bool initialSet = _context == null;
+            var initialSet = _context == null;
             _context = skContext.Context;
             return initialSet;
         }

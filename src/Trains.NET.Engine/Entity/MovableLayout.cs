@@ -62,7 +62,7 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
         Dictionary<Track, (Train, float)> takenTracks = new();
 
         // Reserve any pre-taken tracks
-        foreach (Track track in _layout.OfType<Track>())
+        foreach (var track in _layout.OfType<Track>())
         {
             if (track.IsBlocked())
             {
@@ -70,7 +70,7 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
             }
         }
 
-        float speedModifier = 0.005f * (timeSinceLastTick / 16f);
+        var speedModifier = 0.005f * (timeSinceLastTick / 16f);
 
         foreach (Train train in _movables)
         {
@@ -120,21 +120,21 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
 
         TrainPosition? lastPosition = null;
 
-        bool firstTimeInNewTrack = false;
+        var firstTimeInNewTrack = false;
 
-        int numSteps = 0;
-        foreach (TrainPosition newPosition in steps)
+        var numSteps = 0;
+        foreach (var newPosition in steps)
         {
             numSteps++;
 
-            float timeAway = numSteps / train.DesiredSpeed;
+            var timeAway = numSteps / train.DesiredSpeed;
 
             if (!_layout.TryGet(train.Column, train.Row, out Track? track))
             {
                 return false;
             }
 
-            IMovable? otherTrain = GetAt(newPosition.Column, newPosition.Row);
+            var otherTrain = GetAt(newPosition.Column, newPosition.Row);
 
             if (!_layout.TryGet(newPosition.Column, newPosition.Row, out Track? nextTrack))
             {

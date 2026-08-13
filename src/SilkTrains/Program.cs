@@ -14,19 +14,19 @@ using Trains.NET.Rendering.Skia;
 using Trains.Storage;
 
 // Game stuff
-string windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
-IGame game = DI.ServiceLocator.GetService<IGame>();
-IInteractionManager interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
+var windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
+var game = DI.ServiceLocator.GetService<IGame>();
+var interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
 // Get size from file
 Vector2D<int> size = new(1280, 720);
 if (File.Exists(windowSizeFileName))
 {
-    string sizeString = File.ReadAllText(windowSizeFileName);
-    string[] bits = sizeString.Split(',');
+    var sizeString = File.ReadAllText(windowSizeFileName);
+    var bits = sizeString.Split(',');
     if (bits.Length == 2)
     {
-        if (double.TryParse(bits[0], out double width) && double.TryParse(bits[1], out double height))
+        if (double.TryParse(bits[0], out var width) && double.TryParse(bits[1], out var height))
         {
             size = new((int)width, (int)height);
         }
@@ -145,7 +145,7 @@ window.Load += () =>
     var bytes = new byte[rowByteLen * img.Height];
     img.ProcessPixelRows(processor =>
     {
-        for (int i = 0; i < img.Height; i++)
+        for (var i = 0; i < img.Height; i++)
         {
             MemoryMarshal.Cast<Rgba32, byte>(processor.GetRowSpan(i)).CopyTo(bytes.AsSpan(i * rowByteLen, rowByteLen));
         }

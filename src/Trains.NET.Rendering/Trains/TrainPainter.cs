@@ -25,13 +25,13 @@ public class TrainPainter : ITrainPainter
 
     private static TrainPalette GetPalette(BasicPRNG r)
     {
-        byte sR = (byte)r.Next(32, 192);
-        byte sG = (byte)r.Next(32, 192);
-        byte sB = (byte)r.Next(32, 192);
+        var sR = (byte)r.Next(32, 192);
+        var sG = (byte)r.Next(32, 192);
+        var sB = (byte)r.Next(32, 192);
 
-        byte eR = (byte)(sR + 64);
-        byte eG = (byte)(sG + 64);
-        byte eB = (byte)(sB + 64);
+        var eR = (byte)(sR + 64);
+        var eG = (byte)(sG + 64);
+        var eB = (byte)(sB + 64);
 
         return s_baseTrainPalette with
         {

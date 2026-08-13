@@ -35,21 +35,21 @@ public class Terrain
         const float maximumScaling = 1.0f;
 
         // We only want to deal with water level and up
-        int height = Math.Max(this.Height, FirstLandHeight);
+        var height = Math.Max(this.Height, FirstLandHeight);
 
         float heightRange = MaxHeight - LastWaterHeight;
         float heightDelta = height - LastWaterHeight;
 
         // This will give us a value of 0 to 1 for scaling
-        float heightScalingFactor = heightDelta / heightRange;
+        var heightScalingFactor = heightDelta / heightRange;
 
         // We want to lock this into a number of discrete bands to make caching easier
-        float bandedScalingFactor = ((int)(TotalLandLevels * heightScalingFactor)) / (float)TotalLandLevels;
+        var bandedScalingFactor = ((int)(TotalLandLevels * heightScalingFactor)) / (float)TotalLandLevels;
 
-        float delta = maximumScaling - minimumScaling;
+        var delta = maximumScaling - minimumScaling;
 
         // Apply the scaling factor to this and add it back to the lower bound
-        float scaledValue = (delta * bandedScalingFactor) + minimumScaling;
+        var scaledValue = (delta * bandedScalingFactor) + minimumScaling;
 
         return scaledValue;
     }

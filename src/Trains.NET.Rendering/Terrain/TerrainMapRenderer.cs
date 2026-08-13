@@ -26,15 +26,15 @@ public class TerrainMapRenderer : ITerrainMapRenderer
     {
         if (_imageCache.IsDirty(this))
         {
-            int width = _pixelMapper.Columns;
-            int _height = _pixelMapper.Rows;
+            var width = _pixelMapper.Columns;
+            var _height = _pixelMapper.Rows;
 
-            using IImageCanvas textureImage = _imageFactory.CreateImageCanvas(width, _height);
+            using var textureImage = _imageFactory.CreateImageCanvas(width, _height);
 
-            foreach (Terrain terrain in _terrainMap)
+            foreach (var terrain in _terrainMap)
             {
-                Color colour = GetTerrainColour(terrain);
-                PaintBrush paint = GetPaint(colour);
+                var colour = GetTerrainColour(terrain);
+                var paint = GetPaint(colour);
 
                 textureImage.Canvas.DrawRect(terrain.Column, terrain.Row, 1, 1, paint);
             }
@@ -75,12 +75,12 @@ public class TerrainMapRenderer : ITerrainMapRenderer
             yield break;
         }
 
-        int stepA = (end.A - start.A) / (steps - 1);
-        int stepR = (end.R - start.R) / (steps - 1);
-        int stepG = (end.G - start.G) / (steps - 1);
-        int stepB = (end.B - start.B) / (steps - 1);
+        var stepA = (end.A - start.A) / (steps - 1);
+        var stepR = (end.R - start.R) / (steps - 1);
+        var stepG = (end.G - start.G) / (steps - 1);
+        var stepB = (end.B - start.B) / (steps - 1);
 
-        for (int i = 0; i < steps; i++)
+        for (var i = 0; i < steps; i++)
         {
             yield return new Color(start.A + (stepA * i),
                                    start.R + (stepR * i),

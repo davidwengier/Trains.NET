@@ -31,7 +31,7 @@ public class BlazorTimer : Trains.NET.Engine.ITimer
         var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(this.Interval));
         while (await timer.WaitForNextTickAsync(_cts!.Token))
         {
-            long time = _stopwatch.ElapsedMilliseconds;
+            var time = _stopwatch.ElapsedMilliseconds;
             this.TimeSinceLastTick = time - _lastTick;
             _lastTick = time;
             Elapsed?.Invoke(this, EventArgs.Empty);

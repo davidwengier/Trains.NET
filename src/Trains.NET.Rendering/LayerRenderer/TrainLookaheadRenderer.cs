@@ -23,7 +23,7 @@ public class TrainLookaheadRenderer(IMovableLayout movableLayout, ITrainPainter 
                 Style = PaintStyle.Fill
             };
 
-            (int x, int y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
+            (var x, var y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
             canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize, _paint);
         }

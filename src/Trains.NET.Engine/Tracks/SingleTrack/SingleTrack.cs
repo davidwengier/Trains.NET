@@ -61,7 +61,7 @@ public class SingleTrack : Track
 
     public void SetBestTrackDirection(bool ignoreHappyness)
     {
-        SingleTrackDirection newDirection = GetBestTrackDirection(ignoreHappyness);
+        var newDirection = GetBestTrackDirection(ignoreHappyness);
 
         if (this.Direction != newDirection)
         {
@@ -74,8 +74,8 @@ public class SingleTrack : Track
 
     public virtual SingleTrackDirection GetBestTrackDirection(bool ignoreHappyness)
     {
-        TrackNeighbors neighbors = GetPotentialNeighbors();
-        SingleTrackDirection newDirection = this.Direction;
+        var neighbors = GetPotentialNeighbors();
+        var newDirection = this.Direction;
 
         if (neighbors.Count > 2)
         {
@@ -122,7 +122,7 @@ public class SingleTrack : Track
 
     public void RefreshNeighbors(bool ignoreHappyness)
     {
-        TrackNeighbors neighbors = GetAllNeighbors();
+        var neighbors = GetAllNeighbors();
         (neighbors.Up as SingleTrack)?.SetBestTrackDirection(ignoreHappyness);
         (neighbors.Down as SingleTrack)?.SetBestTrackDirection(ignoreHappyness);
         (neighbors.Right as SingleTrack)?.SetBestTrackDirection(ignoreHappyness);

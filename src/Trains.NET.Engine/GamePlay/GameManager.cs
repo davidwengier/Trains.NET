@@ -2,6 +2,8 @@
 
 namespace Trains.NET.Engine;
 
+// Start the game loop after GameStateManager has finished loading persisted state.
+[Order(1000000)]
 public class GameManager : IGameManager, IInitializeAsync
 {
     private const int GameLoopInterval = 16;

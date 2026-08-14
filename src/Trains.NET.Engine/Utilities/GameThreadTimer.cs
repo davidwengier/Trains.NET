@@ -61,7 +61,13 @@ public class GameThreadTimer : ITimer
         _threadLoopEnabled = false;
     }
 
-    public void Start() => _elapsedEventEnabled = true;
+    public void Start()
+    {
+        var now = _stopwatch.ElapsedMilliseconds;
+        _lastTick = now;
+        _nextInvoke = now + (int)Interval;
+        _elapsedEventEnabled = true;
+    }
 
     public void Stop() => _elapsedEventEnabled = false;
 }

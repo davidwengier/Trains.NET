@@ -33,12 +33,21 @@ public class MovableLayout(ILayout layout, IEntityCollectionSerializer gameSeria
 
         var entities = _gameSerializer.Deserialize(entitiesString);
 
-        var movables = entities.OfType<IMovable>();
+        var movables = ImmutableList.CreateBuilder<IMovable>();
+        HashSet<(int Column, int Row)> occupiedTracks = [];
 
-        if (movables is null)
-            return false;
+        foreach (var movable in entities.OfType<IMovable>())
+        {
+            if (movable is Train train &&
+                !occupiedTracks.Add((train.Column, train.Row)))
+            {
+                continue;
+            }
 
-        _movables = ImmutableList.CreateRange(movables);
+            movables.Add(movable);
+        }
+
+        _movables = movables.ToImmutable();
 
         return true;
     }

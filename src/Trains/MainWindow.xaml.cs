@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -11,7 +12,8 @@ public partial class MainWindow : Window
 {
     private readonly string _windowSizeFileName = FileSystemStorage.GetFilePath("WindowSize.txt");
     private readonly IGame _game;
-    private readonly GameElement _gameElement;
+    private readonly FrameworkElement _gameElement;
+    private readonly bool _usesGpuRendering;
     private readonly IInteractionManager _interactionManager;
     private PendingPointerMove? _pendingPointerMove;
 
@@ -38,7 +40,8 @@ public partial class MainWindow : Window
         _game = DI.ServiceLocator.GetService<IGame>();
         _interactionManager = DI.ServiceLocator.GetService<IInteractionManager>();
 
-        _gameElement = new GameElement(_game);
+        _usesGpuRendering = RuntimeInformation.OSArchitecture != Architecture.Arm64;
+        _gameElement = _usesGpuRendering ? new GameElement(_game) : new SoftwareGameElement(_game);
 
         _gameElement.MouseDown += SKElement_MouseDown;
         _gameElement.MouseMove += SKElement_MouseMove;
@@ -54,7 +57,7 @@ public partial class MainWindow : Window
 
     private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
     {
-        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
 
         if (e.Delta > 0)
         {
@@ -68,9 +71,17 @@ public partial class MainWindow : Window
 
     private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
     {
-        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
+        var pointerMove = new PendingPointerMove(x, y, e.LeftButton, e.RightButton);
+
+        if (!_usesGpuRendering)
+        {
+            ProcessPointerMove(pointerMove);
+            return;
+        }
+
         var pointerMoveQueued = _pendingPointerMove is not null;
-        _pendingPointerMove = new PendingPointerMove(x, y, e.LeftButton, e.RightButton);
+        _pendingPointerMove = pointerMove;
 
         if (pointerMoveQueued)
         {
@@ -79,10 +90,10 @@ public partial class MainWindow : Window
 
         // Sustained WPF mouse input can starve GLWpfControl rendering. Coalesce moves
         // at render priority so the latest pointer position is rendered between batches.
-        Dispatcher.BeginInvoke(DispatcherPriority.Render, ProcessPointerMove);
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, ProcessPendingPointerMove);
     }
 
-    private void ProcessPointerMove()
+    private void ProcessPendingPointerMove()
     {
         if (_pendingPointerMove is not { } pointerMove)
         {
@@ -90,7 +101,11 @@ public partial class MainWindow : Window
         }
 
         _pendingPointerMove = null;
+        ProcessPointerMove(pointerMove);
+    }
 
+    private void ProcessPointerMove(PendingPointerMove pointerMove)
+    {
         if (pointerMove.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
         {
             _interactionManager.PointerDrag(pointerMove.X, pointerMove.Y);
@@ -104,15 +119,18 @@ public partial class MainWindow : Window
             _interactionManager.PointerMove(pointerMove.X, pointerMove.Y);
         }
 
-        // Complete the invalidated GL render now rather than letting more input defer it.
-        _gameElement.InvalidateVisual();
-        _gameElement.UpdateLayout();
+        if (_usesGpuRendering)
+        {
+            // Complete the invalidated GL render now rather than letting more input defer it.
+            _gameElement.InvalidateVisual();
+            _gameElement.UpdateLayout();
+        }
     }
 
     private void SKElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         _pendingPointerMove = null;
-        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
 
         if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
         {
@@ -133,8 +151,13 @@ public partial class MainWindow : Window
             return;
         }
 
-        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
         _interactionManager.PointerRelease(x, y);
+    }
+
+    private (int X, int Y) ToPixels(Point point)
+    {
+        return PixelCoordinates.FromWpf(_gameElement, point);
     }
 
     protected override void OnClosing(CancelEventArgs e)

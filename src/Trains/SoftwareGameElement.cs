@@ -7,17 +7,17 @@ using Trains.NET.Rendering.Skia;
 
 namespace Trains;
 
-public class GameElement : SKGLElement
+internal sealed class SoftwareGameElement : SKElement
 {
+    private static readonly TimeSpan MinimumRenderInterval = TimeSpan.FromSeconds(1d / 60);
+
     private readonly IGame _game;
     private TimeSpan _lastRenderingTime = TimeSpan.Zero;
-    private readonly PerSecondTimedStat _wpfFps = InstrumentationBag.Add<PerSecondTimedStat>("WPF-CompositionTargetFPS");
-    private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
-    private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("GameElement-OnRenderFPS");
+    private readonly PerSecondTimedStat _wpfFps = InstrumentationBag.Add<PerSecondTimedStat>("WPF-Software-CompositionTargetFPS");
+    private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SoftwareGameElement-GameRender");
+    private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SoftwareGameElement-OnRenderFPS");
 
-    public bool Enabled { get; set; } = true;
-
-    public GameElement(IGame game)
+    public SoftwareGameElement(IGame game)
     {
         _game = game;
         CompositionTarget.Rendering += CompositionTargetRendering;
@@ -27,7 +27,7 @@ public class GameElement : SKGLElement
     {
         var args = (RenderingEventArgs)e;
 
-        if (!Enabled || _lastRenderingTime == args.RenderingTime)
+        if (args.RenderingTime - _lastRenderingTime < MinimumRenderInterval)
         {
             return;
         }
@@ -39,12 +39,11 @@ public class GameElement : SKGLElement
         _wpfFps.Update();
     }
 
-    protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
+    protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
     {
         using (_renderTime.Measure())
         {
             _game.SetSize(e.Info.Width, e.Info.Height);
-            _game.SetContext(new SKContextWrapper(GRContext));
             _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
         }
 

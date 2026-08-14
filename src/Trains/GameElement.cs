@@ -1,22 +1,18 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using SkiaSharp;
+using SkiaSharp.Views.Desktop;
+using SkiaSharp.Views.WPF;
 using Trains.NET.Instrumentation;
 using Trains.NET.Rendering;
 using Trains.NET.Rendering.Skia;
 
 namespace Trains;
 
-public class GameElement : FrameworkElement, IDisposable
+public class GameElement : SKGLElement
 {
-    private readonly bool _designMode;
     private readonly IGame _game;
-    private WriteableBitmap? _bitmap;
     private TimeSpan _lastRenderingTime = TimeSpan.Zero;
     private readonly PerSecondTimedStat _wpfFps = InstrumentationBag.Add<PerSecondTimedStat>("WPF-CompositionTargetFPS");
-    private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-DrawTime");
     private readonly ElapsedMillisecondsTimedStat _renderTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("GameElement-GameRender");
     private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("GameElement-OnRenderFPS");
 
@@ -24,7 +20,6 @@ public class GameElement : FrameworkElement, IDisposable
 
     public GameElement(IGame game)
     {
-        _designMode = DesignerProperties.GetIsInDesignMode(this);
         _game = game;
         CompositionTarget.Rendering += CompositionTargetRendering;
     }
@@ -45,55 +40,27 @@ public class GameElement : FrameworkElement, IDisposable
         _wpfFps.Update();
     }
 
-    protected override void OnRender(DrawingContext drawingContext)
+    protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
     {
-        base.OnRender(drawingContext);
-
-        if (_designMode)
-            return;
-
-        var width = (int)ActualWidth;
-        var height = (int)ActualHeight;
-
-        if (width == 0 || height == 0)
-            return;
-
-        // Only resize if we need to
-        if (_bitmap == null || width != _bitmap.PixelWidth || height != _bitmap.PixelHeight)
-        {
-            _bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
-        }
-
-        if (_bitmap == null)
-            return;
-
         using (_renderTime.Measure())
         {
-            var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-
-            _bitmap.Lock();
-
-            // Render the game
-            using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
-            {
-                _game.Render(new SKCanvasWrapper(surface.Canvas));
-            }
-
-            _bitmap.AddDirtyRect(new Int32Rect(0, 0, info.Width, info.Height));
-
-            _bitmap.Unlock();
-        }
-
-        using (_drawTime.Measure())
-        {
-            drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
+            _game.SetSize(e.Info.Width, e.Info.Height);
+            _game.SetContext(new SKContextWrapper(GRContext));
+            _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
         }
 
         _fps.Update();
     }
 
-    public void Dispose()
+    public (int X, int Y) ToPixels(Point point)
     {
-        _game.Dispose();
+        var source = PresentationSource.FromVisual(this);
+        if (source is null)
+        {
+            return ((int)point.X, (int)point.Y);
+        }
+
+        var pixelPoint = source.CompositionTarget.TransformToDevice.Transform(point);
+        return ((int)pixelPoint.X, (int)pixelPoint.Y);
     }
 }

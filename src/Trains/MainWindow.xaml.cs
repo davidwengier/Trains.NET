@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Trains.NET.Rendering;
 using Trains.Storage;
 
@@ -11,6 +13,7 @@ public partial class MainWindow : Window
     private readonly IGame _game;
     private readonly GameElement _gameElement;
     private readonly IInteractionManager _interactionManager;
+    private PendingPointerMove? _pendingPointerMove;
 
     public MainWindow()
     {
@@ -46,66 +49,92 @@ public partial class MainWindow : Window
 
         Title = "Trains - @davidwengier@aus.social - " + ThisAssembly.AssemblyInformationalVersion;
 
-        _gameElement.SizeChanged += SKElement_SizeChanged;
-
         _game.InitializeAsync(200, 200).GetAwaiter().GetResult();
     }
 
     private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
     {
-        var mousePos = e.GetPosition(_gameElement);
+        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
 
         if (e.Delta > 0)
         {
-            _interactionManager.PointerZoomIn((int)mousePos.X, (int)mousePos.Y);
+            _interactionManager.PointerZoomIn(x, y);
         }
         else
         {
-            _interactionManager.PointerZoomOut((int)mousePos.X, (int)mousePos.Y);
+            _interactionManager.PointerZoomOut(x, y);
         }
     }
 
     private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
     {
-        var mousePos = e.GetPosition(_gameElement);
+        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        var pointerMoveQueued = _pendingPointerMove is not null;
+        _pendingPointerMove = new PendingPointerMove(x, y, e.LeftButton, e.RightButton);
 
-        if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+        if (pointerMoveQueued)
         {
-            _interactionManager.PointerDrag((int)mousePos.X, (int)mousePos.Y);
+            return;
         }
-        else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+
+        // Sustained WPF mouse input can starve GLWpfControl rendering. Coalesce moves
+        // at render priority so the latest pointer position is rendered between batches.
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, ProcessPointerMove);
+    }
+
+    private void ProcessPointerMove()
+    {
+        if (_pendingPointerMove is not { } pointerMove)
         {
-            _interactionManager.PointerAlternateDrag((int)mousePos.X, (int)mousePos.Y);
+            return;
+        }
+
+        _pendingPointerMove = null;
+
+        if (pointerMove.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+        {
+            _interactionManager.PointerDrag(pointerMove.X, pointerMove.Y);
+        }
+        else if (pointerMove.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+        {
+            _interactionManager.PointerAlternateDrag(pointerMove.X, pointerMove.Y);
         }
         else
         {
-            _interactionManager.PointerMove((int)mousePos.X, (int)mousePos.Y);
+            _interactionManager.PointerMove(pointerMove.X, pointerMove.Y);
         }
+
+        // Complete the invalidated GL render now rather than letting more input defer it.
+        _gameElement.InvalidateVisual();
+        _gameElement.UpdateLayout();
     }
 
     private void SKElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        var mousePos = e.GetPosition(_gameElement);
+        _pendingPointerMove = null;
+        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
 
         if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
         {
-            _interactionManager.PointerClick((int)mousePos.X, (int)mousePos.Y);
+            _interactionManager.PointerClick(x, y);
         }
         else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
         {
-            _interactionManager.PointerAlternateClick((int)mousePos.X, (int)mousePos.Y);
+            _interactionManager.PointerAlternateClick(x, y);
         }
     }
 
     private void SKElement_MouseUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
+        _pendingPointerMove = null;
+
         if (e.ChangedButton != System.Windows.Input.MouseButton.Left)
         {
             return;
         }
 
-        var mousePos = e.GetPosition(_gameElement);
-        _interactionManager.PointerRelease((int)mousePos.X, (int)mousePos.Y);
+        (var x, var y) = _gameElement.ToPixels(e.GetPosition(_gameElement));
+        _interactionManager.PointerRelease(x, y);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -114,13 +143,10 @@ public partial class MainWindow : Window
         File.WriteAllText(_windowSizeFileName, $"{Width},{Height}");
     }
 
-    private void SKElement_SizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-        _game.SetSize((int)e.NewSize.Width, (int)e.NewSize.Height);
-    }
-
     private void CurrentDomain_UnhandledException(object? sender, UnhandledExceptionEventArgs e)
     {
         MessageBox.Show("An error has occurred:\n\n" + e.ExceptionObject.ToString());
     }
+
+    private readonly record struct PendingPointerMove(int X, int Y, MouseButtonState LeftButton, MouseButtonState RightButton);
 }

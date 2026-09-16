@@ -47,6 +47,15 @@ The runtime flow is: host events -> `IInteractionManager`/`IGame` -> engine stat
 
 ## Repository conventions
 
+### Design and implementation preferences
+
+- Prefer reusing an existing specialized type over replacing it with a new generic abstraction merely for consistency. Generalize only when multiple real use cases share meaningful behaviour.
+- Prefer typed dependencies and small concrete UI components over callback-based rendering or behaviour APIs. Callbacks are appropriate for events, but should not replace an existing domain or renderer abstraction.
+- Preserve architectural boundaries with adapter or presentation types in the higher layer. Do not leak UI types into the engine, and do not make generic orchestrators switch on concrete implementation types when DI-discovered linking types can express the relationship.
+- Avoid abstract base classes that only store constructor arguments or provide trivial property implementations. Prefer direct interface implementation unless the base class owns shared behaviour, state, or invariants.
+- For visual and interaction changes, make the smallest reversible change and run a host early before expanding shared framework abstractions. Validate the actual UI before generalizing around a proposed layout.
+- When visual positioning is wrong, inspect the shared coordinate and transformation semantics before compensating in an individual asset.
+
 ### Generated dependency injection
 
 - There is no hand-written registration table. Calls to `DI.ServiceLocator.GetService<T>()` are roots for `DISourceGenerator`, which finds implementations and recursively constructs their constructor dependencies.

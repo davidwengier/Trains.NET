@@ -7,6 +7,7 @@ public abstract partial class ButtonPanelBase : PanelBase
     private int _buttonWidth = 60;
 
     protected abstract IEnumerable<ButtonBase> GetButtons();
+    protected virtual bool UseUniformButtonWidth => true;
 
     protected override bool HandlePointerAction(int x, int y, PointerAction action)
     {
@@ -34,7 +35,10 @@ public abstract partial class ButtonPanelBase : PanelBase
 
         foreach (var button in GetButtons().ToArray())
         {
-            button.Width = _buttonWidth;
+            if (UseUniformButtonWidth)
+            {
+                button.Width = _buttonWidth;
+            }
 
             using (canvas.Scope())
             {
@@ -51,7 +55,17 @@ public abstract partial class ButtonPanelBase : PanelBase
         base.InnerHeight = 0;
         foreach (var button in GetButtons().ToArray())
         {
-            _buttonWidth = Math.Max(_buttonWidth, button.GetMinimumWidth(canvas));
+            var buttonWidth = button.GetMinimumWidth(canvas);
+            if (UseUniformButtonWidth)
+            {
+                _buttonWidth = Math.Max(_buttonWidth, buttonWidth);
+            }
+            else
+            {
+                button.Width = Math.Max(button.Width, buttonWidth);
+                _buttonWidth = Math.Max(_buttonWidth, button.Width);
+            }
+
             base.InnerHeight += button.Height + ButtonGap;
         }
 

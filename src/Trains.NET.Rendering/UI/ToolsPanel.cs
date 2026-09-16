@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Trains.NET.Engine;
+﻿using Trains.NET.Engine;
 
 namespace Trains.NET.Rendering.UI;
 
@@ -14,9 +13,10 @@ public class ToolsPanel : ButtonPanelBase
     protected override int Top => -12;
 
     protected override bool IsCollapsable => false;
+    protected override bool UseUniformButtonWidth => false;
     protected override string? Title => "Mode";
 
-    public ToolsPanel(IEnumerable<ITool> tools, IGameManager gameManager)
+    public ToolsPanel(IEnumerable<IToolPaletteItem> items, IGameManager gameManager)
     {
         _gameManager = gameManager;
 
@@ -24,8 +24,8 @@ public class ToolsPanel : ButtonPanelBase
 
         _switchModeButton = new BuildModeButton(_gameManager);
 
-        _buildModeButtons = tools.Where(t => ShouldShowTool(true, t)).Select(tool => new TextButton(tool.Name, () => tool == _gameManager.CurrentTool, () => _gameManager.CurrentTool = tool)).ToList<ButtonBase>();
-        _playModeButtons = tools.Where(t => ShouldShowTool(false, t)).Select(tool => new TextButton(tool.Name, () => tool == _gameManager.CurrentTool, () => _gameManager.CurrentTool = tool)).ToList<ButtonBase>();
+        _buildModeButtons = items.Where(item => ShouldShowTool(true, item.Tool)).Select(item => item.Button).ToList();
+        _playModeButtons = items.Where(item => ShouldShowTool(false, item.Tool)).Select(item => item.Button).ToList();
 
         _buildModeButtons.Insert(0, _switchModeButton);
         _playModeButtons.Insert(0, _switchModeButton);

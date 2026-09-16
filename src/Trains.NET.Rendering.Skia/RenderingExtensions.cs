@@ -17,6 +17,7 @@ public static class RenderingExtensions
             Picture.Pause => Assets.Svg_pause.Picture,
             Picture.Cross => Assets.Svg_times.Picture,
             Picture.Tools => Assets.Svg_tools.Picture,
+            Picture.Pointer => Assets.Svg_pointer.Picture,
             Picture.Eraser => Assets.Svg_eraser.Picture,
             Picture.Plus => Assets.Svg_plus_square.Picture,
             Picture.Minus => Assets.Svg_minus_square.Picture,

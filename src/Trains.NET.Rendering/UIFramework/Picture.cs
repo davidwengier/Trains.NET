@@ -12,6 +12,7 @@ public enum Picture
     Pause,
     Cross,
     Tools,
+    Pointer,
     Eraser,
     Plus,
     Minus

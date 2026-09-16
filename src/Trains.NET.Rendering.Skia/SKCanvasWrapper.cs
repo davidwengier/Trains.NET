@@ -51,11 +51,15 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
     public void DrawPicture(Picture picture, float x, float y, float size)
     {
         var skPicture = picture.ToSkia();
+        var bounds = skPicture.CullRect;
+        var scaleFactor = size / Math.Max(bounds.Width, bounds.Height);
+        var left = x + ((size - (bounds.Width * scaleFactor)) / 2) - (bounds.Left * scaleFactor);
+        var top = y + ((size - (bounds.Height * scaleFactor)) / 2) - (bounds.Top * scaleFactor);
 
         _canvas.Save();
-        var scaleFactor = size / Math.Max(skPicture.CullRect.Width, skPicture.CullRect.Height);
-        _canvas.Scale(scaleFactor, scaleFactor, x, y);
-        _canvas.DrawPicture(picture.ToSkia());
+        _canvas.Translate(left, top);
+        _canvas.Scale(scaleFactor, scaleFactor);
+        _canvas.DrawPicture(skPicture);
         _canvas.Restore();
     }
 

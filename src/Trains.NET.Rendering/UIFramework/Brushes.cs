@@ -18,6 +18,8 @@ public static class Brushes
     public static readonly PaintBrush ButtonBackground = PanelBackground with { Color = Colors.LightGray };
     public static readonly PaintBrush ButtonActiveBackground = PanelBackground with { Color = Colors.LightBlue };
     public static readonly PaintBrush ButtonHoverBackground = PanelBackground with { Color = Colors.LightBlue with { A = 85 } };
+    public static readonly PaintBrush TooltipBackground = PanelBackground with { Color = Colors.LightGray };
+    public static readonly PaintBrush TooltipBorder = PanelBorder with { StrokeWidth = 1 };
 
     public static readonly PaintBrush Label = new()
     {

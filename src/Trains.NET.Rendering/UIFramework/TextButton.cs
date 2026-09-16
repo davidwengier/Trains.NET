@@ -1,6 +1,11 @@
 ﻿namespace Trains.NET.Rendering.UI;
 
-public class TextButton(string label, Func<bool> isActive, Action onClick) : ButtonBase(isActive, onClick)
+public class TextButton(
+    string label,
+    Func<bool> isActive,
+    Action onClick,
+    ITooltipService? tooltipService = null,
+    string? tooltip = null) : ButtonBase(isActive, onClick, tooltipService, tooltip)
 {
     private readonly string _label = label;
     public PaintBrush LabelBrush { get; set; } = Brushes.Label;

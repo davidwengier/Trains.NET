@@ -7,13 +7,15 @@ public class InteractionManager(
     IGame game,
     IPixelMapper pixelMapper,
     IGameManager gameManager,
-    IAlternateDragTool alternateDragTool) : IInteractionManager
+    IAlternateDragTool alternateDragTool,
+    ITooltipService tooltipService) : IInteractionManager
 {
     private readonly IEnumerable<IInteractionHandler> _handler = handlers.Reverse().ToArray();
     private readonly IGame _game = game;
     private readonly IPixelMapper _pixelMapper = pixelMapper;
     private readonly IGameManager _gameManager = gameManager;
     private readonly IAlternateDragTool _alternateDragTool = alternateDragTool;
+    private readonly ITooltipService _tooltipService = tooltipService;
     private IInteractionHandler? _capturedHandler;
     private ITool? _capturedTool;
     private bool _hasDragged;
@@ -68,6 +70,15 @@ public class InteractionManager(
 
     private bool HandleInteraction(int x, int y, PointerAction action)
     {
+        if (action == PointerAction.Move)
+        {
+            _tooltipService.PointerMoved(x, y);
+        }
+        else
+        {
+            _tooltipService.Hide();
+        }
+
         (var width, var height) = _game.GetScreenSize();
 
         if (_capturedHandler != null)

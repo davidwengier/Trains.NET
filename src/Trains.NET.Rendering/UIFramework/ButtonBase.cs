@@ -6,6 +6,8 @@ public abstract class ButtonBase
 
     private readonly Func<bool>? _isActive;
     private readonly Action? _onClick;
+    private readonly ITooltipService? _tooltipService;
+    private readonly string? _tooltip;
     private bool _isHovered;
 
     public int Width { get; set; }
@@ -17,10 +19,21 @@ public abstract class ButtonBase
     {
     }
 
-    protected ButtonBase(Func<bool> isActive, Action onClick)
+    protected ButtonBase(
+        Func<bool> isActive,
+        Action onClick,
+        ITooltipService? tooltipService = null,
+        string? tooltip = null)
     {
+        if ((tooltipService is null) != (tooltip is null))
+        {
+            throw new ArgumentException("Tooltip text and service must be provided together");
+        }
+
         _isActive = isActive;
         _onClick = onClick;
+        _tooltipService = tooltipService;
+        _tooltip = tooltip;
     }
 
     public virtual bool HandleMouseAction(int x, int y, PointerAction action)
@@ -34,6 +47,10 @@ public abstract class ButtonBase
             else
             {
                 _isHovered = true;
+                if (_tooltip is not null)
+                {
+                    _tooltipService!.Show(_tooltip);
+                }
             }
 
             return true;

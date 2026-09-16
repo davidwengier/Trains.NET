@@ -4,7 +4,9 @@ public class RendererButton<T>(
     T entity,
     IRenderer<T> renderer,
     Func<bool> isActive,
-    Action onClick) : ButtonBase(isActive, onClick)
+    Action onClick,
+    ITooltipService? tooltipService = null,
+    string? tooltip = null) : ButtonBase(isActive, onClick, tooltipService, tooltip)
 {
     private const int ButtonSize = 40;
     private const int RenderSize = 32;

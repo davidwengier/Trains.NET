@@ -4,7 +4,9 @@ public class PictureButton(
     Picture picture,
     float pictureSize,
     Func<bool> isActive,
-    Action onClick) : ButtonBase(isActive, onClick)
+    Action onClick,
+    ITooltipService? tooltipService = null,
+    string? tooltip = null) : ButtonBase(isActive, onClick, tooltipService, tooltip)
 {
     private readonly Picture _picture = picture;
     private readonly float _pictureSize = pictureSize;

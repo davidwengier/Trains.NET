@@ -6,7 +6,9 @@ public class TrackButton(
     Track track,
     Func<bool> isActive,
     Action onClick,
-    IEnumerable<IStaticEntityRenderer<Track>> renderers) : ButtonBase(isActive, onClick)
+    IEnumerable<IStaticEntityRenderer<Track>> renderers,
+    ITooltipService? tooltipService = null,
+    string? tooltip = null) : ButtonBase(isActive, onClick, tooltipService, tooltip)
 {
     private readonly Track _track = track;
     private readonly IEnumerable<IStaticEntityRenderer<Track>> _renderers = renderers;

@@ -6,7 +6,8 @@ namespace Trains.NET.Rendering.UI;
 public class TrackToolPaletteItem(
     TrackTool tool,
     IGameManager gameManager,
-    IEnumerable<IStaticEntityRenderer<Track>> renderers) : IToolPaletteItem
+    IEnumerable<IStaticEntityRenderer<Track>> renderers,
+    ITooltipService tooltipService) : IToolPaletteItem
 {
     public ITool Tool { get; } = tool;
 
@@ -15,7 +16,9 @@ public class TrackToolPaletteItem(
             new SingleTrack { Direction = SingleTrackDirection.Horizontal },
             () => gameManager.CurrentTool == tool,
             () => gameManager.CurrentTool = tool,
-            renderers)
+            renderers,
+            tooltipService: tooltipService,
+            tooltip: tool.Name)
         {
             Height = 40
         };

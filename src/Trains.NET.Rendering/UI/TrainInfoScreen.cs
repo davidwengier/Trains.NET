@@ -26,7 +26,13 @@ public class TrainInfoScreen : PanelBase
     protected override bool CanClose => true;
     protected override string? Title => "Info";
 
-    public TrainInfoScreen(ITrainManager trainManager, IGameManager gameManager, IMovableLayout movableLayout, ITrainParameters trainParameters, ITrainPainter trainPainter)
+    public TrainInfoScreen(
+        ITrainManager trainManager,
+        IGameManager gameManager,
+        IMovableLayout movableLayout,
+        ITrainParameters trainParameters,
+        ITrainPainter trainPainter,
+        ITooltipService tooltipService)
     {
         _trainManager = trainManager;
         _gameManager = gameManager;
@@ -43,35 +49,40 @@ public class TrainInfoScreen : PanelBase
 
         _controlButton = new MultiButton(20, new ButtonBase[]
             {
-                    CreateButton(Picture.Backward, () => false, () => _trainManager.CurrentTrain?.Slower()),
-                    CreateButton(Picture.Play, () => _trainManager.CurrentTrain?.Stopped != true, () => _trainManager.CurrentTrain?.Start()),
-                    CreateButton(Picture.Pause, () => _trainManager.CurrentTrain?.Stopped == true, () => _trainManager.CurrentTrain?.Stop()),
-                    CreateButton(Picture.Forward, () => false, () => _trainManager.CurrentTrain?.Faster()),
+                    CreateButton(Picture.Backward, "Slower", () => false, () => _trainManager.CurrentTrain?.Slower(), tooltipService),
+                    CreateButton(Picture.Play, "Start", () => _trainManager.CurrentTrain?.Stopped != true, () => _trainManager.CurrentTrain?.Start(), tooltipService),
+                    CreateButton(Picture.Pause, "Stop", () => _trainManager.CurrentTrain?.Stopped == true, () => _trainManager.CurrentTrain?.Stop(), tooltipService),
+                    CreateButton(Picture.Forward, "Faster", () => false, () => _trainManager.CurrentTrain?.Faster(), tooltipService),
             });
 
         _actionButton = new MultiButton(20, new ButtonBase[]
             {
-                    CreateButton(Picture.Plus, () => false, () => _trainManager.CurrentTrain?.AddCarriage()),
-                    CreateButton(Picture.Minus, () => false, () => _trainManager.CurrentTrain?.RemoveCarriage()),
-                    CreateButton(Picture.Eye, () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!)),
-                    CreateButton(Picture.Trash, () => false, () =>
+                    CreateButton(Picture.Plus, "Add carriage", () => false, () => _trainManager.CurrentTrain?.AddCarriage(), tooltipService),
+                    CreateButton(Picture.Minus, "Remove carriage", () => false, () => _trainManager.CurrentTrain?.RemoveCarriage(), tooltipService),
+                    CreateButton(Picture.Eye, "Follow train", () => _trainManager.CurrentTrain?.Follow ?? false, () => _trainManager.ToggleFollow(_trainManager.CurrentTrain!), tooltipService),
+                    CreateButton(Picture.Trash, "Delete train", () => false, () =>
                     {
                         _movableLayout.Remove(_trainManager.CurrentTrain!);
                         Close();
-                    }),
+                    }, tooltipService),
             });
 
         _trainSelectionButton = new MultiButton(20, new ButtonBase[]
             {
-                    CreateButton(Picture.Left, () => false, () => _trainManager.PreviousTrain()),
-                    CreateButton(Picture.Right, () => false, () => _trainManager.NextTrain())
+                    CreateButton(Picture.Left, "Previous train", () => false, () => _trainManager.PreviousTrain(), tooltipService),
+                    CreateButton(Picture.Right, "Next train", () => false, () => _trainManager.NextTrain(), tooltipService)
             });
 
         Visible = _trainManager.CurrentTrain is not null;
     }
 
-    private static ButtonBase CreateButton(Picture picture, Func<bool> isActive, Action onClick)
-        => new PictureButton(picture, 16, isActive, onClick)
+    private static ButtonBase CreateButton(
+        Picture picture,
+        string tooltip,
+        Func<bool> isActive,
+        Action onClick,
+        ITooltipService tooltipService)
+        => new PictureButton(picture, 16, isActive, onClick, tooltipService: tooltipService, tooltip: tooltip)
         {
             TransparentBackground = true,
         };

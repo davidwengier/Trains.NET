@@ -3,7 +3,11 @@
 namespace Trains.NET.Rendering.UI;
 
 [Order(15)]
-public class TreeToolPaletteItem(TreeTool tool, IGameManager gameManager, IStaticEntityRenderer<Tree> renderer) : IToolPaletteItem
+public class TreeToolPaletteItem(
+    TreeTool tool,
+    IGameManager gameManager,
+    IStaticEntityRenderer<Tree> renderer,
+    ITooltipService tooltipService) : IToolPaletteItem
 {
     public ITool Tool { get; } = tool;
 
@@ -12,7 +16,9 @@ public class TreeToolPaletteItem(TreeTool tool, IGameManager gameManager, IStati
             new Tree(1),
             renderer,
             () => gameManager.CurrentTool == tool,
-            () => gameManager.CurrentTool = tool)
+            () => gameManager.CurrentTool = tool,
+            tooltipService: tooltipService,
+            tooltip: tool.Name)
         {
             Height = 40
         };

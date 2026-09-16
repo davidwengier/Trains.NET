@@ -16,13 +16,13 @@ public class ToolsPanel : ButtonPanelBase
     protected override bool UseUniformButtonWidth => false;
     protected override string? Title => "Mode";
 
-    public ToolsPanel(IEnumerable<IToolPaletteItem> items, IGameManager gameManager)
+    public ToolsPanel(IEnumerable<IToolPaletteItem> items, IGameManager gameManager, ITooltipService tooltipService)
     {
         _gameManager = gameManager;
 
         _gameManager.Changed += (s, e) => OnChanged();
 
-        _switchModeButton = new BuildModeButton(_gameManager);
+        _switchModeButton = new BuildModeButton(_gameManager, tooltipService);
 
         _buildModeButtons = items.Where(item => ShouldShowTool(true, item.Tool)).Select(item => item.Button).ToList();
         _playModeButtons = items.Where(item => ShouldShowTool(false, item.Tool)).Select(item => item.Button).ToList();

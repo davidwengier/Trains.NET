@@ -64,10 +64,23 @@ public class SKCanvasWrapper(SKCanvas canvas) : ICanvas
     }
 
     public void DrawImage(IImage image, int x, int y)
-        => _canvas.DrawImage(image.ToSkia(), x, y, SKSamplingOptions.Default);
+    {
+        var wrappedImage = (SKImageWrapper)image;
+        var destination = SKRect.Create(x, y, wrappedImage.LogicalWidth, wrappedImage.LogicalHeight);
+        _canvas.DrawImage(wrappedImage.Image, destination, SKSamplingOptions.Default);
+    }
 
     public void DrawImage(IImage image, Rectangle sourceRectangle, Rectangle destinationRectangle)
-        => _canvas.DrawImage(image.ToSkia(), sourceRectangle.ToSkia(), destinationRectangle.ToSkia(), SKSamplingOptions.Default, s_noAntialiasPaint);
+    {
+        var wrappedImage = (SKImageWrapper)image;
+        var physicalSource = new SKRect(
+            sourceRectangle.Left * wrappedImage.ScaleX,
+            sourceRectangle.Top * wrappedImage.ScaleY,
+            sourceRectangle.Right * wrappedImage.ScaleX,
+            sourceRectangle.Bottom * wrappedImage.ScaleY);
+
+        _canvas.DrawImage(wrappedImage.Image, physicalSource, destinationRectangle.ToSkia(), SKSamplingOptions.Default, s_noAntialiasPaint);
+    }
 
     public void DrawCircle(float x, float y, float radius, PaintBrush paint)
         => _canvas.DrawCircle(x, y, radius, GetSKPaint(paint));

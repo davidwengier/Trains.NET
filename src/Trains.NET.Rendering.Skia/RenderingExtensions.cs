@@ -24,8 +24,6 @@ public static class RenderingExtensions
             _ => throw new InvalidOperationException($"No idea what picture you want me to draw: {picture}")
         };
 
-    public static SKImage ToSkia(this IImage image) => ((SKImageWrapper)image).Image;
-
     public static SKColor ToSkia(this Color color) => color switch
     {
         Color c when c == Colors.Empty => SKColor.Empty,

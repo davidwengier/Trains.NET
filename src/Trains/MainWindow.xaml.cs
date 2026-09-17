@@ -57,7 +57,7 @@ public partial class MainWindow : Window
 
     private void SKElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
     {
-        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToGameCoordinates(e.GetPosition(_gameElement));
 
         if (e.Delta > 0)
         {
@@ -71,7 +71,7 @@ public partial class MainWindow : Window
 
     private void SKElement_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
     {
-        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToGameCoordinates(e.GetPosition(_gameElement));
         var pointerMove = new PendingPointerMove(x, y, e.LeftButton, e.RightButton);
 
         if (!_usesGpuRendering)
@@ -130,7 +130,7 @@ public partial class MainWindow : Window
     private void SKElement_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         _pendingPointerMove = null;
-        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToGameCoordinates(e.GetPosition(_gameElement));
 
         if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
         {
@@ -151,14 +151,12 @@ public partial class MainWindow : Window
             return;
         }
 
-        (var x, var y) = ToPixels(e.GetPosition(_gameElement));
+        (var x, var y) = ToGameCoordinates(e.GetPosition(_gameElement));
         _interactionManager.PointerRelease(x, y);
     }
 
-    private (int X, int Y) ToPixels(Point point)
-    {
-        return PixelCoordinates.FromWpf(_gameElement, point);
-    }
+    private static (int X, int Y) ToGameCoordinates(Point point)
+        => ((int)point.X, (int)point.Y);
 
     protected override void OnClosing(CancelEventArgs e)
     {

@@ -20,6 +20,7 @@ internal sealed class SoftwareGameElement : SKElement
     public SoftwareGameElement(IGame game)
     {
         _game = game;
+        IgnorePixelScaling = true;
         CompositionTarget.Rendering += CompositionTargetRendering;
     }
 
@@ -43,6 +44,8 @@ internal sealed class SoftwareGameElement : SKElement
     {
         using (_renderTime.Measure())
         {
+            var dpi = VisualTreeHelper.GetDpi(this);
+            _game.SetDisplayScale((float)dpi.DpiScaleX, (float)dpi.DpiScaleY);
             _game.SetSize(e.Info.Width, e.Info.Height);
             _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
         }

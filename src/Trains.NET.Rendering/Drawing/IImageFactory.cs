@@ -4,4 +4,5 @@ public interface IImageFactory
 {
     IImageCanvas CreateImageCanvas(int width, int height);
     bool SetContext(IContext context);
+    bool SetDisplayScale(float scaleX, float scaleY);
 }

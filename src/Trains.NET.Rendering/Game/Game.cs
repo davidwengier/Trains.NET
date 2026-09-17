@@ -65,6 +65,14 @@ public class Game : IGame
         }
     }
 
+    public void SetDisplayScale(float scaleX, float scaleY)
+    {
+        if (_imageFactory.SetDisplayScale(scaleX, scaleY))
+        {
+            _imageCache.Clear();
+        }
+    }
+
     private static string GetLayerDiagnosticsName(ILayerRenderer layerRenderer)
     {
         var sb = new StringBuilder("Draw-Layer-");

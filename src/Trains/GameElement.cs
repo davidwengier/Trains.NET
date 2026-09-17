@@ -43,9 +43,17 @@ public class GameElement : SKGLElement
     {
         using (_renderTime.Measure())
         {
-            _game.SetSize(e.Info.Width, e.Info.Height);
+            var dpi = VisualTreeHelper.GetDpi(this);
+            var scaleX = (float)dpi.DpiScaleX;
+            var scaleY = (float)dpi.DpiScaleY;
+
+            _game.SetDisplayScale(scaleX, scaleY);
+            _game.SetSize((int)ActualWidth, (int)ActualHeight);
             _game.SetContext(new SKContextWrapper(GRContext));
-            _game.Render(new SKCanvasWrapper(e.Surface.Canvas));
+
+            var canvas = new SKCanvasWrapper(e.Surface.Canvas);
+            canvas.Scale(scaleX, scaleY);
+            _game.Render(canvas);
         }
 
         _fps.Update();

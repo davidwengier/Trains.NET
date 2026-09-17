@@ -8,7 +8,7 @@ public static class Program
     [STAThread]
     public static void Main()
     {
-        Application.SetHighDpiMode(HighDpiMode.SystemAware);
+        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         using var mainForm = new MainForm();

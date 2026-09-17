@@ -6,6 +6,8 @@ namespace WinTrains;
 
 public partial class MainForm : Form
 {
+    private const float LogicalDpi = 96;
+
     private readonly PerSecondTimedStat _fps = InstrumentationBag.Add<PerSecondTimedStat>("SKControl-FPS");
     private readonly ElapsedMillisecondsTimedStat _drawTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("SKControl-DrawTime");
 
@@ -24,9 +26,10 @@ public partial class MainForm : Form
 
         _game.InitializeAsync(200, 200).GetAwaiter().GetResult();
 
-        _game.SetSize(_skControl.Width, _skControl.Height);
+        UpdateGameSize();
 
-        _skControl.SizeChanged += (s, e) => _game.SetSize(_skControl.Width, _skControl.Height);
+        _skControl.SizeChanged += (s, e) => UpdateGameSize();
+        DpiChanged += (s, e) => UpdateGameSize();
         _skControl.MouseDown += SKControl_MouseDown;
         _skControl.MouseMove += SKControl_MouseMove;
         _skControl.MouseUp += SKControl_MouseUp;
@@ -37,41 +40,47 @@ public partial class MainForm : Form
 
     private void SKControl_MouseWheel(object? sender, MouseEventArgs e)
     {
+        (var x, var y) = ToGameCoordinates(e.X, e.Y);
+
         if (e.Delta > 0)
         {
-            _interactionManager.PointerZoomIn(e.X, e.Y);
+            _interactionManager.PointerZoomIn(x, y);
         }
         else
         {
-            _interactionManager.PointerZoomOut(e.X, e.Y);
+            _interactionManager.PointerZoomOut(x, y);
         }
     }
 
     private void SKControl_MouseDown(object? sender, MouseEventArgs e)
     {
+        (var x, var y) = ToGameCoordinates(e.X, e.Y);
+
         if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
         {
-            _interactionManager.PointerClick(e.X, e.Y);
+            _interactionManager.PointerClick(x, y);
         }
         else if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
         {
-            _interactionManager.PointerAlternateClick(e.X, e.Y);
+            _interactionManager.PointerAlternateClick(x, y);
         }
     }
 
     private void SKControl_MouseMove(object? sender, MouseEventArgs e)
     {
+        (var x, var y) = ToGameCoordinates(e.X, e.Y);
+
         if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
         {
-            _interactionManager.PointerDrag(e.X, e.Y);
+            _interactionManager.PointerDrag(x, y);
         }
         else if ((e.Button & MouseButtons.Right) == MouseButtons.Right)
         {
-            _interactionManager.PointerAlternateDrag(e.X, e.Y);
+            _interactionManager.PointerAlternateDrag(x, y);
         }
         else
         {
-            _interactionManager.PointerMove(e.X, e.Y);
+            _interactionManager.PointerMove(x, y);
         }
     }
 
@@ -79,7 +88,8 @@ public partial class MainForm : Form
     {
         if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
         {
-            _interactionManager.PointerRelease(e.X, e.Y);
+            (var x, var y) = ToGameCoordinates(e.X, e.Y);
+            _interactionManager.PointerRelease(x, y);
         }
     }
 
@@ -98,9 +108,31 @@ public partial class MainForm : Form
 
     private void SKControl_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
     {
+        var scale = GetDisplayScale();
+        _game.SetDisplayScale(scale, scale);
+
         using var canvas = new SKCanvasWrapper(e.Surface.Canvas);
+        canvas.Scale(scale, scale);
         _game.Render(canvas);
     }
+
+    private void UpdateGameSize()
+    {
+        var scale = GetDisplayScale();
+        _game.SetDisplayScale(scale, scale);
+        _game.SetSize(ToLogicalPixels(_skControl.Width, scale), ToLogicalPixels(_skControl.Height, scale));
+    }
+
+    private (int X, int Y) ToGameCoordinates(int x, int y)
+    {
+        var scale = GetDisplayScale();
+        return (ToLogicalPixels(x, scale), ToLogicalPixels(y, scale));
+    }
+
+    private float GetDisplayScale() => _skControl.DeviceDpi / LogicalDpi;
+
+    private static int ToLogicalPixels(int pixels, float scale)
+        => (int)Math.Round(pixels / scale);
 
     private async Task PresentLoop()
     {

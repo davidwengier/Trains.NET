@@ -4,6 +4,7 @@ public interface IGame : IDisposable
 {
     void AdjustViewPortIfNecessary();
     void Render(ICanvas canvas);
+    void SetDisplayScale(float scaleX, float scaleY);
     void SetSize(int width, int height);
     (int Width, int Height) GetSize();
     (int Width, int Height) GetScreenSize();

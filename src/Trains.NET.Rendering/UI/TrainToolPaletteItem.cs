@@ -9,11 +9,14 @@ public class TrainToolPaletteItem(
     IRenderer<Train> renderer,
     ITooltipService tooltipService) : IToolPaletteItem
 {
+    // Chosen to produce a light blue palette.
+    private const int LightBlueTrainSeed = 39477;
+
     public ITool Tool { get; } = tool;
 
     public ButtonBase Button { get; } =
         new RendererButton<Train>(
-            new Train(0),
+            new Train(LightBlueTrainSeed),
             renderer,
             () => gameManager.CurrentTool == tool,
             () => gameManager.CurrentTool = tool,

@@ -3,12 +3,11 @@
 namespace Trains.NET.Rendering;
 
 [Order(10)]
-public class TrackTool(ILayout<Track> trackLayout, IEnumerable<IStaticEntityFactory<Track>> entityFactories) : ITool
+public class TrackTool(ILayout<Track> trackLayout, IEnumerable<IStaticEntityFactory<Track>> entityFactories) : IPauseGameWhileDraggingTool
 {
     private readonly ILayout<Track> _entityCollection = trackLayout;
     private readonly IEnumerable<IStaticEntityFactory<Track>> _entityFactories = entityFactories;
 
-    public ToolMode Mode => ToolMode.Build;
     public string Name => "Track";
 
     public void Execute(int column, int row, ExecuteInfo info)

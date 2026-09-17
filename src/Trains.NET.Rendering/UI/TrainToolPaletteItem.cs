@@ -12,8 +12,6 @@ public class TrainToolPaletteItem(
     // Chosen to produce a light blue palette.
     private const int LightBlueTrainSeed = 39477;
 
-    public ITool Tool { get; } = tool;
-
     public ButtonBase Button { get; } =
         new RendererButton<Train>(
             new Train(LightBlueTrainSeed),

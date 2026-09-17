@@ -18,6 +18,7 @@ public class InteractionManager(
     private readonly ITooltipService _tooltipService = tooltipService;
     private IInteractionHandler? _capturedHandler;
     private ITool? _capturedTool;
+    private bool _gamePausedForDrag;
     private bool _hasDragged;
     private int _lastToolColumn;
     private int _lastToolRow;
@@ -45,6 +46,12 @@ public class InteractionManager(
 
     public bool PointerRelease(int x, int y)
     {
+        if (_gamePausedForDrag)
+        {
+            _gameManager.IsPaused = false;
+            _gamePausedForDrag = false;
+        }
+
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         if (_capturedHandler is null &&
@@ -150,6 +157,14 @@ public class InteractionManager(
 
     private bool ExecuteTool(ITool tool, int x, int y, PointerAction action)
     {
+        if (!_gamePausedForDrag &&
+            action is PointerAction.Drag &&
+            tool is IPauseGameWhileDraggingTool)
+        {
+            _gameManager.IsPaused = true;
+            _gamePausedForDrag = true;
+        }
+
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         var inSameCell = (column == _lastToolColumn && row == _lastToolRow);

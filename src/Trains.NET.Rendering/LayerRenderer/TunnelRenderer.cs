@@ -6,26 +6,22 @@ namespace Trains.NET.Rendering;
 [Order(700)]
 public partial class TunnelRenderer(
     ITerrainMap terrainMap,
-    ILayout<Track> layout,
-    IGameManager gameManager) : ILayerRenderer
+    ILayout<Track> layout) : ILayerRenderer
 {
-    private const int BuildModeAlpha = 170;
-
     private readonly ITerrainMap _terrainMap = terrainMap;
     private readonly ILayout<Track> _trackLayout = layout;
-    private readonly IGameManager _gameManager = gameManager;
 
     public bool Enabled { get; set; } = true;
     public string Name => "Tunnels";
 
     public void Render(ICanvas canvas, int width, int height, IPixelMapper pixelMapper)
     {
-        var tunnelRoofColour = BuildModeAwareColour(Colors.LightGray);
+        var tunnelRoofColour = Colors.LightGray;
         var firstMountain = new Terrain()
         {
             Height = Terrain.FirstMountainHeight
         };
-        var tunnelBaseColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(firstMountain));
+        var tunnelBaseColour = TerrainMapRenderer.GetTerrainColour(firstMountain);
         var entranceColourArray = new[] { tunnelBaseColour, tunnelRoofColour, tunnelBaseColour };
 
         Dictionary<(int column, int row), Tunnel> entrances = [];
@@ -38,7 +34,7 @@ public partial class TunnelRenderer(
             (var x, var y, _) = pixelMapper.CoordsToViewPortPixels(track.Column, track.Row);
 
             // Paint over the tracks with the colour of the terrain. Would be awesome to remove this in future somehow
-            var terrainColour = BuildModeAwareColour(TerrainMapRenderer.GetTerrainColour(terrain));
+            var terrainColour = TerrainMapRenderer.GetTerrainColour(terrain);
             canvas.DrawRect(x, y, pixelMapper.CellSize, pixelMapper.CellSize,
                             new PaintBrush
                             {
@@ -394,9 +390,4 @@ public partial class TunnelRenderer(
             drawAction(canvas);
         }
     }
-
-    private Color BuildModeAwareColour(Color color)
-        => _gameManager.BuildMode
-            ? color with { A = BuildModeAlpha }
-            : color;
 }

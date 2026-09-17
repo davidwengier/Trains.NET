@@ -5,6 +5,8 @@ namespace Trains.NET.Rendering.UI;
 [Order(20)]
 public class EraserToolPaletteItem(EraserTool tool, IGameManager gameManager, ITooltipService tooltipService) : IToolPaletteItem
 {
+    public ITool Tool { get; } = tool;
+
     public ButtonBase Button { get; } =
         new PictureButton(
             Picture.Eraser,

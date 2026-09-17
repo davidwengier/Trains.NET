@@ -5,6 +5,8 @@ namespace Trains.NET.Rendering.UI;
 [Order(2)]
 public class PointerToolPaletteItem(PointerTool tool, IGameManager gameManager, ITooltipService tooltipService) : IToolPaletteItem
 {
+    public ITool Tool { get; } = tool;
+
     public ButtonBase Button { get; } =
         new PictureButton(
             Picture.Pointer,

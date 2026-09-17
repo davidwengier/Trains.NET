@@ -12,6 +12,7 @@ public class TrainTool(
     private readonly ILayout<Track> _trackLayout = trackLayout;
     private readonly ITrainManager _trainManager = gameState;
 
+    public ToolMode Mode => ToolMode.Play;
     public string Name => "Train";
 
     public void Execute(int column, int row, ExecuteInfo info)

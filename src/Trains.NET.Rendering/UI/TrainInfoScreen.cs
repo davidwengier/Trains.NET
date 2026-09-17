@@ -10,6 +10,7 @@ public class TrainInfoScreen : PanelBase
     private const int PanelWidth = 280 + TrainDisplayAreaWidth;
 
     private readonly ITrainManager _trainManager;
+    private readonly IGameManager _gameManager;
     private readonly IMovableLayout _movableLayout;
     private readonly ITrainParameters _trainParameters;
     private readonly ITrainPainter _trainPainter;
@@ -27,12 +28,14 @@ public class TrainInfoScreen : PanelBase
 
     public TrainInfoScreen(
         ITrainManager trainManager,
+        IGameManager gameManager,
         IMovableLayout movableLayout,
         ITrainParameters trainParameters,
         ITrainPainter trainPainter,
         ITooltipService tooltipService)
     {
         _trainManager = trainManager;
+        _gameManager = gameManager;
         _movableLayout = movableLayout;
         _trainParameters = trainParameters;
         _trainPainter = trainPainter;
@@ -41,6 +44,7 @@ public class TrainInfoScreen : PanelBase
             Visible = _trainManager.CurrentTrain is not null;
             OnChanged();
         };
+        _gameManager.Changed += (s, e) => OnChanged();
         _trainManager.CurrentTrainPropertyChanged += (s, e) => OnChanged();
 
         _controlButton = new MultiButton(20, new ButtonBase[]
@@ -130,7 +134,8 @@ public class TrainInfoScreen : PanelBase
 
         canvas.Translate(0, 45);
 
-        canvas.DrawText($"{train.CurrentSpeed:0} km/h", 90, 0, Brushes.Label);
+        var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
+        canvas.DrawText($"{train.CurrentSpeed:0} km/h", 90, 0, brush);
 
         canvas.Translate(0, -15);
 

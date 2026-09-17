@@ -4,12 +4,13 @@
 public class EraserTool(
     ILayout trackLayout,
     IMovableLayout movableLayout,
-    ITrainManager trainManager) : IPauseGameWhileDraggingTool
+    ITrainManager trainManager) : ITool
 {
     private readonly ILayout _collection = trackLayout;
     private readonly IMovableLayout _movableLayout = movableLayout;
     private readonly ITrainManager _trainManager = trainManager;
 
+    public ToolMode Mode => ToolMode.Build;
     public string Name => "Eraser";
 
     public void Execute(int column, int row, ExecuteInfo info)

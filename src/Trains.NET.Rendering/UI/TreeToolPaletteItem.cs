@@ -9,6 +9,8 @@ public class TreeToolPaletteItem(
     IStaticEntityRenderer<Tree> renderer,
     ITooltipService tooltipService) : IToolPaletteItem
 {
+    public ITool Tool { get; } = tool;
+
     public ButtonBase Button { get; } =
         new RendererButton<Tree>(
             new Tree(1),

@@ -12,6 +12,7 @@ public class TreeTool(
     private readonly ITerrainMap _terrainMap = terrainMap;
     private readonly IEnumerable<IStaticEntityFactory<Tree>> _entityFactories = entityFactories;
 
+    public ToolMode Mode => ToolMode.Build;
     public string Name => "Tree";
 
     public void Execute(int column, int row, ExecuteInfo info)

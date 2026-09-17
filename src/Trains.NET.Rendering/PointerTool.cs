@@ -17,6 +17,8 @@ public class PointerTool(
     private int _lastX;
     private int _lastY;
 
+    public ToolMode Mode => ToolMode.All;
+
     public string Name => "Pointer";
 
     public void Execute(int column, int row, ExecuteInfo info)

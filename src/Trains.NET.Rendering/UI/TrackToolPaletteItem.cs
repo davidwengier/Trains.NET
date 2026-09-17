@@ -9,6 +9,8 @@ public class TrackToolPaletteItem(
     IEnumerable<IStaticEntityRenderer<Track>> renderers,
     ITooltipService tooltipService) : IToolPaletteItem
 {
+    public ITool Tool { get; } = tool;
+
     public ButtonBase Button { get; } =
         new TrackButton(
             new SingleTrack { Direction = SingleTrackDirection.Horizontal },

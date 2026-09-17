@@ -8,7 +8,7 @@ public class CommandsPanel(IEnumerable<ICommand> commands) : ButtonPanelBase
 
     protected override bool IsCollapsable => true;
     protected override string? Title => "Commands";
-    protected override int Top => 250;
+    protected override int Top => 290;
 
     protected override IEnumerable<TextButton> GetButtons()
         => _buttons;

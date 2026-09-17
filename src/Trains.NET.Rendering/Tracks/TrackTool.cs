@@ -8,7 +8,7 @@ public class TrackTool(ILayout<Track> trackLayout, IEnumerable<IStaticEntityFact
     private readonly ILayout<Track> _entityCollection = trackLayout;
     private readonly IEnumerable<IStaticEntityFactory<Track>> _entityFactories = entityFactories;
 
-    public ToolMode Mode => ToolMode.Build;
+    public bool PauseGameDuringDrag => true;
     public string Name => "Track";
 
     public void Execute(int column, int row, ExecuteInfo info)

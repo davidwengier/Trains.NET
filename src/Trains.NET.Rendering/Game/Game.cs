@@ -210,7 +210,7 @@ public class Game : IGame
 
     public void AdjustViewPortIfNecessary()
     {
-        if (_gameManager.BuildMode) return;
+        if (_gameManager.Paused) return;
 
         if (!_trainManager.TryGetFollowTrainPosition(out var col, out var row)) return;
 

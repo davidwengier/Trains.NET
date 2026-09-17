@@ -2,21 +2,22 @@
 
 namespace Trains.NET.Rendering.UI;
 
-[Order(20)]
-public class EraserToolPaletteItem(EraserTool tool, IGameManager gameManager, ITooltipService tooltipService) : IToolPaletteItem
+[Order(10)]
+public class TrackToolButton(
+    TrackTool tool,
+    IGameManager gameManager,
+    IEnumerable<IStaticEntityRenderer<Track>> renderers,
+    ITooltipService tooltipService) : IToolButton
 {
-    public ITool Tool { get; } = tool;
-
     public ButtonBase Button { get; } =
-        new PictureButton(
-            Picture.Eraser,
-            20,
+        new TrackButton(
+            new SingleTrack { Direction = SingleTrackDirection.Horizontal },
             () => gameManager.CurrentTool == tool,
             () => gameManager.CurrentTool = tool,
+            renderers,
             tooltipService: tooltipService,
             tooltip: tool.Name)
         {
-            Width = 40,
             Height = 40
         };
 }

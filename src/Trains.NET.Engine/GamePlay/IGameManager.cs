@@ -5,5 +5,5 @@ public interface IGameManager : IDisposable
     event EventHandler? Changed;
 
     ITool CurrentTool { get; set; }
-    bool BuildMode { get; set; }
+    bool Paused { get; set; }
 }

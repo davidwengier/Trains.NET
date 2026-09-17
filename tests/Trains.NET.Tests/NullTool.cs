@@ -4,7 +4,7 @@ namespace Trains.NET.Tests;
 
 internal class NullTool : ITool
 {
-    public ToolMode Mode => throw new System.NotImplementedException();
+    public bool PauseGameDuringDrag => false;
 
     public string Name => throw new System.NotImplementedException();
 

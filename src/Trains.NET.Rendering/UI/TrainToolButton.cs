@@ -2,17 +2,15 @@
 
 namespace Trains.NET.Rendering.UI;
 
-[Order(50)]
-public class TrainToolPaletteItem(
+[Order(5)]
+public class TrainToolButton(
     TrainTool tool,
     IGameManager gameManager,
     IRenderer<Train> renderer,
-    ITooltipService tooltipService) : IToolPaletteItem
+    ITooltipService tooltipService) : IToolButton
 {
     // Chosen to produce a light blue palette.
     private const int LightBlueTrainSeed = 39477;
-
-    public ITool Tool { get; } = tool;
 
     public ButtonBase Button { get; } =
         new RendererButton<Train>(

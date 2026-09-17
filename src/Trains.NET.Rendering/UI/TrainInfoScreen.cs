@@ -134,7 +134,7 @@ public class TrainInfoScreen : PanelBase
 
         canvas.Translate(0, 45);
 
-        var brush = _gameManager.BuildMode ? Brushes.Disabled : Brushes.Label;
+        var brush = _gameManager.Paused ? Brushes.Disabled : Brushes.Label;
         canvas.DrawText($"{train.CurrentSpeed:0} km/h", 90, 0, brush);
 
         canvas.Translate(0, -15);

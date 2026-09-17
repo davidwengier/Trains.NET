@@ -8,22 +8,20 @@ public class GameManager : IGameManager, IInitializeAsync
 {
     private const int GameLoopInterval = 16;
 
-    private bool _buildMode;
+    private bool _paused;
     private ITool _currentTool;
-    private readonly ITool _defaultTool;
     private readonly ITimer _gameLoopTimer;
     private readonly IEnumerable<IGameStep> _gameSteps;
     private readonly ElapsedMillisecondsTimedStat _gameUpdateTime = InstrumentationBag.Add<ElapsedMillisecondsTimedStat>("Game-LoopStepTime");
 
     public event EventHandler? Changed;
 
-    public bool BuildMode
+    public bool Paused
     {
-        get { return _buildMode; }
+        get { return _paused; }
         set
         {
-            _buildMode = value;
-            _currentTool = _defaultTool;
+            _paused = value;
 
             Changed?.Invoke(this, EventArgs.Empty);
         }
@@ -42,8 +40,7 @@ public class GameManager : IGameManager, IInitializeAsync
 
     public GameManager(IEnumerable<ITool> tools, IEnumerable<IGameStep> gameSteps, ITimer timer)
     {
-        _defaultTool = tools.First();
-        _currentTool = _defaultTool;
+        _currentTool = tools.First();
 
         _gameLoopTimer = timer;
         _gameSteps = gameSteps;
@@ -61,7 +58,7 @@ public class GameManager : IGameManager, IInitializeAsync
 
     public void GameLoopStep()
     {
-        if (_buildMode) return;
+        if (Paused) return;
 
         using (_gameUpdateTime.Measure())
         {

@@ -2,21 +2,22 @@
 
 namespace Trains.NET.Rendering.UI;
 
-[Order(2)]
-public class PointerToolPaletteItem(PointerTool tool, IGameManager gameManager, ITooltipService tooltipService) : IToolPaletteItem
+[Order(15)]
+public class TreeToolButton(
+    TreeTool tool,
+    IGameManager gameManager,
+    IStaticEntityRenderer<Tree> renderer,
+    ITooltipService tooltipService) : IToolButton
 {
-    public ITool Tool { get; } = tool;
-
     public ButtonBase Button { get; } =
-        new PictureButton(
-            Picture.Pointer,
-            32,
+        new RendererButton<Tree>(
+            new Tree(1),
+            renderer,
             () => gameManager.CurrentTool == tool,
             () => gameManager.CurrentTool = tool,
             tooltipService: tooltipService,
             tooltip: tool.Name)
         {
-            Width = 40,
             Height = 40
         };
 }

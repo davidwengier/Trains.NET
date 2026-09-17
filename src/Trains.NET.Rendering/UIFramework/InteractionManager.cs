@@ -45,6 +45,11 @@ public class InteractionManager(
 
     public bool PointerRelease(int x, int y)
     {
+        if (_gameManager.Paused)
+        {
+            _gameManager.Paused = false;
+        }
+
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         if (_capturedHandler is null &&
@@ -150,6 +155,13 @@ public class InteractionManager(
 
     private bool ExecuteTool(ITool tool, int x, int y, PointerAction action)
     {
+        if (!_gameManager.Paused &&
+            action is PointerAction.Drag &&
+            tool.PauseGameDuringDrag)
+        {
+            _gameManager.Paused = true;
+        }
+
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
 
         var inSameCell = (column == _lastToolColumn && row == _lastToolRow);

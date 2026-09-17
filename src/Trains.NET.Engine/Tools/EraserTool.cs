@@ -10,7 +10,7 @@ public class EraserTool(
     private readonly IMovableLayout _movableLayout = movableLayout;
     private readonly ITrainManager _trainManager = trainManager;
 
-    public ToolMode Mode => ToolMode.Build;
+    public bool PauseGameDuringDrag => true;
     public string Name => "Eraser";
 
     public void Execute(int column, int row, ExecuteInfo info)

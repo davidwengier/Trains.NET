@@ -2,7 +2,7 @@
 
 public interface ITool
 {
-    ToolMode Mode { get; }
+    bool PauseGameDuringDrag { get; }
 
     string Name { get; }
 

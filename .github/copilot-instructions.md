@@ -34,6 +34,10 @@ There is no separate lint target. `-p:CI=true` enables warnings as errors, Rosly
 
 A push to `main` runs `.github/workflows/dotnetcore.yml` unless every changed path matches its `*.md` ignore pattern. The workflow builds and tests, publishes the WPF executable as a GitHub release, and deploys the Blazor host to `gh-pages`.
 
+## Git workflow
+
+Commit completed changes and push them directly to `main` unless the user explicitly asks for a branch or pull request.
+
 ## Architecture
 
 - `Trains.NET.Engine` is the platform-neutral simulation and persistence layer: terrain, layouts, tracks, trains, tools, the game loop, and save/load state.

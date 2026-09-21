@@ -63,7 +63,7 @@ public class GameStateManager(
         AutosaveEnabled = _storage.Read("Autosave")?.Equals("True") ?? true;
     }
 
-    public void Reset()
+    private void Reset()
     {
         foreach (var gameState in _gameStates)
         {

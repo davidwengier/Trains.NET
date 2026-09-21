@@ -10,10 +10,6 @@ internal class NullGameStateManager : IGameStateManager
     {
     }
 
-    public void Reset()
-    {
-    }
-
     public void Save()
     {
     }

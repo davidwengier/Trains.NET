@@ -3,7 +3,7 @@
 public class ZoomHandler(IPixelMapper pixelMapper) : IInteractionHandler
 {
     private const float ZoomInDelta = 1.25f;
-    private const float ZoomOutDelta = 1f / ZoomInCommand.ZoomInDelta;
+    private const float ZoomOutDelta = 1f / ZoomInDelta;
 
     private readonly IPixelMapper _pixelMapper = pixelMapper;
 

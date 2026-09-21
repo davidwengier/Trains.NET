@@ -6,5 +6,4 @@ public interface IGameStateManager
 
     void Load();
     void Save();
-    void Reset();
 }

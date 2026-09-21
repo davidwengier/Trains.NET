@@ -11,7 +11,7 @@ public class DepotToolButton(
 {
     public ButtonBase Button { get; } =
         new RendererButton<Depot>(
-            Depot.CreateNew(0),
+            Depot.CreateNew(0, DepotDirection.Right),
             renderer,
             () => gameManager.CurrentTool == tool,
             () => gameManager.CurrentTool = tool,

@@ -32,11 +32,36 @@ public class DepotFactory(
             return false;
         }
 
-        entity = Depot.CreateNew(_random.Next());
+        entity = Depot.CreateNew(_random.Next(), GetInitialDirection(column, row));
         return true;
     }
 
     public bool CanCreate(int column, int row)
         => _terrainMap.Get(column, row).IsLand &&
             !_layout.TryGet(column, row, out _);
+
+    private DepotDirection GetInitialDirection(int column, int row)
+    {
+        if (_layout.TryGet(column + 1, row, out Track? right) && right.IsConnectedLeft())
+        {
+            return DepotDirection.Right;
+        }
+
+        if (_layout.TryGet(column, row + 1, out Track? down) && down.IsConnectedUp())
+        {
+            return DepotDirection.Down;
+        }
+
+        if (_layout.TryGet(column - 1, row, out Track? left) && left.IsConnectedRight())
+        {
+            return DepotDirection.Left;
+        }
+
+        if (_layout.TryGet(column, row - 1, out Track? up) && up.IsConnectedDown())
+        {
+            return DepotDirection.Up;
+        }
+
+        return DepotDirection.Right;
+    }
 }

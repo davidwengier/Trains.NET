@@ -129,16 +129,11 @@ public class SingleTrack : Track
         (neighbors.Left as SingleTrack)?.SetBestTrackDirection(ignoreHappyness);
     }
 
-    private TrackNeighbors GetPotentialNeighbors()
+    private TrackConnections GetPotentialNeighbors()
     {
         _ = TrackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
-        return new TrackNeighbors(
-            TrackLayout.TryGet(Column - 1, Row, out Track? left) && left.CanConnectRight() ? left : null,
-            TrackLayout.TryGet(Column, Row - 1, out Track? up) && up.CanConnectDown() ? up : null,
-            TrackLayout.TryGet(Column + 1, Row, out Track? right) && right.CanConnectLeft() ? right : null,
-            TrackLayout.TryGet(Column, Row + 1, out Track? down) && down.CanConnectUp() ? down : null
-            );
+        return TrackConnections.GetPotentialConnections(TrackLayout, Column, Row);
     }
 
     public override void Created()

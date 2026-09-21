@@ -2,18 +2,19 @@
 
 namespace Trains.NET.Rendering;
 
-public class DepotRenderer : IStaticEntityRenderer<Depot>
+public class DepotRenderer(
+    SingleTrackRenderer trackRenderer,
+    ITrackParameters trackParameters) : IStaticEntityRenderer<Depot>
 {
+    private const float BuildingRight = 84;
+    private const float TrackStart = 58;
+
+    private readonly SingleTrackRenderer _trackRenderer = trackRenderer;
+    private readonly ITrackParameters _trackParameters = trackParameters;
+
     private static readonly PaintBrush BuildingBrush = new()
     {
         Color = Colors.DarkRed,
-        IsAntialias = true,
-        Style = PaintStyle.Fill
-    };
-
-    private static readonly PaintBrush RoofBrush = new()
-    {
-        Color = Colors.LightRed,
         IsAntialias = true,
         Style = PaintStyle.Fill
     };
@@ -24,23 +25,17 @@ public class DepotRenderer : IStaticEntityRenderer<Depot>
         Style = PaintStyle.Fill
     };
 
-    private static readonly PaintBrush RailBrush = new()
-    {
-        Color = Colors.Gray,
-        IsAntialias = true,
-        Style = PaintStyle.Stroke,
-        StrokeWidth = 4
-    };
-
     public void Render(ICanvas canvas, Depot depot)
     {
         canvas.RotateDegrees(depot.Rotation, 50, 50);
 
-        canvas.DrawRoundRect(8, 12, 76, 76, 5, 5, BuildingBrush);
-        canvas.DrawRoundRect(4, 8, 84, 18, 5, 5, RoofBrush);
-        canvas.DrawRect(62, 32, 30, 44, DoorBrush);
+        canvas.DrawRoundRect(8, 12, BuildingRight - 8, 76, 5, 5, BuildingBrush);
 
-        canvas.DrawLine(84, 40, 100, 40, RailBrush);
-        canvas.DrawLine(84, 68, 100, 68, RailBrush);
+        var openingTop = 50 - (_trackParameters.PlankLength / 2);
+        canvas.DrawRect(TrackStart, openingTop, BuildingRight - TrackStart, _trackParameters.PlankLength, DoorBrush);
+
+        canvas.ClipRect(new Rectangle(TrackStart, 0, 100, 100), true, false);
+        _trackRenderer.DrawHorizontalPlankPath(canvas);
+        _trackRenderer.DrawHorizontalTracks(canvas);
     }
 }

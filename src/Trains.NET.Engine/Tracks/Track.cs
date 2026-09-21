@@ -1,6 +1,6 @@
 ﻿namespace Trains.NET.Engine;
 
-public abstract class Track : IStaticEntity
+public abstract class Track : IStaticEntity, ITrackConnection
 {
     private ILayout? _trackLayout;
 
@@ -45,7 +45,7 @@ public abstract class Track : IStaticEntity
     {
         _ = _trackLayout ?? throw new InvalidOperationException("Game board can't be null");
 
-        Happy = TrackNeighbors.GetConnectedNeighbours(_trackLayout, Column, Row).Count > 1;
+        Happy = TrackConnections.GetConnectedConnections(_trackLayout, Column, Row, this).Count > 1;
     }
 
     public void Stored(ILayout? collection)

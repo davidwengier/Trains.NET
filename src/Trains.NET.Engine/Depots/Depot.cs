@@ -1,7 +1,9 @@
 ﻿namespace Trains.NET.Engine;
 
-public class Depot : IStaticEntity
+public class Depot : IStaticEntity, ITrackConnection
 {
+    private ILayout? _layout;
+
     private Depot(int trainSeed, DepotDirection direction, bool hasProducedTrain)
     {
         TrainSeed = trainSeed;
@@ -9,8 +11,8 @@ public class Depot : IStaticEntity
         HasProducedTrain = hasProducedTrain;
     }
 
-    public static Depot CreateNew(int trainSeed)
-        => new(trainSeed, DepotDirection.Right, false);
+    public static Depot CreateNew(int trainSeed, DepotDirection direction)
+        => new(trainSeed, direction, false);
 
     public static Depot Rehydrate(int trainSeed, DepotDirection direction, bool hasProducedTrain)
         => new(trainSeed, direction, hasProducedTrain);
@@ -55,12 +57,24 @@ public class Depot : IStaticEntity
             _ => false
         };
 
+    public bool IsConnectedRight() => Direction == DepotDirection.Right;
+    public bool IsConnectedDown() => Direction == DepotDirection.Down;
+    public bool IsConnectedLeft() => Direction == DepotDirection.Left;
+    public bool IsConnectedUp() => Direction == DepotDirection.Up;
+
+    public bool CanConnectRight() => IsConnectedRight();
+    public bool CanConnectDown() => IsConnectedDown();
+    public bool CanConnectLeft() => IsConnectedLeft();
+    public bool CanConnectUp() => IsConnectedUp();
+
     public void Created()
     {
+        RefreshNeighbors();
     }
 
     public void Removed()
     {
+        RefreshNeighbors();
     }
 
     public void Updated()
@@ -69,9 +83,32 @@ public class Depot : IStaticEntity
 
     public void Replaced()
     {
+        RefreshNeighbors();
     }
 
     public void Stored(ILayout? collection)
     {
+        _layout = collection;
+    }
+
+    private void RefreshNeighbors()
+    {
+        if (_layout is null)
+        {
+            return;
+        }
+
+        UpdateNeighbor(Column - 1, Row);
+        UpdateNeighbor(Column, Row - 1);
+        UpdateNeighbor(Column + 1, Row);
+        UpdateNeighbor(Column, Row + 1);
+    }
+
+    private void UpdateNeighbor(int column, int row)
+    {
+        if (_layout!.TryGet(column, row, out var entity))
+        {
+            entity.Updated();
+        }
     }
 }

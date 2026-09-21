@@ -19,6 +19,38 @@ public class DepotTests
     }
 
     [Fact]
+    public async Task FactoryPrefersFirstConnectedTrackClockwiseFromRight()
+    {
+        var layout = await CreateLayout();
+        var factory = new DepotFactory(layout, new FlatTerrainMap());
+        layout.Set(2, 1, new SingleTrack { Direction = SingleTrackDirection.Horizontal });
+        layout.Set(1, 2, new SingleTrack { Direction = SingleTrackDirection.Vertical });
+        layout.Set(0, 1, new SingleTrack { Direction = SingleTrackDirection.Horizontal });
+        layout.Set(1, 0, new SingleTrack { Direction = SingleTrackDirection.Vertical });
+
+        var created = factory.TryCreateEntity(1, 1, 0, 0, out var depot);
+
+        Assert.True(created);
+        Assert.NotNull(depot);
+        Assert.Equal(DepotDirection.Right, depot.Direction);
+    }
+
+    [Fact]
+    public async Task FactorySkipsTrackThatDoesNotConnectToDepotCell()
+    {
+        var layout = await CreateLayout();
+        var factory = new DepotFactory(layout, new FlatTerrainMap());
+        layout.Set(2, 1, new SingleTrack { Direction = SingleTrackDirection.RightUp });
+        layout.Set(1, 2, new SingleTrack { Direction = SingleTrackDirection.Vertical });
+
+        var created = factory.TryCreateEntity(1, 1, 0, 0, out var depot);
+
+        Assert.True(created);
+        Assert.NotNull(depot);
+        Assert.Equal(DepotDirection.Down, depot.Direction);
+    }
+
+    [Fact]
     public async Task SpawnerProducesConfiguredTrainOnce()
     {
         var layout = await CreateLayout();
@@ -51,7 +83,7 @@ public class DepotTests
         var movableLayout = new MovableLayout(layout, new EntityCollectionSerializer([]));
         var trainManager = new TrainManager(movableLayout, layout);
         var spawner = new DepotTrainSpawner(depotLayout, trackLayout, movableLayout, trainManager);
-        var depot = Depot.CreateNew(7);
+        var depot = Depot.CreateNew(7, DepotDirection.Right);
 
         layout.Add(1, 2, depot);
         layout.Set(2, 2, new SingleTrack { Direction = SingleTrackDirection.RightUp });
@@ -79,6 +111,57 @@ public class DepotTests
         var depot = Depot.Rehydrate(1, direction, false);
 
         Assert.Equal(expectedRotation, depot.Rotation);
+    }
+
+    [Fact]
+    public async Task TrackShapesTowardExistingDepotOpening()
+    {
+        var layout = await CreateLayout();
+        layout.Add(2, 3, Depot.Rehydrate(1, DepotDirection.Up, false));
+        var track = new SingleTrack();
+
+        layout.Add(2, 2, track);
+
+        Assert.Equal(SingleTrackDirection.Vertical, track.Direction);
+    }
+
+    [Fact]
+    public async Task PlacingDepotReshapesExistingTrack()
+    {
+        var layout = await CreateLayout();
+        var track = new SingleTrack();
+        layout.Add(2, 2, track);
+
+        layout.Add(2, 3, Depot.Rehydrate(1, DepotDirection.Up, false));
+
+        Assert.Equal(SingleTrackDirection.Vertical, track.Direction);
+    }
+
+    [Fact]
+    public async Task RotatingDepotRefreshesExistingTrack()
+    {
+        var layout = await CreateLayout();
+        var track = new SingleTrack();
+        layout.Add(2, 2, track);
+        var depot = Depot.Rehydrate(1, DepotDirection.Up, false);
+        layout.Add(2, 3, depot);
+        Assert.Equal(SingleTrackDirection.Vertical, track.Direction);
+
+        layout.Set(2, 3, depot.WithDirection(DepotDirection.Right));
+
+        Assert.Equal(SingleTrackDirection.Horizontal, track.Direction);
+    }
+
+    [Fact]
+    public async Task DepotConnectionDoesNotBecomeMovementNeighbor()
+    {
+        var layout = await CreateLayout();
+        layout.Add(1, 2, Depot.CreateNew(1, DepotDirection.Right));
+        layout.Add(2, 2, new SingleTrack());
+
+        var movementNeighbors = TrackNeighbors.GetConnectedNeighbours(layout, 2, 2);
+
+        Assert.Null(movementNeighbors.Left);
     }
 
     [Fact]

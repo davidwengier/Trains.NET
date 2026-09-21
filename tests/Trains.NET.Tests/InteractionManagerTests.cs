@@ -45,6 +45,28 @@ public class InteractionManagerTests
         Assert.Equal(2, gameManagerChangeCount);
     }
 
+    [Fact]
+    public async Task ManualPauseRemainsAfterPointerRelease()
+    {
+        var tool = new PauseWhileDraggingTool();
+        using var gameManager = new GameManager([tool], [], new TestTimer());
+        var pixelMapper = new PixelMapper();
+        await pixelMapper.InitializeAsync(10, 10);
+        var interactionManager = new InteractionManager(
+            [],
+            new TestGame(),
+            pixelMapper,
+            gameManager,
+            new AlternateDragTool(),
+            new TooltipScreen());
+
+        gameManager.Paused = true;
+
+        interactionManager.PointerRelease(50, 50);
+
+        Assert.True(gameManager.Paused);
+    }
+
     private sealed class PauseWhileDraggingTool : ITool
     {
         public bool PauseGameDuringDrag => true;

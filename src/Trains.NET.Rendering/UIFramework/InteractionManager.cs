@@ -19,6 +19,7 @@ public class InteractionManager(
     private IInteractionHandler? _capturedHandler;
     private ITool? _capturedTool;
     private bool _hasDragged;
+    private bool _pausedForDrag;
     private int _lastToolColumn;
     private int _lastToolRow;
 
@@ -45,9 +46,10 @@ public class InteractionManager(
 
     public bool PointerRelease(int x, int y)
     {
-        if (_gameManager.Paused)
+        if (_pausedForDrag)
         {
             _gameManager.Paused = false;
+            _pausedForDrag = false;
         }
 
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);
@@ -160,6 +162,7 @@ public class InteractionManager(
             tool.PauseGameDuringDrag)
         {
             _gameManager.Paused = true;
+            _pausedForDrag = true;
         }
 
         (var column, var row) = _pixelMapper.ViewPortPixelsToCoords(x, y);

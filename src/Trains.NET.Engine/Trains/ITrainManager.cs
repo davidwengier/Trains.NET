@@ -13,5 +13,6 @@ public interface ITrainManager
     void PreviousTrain();
     void NextTrain();
     IMovable? AddTrain(int column, int row);
+    IMovable? AddTrain(int column, int row, int seed);
     bool TryGetFollowTrainPosition(out int col, out int row);
 }

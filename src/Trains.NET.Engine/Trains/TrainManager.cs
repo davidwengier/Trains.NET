@@ -33,8 +33,11 @@ public class TrainManager(IMovableLayout movableLayout, ILayout layout) : ITrain
     }
 
     public IMovable? AddTrain(int column, int row)
+        => AddTrain(column, row, _trainSpawnRandom.Next());
+
+    public IMovable? AddTrain(int column, int row, int seed)
     {
-        var train = new Train(_trainSpawnRandom.Next())
+        var train = new Train(seed)
         {
             Column = column,
             Row = row
